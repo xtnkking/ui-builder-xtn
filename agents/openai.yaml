@@ -1,0 +1,5 @@
+interface:
+  display_name: "UI Builder XTN"
+  short_description: "Build verified React UI from bundled source components"
+  brand_color: "#1769E0"
+  default_prompt: "Use $ui-builder-xtn to build the requested React interface from the bundled source components, then verify every required component and responsive state."
