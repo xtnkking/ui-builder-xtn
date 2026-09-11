@@ -17,6 +17,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   trailingIcon?: ReactNode;
   loading?: boolean;
   loadingLabel?: ReactNode;
+  "data-pui-owner"?: string;
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
@@ -33,6 +34,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
     className,
     children,
     type = "button",
+    "data-pui-owner": owner = "Button",
     ...props
   },
   ref,
@@ -49,6 +51,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       aria-disabled={loading || explicitlyAriaDisabled || undefined}
       aria-busy={loading || undefined}
       data-loading={loading || undefined}
+      data-pui-owner={owner}
       onClick={(event) => {
         if (interactionDisabled) {
           event.preventDefault();
@@ -76,6 +79,7 @@ export interface IconButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonEle
   icon: ReactNode;
   loading?: boolean;
   variant?: "secondary" | "ghost" | "danger";
+  "data-pui-owner"?: string;
 }
 
 export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(function IconButton(
@@ -87,6 +91,7 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(functio
     disabled,
     type = "button",
     "aria-disabled": ariaDisabled,
+    "data-pui-owner": owner = "IconButton",
     onClick,
     ...props
   },
@@ -104,6 +109,7 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(functio
       aria-disabled={loading || explicitlyAriaDisabled || undefined}
       aria-busy={loading || undefined}
       data-loading={loading || undefined}
+      data-pui-owner={owner}
       onClick={(event) => {
         if (interactionDisabled) {
           event.preventDefault();
@@ -122,7 +128,7 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(functio
 
 export function Spinner({ label = "正在加载", className }: { label?: string; className?: string }) {
   return (
-    <span className={cx("pui-spinner-wrap", className)} role="status">
+    <span className={cx("pui-spinner-wrap", className)} role="status" data-pui-owner="Spinner">
       <LoaderCircle className="pui-spinner" aria-hidden="true" />
       <span className="pui-sr-only">{label}</span>
     </span>
@@ -144,6 +150,7 @@ export function Skeleton({ width, className, style, ...props }: SkeletonProps) {
       className={cx("pui-skeleton", className)}
       style={resolvedStyle}
       aria-hidden="true"
+      data-pui-owner="Skeleton"
     />
   );
 }
@@ -219,6 +226,7 @@ export function Tag({
       title={contentTitle}
       className={cx("pui-tag", `pui-tag--${tone}`, selected && "is-selected", className)}
       data-selected={selected || undefined}
+      data-pui-owner="Tag"
     >
       {leading ? <span className="pui-tag__leading" aria-hidden="true">{leading}</span> : null}
       <span className="pui-tag__label">{children}</span>

@@ -338,6 +338,7 @@ export function Dialog({ open, onClose, title, description, children, footer, cl
             aria-modal="true"
             aria-labelledby={titleId}
             aria-describedby={description != null ? descriptionId : undefined}
+            data-pui-owner="Dialog"
             onFocusCapture={modal.captureRestoreFocus}
           >
             <header className="pui-dialog__header">
@@ -397,6 +398,7 @@ export function Drawer({ open, onClose, title, description, children, footer, cl
             aria-modal="true"
             aria-labelledby={titleId}
             aria-describedby={description != null ? descriptionId : undefined}
+            data-pui-owner="Drawer"
             onFocusCapture={modal.captureRestoreFocus}
           >
             <header className="pui-drawer__header">
@@ -670,7 +672,7 @@ export function DropdownMenu({ label, ariaLabel, items, icon, align = "end", cla
   };
 
   return (
-    <div ref={rootRef} className={cx("pui-dropdown", className)} onKeyDown={handleKeyDown}>
+    <div ref={rootRef} className={cx("pui-dropdown", className)} data-pui-owner="DropdownMenu" onKeyDown={handleKeyDown}>
       <Button
         ref={triggerRef}
         icon={icon}
@@ -733,6 +735,7 @@ export interface TooltipProps {
   disabled?: boolean;
   ariaLabel?: string;
   fill?: boolean;
+  "data-pui-owner"?: string;
 }
 
 interface TooltipChildProps {
@@ -790,7 +793,7 @@ function tooltipNativeChildIsKeyboardReachable(child: ReactNode): child is React
   return false;
 }
 
-export function Tooltip({ content, children, placement = "top", disabled, ariaLabel, fill }: TooltipProps) {
+export function Tooltip({ content, children, placement = "top", disabled, ariaLabel, fill, "data-pui-owner": owner = "Tooltip" }: TooltipProps) {
   const id = useId();
   const [open, setOpen] = useState(false);
   const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
@@ -997,6 +1000,7 @@ export function Tooltip({ content, children, placement = "top", disabled, ariaLa
       className={cx("pui-tooltip", fill && "pui-tooltip--fill")}
       data-placement={placement}
       data-open={!disabled && open || undefined}
+      data-pui-owner={owner}
       onMouseEnter={() => {
         cancelScheduledClose();
         if (!disabled) setOpen(true);
@@ -1081,7 +1085,7 @@ export function OverflowText({ children, className, placement }: OverflowTextPro
     return observeComputedStyleChanges(element, measure, { observeAncestors: false });
   }, [children]);
   return (
-    <Tooltip content={children} placement={placement} disabled={!overflowing}>
+    <Tooltip content={children} placement={placement} disabled={!overflowing} data-pui-owner="OverflowText">
       <span ref={textRef} className={cx("pui-overflow-text", className)} tabIndex={overflowing ? 0 : undefined}>{children}</span>
     </Tooltip>
   );

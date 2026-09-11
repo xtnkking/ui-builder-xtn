@@ -1,0 +1,2142 @@
+{
+  "schemaVersion": 2,
+  "kitVersion": "0.2.0",
+  "entries": [
+    {
+      "id": "color",
+      "kind": "foundation",
+      "publicExports": [
+        "ThemeProvider"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/layout.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ],
+      "aliases": [
+        "semantic-colors"
+      ],
+      "ownerMarkers": [
+        "ThemeProvider"
+      ]
+    },
+    {
+      "id": "typography",
+      "kind": "foundation",
+      "publicExports": [],
+      "sourceFiles": [
+        "src/personal-ui/styles.css"
+      ],
+      "aliases": [
+        "typography"
+      ],
+      "ownerMarkers": []
+    },
+    {
+      "id": "spacing",
+      "kind": "foundation",
+      "publicExports": [],
+      "sourceFiles": [
+        "src/personal-ui/styles.css"
+      ],
+      "aliases": [
+        "spacing"
+      ],
+      "ownerMarkers": []
+    },
+    {
+      "id": "radius",
+      "kind": "foundation",
+      "publicExports": [],
+      "sourceFiles": [
+        "src/personal-ui/styles.css"
+      ],
+      "aliases": [
+        "radius"
+      ],
+      "ownerMarkers": []
+    },
+    {
+      "id": "surface",
+      "kind": "foundation",
+      "publicExports": [],
+      "sourceFiles": [
+        "src/personal-ui/styles.css"
+      ],
+      "aliases": [
+        "borders-shadows"
+      ],
+      "ownerMarkers": []
+    },
+    {
+      "id": "icons",
+      "kind": "foundation",
+      "publicExports": [],
+      "sourceFiles": [
+        "src/personal-ui/primitives.tsx",
+        "src/personal-ui/styles.css"
+      ],
+      "aliases": [
+        "icons"
+      ],
+      "ownerMarkers": []
+    },
+    {
+      "id": "motion",
+      "kind": "foundation",
+      "publicExports": [],
+      "sourceFiles": [
+        "src/personal-ui/styles.css"
+      ],
+      "aliases": [
+        "motion"
+      ],
+      "ownerMarkers": []
+    },
+    {
+      "id": "z-index",
+      "kind": "foundation",
+      "publicExports": [],
+      "sourceFiles": [
+        "src/personal-ui/styles.css"
+      ],
+      "aliases": [
+        "z-index"
+      ],
+      "ownerMarkers": []
+    },
+    {
+      "id": "density",
+      "kind": "foundation",
+      "publicExports": [],
+      "sourceFiles": [
+        "src/personal-ui/styles.css"
+      ],
+      "aliases": [
+        "density"
+      ],
+      "ownerMarkers": []
+    },
+    {
+      "id": "responsive",
+      "kind": "component",
+      "publicExports": [
+        "Grid"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/layout.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ],
+      "aliases": [
+        "breakpoints-grid"
+      ],
+      "ownerMarkers": [
+        "Grid"
+      ]
+    },
+    {
+      "id": "responsive-visibility",
+      "kind": "component",
+      "publicExports": [
+        "ResponsiveVisibility"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/layout.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ],
+      "aliases": [
+        "responsive-visibility"
+      ],
+      "ownerMarkers": [
+        "ResponsiveVisibility"
+      ]
+    },
+    {
+      "id": "layout",
+      "kind": "component",
+      "publicExports": [
+        "Box",
+        "Stack",
+        "Inline"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/layout.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ],
+      "aliases": [
+        "layout-primitives"
+      ],
+      "ownerMarkers": [
+        "Box",
+        "Stack",
+        "Inline"
+      ]
+    },
+    {
+      "id": "divider",
+      "kind": "component",
+      "publicExports": [
+        "Divider"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/layout.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ],
+      "aliases": [
+        "divider"
+      ],
+      "ownerMarkers": [
+        "Divider"
+      ]
+    },
+    {
+      "id": "scroll",
+      "kind": "component",
+      "publicExports": [
+        "ScrollArea"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/layout.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ],
+      "aliases": [
+        "scroll-area"
+      ],
+      "ownerMarkers": [
+        "ScrollArea"
+      ]
+    },
+    {
+      "id": "resizable",
+      "kind": "component",
+      "publicExports": [
+        "ResizablePanels"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/data-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ],
+      "aliases": [
+        "resizable-panels"
+      ],
+      "ownerMarkers": [
+        "ResizablePanels"
+      ]
+    },
+    {
+      "id": "sticky",
+      "kind": "component",
+      "publicExports": [
+        "StickyHeaderActionBar"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/layout.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ],
+      "aliases": [
+        "sticky-header-action-bar"
+      ],
+      "ownerMarkers": [
+        "StickyHeaderActionBar"
+      ]
+    },
+    {
+      "id": "collapse",
+      "kind": "component",
+      "publicExports": [
+        "Collapse"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/layout.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ],
+      "aliases": [
+        "collapse"
+      ],
+      "ownerMarkers": [
+        "Collapse"
+      ]
+    },
+    {
+      "id": "aspect",
+      "kind": "component",
+      "publicExports": [
+        "AspectRatio"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/layout.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ],
+      "aliases": [
+        "aspect-ratio"
+      ],
+      "ownerMarkers": [
+        "AspectRatio"
+      ]
+    },
+    {
+      "id": "focus",
+      "kind": "foundation",
+      "publicExports": [],
+      "sourceFiles": [
+        "src/personal-ui/styles/layout-actions-display.css"
+      ],
+      "aliases": [
+        "focus-visible"
+      ],
+      "ownerMarkers": []
+    },
+    {
+      "id": "focus-trap",
+      "kind": "component",
+      "publicExports": [
+        "FocusTrap"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/layout.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ],
+      "aliases": [
+        "focus-trap"
+      ],
+      "ownerMarkers": [
+        "FocusTrap"
+      ]
+    },
+    {
+      "id": "visually-hidden",
+      "kind": "component",
+      "publicExports": [
+        "VisuallyHidden"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/layout.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ],
+      "aliases": [
+        "visually-hidden"
+      ],
+      "ownerMarkers": [
+        "VisuallyHidden"
+      ]
+    },
+    {
+      "id": "drag",
+      "kind": "component",
+      "publicExports": [
+        "DragDrop"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/data-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ],
+      "aliases": [
+        "drag-drop"
+      ],
+      "ownerMarkers": [
+        "DragDrop"
+      ]
+    },
+    {
+      "id": "sortable",
+      "kind": "component",
+      "publicExports": [
+        "SortableList"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/data-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ],
+      "aliases": [
+        "sortable"
+      ],
+      "ownerMarkers": [
+        "SortableList"
+      ]
+    },
+    {
+      "id": "keyboard",
+      "kind": "component",
+      "publicExports": [
+        "KeyboardShortcut"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/layout.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ],
+      "aliases": [
+        "keyboard-shortcut"
+      ],
+      "ownerMarkers": [
+        "KeyboardShortcut"
+      ]
+    },
+    {
+      "id": "clipboard",
+      "kind": "component",
+      "publicExports": [
+        "ClipboardButton"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/actions.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ],
+      "aliases": [
+        "clipboard"
+      ],
+      "ownerMarkers": [
+        "ClipboardButton"
+      ]
+    },
+    {
+      "id": "overflow",
+      "kind": "component",
+      "publicExports": [
+        "OverflowText",
+        "ExpandableText"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/overlays.tsx",
+        "src/personal-ui/styles.css",
+        "src/personal-ui/data-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ],
+      "aliases": [
+        "text-truncation"
+      ],
+      "ownerMarkers": [
+        "OverflowText",
+        "ExpandableText"
+      ]
+    },
+    {
+      "id": "portal",
+      "kind": "component",
+      "publicExports": [
+        "Portal"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/layout.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ],
+      "aliases": [
+        "portal"
+      ],
+      "ownerMarkers": [
+        "Portal"
+      ]
+    },
+    {
+      "id": "button",
+      "kind": "component",
+      "publicExports": [
+        "Button"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/primitives.tsx",
+        "src/personal-ui/styles.css"
+      ],
+      "aliases": [
+        "button"
+      ],
+      "ownerMarkers": [
+        "Button"
+      ]
+    },
+    {
+      "id": "link",
+      "kind": "component",
+      "publicExports": [
+        "Link"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/actions.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ],
+      "aliases": [
+        "link"
+      ],
+      "ownerMarkers": [
+        "Link"
+      ]
+    },
+    {
+      "id": "icon-button",
+      "kind": "component",
+      "publicExports": [
+        "IconButton"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/primitives.tsx",
+        "src/personal-ui/styles.css"
+      ],
+      "aliases": [
+        "icon-button"
+      ],
+      "ownerMarkers": [
+        "IconButton"
+      ]
+    },
+    {
+      "id": "button-group",
+      "kind": "component",
+      "publicExports": [
+        "ButtonGroup"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/actions.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ],
+      "aliases": [
+        "button-group"
+      ],
+      "ownerMarkers": [
+        "ButtonGroup"
+      ]
+    },
+    {
+      "id": "split-button",
+      "kind": "component",
+      "publicExports": [
+        "SplitButton"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/actions.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ],
+      "aliases": [
+        "split-button"
+      ],
+      "ownerMarkers": [
+        "SplitButton"
+      ]
+    },
+    {
+      "id": "toggle-button",
+      "kind": "component",
+      "publicExports": [
+        "ToggleButton"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/actions.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ],
+      "aliases": [
+        "toggle-button"
+      ],
+      "ownerMarkers": [
+        "ToggleButton"
+      ]
+    },
+    {
+      "id": "toolbar",
+      "kind": "component",
+      "publicExports": [
+        "Toolbar"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/actions.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ],
+      "aliases": [
+        "toolbar-filter-bar"
+      ],
+      "ownerMarkers": [
+        "Toolbar"
+      ]
+    },
+    {
+      "id": "filter-bar",
+      "kind": "component",
+      "publicExports": [
+        "FilterBar"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/actions.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ],
+      "aliases": [
+        "filter-bar"
+      ],
+      "ownerMarkers": [
+        "FilterBar"
+      ]
+    },
+    {
+      "id": "form",
+      "kind": "component",
+      "publicExports": [
+        "Form"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/inputs-extra.tsx",
+        "src/personal-ui/styles/inputs-extra.css"
+      ],
+      "aliases": [
+        "form"
+      ],
+      "ownerMarkers": [
+        "Form"
+      ]
+    },
+    {
+      "id": "field",
+      "kind": "component",
+      "publicExports": [
+        "Field"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/forms.tsx",
+        "src/personal-ui/styles.css"
+      ],
+      "aliases": [
+        "field"
+      ],
+      "ownerMarkers": [
+        "Field"
+      ]
+    },
+    {
+      "id": "text-input",
+      "kind": "component",
+      "publicExports": [
+        "Input",
+        "PasswordInput"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/forms.tsx",
+        "src/personal-ui/styles.css"
+      ],
+      "aliases": [
+        "text-input"
+      ],
+      "ownerMarkers": [
+        "Input",
+        "PasswordInput"
+      ]
+    },
+    {
+      "id": "search-input",
+      "kind": "component",
+      "publicExports": [
+        "SearchInput"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/forms.tsx",
+        "src/personal-ui/styles.css"
+      ],
+      "aliases": [
+        "search-input"
+      ],
+      "ownerMarkers": [
+        "SearchInput"
+      ]
+    },
+    {
+      "id": "textarea",
+      "kind": "component",
+      "publicExports": [
+        "Textarea"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/forms.tsx",
+        "src/personal-ui/styles.css"
+      ],
+      "aliases": [
+        "textarea"
+      ],
+      "ownerMarkers": [
+        "Textarea"
+      ]
+    },
+    {
+      "id": "number",
+      "kind": "component",
+      "publicExports": [
+        "NumberInput"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/inputs-extra.tsx",
+        "src/personal-ui/styles/inputs-extra.css"
+      ],
+      "aliases": [
+        "number-input"
+      ],
+      "ownerMarkers": [
+        "NumberInput"
+      ]
+    },
+    {
+      "id": "otp",
+      "kind": "component",
+      "publicExports": [
+        "OtpInput"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/inputs-extra.tsx",
+        "src/personal-ui/styles/inputs-extra.css"
+      ],
+      "aliases": [
+        "otp-input"
+      ],
+      "ownerMarkers": [
+        "OtpInput"
+      ]
+    },
+    {
+      "id": "upload",
+      "kind": "component",
+      "publicExports": [
+        "FileUpload"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/inputs-extra.tsx",
+        "src/personal-ui/styles/inputs-extra.css"
+      ],
+      "aliases": [
+        "file-upload"
+      ],
+      "ownerMarkers": [
+        "FileUpload"
+      ]
+    },
+    {
+      "id": "rich-text",
+      "kind": "component",
+      "publicExports": [
+        "RichTextEditor"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/inputs-extra.tsx",
+        "src/personal-ui/styles/inputs-extra.css"
+      ],
+      "aliases": [
+        "rich-text-editor"
+      ],
+      "ownerMarkers": [
+        "RichTextEditor"
+      ]
+    },
+    {
+      "id": "code-editor",
+      "kind": "component",
+      "publicExports": [
+        "CodeEditor"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/inputs-extra.tsx",
+        "src/personal-ui/styles/inputs-extra.css"
+      ],
+      "aliases": [
+        "code-editor"
+      ],
+      "ownerMarkers": [
+        "CodeEditor"
+      ]
+    },
+    {
+      "id": "inline-edit",
+      "kind": "component",
+      "publicExports": [
+        "InlineEdit"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/inputs-extra.tsx",
+        "src/personal-ui/styles/inputs-extra.css"
+      ],
+      "aliases": [
+        "inline-edit"
+      ],
+      "ownerMarkers": [
+        "InlineEdit"
+      ]
+    },
+    {
+      "id": "checkbox",
+      "kind": "component",
+      "publicExports": [
+        "Checkbox"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/forms.tsx",
+        "src/personal-ui/styles.css"
+      ],
+      "aliases": [
+        "checkbox"
+      ],
+      "ownerMarkers": [
+        "Checkbox"
+      ]
+    },
+    {
+      "id": "radio",
+      "kind": "component",
+      "publicExports": [
+        "Radio"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/forms.tsx",
+        "src/personal-ui/styles.css"
+      ],
+      "aliases": [
+        "radio"
+      ],
+      "ownerMarkers": [
+        "Radio"
+      ]
+    },
+    {
+      "id": "switch",
+      "kind": "component",
+      "publicExports": [
+        "Switch"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/forms.tsx",
+        "src/personal-ui/styles.css"
+      ],
+      "aliases": [
+        "switch"
+      ],
+      "ownerMarkers": [
+        "Switch"
+      ]
+    },
+    {
+      "id": "segmented",
+      "kind": "component",
+      "publicExports": [
+        "SegmentedControl"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/forms.tsx",
+        "src/personal-ui/styles.css"
+      ],
+      "aliases": [
+        "segmented-control"
+      ],
+      "ownerMarkers": [
+        "SegmentedControl"
+      ]
+    },
+    {
+      "id": "select",
+      "kind": "component",
+      "publicExports": [
+        "Select",
+        "SearchableSelect",
+        "AsyncSelect"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/forms.tsx",
+        "src/personal-ui/styles.css",
+        "src/personal-ui/inputs-extra.tsx",
+        "src/personal-ui/styles/inputs-extra.css"
+      ],
+      "aliases": [
+        "select",
+        "searchable-select",
+        "async-select"
+      ],
+      "ownerMarkers": [
+        "Select",
+        "SearchableSelect",
+        "AsyncSelect"
+      ]
+    },
+    {
+      "id": "combobox",
+      "kind": "component",
+      "publicExports": [
+        "Combobox",
+        "Autocomplete"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/forms.tsx",
+        "src/personal-ui/styles.css",
+        "src/personal-ui/inputs-extra.tsx",
+        "src/personal-ui/styles/inputs-extra.css"
+      ],
+      "aliases": [
+        "combobox",
+        "autocomplete"
+      ],
+      "ownerMarkers": [
+        "Combobox",
+        "Autocomplete"
+      ]
+    },
+    {
+      "id": "multi-select",
+      "kind": "component",
+      "publicExports": [
+        "MultiSelect"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/inputs-extra.tsx",
+        "src/personal-ui/styles/inputs-extra.css"
+      ],
+      "aliases": [
+        "multi-select"
+      ],
+      "ownerMarkers": [
+        "MultiSelect"
+      ]
+    },
+    {
+      "id": "tag-input",
+      "kind": "component",
+      "publicExports": [
+        "TagInput"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/inputs-extra.tsx",
+        "src/personal-ui/styles/inputs-extra.css"
+      ],
+      "aliases": [
+        "tag-input"
+      ],
+      "ownerMarkers": [
+        "TagInput"
+      ]
+    },
+    {
+      "id": "cascader",
+      "kind": "component",
+      "publicExports": [
+        "Cascader"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/inputs-extra.tsx",
+        "src/personal-ui/styles/inputs-extra.css"
+      ],
+      "aliases": [
+        "cascader"
+      ],
+      "ownerMarkers": [
+        "Cascader"
+      ]
+    },
+    {
+      "id": "tree-select",
+      "kind": "component",
+      "publicExports": [
+        "TreeSelect"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/inputs-extra.tsx",
+        "src/personal-ui/styles/inputs-extra.css"
+      ],
+      "aliases": [
+        "tree-select"
+      ],
+      "ownerMarkers": [
+        "TreeSelect"
+      ]
+    },
+    {
+      "id": "transfer",
+      "kind": "component",
+      "publicExports": [
+        "Transfer"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/inputs-extra.tsx",
+        "src/personal-ui/styles/inputs-extra.css"
+      ],
+      "aliases": [
+        "transfer"
+      ],
+      "ownerMarkers": [
+        "Transfer"
+      ]
+    },
+    {
+      "id": "slider",
+      "kind": "component",
+      "publicExports": [
+        "Slider"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/value-controls.tsx",
+        "src/personal-ui/styles/inputs-extra.css"
+      ],
+      "aliases": [
+        "slider"
+      ],
+      "ownerMarkers": [
+        "Slider"
+      ]
+    },
+    {
+      "id": "rating",
+      "kind": "component",
+      "publicExports": [
+        "Rating"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/value-controls.tsx",
+        "src/personal-ui/styles/inputs-extra.css"
+      ],
+      "aliases": [
+        "rating"
+      ],
+      "ownerMarkers": [
+        "Rating"
+      ]
+    },
+    {
+      "id": "color-picker",
+      "kind": "component",
+      "publicExports": [
+        "ColorPicker"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/value-controls.tsx",
+        "src/personal-ui/styles/inputs-extra.css"
+      ],
+      "aliases": [
+        "color-picker"
+      ],
+      "ownerMarkers": [
+        "ColorPicker"
+      ]
+    },
+    {
+      "id": "date-time",
+      "kind": "component",
+      "publicExports": [
+        "DateField",
+        "DateRangeField",
+        "TimezoneSelect",
+        "DEFAULT_TIMEZONE_OPTIONS"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/date-field.tsx",
+        "src/personal-ui/styles.css",
+        "src/personal-ui/value-controls.tsx",
+        "src/personal-ui/styles/inputs-extra.css"
+      ],
+      "aliases": [
+        "date-time-picker"
+      ],
+      "ownerMarkers": [
+        "DateField",
+        "DateRangeField",
+        "TimezoneSelect"
+      ],
+      "nonVisualExports": [
+        "DEFAULT_TIMEZONE_OPTIONS"
+      ]
+    },
+    {
+      "id": "app-navigation",
+      "kind": "component",
+      "publicExports": [
+        "AppNavigation",
+        "TopNavigation",
+        "SideNavigation",
+        "BottomNavigation"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/navigation-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ],
+      "aliases": [
+        "top-nav",
+        "side-nav",
+        "bottom-nav"
+      ],
+      "ownerMarkers": [
+        "AppNavigation",
+        "TopNavigation",
+        "SideNavigation",
+        "BottomNavigation"
+      ]
+    },
+    {
+      "id": "breadcrumb",
+      "kind": "component",
+      "publicExports": [
+        "Breadcrumbs"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/navigation.tsx",
+        "src/personal-ui/styles.css"
+      ],
+      "aliases": [
+        "breadcrumb"
+      ],
+      "ownerMarkers": [
+        "Breadcrumbs"
+      ]
+    },
+    {
+      "id": "tabs",
+      "kind": "component",
+      "publicExports": [
+        "Tabs"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/navigation.tsx",
+        "src/personal-ui/styles.css"
+      ],
+      "aliases": [
+        "tabs"
+      ],
+      "ownerMarkers": [
+        "Tabs"
+      ]
+    },
+    {
+      "id": "menu",
+      "kind": "component",
+      "publicExports": [
+        "Menu",
+        "DropdownMenu",
+        "ContextMenu"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/navigation-extra.tsx",
+        "src/personal-ui/styles/extended.css",
+        "src/personal-ui/overlays.tsx",
+        "src/personal-ui/styles.css",
+        "src/personal-ui/overlays-extra.tsx"
+      ],
+      "aliases": [
+        "menu",
+        "dropdown-menu",
+        "context-menu"
+      ],
+      "ownerMarkers": [
+        "Menu",
+        "DropdownMenu",
+        "ContextMenu"
+      ]
+    },
+    {
+      "id": "pagination",
+      "kind": "component",
+      "publicExports": [
+        "Pagination"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/navigation.tsx",
+        "src/personal-ui/styles.css"
+      ],
+      "aliases": [
+        "pagination"
+      ],
+      "ownerMarkers": [
+        "Pagination"
+      ]
+    },
+    {
+      "id": "load-more",
+      "kind": "component",
+      "publicExports": [
+        "LoadMore"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/navigation-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ],
+      "aliases": [
+        "load-more"
+      ],
+      "ownerMarkers": [
+        "LoadMore"
+      ]
+    },
+    {
+      "id": "infinite-scroll",
+      "kind": "component",
+      "publicExports": [
+        "InfiniteScroll"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/navigation-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ],
+      "aliases": [
+        "infinite-scroll"
+      ],
+      "ownerMarkers": [
+        "InfiniteScroll"
+      ]
+    },
+    {
+      "id": "stepper",
+      "kind": "component",
+      "publicExports": [
+        "Stepper"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/navigation-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ],
+      "aliases": [
+        "stepper"
+      ],
+      "ownerMarkers": [
+        "Stepper"
+      ]
+    },
+    {
+      "id": "command",
+      "kind": "component",
+      "publicExports": [
+        "CommandPalette",
+        "useCommandPaletteShortcut"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/navigation-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ],
+      "aliases": [
+        "command-palette"
+      ],
+      "ownerMarkers": [
+        "CommandPalette"
+      ],
+      "nonVisualExports": [
+        "useCommandPaletteShortcut"
+      ]
+    },
+    {
+      "id": "anchor",
+      "kind": "component",
+      "publicExports": [
+        "AnchorNavigation"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/navigation-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ],
+      "aliases": [
+        "anchor-nav"
+      ],
+      "ownerMarkers": [
+        "AnchorNavigation"
+      ]
+    },
+    {
+      "id": "list",
+      "kind": "component",
+      "publicExports": [
+        "List",
+        "VirtualList"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/display.tsx",
+        "src/personal-ui/styles/layout-actions-display.css",
+        "src/personal-ui/data-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ],
+      "aliases": [
+        "list",
+        "virtual-list"
+      ],
+      "ownerMarkers": [
+        "List",
+        "VirtualList"
+      ]
+    },
+    {
+      "id": "description",
+      "kind": "component",
+      "publicExports": [
+        "DescriptionList"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/display.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ],
+      "aliases": [
+        "description-list"
+      ],
+      "ownerMarkers": [
+        "DescriptionList"
+      ]
+    },
+    {
+      "id": "card",
+      "kind": "component",
+      "publicExports": [
+        "Card"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/display.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ],
+      "aliases": [
+        "card"
+      ],
+      "ownerMarkers": [
+        "Card"
+      ]
+    },
+    {
+      "id": "tree",
+      "kind": "component",
+      "publicExports": [
+        "Tree"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/data-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ],
+      "aliases": [
+        "tree"
+      ],
+      "ownerMarkers": [
+        "Tree"
+      ]
+    },
+    {
+      "id": "accordion",
+      "kind": "component",
+      "publicExports": [
+        "Accordion"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/display.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ],
+      "aliases": [
+        "accordion"
+      ],
+      "ownerMarkers": [
+        "Accordion"
+      ]
+    },
+    {
+      "id": "timeline",
+      "kind": "component",
+      "publicExports": [
+        "Timeline"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/display.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ],
+      "aliases": [
+        "timeline"
+      ],
+      "ownerMarkers": [
+        "Timeline"
+      ]
+    },
+    {
+      "id": "calendar",
+      "kind": "component",
+      "publicExports": [
+        "Calendar"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/data-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ],
+      "aliases": [
+        "calendar"
+      ],
+      "ownerMarkers": [
+        "Calendar"
+      ]
+    },
+    {
+      "id": "scheduler",
+      "kind": "component",
+      "publicExports": [
+        "Scheduler"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/data-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ],
+      "aliases": [
+        "scheduler"
+      ],
+      "ownerMarkers": [
+        "Scheduler"
+      ]
+    },
+    {
+      "id": "statistic",
+      "kind": "component",
+      "publicExports": [
+        "Statistic"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/display.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ],
+      "aliases": [
+        "statistic"
+      ],
+      "ownerMarkers": [
+        "Statistic"
+      ]
+    },
+    {
+      "id": "chart",
+      "kind": "component",
+      "publicExports": [
+        "BarChart"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/data-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ],
+      "aliases": [
+        "chart"
+      ],
+      "ownerMarkers": [
+        "BarChart"
+      ]
+    },
+    {
+      "id": "code-block",
+      "kind": "component",
+      "publicExports": [
+        "CodeBlock"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/display.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ],
+      "aliases": [
+        "code-block"
+      ],
+      "ownerMarkers": [
+        "CodeBlock"
+      ]
+    },
+    {
+      "id": "meter",
+      "kind": "component",
+      "publicExports": [
+        "Meter"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/display.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ],
+      "aliases": [
+        "meter"
+      ],
+      "ownerMarkers": [
+        "Meter"
+      ]
+    },
+    {
+      "id": "avatar",
+      "kind": "component",
+      "publicExports": [
+        "Avatar",
+        "AvatarGroup"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/display.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ],
+      "aliases": [
+        "avatar"
+      ],
+      "ownerMarkers": [
+        "Avatar",
+        "AvatarGroup"
+      ]
+    },
+    {
+      "id": "tag",
+      "kind": "component",
+      "publicExports": [
+        "Tag"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/primitives.tsx",
+        "src/personal-ui/styles.css"
+      ],
+      "aliases": [
+        "tag"
+      ],
+      "ownerMarkers": [
+        "Tag"
+      ]
+    },
+    {
+      "id": "badge",
+      "kind": "component",
+      "publicExports": [
+        "Badge"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/display.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ],
+      "aliases": [
+        "badge"
+      ],
+      "ownerMarkers": [
+        "Badge"
+      ]
+    },
+    {
+      "id": "status",
+      "kind": "component",
+      "publicExports": [
+        "StatusIndicator"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/display.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ],
+      "aliases": [
+        "status"
+      ],
+      "ownerMarkers": [
+        "StatusIndicator"
+      ]
+    },
+    {
+      "id": "media",
+      "kind": "component",
+      "publicExports": [
+        "Media"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/display.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ],
+      "aliases": [
+        "media"
+      ],
+      "ownerMarkers": [
+        "Media"
+      ]
+    },
+    {
+      "id": "attachment",
+      "kind": "component",
+      "publicExports": [
+        "Attachment"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/display.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ],
+      "aliases": [
+        "attachment"
+      ],
+      "ownerMarkers": [
+        "Attachment"
+      ]
+    },
+    {
+      "id": "gallery",
+      "kind": "component",
+      "publicExports": [
+        "Gallery"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/display.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ],
+      "aliases": [
+        "gallery"
+      ],
+      "ownerMarkers": [
+        "Gallery"
+      ]
+    },
+    {
+      "id": "carousel",
+      "kind": "component",
+      "publicExports": [
+        "Carousel"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/data-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ],
+      "aliases": [
+        "carousel"
+      ],
+      "ownerMarkers": [
+        "Carousel"
+      ]
+    },
+    {
+      "id": "data-table",
+      "kind": "component",
+      "publicExports": [
+        "DataTable",
+        "TreeTable"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/data-table.tsx",
+        "src/personal-ui/styles.css",
+        "src/personal-ui/data-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ],
+      "aliases": [
+        "data-table",
+        "tree-table"
+      ],
+      "ownerMarkers": [
+        "DataTable",
+        "TreeTable"
+      ]
+    },
+    {
+      "id": "inline-message",
+      "kind": "component",
+      "publicExports": [
+        "InlineMessage"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/feedback-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ],
+      "aliases": [
+        "inline-message"
+      ],
+      "ownerMarkers": [
+        "InlineMessage"
+      ]
+    },
+    {
+      "id": "alert",
+      "kind": "component",
+      "publicExports": [
+        "Alert"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/feedback.tsx",
+        "src/personal-ui/styles.css"
+      ],
+      "aliases": [
+        "alert"
+      ],
+      "ownerMarkers": [
+        "Alert"
+      ]
+    },
+    {
+      "id": "banner",
+      "kind": "component",
+      "publicExports": [
+        "Banner"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/feedback-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ],
+      "aliases": [
+        "banner"
+      ],
+      "ownerMarkers": [
+        "Banner"
+      ]
+    },
+    {
+      "id": "toast",
+      "kind": "component",
+      "publicExports": [
+        "ToastProvider",
+        "useToast"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/feedback.tsx",
+        "src/personal-ui/styles.css"
+      ],
+      "aliases": [
+        "toast-snackbar"
+      ],
+      "ownerMarkers": [
+        "ToastProvider"
+      ],
+      "nonVisualExports": [
+        "useToast"
+      ]
+    },
+    {
+      "id": "spinner",
+      "kind": "component",
+      "publicExports": [
+        "Spinner"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/primitives.tsx",
+        "src/personal-ui/styles.css"
+      ],
+      "aliases": [
+        "spinner"
+      ],
+      "ownerMarkers": [
+        "Spinner"
+      ]
+    },
+    {
+      "id": "progress",
+      "kind": "component",
+      "publicExports": [
+        "Progress",
+        "ProgressRing"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/feedback.tsx",
+        "src/personal-ui/styles.css",
+        "src/personal-ui/feedback-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ],
+      "aliases": [
+        "progress"
+      ],
+      "ownerMarkers": [
+        "Progress",
+        "ProgressRing"
+      ]
+    },
+    {
+      "id": "skeleton",
+      "kind": "component",
+      "publicExports": [
+        "Skeleton"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/primitives.tsx",
+        "src/personal-ui/styles.css"
+      ],
+      "aliases": [
+        "skeleton"
+      ],
+      "ownerMarkers": [
+        "Skeleton"
+      ]
+    },
+    {
+      "id": "result",
+      "kind": "component",
+      "publicExports": [
+        "EmptyState",
+        "ErrorState",
+        "NoResults",
+        "RetryButton",
+        "AsyncAction"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/feedback.tsx",
+        "src/personal-ui/styles.css",
+        "src/personal-ui/feedback-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ],
+      "aliases": [
+        "empty-state",
+        "error-state"
+      ],
+      "ownerMarkers": [
+        "EmptyState",
+        "ErrorState",
+        "NoResults",
+        "RetryButton",
+        "AsyncAction"
+      ]
+    },
+    {
+      "id": "validation-summary",
+      "kind": "component",
+      "publicExports": [
+        "ValidationSummary"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/feedback-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ],
+      "aliases": [
+        "validation-summary"
+      ],
+      "ownerMarkers": [
+        "ValidationSummary"
+      ]
+    },
+    {
+      "id": "tooltip",
+      "kind": "component",
+      "publicExports": [
+        "Tooltip"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/overlays.tsx",
+        "src/personal-ui/styles.css"
+      ],
+      "aliases": [
+        "tooltip"
+      ],
+      "ownerMarkers": [
+        "Tooltip"
+      ]
+    },
+    {
+      "id": "popover",
+      "kind": "component",
+      "publicExports": [
+        "Popover"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/overlays-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ],
+      "aliases": [
+        "popover"
+      ],
+      "ownerMarkers": [
+        "Popover"
+      ]
+    },
+    {
+      "id": "hover-card",
+      "kind": "component",
+      "publicExports": [
+        "HoverCard"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/overlays-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ],
+      "aliases": [
+        "hover-card"
+      ],
+      "ownerMarkers": [
+        "HoverCard"
+      ]
+    },
+    {
+      "id": "dialog",
+      "kind": "component",
+      "publicExports": [
+        "Dialog",
+        "ConfirmDialog"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/overlays.tsx",
+        "src/personal-ui/styles.css",
+        "src/personal-ui/overlays-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ],
+      "aliases": [
+        "dialog",
+        "confirm-dialog"
+      ],
+      "ownerMarkers": [
+        "Dialog",
+        "ConfirmDialog"
+      ]
+    },
+    {
+      "id": "popconfirm",
+      "kind": "component",
+      "publicExports": [
+        "Popconfirm"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/overlays-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ],
+      "aliases": [
+        "popconfirm"
+      ],
+      "ownerMarkers": [
+        "Popconfirm"
+      ]
+    },
+    {
+      "id": "drawer",
+      "kind": "component",
+      "publicExports": [
+        "Drawer"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/overlays.tsx",
+        "src/personal-ui/styles.css"
+      ],
+      "aliases": [
+        "drawer-sheet"
+      ],
+      "ownerMarkers": [
+        "Drawer"
+      ]
+    },
+    {
+      "id": "lightbox",
+      "kind": "component",
+      "publicExports": [
+        "Lightbox"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/overlays-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ],
+      "aliases": [
+        "lightbox"
+      ],
+      "ownerMarkers": [
+        "Lightbox"
+      ]
+    },
+    {
+      "id": "tour",
+      "kind": "component",
+      "publicExports": [
+        "GuidedTour"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/overlays-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ],
+      "aliases": [
+        "guided-tour"
+      ],
+      "ownerMarkers": [
+        "GuidedTour"
+      ]
+    },
+    {
+      "id": "authentication",
+      "kind": "pattern",
+      "publicExports": [
+        "AuthenticationPage",
+        "FamilyLoginPage"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/patterns/standard-pages.tsx",
+        "src/personal-ui/styles/extended.css",
+        "src/personal-ui/patterns/family-login-page.tsx",
+        "src/personal-ui/styles.css"
+      ],
+      "aliases": [
+        "authentication"
+      ],
+      "ownerMarkers": [
+        "AuthenticationPage",
+        "FamilyLoginPage"
+      ]
+    },
+    {
+      "id": "list-filter",
+      "kind": "pattern",
+      "publicExports": [
+        "PageHeading",
+        "ListManagementPage",
+        "SearchFilterPage",
+        "MemberManagementPage"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/patterns/standard-pages.tsx",
+        "src/personal-ui/styles/extended.css",
+        "src/personal-ui/patterns/member-management-page.tsx",
+        "src/personal-ui/styles.css"
+      ],
+      "aliases": [
+        "list-management",
+        "search-filter-page"
+      ],
+      "ownerMarkers": [
+        "PageHeading",
+        "ListManagementPage",
+        "SearchFilterPage",
+        "MemberManagementPage"
+      ]
+    },
+    {
+      "id": "create-edit",
+      "kind": "pattern",
+      "publicExports": [
+        "CreateEditPage"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/patterns/standard-pages.tsx",
+        "src/personal-ui/styles/extended.css"
+      ],
+      "aliases": [
+        "create-edit-page"
+      ],
+      "ownerMarkers": [
+        "CreateEditPage"
+      ]
+    },
+    {
+      "id": "detail",
+      "kind": "pattern",
+      "publicExports": [
+        "DetailPage"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/patterns/standard-pages.tsx",
+        "src/personal-ui/styles/extended.css"
+      ],
+      "aliases": [
+        "detail-page"
+      ],
+      "ownerMarkers": [
+        "DetailPage"
+      ]
+    },
+    {
+      "id": "settings",
+      "kind": "pattern",
+      "publicExports": [
+        "SettingsPage"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/patterns/standard-pages.tsx",
+        "src/personal-ui/styles/extended.css"
+      ],
+      "aliases": [
+        "settings-page"
+      ],
+      "ownerMarkers": [
+        "SettingsPage"
+      ]
+    },
+    {
+      "id": "wizard",
+      "kind": "pattern",
+      "publicExports": [
+        "WizardFlow"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/patterns/standard-pages.tsx",
+        "src/personal-ui/styles/extended.css"
+      ],
+      "aliases": [
+        "wizard-flow"
+      ],
+      "ownerMarkers": [
+        "WizardFlow"
+      ]
+    },
+    {
+      "id": "master-detail",
+      "kind": "pattern",
+      "publicExports": [
+        "MasterDetail"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/patterns/standard-pages.tsx",
+        "src/personal-ui/styles/extended.css"
+      ],
+      "aliases": [
+        "master-detail"
+      ],
+      "ownerMarkers": [
+        "MasterDetail"
+      ]
+    },
+    {
+      "id": "import-export",
+      "kind": "pattern",
+      "publicExports": [
+        "ImportExportPage"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/patterns/standard-pages.tsx",
+        "src/personal-ui/styles/extended.css"
+      ],
+      "aliases": [
+        "import-export-page"
+      ],
+      "ownerMarkers": [
+        "ImportExportPage"
+      ]
+    },
+    {
+      "id": "status-page",
+      "kind": "pattern",
+      "publicExports": [
+        "StatusPage"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/patterns/standard-pages.tsx",
+        "src/personal-ui/styles/extended.css"
+      ],
+      "aliases": [
+        "empty-error-page"
+      ],
+      "ownerMarkers": [
+        "StatusPage"
+      ]
+    }
+  ],
+  "policy": {
+    "forbiddenIntrinsicTags": [
+      "a",
+      "audio",
+      "button",
+      "details",
+      "dialog",
+      "fieldset",
+      "form",
+      "input",
+      "label",
+      "meter",
+      "optgroup",
+      "option",
+      "progress",
+      "select",
+      "summary",
+      "svg",
+      "table",
+      "textarea",
+      "video"
+    ],
+    "forbiddenRoles": [
+      "button",
+      "checkbox",
+      "combobox",
+      "dialog",
+      "listbox",
+      "menu",
+      "menuitem",
+      "option",
+      "radio",
+      "slider",
+      "spinbutton",
+      "switch",
+      "tab",
+      "tablist",
+      "tree"
+    ],
+    "allowedExternalJsxPackages": [
+      "lucide-react"
+    ]
+  },
+  "sourceIntegrity": {
+    "actions.tsx": "9898ddbeb0a72d01483396b762822ccbae6ba13ef960a155ab7c51663ba044f4",
+    "data-extra.tsx": "898a6aeaa6c2f93d37ee9a91607c5ba4f4ff70eb8a147f5e6383be79f85b6734",
+    "data-table.tsx": "a395a23993e7ec1570abe2cfa31891593bfbe576c46f6caffc8d01ed4ff1317f",
+    "date-field.tsx": "4030d78edc3858d7e76cad6750201db1522c92cad0e1f39b0763a804aec0bb1d",
+    "display.tsx": "89f5cac0d39ea6bd1b32263f1eb3f9afd0b3c9d4a7156f716d36588ae5c72e33",
+    "feedback-extra.tsx": "9367bea4dfc69613f7e0ed8149b374a556cc11de5cc012309def7747f66468a3",
+    "feedback.tsx": "edd7abdf9424fb38339b56a58afc97687742780de28a22f1bf011a295dc9c69f",
+    "forms.tsx": "253b08a66beeeb1bd9c121f17486935365657d8eaf907534e8cb90d9a48c100b",
+    "index.ts": "97d260c56e0404e41a033d296ce9a2fac198ace8efbb93813c0f35874d93381e",
+    "inputs-extra.tsx": "baed41f372a8d395abccf3cee8f0552210702193d1de59d1ba368b3f0837a4cc",
+    "layout.tsx": "0529b2666fc95ff370b3be89239c764897d7684ab57a13c50ab096be6d01c62a",
+    "navigation-extra.tsx": "10c2357f3fc8706a10220d06311005450451f45e92697c70f5f4886f95cbd1a7",
+    "navigation.tsx": "73103ebe95adb1358b19af5a80e8b03e21bff430280ebbe786cdfdcc406b8c31",
+    "overlays-extra.tsx": "beb7ff173a2474d1b43ec1b0a3aad7a670a888b8fe1ff57ffd7e20b74c40843a",
+    "overlays.tsx": "d04f36822d55a775c32e2e9e9ed22f5754dd53230dc629d33b6a32367e882751",
+    "patterns/family-login-page.tsx": "d96543d8df95f4cd465c7d7413edd39d71d1b438f0b22d9315b6114cf1f67963",
+    "patterns/member-management-page.tsx": "81620c498c71455795338af6ed235dc5d68a2cb9681df0b552f7cae8c56fb142",
+    "patterns/standard-pages.tsx": "ab3eee5dfe3d74d32a7962a801e4aad97b3d2c314b7bf80f88ac47574b0d631d",
+    "portal-tokens.ts": "628b0f31c47f9dcaaa84cf67c5b13318a46f2f47f3a611d6a9075c83358052cd",
+    "primitives.tsx": "f1371cafdba78cd484d9e90fbd3cfc7880493fe662ec5e52441e533bb89a5082",
+    "styles/extended.css": "98723c1f0f9620546746e873c348fc4ad551389fc5c588f5f75a6cb528ec1568",
+    "styles/inputs-extra.css": "25e83b083a6a30043a0bdbb9e717c18203f7f6043522a933ed3dc7475939e6be",
+    "styles/layout-actions-display.css": "53a24bcd2d9bc0726c3c578fb56a3a47ccecafdd38e3a36ea8418dbde773820e",
+    "styles.css": "5b1ea9d52da190216d6f8967333a79b000ddb40b0f32e5e5d8a6413a7c0cadbc",
+    "utils.ts": "fdb9151abf7b8d587098d600199e8dad8d7729535c93c91296557ac9b60f67b5",
+    "value-controls.tsx": "be4cd237ded5d3170b2d750439c3909f2589169199d8df04b5229eba724f91ef"
+  }
+}

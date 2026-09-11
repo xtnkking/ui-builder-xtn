@@ -1,5 +1,7 @@
 # Integration
 
+Personal UI v0.2.0 is installed source with an enforced provenance boundary. The target receives the complete managed `src/personal-ui/` tree, its runtime registry, the component manifest, and the provenance scanner. Product code may compose public exports, but it may not fork, imitate, or reach inside the managed implementation.
+
 ## Choose A Mode
 
 Use the deterministic installer rather than manually copying snippets.
@@ -13,9 +15,9 @@ python scripts/install_personal_ui.py --mode starter --target <destination>
 python scripts/install_personal_ui.py --mode starter --target <destination> --force --dry-run
 ```
 
-This copies the runnable Vite starter, including the source library and two reference patterns. The installed kit manifest lives at `src/personal-ui/registry.json`; the installer never claims an unrelated root `registry.json`. Replace the demo composition in `src/App.tsx`; keep feature code importing from `src/personal-ui`.
+This copies the runnable Vite starter and the complete Personal UI source. The installed runtime registry lives at `src/personal-ui/registry.json`; enforcement support lives under `tools/personal-ui/`. Replace the demo composition in `src/App.tsx`, but keep every UI control and reusable pattern imported from `src/personal-ui`.
 
-The starter includes a dependency lockfile. Run `npm ci` for the verified dependency set before the first build; regenerate the lockfile only as a deliberate dependency upgrade followed by the complete build and browser verification gate.
+The starter includes a dependency lockfile. Run `npm ci` for the verified dependency set before the first build. Regenerate the lockfile only as a deliberate dependency upgrade followed by the complete build and browser verification gate.
 
 ### Existing React and TypeScript application
 
@@ -23,53 +25,117 @@ The starter includes a dependency lockfile. Run `npm ci` for the verified depend
 python scripts/install_personal_ui.py --mode integrate --target <project-root>
 ```
 
-The command copies `src/personal-ui`, records every missing kit dependency in `package.json`, and leaves application routes and entrypoints unchanged. Existing compatible dependency declarations are preserved whether they live in `dependencies` or `devDependencies`. An incompatible declaration, or a dependency declared in both sections, fails validation before the installer writes any files so the project can resolve the conflict through its normal dependency workflow. The installer refuses to overwrite an existing `src/personal-ui` directory.
+The command copies the complete `src/personal-ui` source, installs the matching component manifest and provenance scanner under `tools/personal-ui`, records missing kit dependencies in `package.json`, and leaves application routes and entrypoints unchanged. It also installs the exact `verify:personal-ui` command and appends it to npm's `prebuild` lifecycle, preserving an existing prebuild command. Compatible dependency declarations are preserved whether they live in `dependencies` or `devDependencies`. An incompatible dependency or conflicting reserved verifier command fails before any write.
 
-Preview every update before replacing the managed source:
+Preview every update before replacing managed source:
 
 ```powershell
 python scripts/install_personal_ui.py --mode integrate --target <project-root> --force --dry-run
 ```
 
-The JSON plan lists the bundled version, files that will be created, overwritten, and deleted, plus dependency additions and preserved declarations. Running the same command without `--dry-run` replaces the complete managed `src/personal-ui` directory, so files and nested directories removed from a newer kit cannot linger. A root `registry.json` is removed during migration only when its contents identify it as a legacy Personal UI manifest; unrelated root registries are left untouched.
+The JSON plan lists the bundled version, files to create, overwrite, and delete, and dependency changes. Running without `--dry-run` replaces the complete managed directory as one versioned unit, so removed files and unauthorized additions cannot linger. A root `registry.json` is removed during migration only when it identifies itself as a legacy Personal UI registry; unrelated root registries remain untouched.
 
-After installation, import the stylesheet once at the application entrypoint:
+After installation, import the stylesheet exactly once at the application entrypoint:
 
 ```tsx
 import "./personal-ui/styles.css";
 ```
 
-Then import components from the barrel:
+Import every runtime component and pattern through the public barrel:
 
 ```tsx
-import { Button, SearchInput, Tag } from "./personal-ui";
+import { Button, DataTable, Drawer, SearchInput } from "./personal-ui";
 ```
 
-Respect an existing package manager and lockfile. Run its install command after the script updates `package.json`.
+Do not deep-import an implementation file:
 
-`Select` and `Combobox` portal their open surfaces to `document.body` and use fixed positioning. Their explicit `top` or `bottom` placement is a preference: each surface flips when the other side has more useful room, clamps on both axes, and limits its scrollable height to the resolved viewport space while preserving a 12px viewport gutter. Because these surfaces are portaled, they escape clipping ancestors such as scrolling table, drawer, and `overflow: hidden` containers. They copy the trigger's computed `--pui-*` custom properties and resynchronize them while open when any ancestor attribute, stylesheet, or supported user-preference media query changes. A locally themed product surface therefore keeps both its initial and live Personal UI tokens after the portal move. Positioning is recalculated on viewport or ancestor scrolling, resize, dynamic option-content changes, and those theme changes.
+```tsx
+// Forbidden: bypasses the public source contract.
+import { Button } from "./personal-ui/primitives";
+```
 
-Inside `Dialog` or `Drawer`, keep the bundled trigger/listbox relationship and floating-root marker intact. The modal focus boundary follows `aria-controls` from the trigger to the portaled `Select` or `Combobox` surface; `Combobox` also moves Tab or Shift+Tab to the adjacent focus target inside that same modal boundary. Do not wrap or replace these controls in a way that removes that wiring.
+Application code may own business state, data fetching, copy, product images, and non-interactive semantic layout. It must not add native protected controls, interactive ARIA roles, locally styled lookalikes, third-party JSX controls, `.pui-*` selectors, or reserved `data-pui-*` markers. A local wrapper is acceptable only when it composes public Personal UI exports without implementing a replacement control.
 
-`DropdownMenu` is intentionally different: its menu remains non-portal, absolutely positioned inside the dropdown root. It honors `align="start"` or `align="end"`, then clamps horizontally and flips or shifts vertically within the intersection of the viewport and all clipping ancestors. This keeps the menu inside a deliberately bounded toolbar or panel, but it does not escape that panel's clipping or stacking context. Its roving-focus items close and re-anchor focus to the trigger on Tab or Escape, including when the dropdown is inside a modal.
+Respect the target's existing package manager and lockfile. Run its install command after the installer updates `package.json`.
 
-`Tooltip` portals its non-interactive bubble to `document.body`, uses fixed positioning, flips to the opposite side when needed, and clamps the final position to a 12px viewport margin. The bubble remains open while hovered and closes on Escape. Focus stays on the described trigger; the component attaches `aria-describedby` to actual focusable descendants or provides an accessible fallback trigger when none exists. Dialog, Drawer, Tooltip, and Toast portals copy locally inherited `--pui-*` tokens and automatically resynchronize them after ancestor attributes, stylesheet/media conditions, or font-loading state changes; product code must not mirror those tokens onto `document.body`. Pass `fill` when wrapping a full-width Button, Input, or block-level trigger so the Tooltip wrappers do not shrink it to content width. `OverflowText` also remeasures after typography or late-font changes, and shares its document-level observers across large result sets. Keep tooltip content supplementary and non-interactive, then verify it above dialogs and drawers as well as near every viewport edge. `DateField` uses native browser date/time input types, so its picker surface and displayed locale format vary by browser and operating system.
+## Managed Source Boundary
+
+`src/personal-ui/` in a target project is generated, versioned source. Do not edit it, add files to it, or copy one of its implementation files elsewhere for customization. The verifier treats every missing, changed, or extra file as a release error; there is no local-extension allowance.
+
+Brand and product differences belong in documented props, visual slots, and tokens. If a reusable visual or behavior cannot be expressed by the public API, follow the canonical extension workflow below before continuing the feature.
+
+The machine-readable authority is `assets/react-kit/component-manifest.json`:
+
+- The current manifest classifies all 139 runtime exports as 136 visual components or patterns and 3 non-visual hooks/constants across 118 families and 130 discovery aliases.
+- Every `component` or `pattern` family maps to real source files and at least one registered public runtime export.
+- Every rendered component family declares a source ownership marker that exists in those source files.
+- Foundation entries map to real CSS or TypeScript artifacts even when they have no runtime component.
+- Every registry runtime export must be covered by the manifest, and the manifest version must equal the registry version.
+- `sourceIntegrity` contains the canonical SHA-256 for every file under `src/personal-ui/`; both manifest validation and the installed npm gate require an exact file set and exact content.
+
+The catalog explains behavior; it cannot create or authorize an export that is absent from the manifest and barrel.
+
+## Extending The Canonical Kit
+
+A requested capability that has no registered public export must not be built inside the target application. Extend the Skill's canonical kit first:
+
+1. Implement the reusable React source in `assets/react-kit/src/personal-ui/` and add its styles to the canonical style entry.
+2. Give the component root its unique `data-pui-owner` marker and cover its expected states, including disabled, loading, empty, error, keyboard, and responsive behavior when applicable.
+3. Export the runtime API from `assets/react-kit/src/personal-ui/index.ts`.
+4. Add the export to `assets/react-kit/registry.json`.
+5. Add or update the `component-manifest.json` family entry with `publicExports`, `sourceFiles`, aliases, and `ownerMarkers`.
+6. Add focused tests and a representative gallery or workflow example.
+7. Run `python scripts/update_component_manifest_integrity.py`, then run the manifest validator, strict-enforcement self-test, and source typecheck/build.
+8. Increment and synchronize the semantic version across the kit registry, component manifest, and package metadata.
+9. Reinstall the new version into the target with `integrate --force` after reviewing `--dry-run`, then compose the feature from its public barrel export.
+
+If canonical source cannot be changed within the task's authority, stop and report the missing library capability. Do not make a temporary native, CSS-only, or third-party substitute.
+
+## Floating Surfaces
+
+`Select`, searchable selectors, and comboboxes portal their open surfaces to `document.body` and use fixed positioning. Their preferred placement flips when useful, clamps on both axes, and preserves a viewport gutter. Because the surfaces are portaled, they escape clipping ancestors such as tables, drawers, and `overflow: hidden` containers while retaining locally computed `--pui-*` tokens.
+
+Inside `Dialog` or `Drawer`, keep the bundled trigger/surface relationship intact so modal focus containment can follow the portaled surface. Do not wrap or replace these controls in a way that removes their focus and `aria-controls` wiring.
+
+Menus that intentionally remain within their owning container use their component's documented positioning behavior. Tooltips are supplementary and non-interactive; use `OverflowText` when the tooltip should exist only for actual truncation. Verify floating surfaces near every viewport edge and above dialogs or drawers.
 
 ## Existing Design Systems
 
-If the project already has a deliberate component system, do not silently install a second one. Explain the conflict and ask whether the feature should migrate to Personal UI or remain on the existing system. A request explicitly naming this Skill resolves that choice in favor of Personal UI unless doing so would break an established shared application shell.
+The provenance scanner inspects script, JSX/TSX, MDX, and HTML files across the project while excluding generated output, dependencies, installed enforcement tools, and the managed component source itself. A target that already renders another component system or raw interactive controls will not pass strict mode unchanged. Do not silently install Personal UI beside that system. Confirm that the requested surface can be migrated to Personal UI or place it in a separate application; explicit Skill use selects Personal UI but does not authorize an unrelated whole-product migration.
 
-## Updating A Previously Installed Kit
+## Updating An Installed Kit
 
-Run the verifier first. It reads `src/personal-ui/registry.json`, reports installed and bundled versions, validates the public runtime export registry, and lists missing, changed, or extra managed source files. It also checks the stylesheet import and package dependencies. For a fresh install that has not yet been wired into the application, `--allow-unreferenced` waives only the barrel-consumption and stylesheet-import checks; manifest integrity, source drift, and dependency validation still apply. For a deliberate reusable extension kept inside `src/personal-ui`, use `--allow-local-extensions`; changed and extra files become explicit warnings while missing bundled files remain errors. Compare and move local reusable extensions before using `--force`; the installer replaces the complete `src/personal-ui` directory as one versioned unit. Move genuine application composition out of that directory before syncing.
-
-Upgrade any previously customized application with integrate mode, even when it originally came from the starter:
+Run the verifier before upgrading and preserve any application composition outside `src/personal-ui/`:
 
 ```powershell
+python scripts/verify_personal_ui.py --target <project-root>
 python scripts/install_personal_ui.py --mode integrate --target <project-root> --force --dry-run
 python scripts/install_personal_ui.py --mode integrate --target <project-root> --force
 ```
 
-Do not rerun starter mode to upgrade a customized application. Starter mode also owns files such as `src/App.tsx`, `src/main.tsx`, `src/demo.css`, and the build configuration, so its force mode is only for deliberately resetting those starter-owned paths after reviewing the plan.
+Do not rerun starter mode to upgrade a customized application. Starter mode also owns `src/App.tsx`, `src/main.tsx`, `src/demo.css`, and build configuration, so its force mode is for deliberately resetting those starter-owned paths.
 
-After the update, run the verifier again with repeated `--require-component <export>` arguments for the components or pattern promised by the feature. A successful result must have equal `installedVersion` and `bundledVersion`, empty `sourceDrift.missing`, `sourceDrift.changed`, and `sourceDrift.extra` lists, and an empty `missingRequiredComponents` list. The required-component check uses reachable application code; importing a symbol without rendering or calling it does not count.
+After installation, build and test the application, then run the verifier again:
+
+```powershell
+npm run build
+python scripts/verify_personal_ui.py --target <project-root>
+```
+
+`npm run build` automatically runs `verify:personal-ui` first. The prebuild gate checks both application provenance and the managed source SHA-256 inventory, so a changed, missing, linked, or extra component source file stops the build before TypeScript or Vite runs. Directly invoking a lower-level compiler or bundler is not an accepted release verification path.
+
+The verifier automatically scans reachable application source; no component list is needed. `--require-component` is compatibility-only and may add an explicit assertion, but it never weakens or replaces automatic provenance. `--allow-unreferenced` may be used only to check a fresh installation before any application code consumes it; final delivery must run without that flag.
+
+A passing report requires:
+
+- `upToDate: true` and an empty top-level `errors` array.
+- Equal installed and bundled versions and registries.
+- `componentManifest.valid: true` and matching installed enforcement support.
+- `provenance.valid: true`, with actual rendered or called barrel exports in `usedComponents`.
+- `buildGate.verifyScriptMatches: true` and `buildGate.prebuildIncludesGate: true`.
+- Empty `sourceDrift.missing`, `sourceDrift.changed`, and `sourceDrift.extra` lists.
+- Exactly one application import of the Personal UI stylesheet and compatible dependencies.
+
+The automatic scan rejects deep imports, private or unregistered exports, raw protected HTML controls, interactive roles or raw interaction handlers used to imitate controls, reserved Personal UI classes and owner markers, unapproved external JSX components, and markup injection paths that cannot prove ownership. These failures are release blockers, not warnings.
+
+This is a deterministic build-time ownership gate, not a sandbox for hostile JavaScript. Deliberately obfuscated runtime code, generated source outside the inspected project, browser extensions, and code fetched after build require separate security review. They are not accepted ways to bypass the component contract; keep UI construction statically inspectable and verify the rendered product as part of release review.

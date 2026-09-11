@@ -1,12 +1,14 @@
 {
   "name": "personal-ui-react-starter",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "prebuild": "npm run verify:personal-ui",
     "build": "tsc --noEmit && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "verify:personal-ui": "node tools/personal-ui/verify-provenance.mjs --target . --source-root src/personal-ui --manifest component-manifest.json"
   },
   "dependencies": {
     "lucide-react": "^0.468.0",

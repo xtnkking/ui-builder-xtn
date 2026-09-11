@@ -52,7 +52,7 @@ export interface AlertProps {
 export function Alert({ tone = "info", title, children, action, className }: AlertProps) {
   const Icon = toneIcons[tone];
   return (
-    <div className={cx("pui-alert", `pui-alert--${tone}`, className)} role={tone === "danger" ? "alert" : "status"}>
+    <div className={cx("pui-alert", `pui-alert--${tone}`, className)} role={tone === "danger" ? "alert" : "status"} data-pui-owner="Alert">
       <span className="pui-alert__icon" aria-hidden="true"><Icon /></span>
       <div className="pui-alert__copy">
         {title != null ? (
@@ -76,7 +76,7 @@ export interface EmptyStateProps {
 
 export function EmptyState({ icon, title, description, action, compact, className }: EmptyStateProps) {
   return (
-    <div className={cx("pui-empty", compact && "pui-empty--compact", className)} role="status">
+    <div className={cx("pui-empty", compact && "pui-empty--compact", className)} role="status" data-pui-owner="EmptyState">
       {icon != null ? <span className="pui-empty__icon" aria-hidden="true">{icon}</span> : null}
       <strong title={typeof title === "string" || typeof title === "number" ? String(title) : undefined}>{title}</strong>
       {description != null ? <p>{description}</p> : null}
@@ -95,7 +95,7 @@ export interface ProgressProps {
 export function Progress({ value, label, showValue, className }: ProgressProps) {
   const normalized = Number.isFinite(value) ? Math.min(100, Math.max(0, value)) : 0;
   return (
-    <div className={cx("pui-progress-group", className)}>
+    <div className={cx("pui-progress-group", className)} data-pui-owner="Progress">
       <div className="pui-progress-group__label">
         <span>{label}</span>
         {showValue ? <span>{Math.round(normalized)}%</span> : null}
@@ -304,7 +304,7 @@ export function ToastProvider({ children, defaultPosition = "top-right", default
       {portalReady ? <span ref={sourceRef} hidden aria-hidden="true" data-pui-portal-source="toast" /> : null}
       {children}
       {portalReady && toasts.length ? createPortal(
-        <div ref={portalRef} className="pui-portal" data-pui-toast-portal-root="true" style={{ display: "contents" }}>
+        <div ref={portalRef} className="pui-portal" data-pui-toast-portal-root="true" data-pui-owner="ToastProvider" style={{ display: "contents" }}>
           {viewportGroups.map(({ id, items }) => {
             if (!items.length) return null;
             return (
@@ -491,5 +491,5 @@ export interface RetryButtonProps extends Omit<ButtonProps, "children" | "onClic
 }
 
 export function RetryButton({ onRetry, label = "重试", ...props }: RetryButtonProps) {
-  return <Button {...props} onClick={onRetry}>{label}</Button>;
+  return <Button {...props} data-pui-owner="RetryButton" onClick={onRetry}>{label}</Button>;
 }

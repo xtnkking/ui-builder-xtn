@@ -5,48 +5,71 @@ description: Build or revise React and TypeScript product interfaces by installi
 
 # UI Builder XTN
 
-Build the requested feature from the bundled source code. Do not treat this Skill as a prose style guide and do not redraw an equivalent button, field, tag, toast, drawer, table, or login shell in local page CSS when the source kit already provides it.
+Build the requested feature from the bundled Personal UI implementation. This Skill is a source kit with an enforced ownership contract, not a prose style guide: every control, feedback surface, navigation control, overlay, data renderer, and bundled page pattern used in the result must come from a registered public export with real React source in this Skill.
 
-## Start From Source
+## Use The Bundled Source
 
-The canonical output source is `assets/react-kit/src/personal-ui/`. Treat it as code to copy and import, not as instructions to paraphrase. Never use the old monolithic preview HTML as application source.
+The canonical implementation lives in `assets/react-kit/src/personal-ui/`. Its manifest covers 118 families, 139 runtime exports (136 visual components or patterns and 3 explicitly classified non-visual hooks/constants), and 130 discovery aliases. The installer copies that versioned source into the target project; application code then composes it through the installed public barrel. Never use the archived monolithic preview HTML as application source.
 
-1. Inspect the target project's framework, package manager, source root, aliases, existing design system, and tests.
-2. Read [integration](references/integration.md) before installing into a project. Run `scripts/install_personal_ui.py` for a new starter or an existing React project.
-3. Read [component catalog](references/component-catalog.md) only for the component families needed by the request.
-4. Before composing the page, write down the exact public exports that own its requested controls. Compose the feature from those exports in `src/personal-ui/index.ts`. Prefer an included pattern when it matches the workflow, then customize content, product imagery, columns, and callbacks through props.
-5. Put product-specific composition in the application. Put a missing reusable control or behavior in `src/personal-ui/` first and consume it from there; do not create a one-page lookalike.
+1. Inspect the target framework, package manager, source root, aliases, existing design system, and tests. An explicit request to use this Skill chooses Personal UI for the inspected application source; do not mix it with another UI component system.
+2. Read [integration](references/integration.md), then run `scripts/install_personal_ui.py` in `starter` or `integrate` mode. Do not manually copy isolated snippets.
+3. Read [component catalog](references/component-catalog.md) only for the families needed by the request. Confirm that every requested UI capability maps to a `component-manifest.json` entry and at least one public runtime export.
+4. Import runtime components and patterns only from `src/personal-ui/index.ts`, normally through `./personal-ui` or the project's alias to that directory. Deep imports into implementation files are forbidden.
+5. Put only business data, callbacks, copy, product imagery, documented token overrides, and non-interactive page composition in application code. Do not recreate a Personal UI control with native interactive markup, application CSS, a local wrapper, copied source, or a third-party JSX component.
+
+The installer owns the target's `verify:personal-ui` command and appends that command to the npm `prebuild` lifecycle while preserving an existing prebuild command. Do not remove, rename, weaken, or bypass either script. A normal `npm run build` must fail before compilation when application provenance or managed source integrity fails.
+
+## Missing Capability Gate
+
+A missing export is a blocked library capability, not permission to improvise in the target project.
+
+1. Stop page composition for that capability.
+2. Add the reusable implementation and styles to the canonical `assets/react-kit/src/personal-ui/` source, with its source ownership marker and representative states.
+3. Export it from the canonical public barrel, register the runtime export, and bind its family, source files, aliases, and ownership marker in `assets/react-kit/component-manifest.json`.
+4. Add or update tests and the relevant gallery/example, synchronize all kit version declarations, and increment the kit version.
+5. Run `scripts/update_component_manifest_integrity.py`, validate the manifest, typecheck/build the source kit, reinstall that released source into the target, and only then compose the requested feature from the barrel export.
+
+Never edit the installed target `src/personal-ui/` as a local extension. There is no local-extension exception or verifier bypass. If the task does not authorize or permit a canonical addition, report the missing capability instead of shipping a lookalike.
 
 ## Fixed Implementation Contract
 
-- Default stack for a new app: React, TypeScript, Vite, `lucide-react`, and the bundled CSS tokens. Do not add another component library or Tailwind merely to recreate existing controls.
-- Keep control geometry and states owned by `personal-ui/styles.css`. Customize brands through the documented tokens, props, and visual slots instead of copying component selectors into page CSS.
-- Application CSS must not select `.pui-*` classes. Add a reusable prop or token to the source component when a supported variation is missing, then consume that API from the page.
+- Default stack for a new app: React, TypeScript, Vite, `lucide-react`, and the bundled CSS tokens. Do not add another component library or Tailwind to recreate controls.
+- Keep control geometry and states owned by `personal-ui/styles.css`. Application CSS must not select `.pui-*` classes or use reserved `data-pui-*` ownership markers. Add a documented canonical prop or token when a reusable variation is missing.
+- Do not use `eval`, `Function`, computed element factories, runtime HTML insertion, direct DOM event properties, or dynamic role/attribute mutation to construct interface controls outside React provenance.
 - Use Lucide icons through component props. Do not hand-author interface SVG paths.
-- Treat option, tab, menu-item, product, table-column, and table-row identities as data contracts. Values and IDs must be stable, unique, and non-empty within their owning collection unless the component explicitly documents a single empty form value. The bundled components fail fast on ambiguous identities; never silence that error with array indexes or generated-on-render keys.
-- Use `Select` for compact option sets and `Combobox` for searchable or large datasets. Both are bundled popover controls; do not substitute a raw HTML `select`, a browser-native popup, or a command menu. Use `placement="top"` where pagination or a viewport edge leaves no room below.
-- Use `SearchInput` as the single owner of its search and clear adornments. Do not add a second page-level clear icon, and keep desktop query fields within the provided toolbar width instead of stretching across all remaining space.
-- Every async command uses the bundled loading API so its dimensions remain stable and duplicate submissions are blocked. This includes buttons, sortable table headers, retries, and pagination targets.
-- Search and filter fields on server-backed data pages edit a draft only. Fetch on the explicit query button or Enter; pagination and sorting are explicit requests. Preserve the last successful rows when a later request fails.
-- Pinned and hidden table columns are developer configuration. Do not expose freeze-column controls to end users unless the product explicitly asks for them.
-- Keep data-table column widths, row heights, table height, and pagination placement stable while a request is loading. Pass the target row count to `loadingRows` whenever the requested page size is not the default.
-- Use the default inset `Drawer` for product workflows: it is a rounded desktop panel and a rounded-top mobile sheet. Use `variant="edge"` only when the product explicitly requires a flush full-height rail.
-- A product-family login keeps one company identity and one form implementation. Product identity changes through the left visual, accent, name, and supporting copy; do not fork the form markup per product.
-- Keep mobile behavior functional down to 320px. Use the provided mobile table renderer, drawer layout, overflow tooltip, and compact pagination instead of shrinking text.
-- Treat wide-screen geometry as part of component correctness. Fixed table columns and input adornment slots must not stretch or drift when their container grows; product-family accents must reach every interactive control within the login surface.
+- Treat option, tab, menu-item, product, table-column, and table-row identities as data contracts. Values and IDs must be stable, unique, and non-empty within their owning collection unless the component explicitly documents one empty form value.
+- Use `Select` for compact option sets and `Combobox`, `SearchableSelect`, or `AsyncSelect` for searchable or large datasets according to their public APIs. Do not substitute a raw HTML `select`, native popup, or locally built command menu.
+- Use `SearchInput` as the single owner of search and clear adornments. Do not add a second page-level clear icon; keep desktop query fields within the provided toolbar width.
+- Every async command uses the bundled loading API so dimensions stay stable and duplicate submissions are blocked. This includes query, retry, sort, and pagination actions.
+- Search and filter fields on server-backed pages edit draft state. Fetch on the explicit query button or Enter; pagination and sorting are explicit requests. Preserve the last successful rows when a later request fails.
+- Pinned and hidden table columns are developer configuration. Do not expose freeze-column controls unless the product explicitly requests them.
+- Keep table column widths, row heights, table height, and pagination placement stable while loading. Pass the target row count to `loadingRows` when the requested page size differs from the default.
+- Use the default inset `Drawer` for product workflows: a rounded desktop panel and rounded-top mobile sheet. Use `variant="edge"` only for an explicitly flush rail.
+- A product-family login keeps one company identity and one form implementation. Product identity changes through the visual slot, accent, name, and copy; never fork the form markup per product.
+- Keep behavior functional down to 320px. Use the bundled mobile table renderer, drawer layout, overflow tooltip, and compact pagination instead of shrinking text.
+- Treat wide-screen geometry as component correctness. Fixed columns and input adornment slots must not stretch or drift, and product-family accents must reach every interactive control in the login surface.
 
-## Verification
+## Mandatory Verification
 
-Run the target project's typecheck/build and its existing tests. Exercise the requested workflow, including loading, success, empty, error, retry, and validation states where applicable. For user-facing pages, inspect at 2560px, 1440px, 1024px, 736px, 360px, and 320px; verify no excessive outer whitespace, stretched fixed columns, drifting adornments, overlap, clipped text, page-level horizontal overflow, or control resizing during loading.
+Run the target project's typecheck/build and tests. Exercise loading, success, empty, error, retry, and validation states where applicable. Inspect user-facing pages at 2560px, 1440px, 1024px, 736px, 360px, and 320px for whitespace, stretching, adornment drift, overlap, clipping, horizontal overflow, and loading resize.
 
-Before handoff, run the verifier with one `--require-component` argument for every public component or pattern the feature promises. For an included pattern, require the pattern export itself; for a page composed directly, require each requested control such as `SearchInput`, `Select`, `Button`, `DataTable`, or `Drawer`. Do not mount an unused component merely to satisfy this check.
+After changing the canonical kit or enforcement tools, run the deterministic contract suite:
 
 ```powershell
-python scripts/verify_personal_ui.py --target <project-path> --require-component SearchInput --require-component Button --require-component DataTable --require-component Drawer
+python scripts/update_component_manifest_integrity.py
+python scripts/validate_component_manifest.py
+python scripts/test_strict_enforcement.py
+npm --prefix assets/react-kit run build
 ```
 
-The command must report every required export in `usedComponents`, no entry in `missingRequiredComponents`, no managed-source drift, and the same installed and bundled version. This is a release gate, not an optional diagnostic.
+Before handoff, run the verifier without relying on a manually supplied component list:
 
-When the requested feature deliberately adds or changes reusable source inside `src/personal-ui`, run the verifier with `--allow-local-extensions` and report every warned path. This flag never permits missing bundled files or other integrity failures.
+```powershell
+python scripts/verify_personal_ui.py --target <project-path>
+```
 
-Report which bundled components and patterns were used, any deliberate extension added to `src/personal-ui/`, and the verification commands that actually passed.
+The installed npm prebuild gate scans project source and verifies every managed file against the manifest's canonical SHA-256 map. It rejects deep or computed imports, unregistered exports, raw protected controls and interactive roles, reserved Personal UI classes or ownership markers, unapproved external JSX UI, uninspectable markup, and every missing, changed, linked, or extra managed source file. The Python verifier additionally compares installed support, registry, package scripts, dependencies, and canonical source. `--require-component` remains compatibility-only and cannot replace this scan; `--allow-unreferenced` is only for a just-installed kit before composition and must not be used for final handoff.
+
+A release passes only when `upToDate` is true, `errors` is empty, `componentManifest.valid` and `provenance.valid` are true, installed support files match, installed and bundled versions match, all `sourceDrift` lists are empty, and `usedComponents` reflects the components actually rendered or called. There is no warning-only drift mode and no bypass for locally reimplemented controls.
+
+Report the public Personal UI exports used, any canonical component addition and version increment completed before installation, and the verification commands that actually passed.

@@ -293,6 +293,7 @@ export function Field({ label, htmlFor, group = false, required, hint, error, ch
       <fieldset
         className={cx("pui-field", "pui-field--group", className)}
         data-invalid={invalid || undefined}
+        data-pui-owner="Field"
         aria-describedby={describedBy}
         aria-invalid={invalid || undefined}
       >
@@ -304,7 +305,7 @@ export function Field({ label, htmlFor, group = false, required, hint, error, ch
   }
 
   return (
-    <div className={cx("pui-field", className)} data-invalid={invalid || undefined}>
+    <div className={cx("pui-field", className)} data-invalid={invalid || undefined} data-pui-owner="Field">
       <label className="pui-label" htmlFor={fieldId}>{labelContent}</label>
       <FieldContext.Provider value={context}>{children}</FieldContext.Provider>
       {messages}
@@ -316,6 +317,7 @@ export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 
   startAdornment?: ReactNode;
   endAdornment?: ReactNode;
   invalid?: boolean;
+  "data-pui-owner"?: string;
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
@@ -330,6 +332,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
     "aria-disabled": ariaDisabled,
     "aria-describedby": ariaDescribedBy,
     "aria-invalid": ariaInvalid,
+    "data-pui-owner": owner = "Input",
     onChange,
     onClick,
     onKeyDown,
@@ -352,6 +355,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
         aria-disabled={ariaDisabled}
         aria-describedby={fieldControl.describedBy}
         aria-invalid={fieldControl.invalid}
+        data-pui-owner={owner}
         onChange={(event) => {
           if (interactionDisabled) {
             event.preventDefault();
@@ -380,7 +384,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
     );
   }
   return (
-    <span className={cx("pui-input-shell", isInvalid && "is-invalid", className)}>
+    <span className={cx("pui-input-shell", isInvalid && "is-invalid", className)} data-pui-owner={owner}>
       {startAdornment ? <span className="pui-input-shell__start">{startAdornment}</span> : null}
       <input
         {...props}
@@ -442,6 +446,7 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(fu
   return (
     <Input
       {...props}
+      data-pui-owner="PasswordInput"
       ref={ref}
       disabled={disabled}
       aria-disabled={ariaDisabled}
@@ -493,6 +498,7 @@ export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(functi
   return (
     <Input
       {...props}
+      data-pui-owner="SearchInput"
       ref={ref}
       type="search"
       value={value}
@@ -556,6 +562,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaHTMLAttributes<H
         aria-disabled={ariaDisabled}
         aria-describedby={fieldControl.describedBy}
         aria-invalid={fieldControl.invalid}
+        data-pui-owner="Textarea"
         onChange={(event) => {
           if (interactionDisabled) {
             event.preventDefault();
@@ -829,6 +836,7 @@ export function Select({
       data-placement={placement}
       data-has-leading={hasLeading || undefined}
       data-loading={loading || undefined}
+      data-pui-owner="Select"
     >
       <button
         ref={triggerRef}
@@ -1143,6 +1151,7 @@ export function Combobox({
       data-open={menuOpen || undefined}
       data-placement={placement}
       data-has-leading={hasLeading || undefined}
+      data-pui-owner="Combobox"
     >
       <button
         ref={triggerRef}
@@ -1205,7 +1214,7 @@ export function Checkbox({
     ? Boolean(required || ariaRequired === true || ariaRequired === "true")
     : Boolean(resolvedRequired || ariaRequired === true || ariaRequired === "true");
   return (
-    <label className={cx("pui-choice", className)}>
+    <label className={cx("pui-choice", className)} data-pui-owner="Checkbox">
       <input
         {...props}
         id={fieldControl.id}
@@ -1269,7 +1278,7 @@ export function Radio({
     resolvedRequired || ariaRequired === true || ariaRequired === "true",
   );
   return (
-    <label className={cx("pui-choice", className)}>
+    <label className={cx("pui-choice", className)} data-pui-owner="Radio">
       <input
         {...props}
         id={fieldControl.id}
@@ -1335,7 +1344,7 @@ export function Switch({
     ? Boolean(required || ariaRequired === true || ariaRequired === "true")
     : Boolean(resolvedRequired || ariaRequired === true || ariaRequired === "true");
   return (
-    <label className={cx("pui-switch", className)}>
+    <label className={cx("pui-switch", className)} data-pui-owner="Switch">
       <input
         {...props}
         id={fieldControl.id}
@@ -1420,6 +1429,7 @@ export function SegmentedControl<T extends string>({
       role="group"
       aria-label={ariaLabel}
       aria-disabled={disabled || undefined}
+      data-pui-owner="SegmentedControl"
     >
       {options.map((option) => (
         <button

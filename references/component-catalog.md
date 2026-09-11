@@ -1,36 +1,235 @@
 # Component Catalog
 
-All supported runtime exports come from `src/personal-ui/index.ts`. Read only the source files needed for the current feature.
+Personal UI v0.2.0 contains 118 source-backed families and preserves all 130 directory aliases from the approved preview. The family ID and aliases are discovery terms, not import paths. Application code must import the listed runtime exports from `src/personal-ui/index.ts`; it must never import a source file named in the final column directly.
 
-## Controls And Forms
+`assets/react-kit/component-manifest.json` is the machine-readable authority for this table. The manifest validator requires every family to resolve to real source files, every runtime export to exist in the barrel and registry, and every visual component or pattern to carry its registered source owner marker. Foundation families may be CSS or TypeScript artifacts without a runtime export.
 
-- `Button`, `IconButton`, `Spinner`, `Skeleton`: commands and loading states. Native `disabled`, focus-preserving `aria-disabled`, and `loading` all block pointer, keyboard, and implicit form submission through the command; loading content shares the original grid area so the control does not resize. Skeleton widths are capped by their container unless the caller deliberately overrides `max-width` in `style`.
-- `Input`, `PasswordInput`, `SearchInput`, `Textarea`: text controls with stable adornment slots. `SearchInput` renders exactly one clear action and keeps focus after clearing. Passing `aria-disabled="true"` keeps a text control and its internal actions discoverable by keyboard while making editing, clearing, and password-visibility changes inert; use native `disabled` when it should leave the tab order.
-- `Select`: custom select-only listbox for compact option sets. Pass `options`, `value`, `onValueChange`, and `ariaLabel`; choose `placement="top"` or `placement="bottom"` as the preferred side. Each option `value` must be unique. One empty-string option is allowed for a real empty form value, but duplicate or whitespace-only values fail fast. Choosing the already-controlled value closes the menu and restores focus without emitting `onValueChange`, so it cannot accidentally repeat a request. It includes rounded menu styling, selected/check slots, keyboard navigation, typeahead, and focus restoration. Its fixed surface is portaled to `document.body`, escapes ancestor clipping, preserves locally computed `--pui-*` tokens, follows dynamic ancestor attributes and media-driven token changes, flips vertically when useful, clamps on both axes, and scrolls within the available viewport height. A dataset that mixes options with and without `leading` keeps one stable leading column in the trigger and list.
-- `Combobox`: searchable listbox for large datasets such as countries, people, or organizations. Option values follow the same unique-value contract as `Select`, including support for at most one empty-string form value and rejection of whitespace-only values. Choosing the controlled value closes without emitting `onValueChange`. Options may include leading icons/flags and supporting descriptions; mixed leading content keeps a stable column. Its fixed panel uses the same body Portal, live token preservation, ancestor-clipping escape, viewport flip/clamp, and height containment as `Select`. The closed trigger exposes `combobox` and required semantics; while open, the focused search input becomes the single combobox. Opening moves focus to that search field, Escape restores the trigger, and Tab or Shift+Tab closes the panel and advances to the adjacent focus target without leaving an enclosing modal.
-- `Field`, `Checkbox`, `Radio`, `Switch`, `SegmentedControl`: labels, help/error text, and choices. A normal `Field` owns exactly one control and requires `htmlFor`. For a Radio or Checkbox set, pass `group` so `Field` renders `fieldset`/`legend`, gives each choice a unique generated ID, and associates the shared hint or error with the group. Radios without an explicit `name` inherit one stable name from their owning grouped `Field`, so required native validation means “choose one” rather than “choose every radio”; an explicit shared business `name` is still preserved. A required group includes the visible `必填` marker in its legend. Radio keeps native group validation, while Checkbox and Switch do not incorrectly turn that into “every item is required.” Validate a required Checkbox group in the owning form and render the result through `Field error`; an explicitly required individual Checkbox or Switch still uses native validation. `aria-disabled="true"` leaves Checkbox, Radio, and Switch focusable but blocks pointer, label, and Space-key state changes as well as their change handlers. Every `SegmentedControl` option value must be unique, with at most one empty-string form value; ambiguity fails fast. When options are non-empty, its controlled `value` must match one of them or the component fails fast instead of silently rendering an impossible unselected state. Activating its current value does not emit `onValueChange`. `SegmentedControl` supports always-full-width and mobile-only full-width layout through `fill`.
-- `Tag`: capsule labels with optional stable leading icon/avatar and optional remove action. Selection changes styling, not geometry. When a focused remove button synchronously removes its Tag, focus advances to the next available control in the same active modal boundary, then falls back to the previous control; an explicit focus move made by the caller is preserved.
-- `DateField`: `year`, `month`, `day`, `minute`, `second`, `time`, and `time-second` precision modes. It wraps native `number`, `month`, `date`, `datetime-local`, and `time` inputs; picker appearance, locale formatting, and popup behavior therefore remain browser- and operating-system-controlled.
+## Source-Backed Inventory
 
-Read `primitives.tsx`, `forms.tsx`, and `date-field.tsx` when these APIs need adaptation.
+Source names below are relative to `assets/react-kit/src/personal-ui/`; duplicate basenames are collapsed only to keep the table readable.
 
-## Navigation And Feedback
+### Foundations
 
-- `Tabs`, `Breadcrumbs`, `Pagination`: page and local navigation. Every tab and breadcrumb item requires a stable, unique, non-empty business `id`; duplicates and blank IDs fail fast. Tabs do not emit `onValueChange` when the current tab is activated again. If the controlled tab becomes disabled, is removed, or is unknown, selection and focus move together to the next enabled item and the reconciled value is reported to the owner once, without stealing focus after the user has already left the tablist. `onPageChange` reports whether a page number, previous arrow, or next arrow initiated the request. Pass `loadingPage` and that trigger as `loadingTarget` while a server page request is pending so only the exact clicked control keeps its size and shows progress. When `loadingTarget` is omitted, the automatic fallback uses the numbered target on a wide paginator and its adjacent arrow in compact mode. A stray `loadingPageSize` value is ignored unless a valid page-size value and handler actually render that control, so it cannot silently lock the paginator without a visible loading target.
-- `Alert`, `EmptyState`, `Progress`, `RetryButton`, `ToastProvider`, `useToast`: inline and transient feedback. Toast supports top-center, top-right, and bottom-right placement; rounded or pill shape; optional close and optional countdown. Toast actions may be asynchronous and use the built-in pending state to block duplicate activation; a persistent Toast is always given a dismissing action or close control.
-- `Tooltip`, `OverflowText`, `Dialog`, `Drawer`, `DropdownMenu`: supplementary text and overlays. `OverflowText` adds a tooltip only when its text is actually truncated and remeasures after element resizing, ancestor typography changes, media changes, and late font loading. Its document-level style and font observers are shared across instances, so large tables do not install one global observer per cell; disconnected sources are pruned during mutation delivery so an interrupted or immediate bulk unmount cannot retain observers. Tooltip's non-interactive bubble is portaled to `document.body`, flips when its preferred side does not fit, stays inside a 12px viewport margin as its trigger moves or resizes, remains open while hovered, closes on Escape, and attaches its description to every actual DOM focus target, including programmatically focusable descendants with a negative `tabIndex`, even when a custom child does not forward ARIA props. Dialog, Drawer, Tooltip, and Toast portals inherit local `--pui-*` tokens and keep them synchronized when any source ancestor attribute, active media query, stylesheet, or font-loading state changes. Pass `fill` when Tooltip wraps a full-width control so its wrappers preserve the control's container width. Every dropdown item `id` must be stable, unique, and non-empty; duplicates and blank IDs fail fast, and a menu with no enabled commands keeps its trigger disabled. Dropdown is not portaled: it remains absolutely positioned inside the dropdown root, honors start/end alignment, clamps horizontally, flips above its trigger when possible, and otherwise shifts vertically against the intersection of viewport and clipping-ancestor bounds. Its roving-focus changes use `preventScroll`, while Tab or Escape closes the menu and restores the trigger, so clipped containers do not jump and an enclosing modal keeps focus contained. Drawer defaults to an inset rounded desktop panel and becomes a rounded-top mobile sheet with fixed header/actions and independently scrolling content. `variant="edge"` is available only for deliberately flush rails.
+| Family | Directory aliases | Public exports | Source backing |
+|---|---|---|---|
+| `color` | `semantic-colors` | `ThemeProvider` | `layout.tsx` + `layout-actions-display.css` |
+| `typography` | `typography` | None (foundation artifact) | `styles.css` |
+| `spacing` | `spacing` | None (foundation artifact) | `styles.css` |
+| `radius` | `radius` | None (foundation artifact) | `styles.css` |
+| `surface` | `borders-shadows` | None (foundation artifact) | `styles.css` |
+| `icons` | `icons` | None (foundation artifact) | `primitives.tsx` + `styles.css` |
+| `motion` | `motion` | None (foundation artifact) | `styles.css` |
+| `z-index` | `z-index` | None (foundation artifact) | `styles.css` |
+| `density` | `density` | None (foundation artifact) | `styles.css` |
 
-Read `navigation.tsx`, `feedback.tsx`, and `overlays.tsx` for these families.
+### Layout
 
-## Data
+| Family | Directory aliases | Public exports | Source backing |
+|---|---|---|---|
+| `responsive` | `breakpoints-grid` | `Grid` | `layout.tsx` + `layout-actions-display.css` |
+| `responsive-visibility` | `responsive-visibility` | `ResponsiveVisibility` | `layout.tsx` + `layout-actions-display.css` |
+| `layout` | `layout-primitives` | `Box`, `Stack`, `Inline` | `layout.tsx` + `layout-actions-display.css` |
+| `divider` | `divider` | `Divider` | `layout.tsx` + `layout-actions-display.css` |
+| `scroll` | `scroll-area` | `ScrollArea` | `layout.tsx` + `layout-actions-display.css` |
+| `resizable` | `resizable-panels` | `ResizablePanels` | `data-extra.tsx` + `extended.css` |
+| `sticky` | `sticky-header-action-bar` | `StickyHeaderActionBar` | `layout.tsx` + `layout-actions-display.css` |
+| `collapse` | `collapse` | `Collapse` | `layout.tsx` + `layout-actions-display.css` |
+| `aspect` | `aspect-ratio` | `AspectRatio` | `layout.tsx` + `layout-actions-display.css` |
 
-- `DataTable<T>`: developer-defined columns, sorting, loading skeleton, empty state, retained-data error state, developer-pinned columns, and optional mobile row rendering. Every column `id` must be stable, unique, and non-empty, and at least one column must remain visible; an all-hidden developer configuration fails fast instead of rendering a blank table. Every value returned by `rowKey` must likewise be stable, unique, and non-empty within the current rows; do not use an array index or a generated-on-render value. Violations fail fast before either renderer runs. Use `width` for compact fixed columns and `minWidth` for columns that may absorb remaining horizontal space. Plain string/number headers and cells truncate within their column and expose the full value through `title`; complex nodes wrap within the same boundary. Pinned columns automatically become ordinary scrolling columns when the two pinned regions cannot fit without overlap. Pass `loadingSortColumnId` during remote sorting and pass the requested page's row count as `loadingRows`; only a visible sortable column with an `onSort` handler enters the sort-loading state. The component caches the most recent non-empty, non-loading height independently for the desktop and mobile renderers and uses it as the loading surface's minimum height. Loading therefore never collapses the last successful table, while a larger requested row count can expand the skeleton to its final height before data arrives. Entering the empty state clears the cache. Skeleton DOM is capped at 100 rows, while larger ready tables retain their measured minimum surface height until loading ends.
-- `MemberManagementPage`: complete server-backed example with draft filters, explicit query, stable loading, request cancellation, applied filters, empty/error/retry, pagination, and mobile rows. During a request, the owning query, sort, page, page-size, or retry target shows its built-in loader while every other data-request control exposes a consistent disabled state; the active target retains focus and control geometry.
+### Utilities
 
-Read `data-table.tsx` and `patterns/member-management-page.tsx`. Use the pattern directly when its domain fits; otherwise preserve its request-state model while composing the generic table.
+| Family | Directory aliases | Public exports | Source backing |
+|---|---|---|---|
+| `focus` | `focus-visible` | None (foundation artifact) | `layout-actions-display.css` |
+| `focus-trap` | `focus-trap` | `FocusTrap` | `layout.tsx` + `layout-actions-display.css` |
+| `visually-hidden` | `visually-hidden` | `VisuallyHidden` | `layout.tsx` + `layout-actions-display.css` |
+| `drag` | `drag-drop` | `DragDrop` | `data-extra.tsx` + `extended.css` |
+| `sortable` | `sortable` | `SortableList` | `data-extra.tsx` + `extended.css` |
+| `keyboard` | `keyboard-shortcut` | `KeyboardShortcut` | `layout.tsx` + `layout-actions-display.css` |
+| `clipboard` | `clipboard` | `ClipboardButton` | `actions.tsx` + `layout-actions-display.css` |
+| `overflow` | `text-truncation` | `OverflowText`, `ExpandableText` | `overlays.tsx` + `styles.css` + `data-extra.tsx` + `extended.css` |
+| `portal` | `portal` | `Portal` | `layout.tsx` + `layout-actions-display.css` |
 
-## Authentication
+### Actions
 
-- `FamilyLoginPage`: one stable company form with product-specific left visual, accent, name, and copy. The company mark is rendered exactly once in the form panel, so inline SVG marks with gradients, masks, or clip-path IDs cannot collide with a duplicated copy. Every `product.id` must be stable, unique, and non-empty; duplicates and blank IDs fail fast. Passing `products=[]` renders a non-interactive “登录暂不可用” Alert instead of a broken form. Invalid submission focuses the first invalid credential field, while the inline error remains associated through `Field`. The product visual is a real `ReactNode` slot for an image or illustration asset; the slot constrains oversized content, but the supplied visual should still be responsive and must not depend on escaping its container.
+| Family | Directory aliases | Public exports | Source backing |
+|---|---|---|---|
+| `button` | `button` | `Button` | `primitives.tsx` + `styles.css` |
+| `link` | `link` | `Link` | `actions.tsx` + `layout-actions-display.css` |
+| `icon-button` | `icon-button` | `IconButton` | `primitives.tsx` + `styles.css` |
+| `button-group` | `button-group` | `ButtonGroup` | `actions.tsx` + `layout-actions-display.css` |
+| `split-button` | `split-button` | `SplitButton` | `actions.tsx` + `layout-actions-display.css` |
+| `toggle-button` | `toggle-button` | `ToggleButton` | `actions.tsx` + `layout-actions-display.css` |
+| `toolbar` | `toolbar-filter-bar` | `Toolbar` | `actions.tsx` + `layout-actions-display.css` |
+| `filter-bar` | `filter-bar` | `FilterBar` | `actions.tsx` + `layout-actions-display.css` |
 
-Read `patterns/family-login-page.tsx`. Do not duplicate the form for each product.
+### Inputs
+
+| Family | Directory aliases | Public exports | Source backing |
+|---|---|---|---|
+| `form` | `form` | `Form` | `inputs-extra.tsx` + `inputs-extra.css` |
+| `field` | `field` | `Field` | `forms.tsx` + `styles.css` |
+| `text-input` | `text-input` | `Input`, `PasswordInput` | `forms.tsx` + `styles.css` |
+| `search-input` | `search-input` | `SearchInput` | `forms.tsx` + `styles.css` |
+| `textarea` | `textarea` | `Textarea` | `forms.tsx` + `styles.css` |
+| `number` | `number-input` | `NumberInput` | `inputs-extra.tsx` + `inputs-extra.css` |
+| `otp` | `otp-input` | `OtpInput` | `inputs-extra.tsx` + `inputs-extra.css` |
+| `upload` | `file-upload` | `FileUpload` | `inputs-extra.tsx` + `inputs-extra.css` |
+| `rich-text` | `rich-text-editor` | `RichTextEditor` | `inputs-extra.tsx` + `inputs-extra.css` |
+| `code-editor` | `code-editor` | `CodeEditor` | `inputs-extra.tsx` + `inputs-extra.css` |
+| `inline-edit` | `inline-edit` | `InlineEdit` | `inputs-extra.tsx` + `inputs-extra.css` |
+
+### Selection
+
+| Family | Directory aliases | Public exports | Source backing |
+|---|---|---|---|
+| `checkbox` | `checkbox` | `Checkbox` | `forms.tsx` + `styles.css` |
+| `radio` | `radio` | `Radio` | `forms.tsx` + `styles.css` |
+| `switch` | `switch` | `Switch` | `forms.tsx` + `styles.css` |
+| `segmented` | `segmented-control` | `SegmentedControl` | `forms.tsx` + `styles.css` |
+| `select` | `select`, `searchable-select`, `async-select` | `Select`, `SearchableSelect`, `AsyncSelect` | `forms.tsx` + `styles.css` + `inputs-extra.tsx` + `inputs-extra.css` |
+| `combobox` | `combobox`, `autocomplete` | `Combobox`, `Autocomplete` | `forms.tsx` + `styles.css` + `inputs-extra.tsx` + `inputs-extra.css` |
+| `multi-select` | `multi-select` | `MultiSelect` | `inputs-extra.tsx` + `inputs-extra.css` |
+| `tag-input` | `tag-input` | `TagInput` | `inputs-extra.tsx` + `inputs-extra.css` |
+| `cascader` | `cascader` | `Cascader` | `inputs-extra.tsx` + `inputs-extra.css` |
+| `tree-select` | `tree-select` | `TreeSelect` | `inputs-extra.tsx` + `inputs-extra.css` |
+| `transfer` | `transfer` | `Transfer` | `inputs-extra.tsx` + `inputs-extra.css` |
+
+### Value And Date
+
+| Family | Directory aliases | Public exports | Source backing |
+|---|---|---|---|
+| `slider` | `slider` | `Slider` | `value-controls.tsx` + `inputs-extra.css` |
+| `rating` | `rating` | `Rating` | `value-controls.tsx` + `inputs-extra.css` |
+| `color-picker` | `color-picker` | `ColorPicker` | `value-controls.tsx` + `inputs-extra.css` |
+| `date-time` | `date-time-picker` | `DateField`, `DateRangeField`, `TimezoneSelect`, `DEFAULT_TIMEZONE_OPTIONS` | `date-field.tsx` + `styles.css` + `value-controls.tsx` + `inputs-extra.css` |
+
+### Navigation
+
+| Family | Directory aliases | Public exports | Source backing |
+|---|---|---|---|
+| `app-navigation` | `top-nav`, `side-nav`, `bottom-nav` | `AppNavigation`, `TopNavigation`, `SideNavigation`, `BottomNavigation` | `navigation-extra.tsx` + `extended.css` |
+| `breadcrumb` | `breadcrumb` | `Breadcrumbs` | `navigation.tsx` + `styles.css` |
+| `tabs` | `tabs` | `Tabs` | `navigation.tsx` + `styles.css` |
+| `menu` | `menu`, `dropdown-menu`, `context-menu` | `Menu`, `DropdownMenu`, `ContextMenu` | `navigation-extra.tsx` + `extended.css` + `overlays.tsx` + `styles.css` + `overlays-extra.tsx` |
+| `pagination` | `pagination` | `Pagination` | `navigation.tsx` + `styles.css` |
+| `load-more` | `load-more` | `LoadMore` | `navigation-extra.tsx` + `extended.css` |
+| `infinite-scroll` | `infinite-scroll` | `InfiniteScroll` | `navigation-extra.tsx` + `extended.css` |
+| `stepper` | `stepper` | `Stepper` | `navigation-extra.tsx` + `extended.css` |
+| `command` | `command-palette` | `CommandPalette`, `useCommandPaletteShortcut` | `navigation-extra.tsx` + `extended.css` |
+| `anchor` | `anchor-nav` | `AnchorNavigation` | `navigation-extra.tsx` + `extended.css` |
+
+### Display
+
+| Family | Directory aliases | Public exports | Source backing |
+|---|---|---|---|
+| `list` | `list`, `virtual-list` | `List`, `VirtualList` | `display.tsx` + `layout-actions-display.css` + `data-extra.tsx` + `extended.css` |
+| `description` | `description-list` | `DescriptionList` | `display.tsx` + `layout-actions-display.css` |
+| `card` | `card` | `Card` | `display.tsx` + `layout-actions-display.css` |
+| `tree` | `tree` | `Tree` | `data-extra.tsx` + `extended.css` |
+| `accordion` | `accordion` | `Accordion` | `display.tsx` + `layout-actions-display.css` |
+| `timeline` | `timeline` | `Timeline` | `display.tsx` + `layout-actions-display.css` |
+| `calendar` | `calendar` | `Calendar` | `data-extra.tsx` + `extended.css` |
+| `scheduler` | `scheduler` | `Scheduler` | `data-extra.tsx` + `extended.css` |
+| `statistic` | `statistic` | `Statistic` | `display.tsx` + `layout-actions-display.css` |
+| `chart` | `chart` | `BarChart` | `data-extra.tsx` + `extended.css` |
+| `code-block` | `code-block` | `CodeBlock` | `display.tsx` + `layout-actions-display.css` |
+| `meter` | `meter` | `Meter` | `display.tsx` + `layout-actions-display.css` |
+
+### Identity
+
+| Family | Directory aliases | Public exports | Source backing |
+|---|---|---|---|
+| `avatar` | `avatar` | `Avatar`, `AvatarGroup` | `display.tsx` + `layout-actions-display.css` |
+| `tag` | `tag` | `Tag` | `primitives.tsx` + `styles.css` |
+| `badge` | `badge` | `Badge` | `display.tsx` + `layout-actions-display.css` |
+| `status` | `status` | `StatusIndicator` | `display.tsx` + `layout-actions-display.css` |
+
+### Content
+
+| Family | Directory aliases | Public exports | Source backing |
+|---|---|---|---|
+| `media` | `media` | `Media` | `display.tsx` + `layout-actions-display.css` |
+| `attachment` | `attachment` | `Attachment` | `display.tsx` + `layout-actions-display.css` |
+| `gallery` | `gallery` | `Gallery` | `display.tsx` + `layout-actions-display.css` |
+| `carousel` | `carousel` | `Carousel` | `data-extra.tsx` + `extended.css` |
+
+### Data Table
+
+| Family | Directory aliases | Public exports | Source backing |
+|---|---|---|---|
+| `data-table` | `data-table`, `tree-table` | `DataTable`, `TreeTable` | `data-table.tsx` + `styles.css` + `data-extra.tsx` + `extended.css` |
+
+### Feedback
+
+| Family | Directory aliases | Public exports | Source backing |
+|---|---|---|---|
+| `inline-message` | `inline-message` | `InlineMessage` | `feedback-extra.tsx` + `extended.css` |
+| `alert` | `alert` | `Alert` | `feedback.tsx` + `styles.css` |
+| `banner` | `banner` | `Banner` | `feedback-extra.tsx` + `extended.css` |
+| `toast` | `toast-snackbar` | `ToastProvider`, `useToast` | `feedback.tsx` + `styles.css` |
+| `spinner` | `spinner` | `Spinner` | `primitives.tsx` + `styles.css` |
+| `progress` | `progress` | `Progress`, `ProgressRing` | `feedback.tsx` + `styles.css` + `feedback-extra.tsx` + `extended.css` |
+| `skeleton` | `skeleton` | `Skeleton` | `primitives.tsx` + `styles.css` |
+| `result` | `empty-state`, `error-state` | `EmptyState`, `ErrorState`, `NoResults`, `RetryButton`, `AsyncAction` | `feedback.tsx` + `styles.css` + `feedback-extra.tsx` + `extended.css` |
+| `validation-summary` | `validation-summary` | `ValidationSummary` | `feedback-extra.tsx` + `extended.css` |
+
+### Overlays
+
+| Family | Directory aliases | Public exports | Source backing |
+|---|---|---|---|
+| `tooltip` | `tooltip` | `Tooltip` | `overlays.tsx` + `styles.css` |
+| `popover` | `popover` | `Popover` | `overlays-extra.tsx` + `extended.css` |
+| `hover-card` | `hover-card` | `HoverCard` | `overlays-extra.tsx` + `extended.css` |
+| `dialog` | `dialog`, `confirm-dialog` | `Dialog`, `ConfirmDialog` | `overlays.tsx` + `styles.css` + `overlays-extra.tsx` + `extended.css` |
+| `popconfirm` | `popconfirm` | `Popconfirm` | `overlays-extra.tsx` + `extended.css` |
+| `drawer` | `drawer-sheet` | `Drawer` | `overlays.tsx` + `styles.css` |
+| `lightbox` | `lightbox` | `Lightbox` | `overlays-extra.tsx` + `extended.css` |
+| `tour` | `guided-tour` | `GuidedTour` | `overlays-extra.tsx` + `extended.css` |
+
+### Page Patterns
+
+| Family | Directory aliases | Public exports | Source backing |
+|---|---|---|---|
+| `authentication` | `authentication` | `AuthenticationPage`, `FamilyLoginPage` | `standard-pages.tsx` + `extended.css` + `family-login-page.tsx` + `styles.css` |
+| `list-filter` | `list-management`, `search-filter-page` | `PageHeading`, `ListManagementPage`, `SearchFilterPage`, `MemberManagementPage` | `standard-pages.tsx` + `extended.css` + `member-management-page.tsx` + `styles.css` |
+| `create-edit` | `create-edit-page` | `CreateEditPage` | `standard-pages.tsx` + `extended.css` |
+| `detail` | `detail-page` | `DetailPage` | `standard-pages.tsx` + `extended.css` |
+| `settings` | `settings-page` | `SettingsPage` | `standard-pages.tsx` + `extended.css` |
+| `wizard` | `wizard-flow` | `WizardFlow` | `standard-pages.tsx` + `extended.css` |
+| `master-detail` | `master-detail` | `MasterDetail` | `standard-pages.tsx` + `extended.css` |
+| `import-export` | `import-export-page` | `ImportExportPage` | `standard-pages.tsx` + `extended.css` |
+| `status-page` | `empty-error-page` | `StatusPage` | `standard-pages.tsx` + `extended.css` |
+
+## Selection And Form Contracts
+
+- Use `Select` for compact options, `SearchableSelect` or `Combobox` for local searchable data, `AsyncSelect` for remote results, and `Autocomplete` when free text plus suggestions is intentional. Use `MultiSelect`, `TagInput`, `Cascader`, `TreeSelect`, or `Transfer` for their explicit selection models instead of adapting a native select.
+- `Input`, `PasswordInput`, `SearchInput`, and `Textarea` own their adornment geometry. `SearchInput` renders its own search and clear actions. Do not add another clear button outside it.
+- `Field` owns labels, required state, hints, errors, and grouped choice semantics. `Form` is the public form root. The verifier rejects an application-owned native form.
+- Every option, tab, menu item, product, table column, tree node, and row uses a stable, unique business identity. Do not use array positions or values generated during render.
+- `DateField` covers year, month, day, minute, second, time, and time-with-seconds precision. `DateRangeField` owns ranges; `TimezoneSelect` owns timezone choice.
+- `Tag` is a stable capsule label: selected state changes style, not geometry. Use `Badge` for a compact count/indicator and `StatusIndicator` for status semantics.
+
+## Async And Data Contracts
+
+- Commands that wait for data use the component's `loading` or pending API. `AsyncAction` and `RetryButton` cover reusable async commands; do not replace button content manually and cause width changes.
+- Server-backed filters edit draft values. The explicit query button or Enter applies them; sorting and pagination are explicit requests. Preserve the last successful data while a later request is pending or fails.
+- `DataTable` owns desktop columns, sorting, loading skeletons, empty/error states, developer-pinned and hidden columns, and mobile row rendering. Pass the requested page size as `loadingRows` so its surface remains stable.
+- `VirtualList` is for large flat collections; `Tree` and `TreeTable` own hierarchical data. `LoadMore` and `InfiniteScroll` are distinct fetch models and should not be combined on one surface.
+- Use `OverflowText` for a tooltip only when text is actually truncated. Use `ExpandableText` when the user should deliberately reveal longer content.
+
+## Navigation, Feedback, And Overlay Contracts
+
+- `Pagination` owns page, previous, next, page-size, and per-target loading geometry. `Tabs`, navigation variants, menus, steppers, commands, and anchors keep selection/focus state in their public APIs.
+- `ToastProvider` and `useToast` support top-center, top-right, and bottom-right placement, rounded or pill shape, optional close, optional countdown, and async actions. A persistent toast must retain a dismissal path.
+- `Alert`, `InlineMessage`, `Banner`, and `ValidationSummary` have different scopes. Use result components for empty, error, and no-results states rather than restyling alerts into page placeholders.
+- `Tooltip`, `Popover`, `HoverCard`, `Dialog`, `Drawer`, `ConfirmDialog`, `Popconfirm`, `ContextMenu`, `Lightbox`, and `GuidedTour` own their focus, dismissal, and positioning behavior. Do not reproduce an overlay with application event handlers.
+- `Drawer` defaults to an inset rounded desktop panel and rounded-top mobile sheet. Use `variant="edge"` only for a deliberately flush rail.
+
+## Page Pattern Contracts
+
+- `FamilyLoginPage` keeps one company form implementation while product visual, accent, name, and supporting copy vary. `AuthenticationPage` is the general authentication shell.
+- `MemberManagementPage` is the complete server-data reference for draft filtering, explicit query, request cancellation, sorting, pagination, retained-data errors, retry, and mobile rendering.
+- Use `ListManagementPage`, `SearchFilterPage`, `CreateEditPage`, `DetailPage`, `SettingsPage`, `WizardFlow`, `MasterDetail`, `ImportExportPage`, and `StatusPage` as the owning shells for those workflows. Customize their documented slots and callbacks; do not copy their markup into a local page variant.
+
+When a requested family or behavior is absent from this inventory, follow the canonical extension workflow in [integration](integration.md). Do not create a target-local substitute.

@@ -74,7 +74,7 @@ export function FamilyLoginPage({
 
   if (!product) {
     return (
-      <div className="pui-auth-unavailable pui-root">
+      <div className="pui-auth-unavailable pui-root" data-pui-owner="FamilyLoginPage">
         <Alert tone="danger" title="登录暂不可用">
           当前没有可用的产品配置，请联系管理员。
         </Alert>
@@ -116,7 +116,7 @@ export function FamilyLoginPage({
   };
 
   return (
-    <div className="pui-auth pui-root" style={accentStyle}>
+    <div className="pui-auth pui-root" style={accentStyle} data-pui-owner="FamilyLoginPage">
       <section className="pui-auth__visual" aria-labelledby={productTitleId}>
         <div className="pui-auth__scene">{product.visual}</div>
         <div className="pui-auth__product-copy">

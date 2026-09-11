@@ -239,7 +239,7 @@ export function DataTable<T>({
 
   if (empty) {
     return (
-      <div className={cx("pui-data-table", "pui-data-table--empty", className)} data-state="empty">
+      <div className={cx("pui-data-table", "pui-data-table--empty", className)} data-state="empty" data-pui-owner="DataTable">
         <EmptyState
           icon={<SearchX aria-hidden="true" />}
           title={emptyTitle}
@@ -251,7 +251,7 @@ export function DataTable<T>({
   }
 
   return (
-    <div className={cx("pui-data-table", mobileRow && "pui-data-table--has-mobile", className)} data-state={state} aria-busy={busy || undefined}>
+    <div className={cx("pui-data-table", mobileRow && "pui-data-table--has-mobile", className)} data-state={state} aria-busy={busy || undefined} data-pui-owner="DataTable">
       {state === "error" ? (
         <Alert
           tone="danger"

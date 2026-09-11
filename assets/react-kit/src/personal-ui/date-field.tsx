@@ -27,6 +27,7 @@ export const DateField = forwardRef<HTMLInputElement, DateFieldProps>(function D
   return (
     <Input
       {...props}
+      data-pui-owner="DateField"
       ref={ref}
       type={config.type}
       step={config.step}

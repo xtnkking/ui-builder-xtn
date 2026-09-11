@@ -384,6 +384,7 @@ export function MemberManagementPage({
       aria-labelledby={titleId}
       aria-busy={requesting || undefined}
       data-request-action={requesting ? requestAction : undefined}
+      data-pui-owner="MemberManagementPage"
     >
       <header className="pui-page-header">
         <div>

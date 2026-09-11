@@ -9,16 +9,32 @@ import json
 import os
 import re
 import shutil
+import subprocess
 import sys
 import tempfile
 import uuid
 from pathlib import Path
+
+from validate_component_manifest import validate_component_manifest
 
 
 SKILL_ROOT = Path(__file__).resolve().parent.parent
 ASSET_ROOT = SKILL_ROOT / "assets" / "react-kit"
 SOURCE_KIT = ASSET_ROOT / "src" / "personal-ui"
 REGISTRY_PATH = ASSET_ROOT / "registry.json"
+COMPONENT_MANIFEST_PATH = ASSET_ROOT / "component-manifest.json"
+PROVENANCE_TOOL_PATH = ASSET_ROOT / "tools" / "personal-ui" / "verify-provenance.mjs"
+INSTALLED_TOOL_ROOT = Path("tools") / "personal-ui"
+PROVENANCE_SCRIPT_NAME = "verify:personal-ui"
+PROVENANCE_SCRIPT_COMMAND = (
+    "node tools/personal-ui/verify-provenance.mjs --target . "
+    "--source-root src/personal-ui --manifest tools/personal-ui/component-manifest.json"
+)
+CANONICAL_SOURCE_PROVENANCE_SCRIPT_COMMAND = (
+    "node tools/personal-ui/verify-provenance.mjs --target . "
+    "--source-root src/personal-ui --manifest component-manifest.json"
+)
+PREBUILD_GATE_COMMAND = f"npm run {PROVENANCE_SCRIPT_NAME}"
 IGNORED_PARTS = {"node_modules", "dist", ".git", "__pycache__"}
 SEMVER = re.compile(
     r"^(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)"
@@ -102,7 +118,44 @@ def load_registry() -> dict[str, object]:
         raise ValueError(
             "Personal UI registry dependencies must use non-empty string names and versions"
         )
+    manifest_report = validate_component_manifest(
+        COMPONENT_MANIFEST_PATH,
+        kit_root=ASSET_ROOT,
+        registry_path=REGISTRY_PATH,
+    )
+    manifest_errors = manifest_report.get("errors", [])
+    if manifest_errors:
+        raise ValueError(
+            "Invalid Personal UI component manifest: "
+            + "; ".join(str(error) for error in manifest_errors)
+        )
+    if is_link_like(PROVENANCE_TOOL_PATH) or not PROVENANCE_TOOL_PATH.is_file():
+        raise ValueError(
+            f"Personal UI provenance verifier is missing or link-like: {PROVENANCE_TOOL_PATH}"
+        )
+    node = shutil.which("node")
+    if node is None:
+        raise ValueError("Node.js is required to install the Personal UI provenance verifier")
+    syntax_check = subprocess.run(
+        [node, "--check", str(PROVENANCE_TOOL_PATH)],
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        check=False,
+    )
+    if syntax_check.returncode != 0:
+        raise ValueError(
+            "Personal UI provenance verifier has invalid JavaScript syntax: "
+            + (syntax_check.stderr.strip() or syntax_check.stdout.strip())
+        )
     return registry
+
+
+def support_files() -> dict[Path, Path]:
+    return {
+        Path("component-manifest.json"): COMPONENT_MANIFEST_PATH,
+        Path("verify-provenance.mjs"): PROVENANCE_TOOL_PATH,
+    }
 
 
 def is_recognized_personal_ui_registry(value: object) -> bool:
@@ -279,6 +332,53 @@ def plan_dependencies(
     return updated, {"add": additions, "preserve": preserved}
 
 
+def plan_build_gate(
+    package: dict[str, object],
+) -> tuple[dict[str, object], dict[str, object]]:
+    updated = copy.deepcopy(package)
+    scripts_value = updated.get("scripts", {})
+    if not isinstance(scripts_value, dict):
+        raise ValueError("package.json field 'scripts' must be an object")
+    scripts = copy.deepcopy(scripts_value)
+
+    existing_verifier = scripts.get(PROVENANCE_SCRIPT_NAME)
+    if existing_verifier is not None and not isinstance(existing_verifier, str):
+        raise ValueError(
+            f"package.json script {PROVENANCE_SCRIPT_NAME!r} must be a string"
+        )
+    if existing_verifier not in (
+        None,
+        PROVENANCE_SCRIPT_COMMAND,
+        CANONICAL_SOURCE_PROVENANCE_SCRIPT_COMMAND,
+    ):
+        raise ValueError(
+            f"package.json script {PROVENANCE_SCRIPT_NAME!r} conflicts with the mandatory Personal UI gate"
+        )
+    scripts[PROVENANCE_SCRIPT_NAME] = PROVENANCE_SCRIPT_COMMAND
+
+    existing_prebuild = scripts.get("prebuild")
+    if existing_prebuild is not None and not isinstance(existing_prebuild, str):
+        raise ValueError("package.json script 'prebuild' must be a string")
+    prebuild_parts = (
+        [part.strip() for part in existing_prebuild.split("&&")]
+        if existing_prebuild
+        else []
+    )
+    if PREBUILD_GATE_COMMAND not in prebuild_parts:
+        scripts["prebuild"] = (
+            f"{existing_prebuild} && {PREBUILD_GATE_COMMAND}"
+            if existing_prebuild
+            else PREBUILD_GATE_COMMAND
+        )
+
+    updated["scripts"] = scripts
+    return updated, {
+        "verifyScript": PROVENANCE_SCRIPT_COMMAND,
+        "prebuild": scripts["prebuild"],
+        "preservedPrebuild": existing_prebuild,
+    }
+
+
 def file_plan(
     planned_destinations: set[Path],
     *,
@@ -342,6 +442,9 @@ def install_starter(
         raise FileExistsError(f"Starter destination is not empty: {target}")
 
     bundled_files = source_files(ASSET_ROOT, skip_root_registry=True)
+    bundled_files.pop(Path("component-manifest.json"), None)
+    for relative, source_path in support_files().items():
+        bundled_files[INSTALLED_TOOL_ROOT / relative] = source_path
     manifest_relative = Path(str(registry["sourceRoot"])) / "registry.json"
     managed_relative = Path(str(registry["sourceRoot"]))
     all_relatives = set(bundled_files) | {manifest_relative}
@@ -380,7 +483,15 @@ def install_starter(
         "manifest": str(target / manifest_relative),
         "files": len(planned),
         "packageUpdated": False,
-        "plan": {**plan, "dependencies": {"add": {}, "preserve": {}}},
+        "plan": {
+            **plan,
+            "dependencies": {"add": {}, "preserve": {}},
+            "buildGate": {
+                "verifyScript": PROVENANCE_SCRIPT_COMMAND,
+                "prebuild": PREBUILD_GATE_COMMAND,
+                "preservedPrebuild": None,
+            },
+        },
     }
     if dry_run:
         return result
@@ -402,6 +513,13 @@ def install_starter(
         staged_manifest = staged_root / manifest_relative
         staged_manifest.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(REGISTRY_PATH, staged_manifest)
+        staged_package = staged_root / "package.json"
+        package, _ = read_json_object(staged_package, label="starter package.json")
+        gated_package, _ = plan_build_gate(package)
+        write_text_atomic(
+            staged_package,
+            json.dumps(gated_package, ensure_ascii=False, indent=2) + "\n",
+        )
 
         if not target_existed:
             staged_root.rename(target)
@@ -493,17 +611,42 @@ def install_integrated(
             f"Personal UI already exists at {destination}; review local changes before --force."
         )
 
+    bundled_support = support_files()
+    support_destination = target / INSTALLED_TOOL_ROOT
+    support_relatives = {
+        INSTALLED_TOOL_ROOT / relative for relative in bundled_support
+    }
+    validate_managed_path(target, support_relatives, label="Personal UI support tools")
+    validate_tree_has_no_links(
+        support_destination, label="Existing Personal UI support tools"
+    )
+    support_collisions = {
+        support_destination / relative
+        for relative in bundled_support
+        if (support_destination / relative).exists()
+        or is_link_like(support_destination / relative)
+    }
+    if support_collisions and not force:
+        raise FileExistsError(
+            "Personal UI support tools already exist; review them before --force: "
+            + ", ".join(str(path) for path in sorted(support_collisions))
+        )
+
     package, package_text = read_json_object(package_path, label="package.json")
     required_dependencies = registry["dependencies"]
     if not isinstance(required_dependencies, dict):
         raise ValueError("Personal UI registry dependencies must be an object")
     updated_package, dependency_plan = plan_dependencies(package, required_dependencies)
+    updated_package, gate_plan = plan_build_gate(updated_package)
     package_updated = updated_package != package
 
     bundled_files = source_files(SOURCE_KIT)
     planned_relatives = set(bundled_files)
     planned_relatives.add(Path("registry.json"))
     planned_destinations = {destination / relative for relative in planned_relatives}
+    planned_destinations.update(
+        support_destination / relative for relative in bundled_support
+    )
     existing_destinations = destination_files(destination)
     deletions = (
         existing_destinations - planned_destinations if destination.exists() else set()
@@ -523,8 +666,15 @@ def install_integrated(
         "target": str(target),
         "manifest": str(destination / "registry.json"),
         "files": len(planned_destinations),
+        "support": sorted(
+            str(support_destination / relative) for relative in bundled_support
+        ),
         "packageUpdated": package_updated,
-        "plan": {**plan, "dependencies": dependency_plan},
+        "plan": {
+            **plan,
+            "dependencies": dependency_plan,
+            "buildGate": gate_plan,
+        },
     }
     if dry_run:
         return result
@@ -533,13 +683,19 @@ def install_integrated(
         tempfile.mkdtemp(prefix=".personal-ui-stage-", dir=target.parent)
     )
     staged_destination = stage_parent / "personal-ui"
+    staged_support = stage_parent / "support"
     backup: Path | None = None
     backup_moved = False
     destination_installed = False
     package_written = False
+    support_backups: dict[Path, Path] = {}
+    support_created: list[Path] = []
+    support_destination_existed = support_destination.exists()
+    support_parent_existed = support_destination.parent.exists()
     try:
         copy_files(bundled_files, staged_destination)
         shutil.copy2(REGISTRY_PATH, staged_destination / "registry.json")
+        copy_files(bundled_support, staged_support)
 
         if destination.exists():
             backup = stage_parent / "personal-ui-backup"
@@ -547,6 +703,16 @@ def install_integrated(
             backup_moved = True
         staged_destination.rename(destination)
         destination_installed = True
+
+        for relative in sorted(bundled_support):
+            destination_path = support_destination / relative
+            if destination_path.exists():
+                backup_path = stage_parent / "support-backup" / relative
+                copy_file_atomic(destination_path, backup_path)
+                support_backups[relative] = backup_path
+            else:
+                support_created.append(relative)
+            copy_file_atomic(staged_support / relative, destination_path)
 
         if package_updated:
             updated_text = (
@@ -559,6 +725,24 @@ def install_integrated(
     except Exception:
         if package_written:
             write_text_atomic(package_path, package_text)
+        for relative in reversed(support_created):
+            destination_path = support_destination / relative
+            if destination_path.is_file():
+                destination_path.unlink()
+        for relative, backup_path in support_backups.items():
+            copy_file_atomic(backup_path, support_destination / relative)
+        if (
+            not support_destination_existed
+            and support_destination.is_dir()
+            and not any(support_destination.iterdir())
+        ):
+            support_destination.rmdir()
+        if (
+            not support_parent_existed
+            and support_destination.parent.is_dir()
+            and not any(support_destination.parent.iterdir())
+        ):
+            support_destination.parent.rmdir()
         if destination_installed:
             if destination.is_dir():
                 shutil.rmtree(destination)

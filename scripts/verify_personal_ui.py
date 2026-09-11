@@ -7,14 +7,27 @@ import argparse
 import json
 import os
 import re
+import shutil
+import subprocess
 from collections import Counter
 from pathlib import Path
+
+from validate_component_manifest import validate_component_manifest
 
 
 SKILL_ROOT = Path(__file__).resolve().parent.parent
 ASSET_ROOT = SKILL_ROOT / "assets" / "react-kit"
 BUNDLED_SOURCE_ROOT = ASSET_ROOT / "src" / "personal-ui"
 REGISTRY_PATH = ASSET_ROOT / "registry.json"
+COMPONENT_MANIFEST_PATH = ASSET_ROOT / "component-manifest.json"
+PROVENANCE_TOOL_PATH = ASSET_ROOT / "tools" / "personal-ui" / "verify-provenance.mjs"
+INSTALLED_TOOL_ROOT = Path("tools") / "personal-ui"
+PROVENANCE_SCRIPT_NAME = "verify:personal-ui"
+PROVENANCE_SCRIPT_COMMAND = (
+    "node tools/personal-ui/verify-provenance.mjs --target . "
+    "--source-root src/personal-ui --manifest tools/personal-ui/component-manifest.json"
+)
+PREBUILD_GATE_COMMAND = f"npm run {PROVENANCE_SCRIPT_NAME}"
 COMPONENT_SELECTOR = re.compile(r"(?<![\w-])\.pui-[\w-]+")
 SEMVER = re.compile(
     r"^(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)"
@@ -84,18 +97,13 @@ def parse_args() -> argparse.Namespace:
         help="Validate installation before a page imports it.",
     )
     parser.add_argument(
-        "--allow-local-extensions",
-        action="store_true",
-        help="Report deliberate changed or extra managed source as warnings.",
-    )
-    parser.add_argument(
         "--require-component",
         action="append",
         default=[],
         metavar="EXPORT",
         help=(
-            "Require a registered Personal UI runtime export to be used by reachable "
-            "application code. Repeat for every component or pattern promised by the feature."
+            "Compatibility-only assertion for a specific public export. Component provenance "
+            "is checked automatically even when this option is omitted."
         ),
     )
     return parser.parse_args()
@@ -196,6 +204,13 @@ def validate_project_path_integrity(
         "application source": target / "src",
         "managed Personal UI source": source_root,
         "installed Personal UI registry": source_root / "registry.json",
+        "installed Personal UI tools": target / INSTALLED_TOOL_ROOT,
+        "installed Personal UI component manifest": target
+        / INSTALLED_TOOL_ROOT
+        / "component-manifest.json",
+        "installed Personal UI provenance verifier": target
+        / INSTALLED_TOOL_ROOT
+        / "verify-provenance.mjs",
     }
     for label, path in guarded_paths.items():
         if is_link_like(path):
@@ -213,10 +228,17 @@ def validate_project_path_integrity(
 
 def validate_bundled_path_integrity() -> list[str]:
     errors: list[str] = []
-    if is_link_like(REGISTRY_PATH):
-        errors.append(
-            f"bundled Personal UI registry must not be a symbolic link or junction: {REGISTRY_PATH}"
-        )
+    for label, path in (
+        ("registry", REGISTRY_PATH),
+        ("component manifest", COMPONENT_MANIFEST_PATH),
+        ("provenance verifier", PROVENANCE_TOOL_PATH),
+    ):
+        if is_link_like(path):
+            errors.append(
+                f"bundled Personal UI {label} must not be a symbolic link or junction: {path}"
+            )
+        elif not path.is_file():
+            errors.append(f"missing bundled Personal UI {label}: {path}")
     if is_link_like(BUNDLED_SOURCE_ROOT):
         errors.append(
             f"bundled Personal UI source must not be a symbolic link or junction: {BUNDLED_SOURCE_ROOT}"
@@ -229,6 +251,115 @@ def validate_bundled_path_integrity() -> list[str]:
                     f"bundled Personal UI source contains a symbolic link or junction: {path}"
                 )
     return errors
+
+
+def compare_installed_support_file(
+    expected: Path,
+    installed: Path,
+    *,
+    label: str,
+    errors: list[str],
+) -> dict[str, object]:
+    report: dict[str, object] = {
+        "expected": str(expected),
+        "installed": str(installed),
+        "matches": False,
+    }
+    if is_link_like(installed):
+        errors.append(
+            f"installed Personal UI {label} must not be a symbolic link or junction: {installed}"
+        )
+        return report
+    if not installed.is_file():
+        errors.append(f"missing installed Personal UI {label}: {installed}")
+        return report
+    try:
+        matches = expected.read_bytes() == installed.read_bytes()
+    except OSError as error:
+        errors.append(f"cannot compare installed Personal UI {label}: {error}")
+        return report
+    report["matches"] = matches
+    if not matches:
+        errors.append(
+            f"installed Personal UI {label} differs from the bundled canonical file: {installed}"
+        )
+    return report
+
+
+def run_provenance_scan(
+    target: Path,
+    source_root: Path,
+    errors: list[str],
+) -> dict[str, object]:
+    empty_report: dict[str, object] = {
+        "valid": False,
+        "scannedFiles": 0,
+        "usedPublicExports": [],
+        "issues": [],
+        "errors": [],
+    }
+    node = shutil.which("node")
+    if node is None:
+        message = "Node.js is required to run the Personal UI provenance verifier"
+        errors.append(message)
+        empty_report["errors"] = [message]
+        return empty_report
+    try:
+        relative_source_root = source_root.relative_to(target).as_posix()
+    except ValueError:
+        message = f"managed Personal UI source is outside the project target: {source_root}"
+        errors.append(message)
+        empty_report["errors"] = [message]
+        return empty_report
+    try:
+        result = subprocess.run(
+            [
+                node,
+                str(PROVENANCE_TOOL_PATH),
+                "--target",
+                str(target),
+                "--source-root",
+                relative_source_root,
+                "--manifest",
+                str(COMPONENT_MANIFEST_PATH),
+            ],
+            cwd=target,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            check=False,
+            timeout=60,
+        )
+    except (OSError, subprocess.SubprocessError) as error:
+        message = f"cannot run Personal UI provenance verifier: {error}"
+        errors.append(message)
+        empty_report["errors"] = [message]
+        return empty_report
+    try:
+        value = json.loads(result.stdout)
+        if not isinstance(value, dict):
+            raise ValueError("report is not an object")
+    except (json.JSONDecodeError, ValueError) as error:
+        message = (
+            "Personal UI provenance verifier emitted invalid JSON: "
+            f"{error}; stderr={result.stderr.strip()!r}"
+        )
+        errors.append(message)
+        empty_report["errors"] = [message]
+        return empty_report
+    provenance_errors = value.get("errors", [])
+    if isinstance(provenance_errors, list):
+        for item in provenance_errors:
+            if isinstance(item, str):
+                errors.append(f"component provenance: {item}")
+    else:
+        errors.append("Personal UI provenance verifier report has invalid errors field")
+    if result.returncode != 0 and not provenance_errors:
+        errors.append(
+            "Personal UI provenance verifier failed without a diagnostic: "
+            f"exit={result.returncode}, stderr={result.stderr.strip()!r}"
+        )
+    return value
 
 
 def resolve_typescript_module(base: Path, specifier: str) -> Path | None:
@@ -944,6 +1075,49 @@ def inspect_dependencies(
     return report
 
 
+def inspect_build_gate(
+    package_path: Path,
+    errors: list[str],
+) -> dict[str, object]:
+    report: dict[str, object] = {
+        "verifyScript": None,
+        "verifyScriptMatches": False,
+        "prebuild": None,
+        "prebuildIncludesGate": False,
+    }
+    if not package_path.is_file():
+        return report
+    try:
+        package = read_json_object(package_path, label="package.json")
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError, ValueError):
+        return report
+    scripts = package.get("scripts")
+    if not isinstance(scripts, dict):
+        errors.append("package.json scripts are missing; Personal UI build gate is not installed")
+        return report
+
+    verify_script = scripts.get(PROVENANCE_SCRIPT_NAME)
+    prebuild = scripts.get("prebuild")
+    report["verifyScript"] = verify_script
+    report["prebuild"] = prebuild
+    report["verifyScriptMatches"] = verify_script == PROVENANCE_SCRIPT_COMMAND
+    prebuild_parts = (
+        [part.strip() for part in prebuild.split("&&")]
+        if isinstance(prebuild, str)
+        else []
+    )
+    report["prebuildIncludesGate"] = PREBUILD_GATE_COMMAND in prebuild_parts
+    if verify_script != PROVENANCE_SCRIPT_COMMAND:
+        errors.append(
+            f"package.json script {PROVENANCE_SCRIPT_NAME!r} does not match the mandatory Personal UI provenance gate"
+        )
+    if PREBUILD_GATE_COMMAND not in prebuild_parts:
+        errors.append(
+            "package.json prebuild does not invoke the mandatory Personal UI provenance gate"
+        )
+    return report
+
+
 def main() -> int:
     args = parse_args()
     target = Path(os.path.abspath(args.target))
@@ -955,6 +1129,10 @@ def main() -> int:
     )
     if len(required_components) != len(raw_required_components):
         errors.append("--require-component values must be non-empty and unique")
+    elif required_components:
+        warnings.append(
+            "--require-component is retained only for compatibility; automatic source provenance is always enforced"
+        )
     errors.extend(validate_bundled_path_integrity())
     try:
         bundled_registry = read_json_object(
@@ -979,6 +1157,20 @@ def main() -> int:
         return 1
 
     errors.extend(validate_registry_shape(bundled_registry, label="bundled registry"))
+    component_manifest_report = validate_component_manifest(
+        COMPONENT_MANIFEST_PATH,
+        kit_root=ASSET_ROOT,
+        registry_path=REGISTRY_PATH,
+    )
+    manifest_errors = component_manifest_report.get("errors", [])
+    if isinstance(manifest_errors, list):
+        errors.extend(
+            f"component manifest: {error}"
+            for error in manifest_errors
+            if isinstance(error, str)
+        )
+    else:
+        errors.append("component manifest validator returned an invalid errors field")
     runtime_export_report, runtime_export_errors = validate_runtime_exports(
         bundled_registry
     )
@@ -988,8 +1180,28 @@ def main() -> int:
     source_root = target / str(source_root_value or "src/personal-ui")
     manifest_path = source_root / "registry.json"
     legacy_path = target / "registry.json"
+    installed_component_manifest_path = (
+        target / INSTALLED_TOOL_ROOT / "component-manifest.json"
+    )
+    installed_provenance_tool_path = (
+        target / INSTALLED_TOOL_ROOT / "verify-provenance.mjs"
+    )
     path_integrity_errors = validate_project_path_integrity(target, source_root)
     errors.extend(path_integrity_errors)
+    installed_support = {
+        "componentManifest": compare_installed_support_file(
+            COMPONENT_MANIFEST_PATH,
+            installed_component_manifest_path,
+            label="component manifest",
+            errors=errors,
+        ),
+        "provenanceVerifier": compare_installed_support_file(
+            PROVENANCE_TOOL_PATH,
+            installed_provenance_tool_path,
+            label="provenance verifier",
+            errors=errors,
+        ),
+    }
 
     installed_registry: dict[str, object] | None = None
     if manifest_path.is_file():
@@ -1051,26 +1263,13 @@ def main() -> int:
             )
 
     source_drift = compare_managed_source(source_root, errors)
-    if args.allow_local_extensions:
-        extension_errors = {
-            f"managed Personal UI source has {len(source_drift['changed'])} changed file(s)",
-            f"managed Personal UI source has {len(source_drift['extra'])} extra file(s)",
-        }
-        errors[:] = [error for error in errors if error not in extension_errors]
-        if source_drift["changed"]:
-            warnings.append(
-                f"allowing {len(source_drift['changed'])} deliberately changed managed source file(s)"
-            )
-        if source_drift["extra"]:
-            warnings.append(
-                f"allowing {len(source_drift['extra'])} deliberate local extension file(s)"
-            )
     dependency_report = inspect_dependencies(
         target / "package.json",
         bundled_registry.get("dependencies"),
         errors,
         warnings,
     )
+    build_gate_report = inspect_build_gate(target / "package.json", errors)
     registered_exports_value = runtime_export_report.get("registered", [])
     registered_exports = {
         name for name in registered_exports_value if isinstance(name, str)
@@ -1085,14 +1284,39 @@ def main() -> int:
         )
     if path_integrity_errors:
         used, stylesheet_import_count, used_components = False, 0, []
+        provenance_report: dict[str, object] = {
+            "valid": False,
+            "scannedFiles": 0,
+            "usedPublicExports": [],
+            "issues": [],
+            "errors": ["provenance scan skipped because project path integrity failed"],
+        }
     else:
-        used, stylesheet_import_count, used_components = inspect_application_usage(
+        reachable_used, stylesheet_import_count, reachable_components = inspect_application_usage(
             target,
             source_root,
             str(style_entry_value or "src/personal-ui/styles.css"),
             registered_exports,
             errors,
         )
+        provenance_report = run_provenance_scan(target, source_root, errors)
+        provenance_used = provenance_report.get("usedPublicExports", [])
+        provenance_components = {
+            name
+            for name in provenance_used
+            if isinstance(name, str) and name in registered_exports
+        } if isinstance(provenance_used, list) else set()
+        used_components = sorted(
+            provenance_components
+            & {
+                name
+                for name in reachable_components
+                if name in registered_exports
+            }
+        )
+        if not isinstance(provenance_used, list):
+            errors.append("Personal UI provenance verifier report has invalid usedPublicExports field")
+        used = reachable_used and bool(used_components)
     if not used:
         if args.allow_unreferenced:
             warnings.append(
@@ -1123,6 +1347,12 @@ def main() -> int:
         installed_registry is not None
         and installed_version == bundled_version
         and manifest_matches_bundle
+        and component_manifest_report.get("valid") is True
+        and all(
+            isinstance(item, dict) and item.get("matches") is True
+            for item in installed_support.values()
+        )
+        and provenance_report.get("valid") is True
         and not has_source_drift
         and not legacy_conflict
         and not errors
@@ -1142,8 +1372,12 @@ def main() -> int:
         "unknownRequiredComponents": unknown_required_components,
         "stylesheetImportCount": stylesheet_import_count,
         "runtimeExports": runtime_export_report,
+        "componentManifest": component_manifest_report,
+        "installedSupport": installed_support,
+        "provenance": provenance_report,
         "sourceDrift": source_drift,
         "dependencies": dependency_report,
+        "buildGate": build_gate_report,
         "errors": errors,
         "warnings": warnings,
     }

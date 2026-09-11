@@ -1,3 +1,7 @@
+@import "./styles/layout-actions-display.css";
+@import "./styles/inputs-extra.css";
+@import "./styles/extended.css";
+
 :root {
   --pui-font: Inter, "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
   --pui-bg: #f5f7fb;

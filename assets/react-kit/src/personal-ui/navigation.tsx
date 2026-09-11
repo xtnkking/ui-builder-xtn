@@ -135,7 +135,7 @@ export function Tabs({ items, value, onValueChange, ariaLabel, fill, className }
   };
 
   return (
-    <div className={cx("pui-tabs", fill && "pui-tabs--fill", className)}>
+    <div className={cx("pui-tabs", fill && "pui-tabs--fill", className)} data-pui-owner="Tabs">
       <div ref={tabListRef} className="pui-tabs__list" role="tablist" aria-label={ariaLabel}>
         {items.map((item) => (
           <button
@@ -189,7 +189,7 @@ export interface BreadcrumbItem {
 export function Breadcrumbs({ items, ariaLabel = "面包屑" }: { items: BreadcrumbItem[]; ariaLabel?: string }) {
   assertUniqueIdentities("Breadcrumbs", "item.id", items.map((item) => item.id));
   return (
-    <nav className="pui-breadcrumbs" aria-label={ariaLabel}>
+    <nav className="pui-breadcrumbs" aria-label={ariaLabel} data-pui-owner="Breadcrumbs">
       <ol>
         {items.map((item, index) => {
           const current = index === items.length - 1;
@@ -337,7 +337,7 @@ export function Pagination({
   }, []);
 
   return (
-    <nav ref={rootRef} className={cx("pui-pagination", className)} aria-label="数据分页" aria-busy={paginationBusy || undefined}>
+    <nav ref={rootRef} className={cx("pui-pagination", className)} aria-label="数据分页" aria-busy={paginationBusy || undefined} data-pui-owner="Pagination">
       <span className="pui-pagination__summary">
         {normalizedTotal !== undefined && normalizedPageSize
           ? (normalizedTotal ? `${start}-${end} / 共 ${normalizedTotal} 条` : "0 条结果")
