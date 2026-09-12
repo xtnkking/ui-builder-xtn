@@ -173,24 +173,25 @@ function DemoContent() {
   return (
     <div className="demo-shell pui-root">
       <header className="demo-topbar">
-        <div className="demo-brand"><span><Grid2X2 aria-hidden="true" /></span><strong>Personal UI</strong></div>
+        <div className="demo-brand"><span><Grid2X2 className="demo-brand__icon" aria-hidden="true" /></span><strong>Personal UI</strong></div>
         <span>React source kit</span>
       </header>
       <main className="demo-main">
         <div className="demo-titlebar">
           <div><h1>页面实例</h1><p>相同控件源码，按产品和业务组合。</p></div>
         </div>
-        <Tabs
-          className="demo-tabs"
-          value={tab}
-          onValueChange={setTab}
-          ariaLabel="页面实例"
-          items={[
-            { id: "data", label: <><Users aria-hidden="true" />成员管理</>, content: dataPage },
-            { id: "login", label: <><FileText aria-hidden="true" />品牌家族登录</>, content: loginPage },
-            { id: "report", label: <><BarChart3 aria-hidden="true" />更多模板</>, disabled: true, content: null },
-          ]}
-        />
+        <div className="demo-tabs-scope">
+          <Tabs
+            value={tab}
+            onValueChange={setTab}
+            ariaLabel="页面实例"
+            items={[
+              { id: "data", label: <><Users aria-hidden="true" />成员管理</>, content: dataPage },
+              { id: "login", label: <><FileText aria-hidden="true" />品牌家族登录</>, content: loginPage },
+              { id: "report", label: <><BarChart3 aria-hidden="true" />更多模板</>, disabled: true, content: null },
+            ]}
+          />
+        </div>
       </main>
     </div>
   );

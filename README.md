@@ -2,7 +2,7 @@
 
 `ui-builder-xtn` 是一个带完整 React + TypeScript 源码的 Codex Skill，用于构建风格一致、交互稳定的产品界面。
 
-它不是一份只靠提示词约束的视觉规范。v0.2.0 将 Personal UI 源码、公开导出、组件清单、安装器和来源校验器组成同一个闭环：使用者提出功能后，页面中的控件必须直接使用本仓库提供的组件代码。
+它不是一份只靠提示词约束的视觉规范。v0.2.1 将 Personal UI 源码、公开导出、组件清单、安装器和来源校验器组成同一个闭环：使用者提出功能后，页面中的控件必须直接使用本仓库提供的组件代码。
 
 ## 强制源码模式
 
@@ -13,7 +13,8 @@
 - `component-manifest.json` 将 118 个基础、组件和页面模式家族以及 130 个目录别名绑定到真实源文件，并把 139 个 runtime export 明确分类为 136 个可视组件/模式和 3 个非可视 Hook/常量。
 - `component-manifest.json` 还保存全部 26 个 managed source 文件的 SHA-256，任何缺失、修改或额外文件都会失败。
 - 安装器会把固定的 `verify:personal-ui` 自动接入 npm `prebuild`；常规 `npm run build` 必须先通过源码完整性和组件来源门禁。
-- 校验器扫描项目中的脚本、JSX/TSX、MDX 和 HTML，并识别实际使用的公开导出；不需要靠人工列出组件，也没有允许源码漂移的绕过开关。
+- 校验器扫描项目中的脚本、JSX/TSX、MDX、HTML、CSS、PostCSS、SCSS、Sass 和 Less，并识别实际使用的公开导出；不需要靠人工列出组件，也没有允许源码漂移的绕过开关。
+- 业务样式可以负责非交互布局和文档允许的主题 token，但不能用通用控件选择器、私有 `.pui-*` / `data-pui-*` 选择器、CSS-in-JS 包装、预处理器注入、动态 `<style>`、外部全局样式、DOM/CSSOM 修改，或受保护组件的 `className`、`style`、`css`、`sx`、`tw`、`ref`、spread props / `cloneElement` 改写组件皮肤和几何。
 
 业务代码仍然可以负责数据请求、状态、文案、产品图片、非交互布局和文档允许的 token 配置。按钮、输入、选择、导航、反馈、弹层、数据展示和复用页面模式必须由 Personal UI 公开组件负责。
 
@@ -124,7 +125,7 @@ python scripts/verify_personal_ui.py --target <project-root>
 - `src/personal-ui/` 没有 missing、changed 或 extra 文件
 - `package.json` 保留 installer 管理的 `verify:personal-ui` 与 `prebuild` 门禁
 - 业务源码仅从公开 barrel 使用 Personal UI
-- 没有原生受保护控件、交互 role、深层导入、私有导出、伪造 `.pui-*` / `data-pui-*` 或未允许的外部 JSX 控件
+- 没有原生受保护控件、交互 role、深层导入、私有导出、伪造 `.pui-*` / `data-pui-*`、危险通用/预处理器控件 CSS、CSS-in-JS 包装、动态或外部全局样式、DOM/CSSOM 改写、组件克隆、受保护组件外观覆盖或未允许的外部 JSX 控件
 - 样式入口只引入一次，依赖版本兼容
 
 只有报告中的 `upToDate`、`componentManifest.valid` 和 `provenance.valid` 全部为 `true`，`errors` 与全部 `sourceDrift` 列表为空，才可以交付。`--require-component` 只是兼容旧调用的附加断言，不能替代自动扫描；`--allow-unreferenced` 只允许在刚安装、尚未组合页面时做中间检查。

@@ -1,6 +1,6 @@
 # Integration
 
-Personal UI v0.2.0 is installed source with an enforced provenance boundary. The target receives the complete managed `src/personal-ui/` tree, its runtime registry, the component manifest, and the provenance scanner. Product code may compose public exports, but it may not fork, imitate, or reach inside the managed implementation.
+Personal UI v0.2.1 is installed source with an enforced provenance boundary. The target receives the complete managed `src/personal-ui/` tree, its runtime registry, the component manifest, and the provenance scanner. Product code may compose public exports, but it may not fork, imitate, or reach inside the managed implementation.
 
 ## Choose A Mode
 
@@ -54,7 +54,7 @@ Do not deep-import an implementation file:
 import { Button } from "./personal-ui/primitives";
 ```
 
-Application code may own business state, data fetching, copy, product images, and non-interactive semantic layout. It must not add native protected controls, interactive ARIA roles, locally styled lookalikes, third-party JSX controls, `.pui-*` selectors, or reserved `data-pui-*` markers. A local wrapper is acceptable only when it composes public Personal UI exports without implementing a replacement control.
+Application code may own business state, data fetching, copy, product images, and non-interactive semantic layout. It must not add native protected controls, interactive ARIA roles, locally styled lookalikes, third-party JSX controls, `.pui-*` selectors, reserved `data-pui-*` markers, generic CSS selectors that can restyle protected controls, protected-selector mixins or `@apply`, JSX `<style>`, remote/package-global CSS, CSS-in-JS wrappers, or DOM/CSSOM style mutation. Protected Personal UI components must not receive application `className`, `style`, `css`, `sx`, `tw`, `ref`, or spread props through JSX, factories, runtime JSX calls, aliases, or `cloneElement`; put layout classes on a surrounding element or use a manifest-classified layout utility. A local wrapper is acceptable only when it composes public Personal UI exports without implementing or restyling a replacement control.
 
 Respect the target's existing package manager and lockfile. Run its install command after the installer updates `package.json`.
 
@@ -101,7 +101,7 @@ Menus that intentionally remain within their owning container use their componen
 
 ## Existing Design Systems
 
-The provenance scanner inspects script, JSX/TSX, MDX, and HTML files across the project while excluding generated output, dependencies, installed enforcement tools, and the managed component source itself. A target that already renders another component system or raw interactive controls will not pass strict mode unchanged. Do not silently install Personal UI beside that system. Confirm that the requested surface can be migrated to Personal UI or place it in a separate application; explicit Skill use selects Personal UI but does not authorize an unrelated whole-product migration.
+The provenance scanner inspects script, JSX/TSX, MDX, HTML, CSS, PostCSS, SCSS, Sass, and Less files across the project while excluding generated output, dependencies, installed enforcement tools, and the managed component source itself. A target that already renders another component system or raw interactive controls will not pass strict mode unchanged. Do not silently install Personal UI beside that system. Confirm that the requested surface can be migrated to Personal UI or place it in a separate application; explicit Skill use selects Personal UI but does not authorize an unrelated whole-product migration.
 
 ## Updating An Installed Kit
 
@@ -136,6 +136,6 @@ A passing report requires:
 - Empty `sourceDrift.missing`, `sourceDrift.changed`, and `sourceDrift.extra` lists.
 - Exactly one application import of the Personal UI stylesheet and compatible dependencies.
 
-The automatic scan rejects deep imports, private or unregistered exports, raw protected HTML controls, interactive roles or raw interaction handlers used to imitate controls, reserved Personal UI classes and owner markers, unapproved external JSX components, and markup injection paths that cannot prove ownership. These failures are release blockers, not warnings.
+The automatic scan rejects deep imports, private or unregistered exports, raw protected HTML controls, interactive roles or raw interaction handlers used to imitate controls, reserved Personal UI classes and owner markers, generic or preprocessor styles that can alter protected controls, dynamic and external global styles, CSS-in-JS wrappers, DOM/CSSOM style mutation, `cloneElement`, protected-component `className`/`style`/`css`/`sx`/`tw`/`ref`/spread overrides (including factory, runtime, alias, and memo paths), unapproved external JSX components, and markup injection paths that cannot prove ownership. These failures are release blockers, not warnings.
 
 This is a deterministic build-time ownership gate, not a sandbox for hostile JavaScript. Deliberately obfuscated runtime code, generated source outside the inspected project, browser extensions, and code fetched after build require separate security review. They are not accepted ways to bypass the component contract; keep UI construction statically inspectable and verify the rendered product as part of release review.

@@ -46,7 +46,7 @@ body {
   color: #ffffff;
 }
 
-.demo-brand svg {
+.demo-brand__icon {
   width: 16px;
   height: 16px;
 }
@@ -205,7 +205,7 @@ body {
     margin-inline: 16px;
   }
 
-  .demo-tabs {
+  .demo-tabs-scope {
     --pui-tabs-list-inline-offset: 16px;
   }
 

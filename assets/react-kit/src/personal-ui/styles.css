@@ -425,6 +425,9 @@ fieldset.pui-field > legend {
 }
 
 .pui-input {
+  --_pui-input-autofill-background: var(--pui-surface);
+  --_pui-input-autofill-text: var(--pui-text);
+  --_pui-input-autofill-state-shadow: inset 0 0 0 0 transparent;
   padding: 0 12px;
 }
 
@@ -459,6 +462,12 @@ fieldset.pui-field > legend {
   background: #f2f4f8;
   color: #8a94a6;
   cursor: not-allowed;
+}
+
+.pui-input:disabled,
+.pui-input[aria-disabled="true"] {
+  --_pui-input-autofill-background: #f2f4f8;
+  --_pui-input-autofill-text: #8a94a6;
 }
 
 .pui-input-shell:has(.pui-input:disabled) {
@@ -501,12 +510,16 @@ fieldset.pui-field > legend {
   border-color: var(--pui-danger);
 }
 
-.pui-input[aria-invalid="true"]:focus-visible,
+.pui-input:not(.pui-input--embedded)[aria-invalid="true"]:focus-visible,
 .pui-textarea[aria-invalid="true"]:focus-visible,
 .pui-select[aria-invalid="true"]:focus-visible,
 .pui-combobox__trigger[aria-invalid="true"]:focus-visible,
 .pui-input-shell.is-invalid:has(.pui-input:focus-visible) {
   box-shadow: inset 0 -2px 0 var(--pui-primary);
+}
+
+.pui-input:not(.pui-input--embedded)[aria-invalid="true"]:focus-visible {
+  --_pui-input-autofill-state-shadow: inset 0 -2px 0 var(--pui-primary);
 }
 
 .pui-input::placeholder,
@@ -529,6 +542,7 @@ fieldset.pui-field > legend {
   grid-template-columns: auto minmax(0, 1fr) auto;
   grid-template-areas: "start input end";
   align-items: center;
+  overflow: hidden;
   min-width: 0;
   height: var(--pui-control-height);
   border: 1px solid var(--pui-border-strong);
@@ -541,12 +555,39 @@ fieldset.pui-field > legend {
   height: 100%;
   padding-inline: 4px;
   border: 0;
+  border-radius: 0;
   outline: 0;
   background: transparent;
 }
 
 .pui-input--embedded:focus {
   border: 0;
+}
+
+/* Browser autofill paints the native input; mask that paint with the owning control's state colors. */
+.pui-input:-webkit-autofill,
+.pui-input:-webkit-autofill:hover,
+.pui-input:-webkit-autofill:focus {
+  background-color: var(--_pui-input-autofill-background);
+  -webkit-box-shadow:
+    var(--_pui-input-autofill-state-shadow),
+    inset 0 0 0 100vmax var(--_pui-input-autofill-background);
+  box-shadow:
+    var(--_pui-input-autofill-state-shadow),
+    inset 0 0 0 100vmax var(--_pui-input-autofill-background);
+  caret-color: var(--_pui-input-autofill-text);
+  -webkit-text-fill-color: var(--_pui-input-autofill-text);
+}
+
+.pui-input:autofill,
+.pui-input:autofill:hover,
+.pui-input:autofill:focus {
+  background-color: var(--_pui-input-autofill-background);
+  box-shadow:
+    var(--_pui-input-autofill-state-shadow),
+    inset 0 0 0 100vmax var(--_pui-input-autofill-background);
+  color: var(--_pui-input-autofill-text);
+  caret-color: var(--_pui-input-autofill-text);
 }
 
 .pui-input-shell__start,
