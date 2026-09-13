@@ -516,11 +516,11 @@ fieldset.pui-field > legend {
 .pui-select[aria-invalid="true"]:focus-visible,
 .pui-combobox__trigger[aria-invalid="true"]:focus-visible,
 .pui-input-shell.is-invalid:has(.pui-input:focus-visible) {
-  box-shadow: inset 0 -2px 0 var(--pui-primary);
+  box-shadow: inset 0 -2px 0 var(--pui-danger);
 }
 
 .pui-input:not(.pui-input--embedded)[aria-invalid="true"]:focus-visible {
-  --_pui-input-autofill-state-shadow: inset 0 -2px 0 var(--pui-primary);
+  --_pui-input-autofill-state-shadow: inset 0 -2px 0 var(--pui-danger);
 }
 
 .pui-input::placeholder,

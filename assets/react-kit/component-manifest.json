@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "kitVersion": "0.2.10",
+  "kitVersion": "0.2.11",
   "entries": [
     {
       "id": "color",
@@ -2147,7 +2147,7 @@
     "styles/extended.css": "b21cb702f9295d0c0e11aa89d0ff8f7bb3e99dd4a39b81ba64880f19f9e863e5",
     "styles/inputs-extra.css": "2f32ea8cdc1384516c663e2ac6aa3fde2017e46c1b65e462a85014b1e1a16391",
     "styles/layout-actions-display.css": "53a24bcd2d9bc0726c3c578fb56a3a47ccecafdd38e3a36ea8418dbde773820e",
-    "styles.css": "5e79fe042e1d45cbc20b2dbbc2e6a57709c6da830073bd25dcb812001b6f4d16",
+    "styles.css": "177d559d12b22fc753007148f0658b49f47c628dac7fde3b61059a3463f0b3d4",
     "utils.ts": "fdb9151abf7b8d587098d600199e8dad8d7729535c93c91296557ac9b60f67b5",
     "value-controls.tsx": "776ccbb1ad6c7bfc7ead9bcc8d1a833d4b69403fb737fa0122872d8e8b5cc762"
   }
