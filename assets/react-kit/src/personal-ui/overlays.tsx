@@ -1,4 +1,5 @@
 import {
+  Children,
   Fragment,
   cloneElement,
   createContext,
@@ -18,6 +19,7 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 import { ChevronDown, X } from "lucide-react";
+import { floatingPortalTarget, usePopoverPosition } from "./floating-position";
 import { observeComputedStyleChanges, usePersonalUiPortalTokens } from "./portal-tokens";
 import { Button, IconButton } from "./primitives";
 import { assertUniqueIdentities, cx, getTabStops, isVisibleElement } from "./utils";
@@ -43,12 +45,17 @@ function usePortalReady(): boolean {
 
 function modalContainers(panel: HTMLElement): HTMLElement[] {
   const containers: HTMLElement[] = [panel];
-  panel.querySelectorAll<HTMLElement>("[aria-controls]").forEach((controller) => {
-    const controlledId = controller.getAttribute("aria-controls");
-    const controlled = controlledId ? document.getElementById(controlledId) : null;
-    const floatingRoot = controlled?.closest<HTMLElement>("[data-pui-floating-root='true']");
-    if (floatingRoot && !containers.includes(floatingRoot)) containers.push(floatingRoot);
-  });
+  const discovered = new Set(containers);
+  for (let index = 0; index < containers.length; index += 1) {
+    containers[index].querySelectorAll<HTMLElement>("[aria-controls]").forEach((controller) => {
+      controller.getAttribute("aria-controls")?.trim().split(/\s+/).forEach((controlledId) => {
+        const floatingRoot = document.getElementById(controlledId)?.closest<HTMLElement>("[data-pui-floating-root='true']");
+        if (!floatingRoot || discovered.has(floatingRoot)) return;
+        discovered.add(floatingRoot);
+        containers.push(floatingRoot);
+      });
+    });
+  }
   document.querySelectorAll<HTMLElement>(".pui-toast-viewport").forEach((viewport) => {
     if (!containers.includes(viewport)) containers.push(viewport);
   });
@@ -225,7 +232,7 @@ function useModalBehavior(open: boolean, onClose: () => void, panelRef: RefObjec
         ? preRegistrationFocus
         : Array.from(panel.querySelectorAll<HTMLElement>("[autofocus]"))
           .find((element) => !element.matches(":disabled") && isVisibleElement(element));
-      (autofocus ?? modalFocusables(panel)[0] ?? panel).focus();
+      (autofocus ?? panel).focus();
     }
     preRegistrationFocusRef.current = null;
     const handleKeyDown = (event: globalThis.KeyboardEvent) => {
@@ -313,6 +320,7 @@ export interface DialogProps {
 export function Dialog({ open, onClose, title, description, children, footer, closable = true, width = "medium" }: DialogProps) {
   const titleId = useId();
   const descriptionId = useId();
+  const hasBody = Children.toArray(children).length > 0;
   const sourceRef = useRef<HTMLSpanElement>(null);
   const portalRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -332,7 +340,7 @@ export function Dialog({ open, onClose, title, description, children, footer, cl
         }}>
           <div
             ref={panelRef}
-            className={cx("pui-dialog", `pui-dialog--${width}`)}
+            className={cx("pui-dialog", `pui-dialog--${width}`, !hasBody && "pui-dialog--no-body")}
             role="dialog"
             tabIndex={-1}
             aria-modal="true"
@@ -348,7 +356,7 @@ export function Dialog({ open, onClose, title, description, children, footer, cl
               </div>
               {closable ? <IconButton aria-label="关闭对话框" icon={<X aria-hidden="true" />} onClick={onClose} /> : null}
             </header>
-            <div className="pui-dialog__body">{children}</div>
+            {hasBody ? <div className="pui-dialog__body">{children}</div> : null}
             {footer != null ? <footer className="pui-dialog__footer">{footer}</footer> : null}
           </div>
         </div>,
@@ -436,42 +444,6 @@ export interface DropdownMenuProps {
   className?: string;
 }
 
-const DROPDOWN_FLOATING_GUTTER = 12;
-const dropdownClippingValues = new Set(["auto", "scroll", "hidden", "clip"]);
-
-function dropdownClippingBounds(root: HTMLElement) {
-  const viewportWidth = document.documentElement.clientWidth;
-  const viewportHeight = document.documentElement.clientHeight;
-  let left = DROPDOWN_FLOATING_GUTTER;
-  let right = Math.max(left + 1, viewportWidth - DROPDOWN_FLOATING_GUTTER);
-  let top = DROPDOWN_FLOATING_GUTTER;
-  let bottom = Math.max(top + 1, viewportHeight - DROPDOWN_FLOATING_GUTTER);
-  const clippingAncestors: HTMLElement[] = [];
-
-  for (let ancestor = root.parentElement; ancestor; ancestor = ancestor.parentElement) {
-    if (ancestor === document.body || ancestor === document.documentElement) continue;
-    const style = window.getComputedStyle(ancestor);
-    const clipsX = dropdownClippingValues.has(style.overflowX);
-    const clipsY = dropdownClippingValues.has(style.overflowY);
-    if (!clipsX && !clipsY) continue;
-    clippingAncestors.push(ancestor);
-    const rect = ancestor.getBoundingClientRect();
-    const contentLeft = rect.left + ancestor.clientLeft;
-    const contentTop = rect.top + ancestor.clientTop;
-    if (clipsX) {
-      left = Math.max(left, contentLeft + DROPDOWN_FLOATING_GUTTER);
-      right = Math.min(right, contentLeft + ancestor.clientWidth - DROPDOWN_FLOATING_GUTTER);
-    }
-    if (clipsY) {
-      top = Math.max(top, contentTop + DROPDOWN_FLOATING_GUTTER);
-      bottom = Math.min(bottom, contentTop + ancestor.clientHeight - DROPDOWN_FLOATING_GUTTER);
-    }
-  }
-  if (right <= left) right = left + 1;
-  if (bottom <= top) bottom = top + 1;
-  return { left, right, top, bottom, clippingAncestors };
-}
-
 export function DropdownMenu({ label, ariaLabel, items, icon, align = "end", className }: DropdownMenuProps) {
   assertUniqueIdentities("DropdownMenu", "item.id", items.map((item) => item.id));
   const id = useId();
@@ -479,14 +451,18 @@ export function DropdownMenu({ label, ariaLabel, items, icon, align = "end", cla
   const rootRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
   const typeaheadRef = useRef("");
   const typeaheadTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const openingEdgeRef = useRef<"first" | "last">("first");
   const hasItemIcons = items.some((item) => item.icon != null);
   const hasEnabledItems = items.some((item) => !item.disabled);
+  usePopoverPosition(open, "bottom", rootRef, menuRef, align);
+
+  useEffect(() => { setPortalTarget(floatingPortalTarget(rootRef.current)); }, []);
 
   const enabledItems = () => Array.from(
-    rootRef.current?.querySelectorAll<HTMLButtonElement>(".pui-dropdown__item:not(:disabled)") ?? [],
+    menuRef.current?.querySelectorAll<HTMLButtonElement>(".pui-dropdown__item:not(:disabled)") ?? [],
   );
 
   const resetTypeahead = () => {
@@ -517,7 +493,7 @@ export function DropdownMenu({ label, ariaLabel, items, icon, align = "end", cla
   useEffect(() => {
     if (!open) return;
     const close = (event: MouseEvent | FocusEvent) => {
-      if (!rootRef.current?.contains(event.target as Node)) closeMenu();
+      if (!rootRef.current?.contains(event.target as Node) && !menuRef.current?.contains(event.target as Node)) closeMenu();
     };
     document.addEventListener("mousedown", close);
     document.addEventListener("focusin", close);
@@ -537,88 +513,6 @@ export function DropdownMenu({ label, ariaLabel, items, icon, align = "end", cla
     if (available.includes(document.activeElement as HTMLButtonElement)) return;
     available[openingEdgeRef.current === "first" ? 0 : available.length - 1]?.focus({ preventScroll: true });
   }, [items, open]);
-
-  useClientLayoutEffect(() => {
-    const root = rootRef.current;
-    const menu = menuRef.current;
-    if (!open || !root || !menu) return;
-    let animationFrame = 0;
-    const update = () => {
-      const bounds = dropdownClippingBounds(root);
-      const maxWidth = `${Math.max(1, Math.floor(bounds.right - bounds.left))}px`;
-      const maxHeight = `${Math.max(1, Math.floor(bounds.bottom - bounds.top))}px`;
-      if (menu.style.getPropertyValue("--pui-floating-max-width") !== maxWidth) {
-        menu.style.setProperty("--pui-floating-max-width", maxWidth);
-      }
-      if (menu.style.getPropertyValue("--pui-floating-max-height") !== maxHeight) {
-        menu.style.setProperty("--pui-floating-max-height", maxHeight);
-      }
-      menu.style.setProperty("--pui-floating-shift-x", "0px");
-      menu.style.setProperty("--pui-floating-shift-y", "0px");
-      const menuRect = menu.getBoundingClientRect();
-      const rootRect = root.getBoundingClientRect();
-      let shiftX = 0;
-      let shiftY = 0;
-      let horizontalAlign: "start" | "end" | "clamped" = align;
-      let verticalAlign = "bottom";
-
-      if (menuRect.left < bounds.left) {
-        shiftX = bounds.left - menuRect.left;
-        horizontalAlign = "clamped";
-      }
-      if (menuRect.right + shiftX > bounds.right) {
-        shiftX -= menuRect.right + shiftX - bounds.right;
-        horizontalAlign = "clamped";
-      }
-      if (menuRect.bottom > bounds.bottom) {
-        const topAligned = rootRect.top - 6 - menuRect.height;
-        if (topAligned >= bounds.top) {
-          shiftY = topAligned - menuRect.top;
-          verticalAlign = "top";
-        } else {
-          shiftY = bounds.bottom - menuRect.bottom;
-          verticalAlign = "clamped";
-        }
-      }
-      if (menuRect.top + shiftY < bounds.top) {
-        shiftY += bounds.top - (menuRect.top + shiftY);
-        verticalAlign = "clamped";
-      }
-      if (menuRect.bottom + shiftY > bounds.bottom) {
-        shiftY -= menuRect.bottom + shiftY - bounds.bottom;
-        verticalAlign = "clamped";
-      }
-
-      menu.style.setProperty("--pui-floating-shift-x", `${Math.round(shiftX * 100) / 100}px`);
-      menu.style.setProperty("--pui-floating-shift-y", `${Math.round(shiftY * 100) / 100}px`);
-      menu.dataset.horizontalAlign = horizontalAlign;
-      menu.dataset.verticalAlign = verticalAlign;
-    };
-    const scheduleUpdate = () => {
-      window.cancelAnimationFrame(animationFrame);
-      animationFrame = window.requestAnimationFrame(update);
-    };
-    update();
-    window.addEventListener("resize", scheduleUpdate);
-    window.addEventListener("scroll", scheduleUpdate, true);
-    const resizeObserver = typeof ResizeObserver === "function" ? new ResizeObserver(scheduleUpdate) : null;
-    resizeObserver?.observe(root);
-    resizeObserver?.observe(menu);
-    dropdownClippingBounds(root).clippingAncestors.forEach((ancestor) => resizeObserver?.observe(ancestor));
-    const mutationObserver = typeof MutationObserver === "function" ? new MutationObserver(scheduleUpdate) : null;
-    mutationObserver?.observe(menu, { childList: true, characterData: true, subtree: true });
-    const stopObservingComputedStyle = observeComputedStyleChanges(root, scheduleUpdate, {
-      ignoredMutationRoot: menu,
-    });
-    return () => {
-      window.cancelAnimationFrame(animationFrame);
-      window.removeEventListener("resize", scheduleUpdate);
-      window.removeEventListener("scroll", scheduleUpdate, true);
-      resizeObserver?.disconnect();
-      mutationObserver?.disconnect();
-      stopObservingComputedStyle();
-    };
-  }, [align, items, open]);
 
   useEffect(() => () => {
     if (typeaheadTimerRef.current) clearTimeout(typeaheadTimerRef.current);
@@ -691,11 +585,11 @@ export function DropdownMenu({ label, ariaLabel, items, icon, align = "end", cla
           {label}
         </span>
       </Button>
-      {open ? (
+      {open && portalTarget ? createPortal(
         <div
           ref={menuRef}
           id={id}
-          className={cx("pui-dropdown__menu", `pui-dropdown__menu--${align}`)}
+          className={cx("pui-dropdown__menu", `pui-dropdown__menu--${align}`, "pui-portal")}
           role="menu"
           aria-label={ariaLabel}
           data-pui-floating-root="true"
@@ -722,8 +616,7 @@ export function DropdownMenu({ label, ariaLabel, items, icon, align = "end", cla
               </span>
             </button>
           ))}
-        </div>
-      ) : null}
+        </div>, portalTarget) : null}
     </div>
   );
 }
@@ -806,7 +699,7 @@ export function Tooltip({ content, children, placement = "top", disabled, ariaLa
   const nativeChildIsKeyboardReachable = tooltipNativeChildIsKeyboardReachable(children);
   const [hasFocusableDescendant, setHasFocusableDescendant] = useState(nativeChildIsKeyboardReachable);
   useEffect(() => {
-    setPortalTarget(document.body);
+    setPortalTarget(floatingPortalTarget(rootRef.current));
   }, []);
   useEffect(() => {
     if (disabled) setOpen(false);

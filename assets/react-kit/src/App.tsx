@@ -1,20 +1,29 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { FileText, Grid2X2, Hash, Pencil, RefreshCw, Table2, Users } from "lucide-react";
+import { FileText, Grid2X2, Hash, Pencil, RefreshCw, ShieldCheck, Table2, Users } from "lucide-react";
 import {
+  Autocomplete,
+  AsyncSelect,
   Button,
+  ConfirmDialog,
+  ContextMenu,
   DataTable,
+  Dialog,
   Drawer,
+  DropdownMenu,
   Field,
   FamilyLoginPage,
   IconButton,
   ListManagementPage,
   MemberManagementPage,
+  MultiSelect,
   NumberInput,
   SegmentedControl,
   Select,
   Tag,
+  TagInput,
   Tabs,
   ToastProvider,
+  TreeSelect,
   useToast,
   type DataColumn,
   type LoginProduct,
@@ -83,7 +92,7 @@ const loginProducts: LoginProduct[] = [
   {
     id: "docs",
     name: "文档协作",
-    accent: "#1769e0",
+    accent: "#1769d2",
     eyebrow: "Workspace Docs",
     headline: "让团队内容始终清楚、有序",
     description: "从计划到交付，共享同一份准确上下文。",
@@ -100,6 +109,96 @@ const loginProducts: LoginProduct[] = [
   },
 ];
 
+const roleOptions = [
+  { value: "basic", label: "普通用户 · 等级 0" },
+  { value: "operations", label: "运营成员 · 等级 1" },
+  { value: "reviewer", label: "审核员 · 等级 2" },
+  { value: "editor", label: "内容编辑 · 等级 3" },
+  { value: "support", label: "客户支持 · 等级 4" },
+  { value: "analyst", label: "数据分析 · 等级 5" },
+  { value: "manager", label: "部门主管 · 等级 6" },
+  { value: "admin", label: "管理员 · 等级 7" },
+];
+
+const countryOptions = [
+  { value: "cn", label: "中国", description: "CN · +86", leading: "🇨🇳" },
+  { value: "us", label: "美国", description: "US · +1", leading: "🇺🇸" },
+  { value: "gb", label: "英国", description: "GB · +44", leading: "🇬🇧" },
+  { value: "jp", label: "日本", description: "JP · +81", leading: "🇯🇵" },
+  { value: "kr", label: "韩国", description: "KR · +82", leading: "🇰🇷" },
+  { value: "fr", label: "法国", description: "FR · +33", leading: "🇫🇷" },
+  { value: "de", label: "德国", description: "DE · +49", leading: "🇩🇪" },
+  { value: "ca", label: "加拿大", description: "CA · +1", leading: "🇨🇦" },
+  { value: "au", label: "澳大利亚", description: "AU · +61", leading: "🇦🇺" },
+  { value: "sg", label: "新加坡", description: "SG · +65", leading: "🇸🇬" },
+  { value: "it", label: "意大利", description: "IT · +39", leading: "🇮🇹" },
+  { value: "es", label: "西班牙", description: "ES · +34", leading: "🇪🇸" },
+];
+
+function CountryChoiceDemo({ id, label, initialValue = "", selectedOption, externalSwitch = false }: { id: string; label: string; initialValue?: string; selectedOption?: (typeof countryOptions)[number]; externalSwitch?: boolean }) {
+  const [query, setQuery] = useState("");
+  const [value, setValue] = useState(initialValue);
+  const [options, setOptions] = useState(countryOptions.slice(0, 6));
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string>();
+  const [hasMore, setHasMore] = useState(true);
+  useEffect(() => {
+    if (!query) {
+      setOptions(countryOptions.slice(0, 6));
+      setHasMore(true);
+      setError(undefined);
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
+    setError(undefined);
+    setOptions([]);
+    const timer = window.setTimeout(() => {
+      if (query === "异常") {
+        setError("国家目录加载失败");
+      } else {
+        const matching = countryOptions.filter((country) => `${country.label} ${country.description}`.toLocaleLowerCase().includes(query.toLocaleLowerCase()));
+        setOptions(matching.slice(0, 6));
+        setHasMore(matching.length > 6);
+      }
+      setLoading(false);
+    }, 500);
+    return () => window.clearTimeout(timer);
+  }, [query]);
+  return (
+    <>
+      <Field label={label} htmlFor={id}>
+        <AsyncSelect
+          id={id}
+          ariaLabel={label}
+          value={value}
+          selectedOption={selectedOption}
+          onValueChange={setValue}
+          query={query}
+          onQueryChange={setQuery}
+          options={options}
+          loading={loading}
+          error={error}
+          onRetry={async () => {
+            await new Promise((resolve) => window.setTimeout(resolve, 400));
+            setQuery("");
+          }}
+          hasMore={hasMore}
+          onLoadMore={async () => {
+            await new Promise((resolve) => window.setTimeout(resolve, 400));
+            const matching = countryOptions.filter((country) => `${country.label} ${country.description}`.toLocaleLowerCase().includes(query.toLocaleLowerCase()));
+            setOptions(matching);
+            setHasMore(false);
+          }}
+          placeholder="选择国家或地区"
+          searchPlaceholder="搜索国家、代码或区号"
+        />
+      </Field>
+      {externalSwitch ? <Button onClick={() => setValue("external-missing")}>切换外部国家值</Button> : null}
+    </>
+  );
+}
+
 function DemoContent() {
   const [tab, setTab] = useState("data");
   const [scenario, setScenario] = useState<Scenario>("success");
@@ -114,6 +213,20 @@ function DemoContent() {
   const [draftRole, setDraftRole] = useState("");
   const [draftStatus, setDraftStatus] = useState("");
   const [savingMember, setSavingMember] = useState(false);
+  const [roleDialogOpen, setRoleDialogOpen] = useState(false);
+  const [nestedDialogOpen, setNestedDialogOpen] = useState(false);
+  const [floatingDialogOpen, setFloatingDialogOpen] = useState(false);
+  const [teamQuery, setTeamQuery] = useState("");
+  const [teamValue, setTeamValue] = useState("");
+  const [tagQuery, setTagQuery] = useState("");
+  const [tags, setTags] = useState<string[]>([]);
+  const [treeValue, setTreeValue] = useState("");
+  const [assignedRoles, setAssignedRoles] = useState<string[]>(["basic"]);
+  const [draftRoles, setDraftRoles] = useState<string[]>(["basic"]);
+  const [savingRoles, setSavingRoles] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [confirmScenario, setConfirmScenario] = useState<"success" | "error">("success");
+  const [disabledUser, setDisabledUser] = useState(false);
   const scenarioRef = useRef(scenario);
   const { toast } = useToast();
 
@@ -312,9 +425,95 @@ function DemoContent() {
         <div className="demo-list-editor">
           <Field label="角色" htmlFor="demo-list-role"><Select id="demo-list-role" ariaLabel="角色" value={draftRole} onValueChange={setDraftRole} disabled={savingMember} options={[{ value: "管理员", label: "管理员" }, { value: "编辑者", label: "编辑者" }, { value: "查看者", label: "查看者" }]} /></Field>
           <Field label="状态" htmlFor="demo-list-status"><Select id="demo-list-status" ariaLabel="状态" value={draftStatus} onValueChange={setDraftStatus} disabled={savingMember} options={[{ value: "已加入", label: "已加入" }, { value: "待确认", label: "待确认" }, { value: "已停用", label: "已停用" }]} /></Field>
+          <CountryChoiceDemo id="demo-list-country" label="所属国家或地区" />
         </div>
       </Drawer>
     </div>
+  );
+
+  const dialogCase = (
+    <section className="demo-dialog-case">
+      <div className="demo-dialog-case__heading">
+        <div><h2>用户管理</h2><p>xtn · {disabledUser ? "已停用" : "正常"}</p></div>
+        <div className="demo-dialog-case__actions">
+          <Button onClick={() => { setDraftRoles(assignedRoles); setRoleDialogOpen(true); }}>分配角色</Button>
+          <Button onClick={() => setFloatingDialogOpen(true)}>更多选择器</Button>
+          <Button variant={disabledUser ? "primary" : "danger"} onClick={() => setConfirmOpen(true)}>{disabledUser ? "启用用户" : "停用用户"}</Button>
+        </div>
+      </div>
+      <div className="demo-dialog-case__roles">
+        <span>当前角色</span>
+        {assignedRoles.map((value) => <Tag key={value}>{roleOptions.find((option) => option.value === value)?.label ?? value}</Tag>)}
+      </div>
+      <div className="demo-dialog-case__scenario">
+        <span>下一次操作</span>
+        <SegmentedControl value={confirmScenario} ariaLabel="选择确认操作响应" options={[{ value: "success", label: "正常返回" }, { value: "error", label: "请求失败" }]} onValueChange={setConfirmScenario} />
+      </div>
+      <Dialog
+        open={roleDialogOpen}
+        onClose={() => { if (!savingRoles) setRoleDialogOpen(false); }}
+        closable={!savingRoles}
+        title="分配角色 · xtn"
+        description="新增和移除角色需要分两次保存。"
+        footer={<><Button disabled={savingRoles} onClick={() => setRoleDialogOpen(false)}>取消</Button><Button variant="primary" loading={savingRoles} loadingLabel="保存中" onClick={async () => { if (savingRoles) return; setSavingRoles(true); await new Promise((resolve) => window.setTimeout(resolve, 500)); setAssignedRoles(draftRoles); setSavingRoles(false); setRoleDialogOpen(false); toast({ tone: "success", description: "角色已保存" }); }}>保存</Button></>}
+      >
+        <div className="demo-dialog-form">
+          <Field label="角色" htmlFor="demo-role-multi" required>
+            <MultiSelect id="demo-role-multi" ariaLabel="角色" options={roleOptions} value={draftRoles} onValueChange={setDraftRoles} required />
+          </Field>
+          <CountryChoiceDemo id="demo-role-country" label="国家或地区" />
+          <div className="demo-overlay-actions">
+            <DropdownMenu label="角色操作" ariaLabel="角色操作菜单" items={[{ id: "audit", label: "查看角色记录", onSelect: () => toast({ tone: "info", description: "角色记录已打开" }) }, { id: "export", label: "导出角色列表", onSelect: () => toast({ tone: "success", description: "角色列表已导出" }) }]} />
+            <ContextMenu ariaLabel="角色右键菜单" items={[{ id: "details", label: "查看权限详情", onSelect: () => toast({ tone: "info", description: "权限详情已打开" }) }]}>
+              <span className="demo-context-target">右键查看权限</span>
+            </ContextMenu>
+            <Button onClick={() => setNestedDialogOpen(true)}>上层确认</Button>
+          </div>
+        </div>
+      </Dialog>
+      <ConfirmDialog
+        open={nestedDialogOpen}
+        onOpenChange={setNestedDialogOpen}
+        title="确认国家范围"
+        description="此确认层位于角色分配之上。"
+        confirmLabel="完成"
+        onConfirm={() => setNestedDialogOpen(false)}
+      />
+      <Dialog
+        open={floatingDialogOpen}
+        onClose={() => setFloatingDialogOpen(false)}
+        title="更多选择器"
+        description="团队、标签和组织节点。"
+        footer={<Button variant="primary" onClick={() => setFloatingDialogOpen(false)}>完成</Button>}
+      >
+        <div className="demo-list-editor">
+          <Field label="团队搜索" htmlFor="demo-autocomplete">
+            <Autocomplete id="demo-autocomplete" ariaLabel="团队搜索" placeholder="搜索团队" query={teamQuery} onQueryChange={setTeamQuery} value={teamValue} onValueChange={setTeamValue} options={[{ value: "platform", label: "平台工程" }, { value: "operations", label: "运营中心" }, { value: "support", label: "客户支持" }]} />
+          </Field>
+          <Field label="权限标签" htmlFor="demo-tags">
+            <TagInput id="demo-tags" ariaLabel="权限标签" value={tags} onValueChange={setTags} inputValue={tagQuery} onInputValueChange={setTagQuery} suggestions={[{ value: "平台" }, { value: "产品" }, { value: "运营" }]} />
+          </Field>
+          <Field label="组织节点" htmlFor="demo-tree">
+            <TreeSelect id="demo-tree" ariaLabel="组织节点" value={treeValue} onValueChange={setTreeValue} options={[{ value: "company", label: "总部", children: [{ value: "product", label: "产品组" }, { value: "platform", label: "平台组" }] }, { value: "regional", label: "区域团队", children: [{ value: "support", label: "客户支持" }] }]} />
+          </Field>
+          <CountryChoiceDemo id="demo-external-country" label="外部选中项" initialValue="it" selectedOption={countryOptions[10]} externalSwitch />
+        </div>
+      </Dialog>
+      <ConfirmDialog
+        open={confirmOpen}
+        onOpenChange={setConfirmOpen}
+        title={disabledUser ? "启用用户" : "停用用户"}
+        description={`确定${disabledUser ? "启用" : "停用"}“xtn”吗？`}
+        confirmLabel={disabledUser ? "启用" : "停用"}
+        tone={disabledUser ? "primary" : "danger"}
+        onConfirm={async () => {
+          await new Promise((resolve) => window.setTimeout(resolve, 500));
+          if (confirmScenario === "error") throw new Error("模拟请求失败");
+          setDisabledUser((current) => !current);
+          toast({ tone: "success", description: "用户状态已更新" });
+        }}
+      />
+    </section>
   );
 
   return (
@@ -337,6 +536,7 @@ function DemoContent() {
               { id: "login", label: <><FileText aria-hidden="true" />品牌家族登录</>, content: loginPage },
               { id: "number", label: <><Hash aria-hidden="true" />数字输入</>, content: numberCase },
               { id: "list", label: <><Table2 aria-hidden="true" />用户权限</>, content: listPageCase },
+              { id: "dialog", label: <><ShieldCheck aria-hidden="true" />弹窗</>, content: dialogCase },
             ]}
           />
         </div>

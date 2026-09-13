@@ -10,10 +10,11 @@ import {
 import { createPortal } from "react-dom";
 import { ChevronLeft, ChevronRight, CircleAlert, X } from "lucide-react";
 import { Alert } from "./feedback";
+import { floatingPortalTarget } from "./floating-position";
 import { Button, IconButton } from "./primitives";
 import { Dialog, type MenuItem } from "./overlays";
 import { usePersonalUiPortalTokens } from "./portal-tokens";
-import { assertUniqueIdentities, cx } from "./utils";
+import { assertUniqueIdentities, cx, isVisibleElement } from "./utils";
 
 type FloatingPlacement = "top" | "bottom" | "left" | "right";
 type FloatingAlign = "start" | "center" | "end";
@@ -109,6 +110,7 @@ function PopoverRoot({
   const sourceRef = useRef<HTMLSpanElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
+  const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
   const closeTimerRef = useRef<number | null>(null);
   const isOpen = !disabled && (open ?? internalOpen);
   const setOpen = (next: boolean, restoreFocus = false) => {
@@ -125,8 +127,10 @@ function PopoverRoot({
     cancelClose();
     closeTimerRef.current = window.setTimeout(() => setOpen(false), 120);
   };
-  useFloatingPosition(isOpen, triggerRef, panelRef, placement, align);
-  usePersonalUiPortalTokens(isOpen, sourceRef, panelRef);
+  useFloatingPosition(isOpen && portalTarget !== null, triggerRef, panelRef, placement, align);
+  usePersonalUiPortalTokens(isOpen && portalTarget !== null, sourceRef, panelRef);
+
+  useEffect(() => { setPortalTarget(floatingPortalTarget(sourceRef.current)); }, []);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -170,24 +174,39 @@ function PopoverRoot({
         aria-controls={isOpen ? id : undefined}
         disabled={disabled}
         onClick={interaction === "click" ? () => setOpen(!isOpen) : undefined}
+        onKeyDown={(event) => {
+          if (event.key === "Escape" && isOpen) {
+            event.preventDefault();
+            event.stopPropagation();
+            setOpen(false, true);
+          }
+        }}
         {...hoverHandlers}
       >
         {trigger}
       </button>
-      {isOpen ? createPortal(
+      {isOpen && portalTarget ? createPortal(
         <div
           ref={panelRef}
           id={id}
           className="pui-popover__surface pui-portal"
+          data-pui-floating-root="true"
           role="dialog"
           aria-label={ariaLabel}
           style={matchTriggerWidth ? { minWidth: triggerRef.current?.getBoundingClientRect().width } : undefined}
+          onKeyDown={(event) => {
+            if (event.key === "Escape") {
+              event.preventDefault();
+              event.stopPropagation();
+              setOpen(false, true);
+            }
+          }}
           onMouseEnter={interaction === "hover" ? cancelClose : undefined}
           onMouseLeave={interaction === "hover" ? scheduleClose : undefined}
         >
           {children}
         </div>,
-        document.body,
+        portalTarget,
       ) : null}
     </span>
   );
@@ -228,6 +247,9 @@ export function ConfirmDialog({
 }: ConfirmDialogProps) {
   const [pending, setPending] = useState(false);
   const [failed, setFailed] = useState(false);
+  useEffect(() => {
+    if (!open) setFailed(false);
+  }, [open]);
   const confirm = async () => {
     if (pending) return;
     setPending(true);
@@ -250,7 +272,7 @@ export function ConfirmDialog({
         description={description}
         width="small"
         closable={!pending}
-        footer={<div className="pui-confirm-actions"><Button disabled={pending} onClick={() => onOpenChange(false)}>{cancelLabel}</Button><Button variant={tone} loading={pending} loadingLabel="处理中" onClick={() => void confirm()}>{confirmLabel}</Button></div>}
+        footer={<div className="pui-confirm-actions"><Button autoFocus disabled={pending} onClick={() => onOpenChange(false)}>{cancelLabel}</Button><Button variant={tone} loading={pending} loadingLabel="处理中" onClick={() => void confirm()}>{confirmLabel}</Button></div>}
       >
         {failed ? <Alert tone="danger">{errorMessage}</Alert> : null}
       </Dialog>
@@ -295,24 +317,54 @@ export interface ContextMenuProps {
 
 export function ContextMenu({ children, items, ariaLabel, className }: ContextMenuProps) {
   assertUniqueIdentities("ContextMenu", "item.id", items.map((item) => item.id));
+  const id = useId();
   const [point, setPoint] = useState<{ x: number; y: number } | null>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const restoreFocusRef = useRef<HTMLElement | null>(null);
+  usePersonalUiPortalTokens(point !== null, rootRef, menuRef);
+  const closeMenu = (restoreFocus = false) => {
+    setPoint(null);
+    const previous = restoreFocusRef.current;
+    restoreFocusRef.current = null;
+    if (!restoreFocus) return;
+    queueMicrotask(() => {
+      const root = rootRef.current;
+      if (!root?.isConnected || root.closest("[inert], [aria-hidden='true']")) return;
+      const modal = root.closest<HTMLElement>("[role='dialog'][aria-modal='true']");
+      const validPrevious = previous?.isConnected
+        && !previous.matches(":disabled")
+        && !previous.closest("[inert], [aria-hidden='true']")
+        && isVisibleElement(previous)
+        && (!modal || modal.contains(previous));
+      (validPrevious ? previous : root).focus({ preventScroll: true });
+    });
+  };
   useEffect(() => {
     if (!point) return;
-    const close = () => setPoint(null);
-    const escape = (event: KeyboardEvent) => { if (event.key === "Escape") close(); };
-    document.addEventListener("pointerdown", close);
+    const closeOnPointer = () => closeMenu();
+    const escape = (event: KeyboardEvent) => { if (event.key === "Escape") { event.preventDefault(); closeMenu(true); } };
+    document.addEventListener("pointerdown", closeOnPointer);
     document.addEventListener("keydown", escape);
     queueMicrotask(() => menuRef.current?.querySelector<HTMLButtonElement>("button:not(:disabled)")?.focus());
-    return () => { document.removeEventListener("pointerdown", close); document.removeEventListener("keydown", escape); };
+    return () => { document.removeEventListener("pointerdown", closeOnPointer); document.removeEventListener("keydown", escape); };
+  }, [point]);
+  useLayoutEffect(() => {
+    const menu = menuRef.current;
+    if (!point || !menu) return;
+    const rect = menu.getBoundingClientRect();
+    const left = Math.max(12, Math.min(point.x, document.documentElement.clientWidth - rect.width - 12));
+    const top = Math.max(12, Math.min(point.y, document.documentElement.clientHeight - rect.height - 12));
+    menu.style.left = `${left}px`;
+    menu.style.top = `${top}px`;
   }, [point]);
   return (
-    <div className={cx("pui-context-menu", className)} onContextMenu={(event) => { event.preventDefault(); setPoint({ x: event.clientX, y: event.clientY }); }} data-pui-owner="ContextMenu">
+    <div ref={rootRef} tabIndex={-1} className={cx("pui-context-menu", className)} aria-controls={point ? id : undefined} onPointerDownCapture={(event) => { if (event.button === 2) restoreFocusRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null; }} onContextMenu={(event) => { event.preventDefault(); if (!restoreFocusRef.current?.isConnected) restoreFocusRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null; setPoint({ x: event.clientX, y: event.clientY }); }} data-pui-owner="ContextMenu">
       {children}
       {point ? createPortal(
-        <div ref={menuRef} className="pui-context-menu__surface pui-portal" role="menu" aria-label={ariaLabel} style={{ left: point.x, top: point.y }} onPointerDown={(event) => event.stopPropagation()}>
-          {items.map((item) => <button key={item.id} type="button" role="menuitem" disabled={item.disabled} className={item.danger ? "is-danger" : undefined} onClick={() => { item.onSelect(); setPoint(null); }}>{item.icon != null ? <span aria-hidden="true">{item.icon}</span> : null}<span>{item.label}</span></button>)}
-        </div>, document.body,
+        <div ref={menuRef} id={id} className="pui-context-menu__surface pui-portal" data-pui-floating-root="true" role="menu" aria-label={ariaLabel} style={{ left: point.x, top: point.y }} onPointerDown={(event) => event.stopPropagation()} onKeyDown={(event) => { if (event.key === "Escape") { event.preventDefault(); event.stopPropagation(); closeMenu(true); } }}>
+          {items.map((item) => <button key={item.id} type="button" role="menuitem" disabled={item.disabled} className={item.danger ? "is-danger" : undefined} onClick={() => { item.onSelect(); closeMenu(true); }}>{item.icon != null ? <span aria-hidden="true">{item.icon}</span> : null}<span>{item.label}</span></button>)}
+        </div>, floatingPortalTarget(rootRef.current),
       ) : null}
     </div>
   );

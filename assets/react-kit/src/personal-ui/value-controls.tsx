@@ -176,7 +176,7 @@ export function ColorPicker({
   id,
   value,
   onValueChange,
-  swatches = ["#1769e0", "#157a52", "#996300", "#b83243", "#7c3aed", "#172033"],
+  swatches = ["#1769d2", "#137a43", "#996300", "#c9362b", "#7c3aed", "#171a20"],
   showTextInput = true,
   name,
   form,
@@ -200,7 +200,7 @@ export function ColorPicker({
           <button key={color} type="button" className="pui-color-picker__swatch" style={{ backgroundColor: color }} aria-label={color} aria-pressed={color.toLocaleLowerCase() === value.toLocaleLowerCase()} disabled={disabled} onClick={() => onValueChange(color)}>{color.toLocaleLowerCase() === value.toLocaleLowerCase() ? <Check aria-hidden="true" /> : null}</button>
         ))}
       </div>
-      {showTextInput ? <Input value={value} disabled={disabled} required={required} invalid={Boolean(value && !HEX_COLOR.test(value))} aria-label={`${ariaLabel}十六进制值`} placeholder="#1769e0" onChange={(event) => onValueChange(event.target.value)} /> : null}
+      {showTextInput ? <Input value={value} disabled={disabled} required={required} invalid={Boolean(value && !HEX_COLOR.test(value))} aria-label={`${ariaLabel}十六进制值`} placeholder="#1769d2" onChange={(event) => onValueChange(event.target.value)} /> : null}
       <FormValueBridge name={name} form={form} value={value} disabled={disabled} required={required} />
     </div>
   );

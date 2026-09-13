@@ -3,31 +3,31 @@
 @import "./styles/extended.css";
 
 :root {
-  --pui-font: Inter, "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
-  --pui-bg: #f5f7fb;
+  --pui-font: Inter, "Segoe UI", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  --pui-bg: #f7f8fa;
   --pui-surface: #ffffff;
   --pui-surface-subtle: #f8faff;
-  --pui-text: #172033;
-  --pui-muted: #667085;
-  --pui-border: #d7deea;
-  --pui-border-strong: #b9c5d6;
-  --pui-primary: #1769e0;
-  --pui-primary-hover: #0f57c1;
-  --pui-primary-soft: #edf4ff;
-  --pui-primary-ink: #0b4da8;
-  --pui-success: #157a52;
-  --pui-success-soft: #eaf8f1;
+  --pui-text: #171a20;
+  --pui-muted: #626a75;
+  --pui-border: #dee2e8;
+  --pui-border-strong: #bac2cd;
+  --pui-primary: #1769d2;
+  --pui-primary-hover: #125ab8;
+  --pui-primary-soft: #eaf2ff;
+  --pui-primary-ink: #125ab8;
+  --pui-success: #137a43;
+  --pui-success-soft: #edf8f1;
   --pui-warning: #996300;
   --pui-warning-soft: #fff6df;
-  --pui-danger: #b83243;
-  --pui-danger-soft: #fff0f2;
+  --pui-danger: #c9362b;
+  --pui-danger-soft: #fff1ef;
   --pui-shadow-popover: 0 12px 32px rgba(25, 42, 70, 0.16);
   --pui-shadow-overlay: 0 24px 64px rgba(20, 35, 60, 0.22);
-  --pui-control-height: 40px;
-  --pui-radius-control: 10px;
+  --pui-control-height: 44px;
+  --pui-radius-control: 12px;
   --pui-radius-surface: 8px;
   --pui-radius-table: 12px;
-  --pui-product-accent: #1769e0;
+  --pui-product-accent: #1769d2;
 }
 
 .pui-root,
@@ -125,12 +125,12 @@
   min-width: 0;
   max-width: 100%;
   min-height: 38px;
-  padding: 0 16px;
+  padding: 0 15px;
   border: 1px solid var(--pui-border-strong);
   border-radius: 999px;
   background: var(--pui-surface);
   color: var(--pui-text);
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1;
   cursor: pointer;
   transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease;
@@ -365,7 +365,7 @@ fieldset.pui-field > legend {
   min-width: 0;
   color: var(--pui-text);
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .pui-label > span:first-child {
@@ -429,7 +429,7 @@ fieldset.pui-field > legend {
   --_pui-input-autofill-background: var(--pui-surface);
   --_pui-input-autofill-text: var(--pui-text);
   --_pui-input-autofill-state-shadow: inset 0 0 0 0 transparent;
-  padding: 0 12px;
+  padding: 0 14px;
 }
 
 .pui-textarea {
@@ -621,11 +621,11 @@ fieldset.pui-field > legend {
 }
 
 .pui-input-shell:not(:has(.pui-input-shell__start)) .pui-input--embedded {
-  padding-left: 12px;
+  padding-left: 14px;
 }
 
 .pui-input-shell:not(:has(.pui-input-shell__end)) .pui-input--embedded {
-  padding-right: 12px;
+  padding-right: 14px;
 }
 
 .pui-input-shell__start svg,
@@ -674,7 +674,7 @@ fieldset.pui-field > legend {
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  padding: 0 38px 0 12px;
+  padding: 0 38px 0 14px;
   text-align: left;
   cursor: pointer;
 }
@@ -1779,7 +1779,7 @@ fieldset.pui-field > legend {
   display: grid;
   place-items: center;
   padding: 20px;
-  background: rgba(20, 30, 48, 0.45);
+  background: rgba(0, 0, 0, 0.38);
 }
 
 .pui-overlay--drawer {
@@ -1803,7 +1803,27 @@ fieldset.pui-field > legend {
   box-shadow: var(--pui-shadow-overlay);
 }
 
-.pui-dialog--small { width: min(100%, 400px); }
+.pui-dialog:focus-visible,
+.pui-drawer:focus-visible {
+  outline: 2px solid var(--pui-primary);
+  outline-offset: -2px;
+}
+
+.pui-dialog--no-body {
+  grid-template-rows: auto auto;
+}
+
+.pui-dialog--no-body .pui-dialog__header {
+  padding-bottom: 12px;
+  border-bottom: 0;
+}
+
+.pui-dialog--no-body .pui-dialog__footer {
+  padding-top: 8px;
+  border-top: 0;
+}
+
+.pui-dialog--small { width: min(100%, 420px); }
 .pui-dialog--large { width: min(100%, 720px); }
 
 .pui-dialog__header,
@@ -1814,6 +1834,11 @@ fieldset.pui-field > legend {
   gap: 20px;
   padding: 20px 22px;
   border-bottom: 1px solid var(--pui-border);
+}
+
+.pui-dialog__header {
+  padding: 20px 24px 12px;
+  border-bottom: 0;
 }
 
 .pui-dialog__header > div,
@@ -1846,6 +1871,22 @@ fieldset.pui-field > legend {
   overflow-y: auto;
 }
 
+.pui-dialog__body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 8px 24px 20px;
+}
+
+.pui-dialog__body > * {
+  flex: none;
+  min-width: 0;
+}
+
+.pui-dialog__body > :is(.pui-button, .pui-icon-button) {
+  align-self: flex-start;
+}
+
 .pui-dialog__footer,
 .pui-drawer__footer {
   display: flex;
@@ -1856,6 +1897,11 @@ fieldset.pui-field > legend {
   padding: 14px 22px;
   border-top: 1px solid var(--pui-border);
   background: var(--pui-surface);
+}
+
+.pui-dialog__footer {
+  padding: 12px 24px 20px;
+  border-top: 0;
 }
 
 .pui-drawer {
@@ -1930,6 +1976,21 @@ fieldset.pui-field > legend {
 
 .pui-dropdown__menu--start { left: 0; }
 .pui-dropdown__menu--end { right: 0; }
+
+.pui-dropdown__menu.pui-portal {
+  position: fixed;
+  z-index: 130;
+  top: 0;
+  left: 0;
+  right: auto;
+  max-height: min(320px, var(--pui-floating-max-height, calc(100dvh - 24px)));
+  transform: none;
+  visibility: hidden;
+}
+
+.pui-dropdown__menu.pui-portal[data-positioned="true"] {
+  visibility: visible;
+}
 
 .pui-dropdown__item {
   display: flex;

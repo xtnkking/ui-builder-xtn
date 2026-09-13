@@ -2,7 +2,7 @@
 
 `ui-builder-xtn` 是一个带完整 React + TypeScript 源码的 Codex Skill，用于构建风格一致、交互稳定的产品界面。
 
-它不是一份只靠提示词约束的视觉规范。v0.2.5 将 Personal UI 源码、公开导出、组件清单、安装器和来源校验器组成同一个闭环：使用者提出功能后，页面中的控件必须直接使用本仓库提供的组件代码。
+它不是一份只靠提示词约束的视觉规范。v0.2.8 将 Personal UI 源码、公开导出、组件清单、安装器和来源校验器组成同一个闭环：使用者提出功能后，页面中的控件必须直接使用本仓库提供的组件代码。
 
 ## 强制源码模式
 
@@ -11,7 +11,7 @@
 - 业务代码只能从 `src/personal-ui/index.ts` 的公开 barrel 导入运行时组件和页面模式。
 - 目标项目不得临时仿写控件、深层导入实现文件、修改已安装组件、添加本地扩展，或用第三方 JSX 组件绕开 Personal UI。
 - `component-manifest.json` 将 118 个基础、组件和页面模式家族以及 130 个目录别名绑定到真实源文件，并把 139 个 runtime export 明确分类为 136 个可视组件/模式和 3 个非可视 Hook/常量。
-- `component-manifest.json` 还保存全部 26 个 managed source 文件的 SHA-256，任何缺失、修改或额外文件都会失败。
+- `component-manifest.json` 还保存全部 28 个 managed source 文件的 SHA-256，任何缺失、修改或额外文件都会失败。
 - 安装器会把固定的 `verify:personal-ui` 自动接入 npm `prebuild`；常规 `npm run build` 必须先通过源码完整性和组件来源门禁。
 - 校验器扫描项目中的脚本、JSX/TSX、MDX、HTML、CSS、PostCSS、SCSS、Sass 和 Less，并识别实际使用的公开导出；不需要靠人工列出组件，也没有允许源码漂移的绕过开关。
 - 业务样式可以负责非交互布局和文档允许的主题 token，但不能用通用控件选择器、私有 `.pui-*` / `data-pui-*` 选择器、CSS-in-JS 包装、预处理器注入、动态 `<style>`、外部全局样式、DOM/CSSOM 修改，或受保护组件的 `className`、`style`、`css`、`sx`、`tw`、`ref`、spread props / `cloneElement` 改写组件皮肤和几何。
@@ -28,6 +28,12 @@
 - 稳定的异步尺寸、表格高度、输入框图标位置、浮层行为和 320px 至宽屏响应式契约
 
 完整映射见 [组件目录](references/component-catalog.md)，安装、升级和强制来源规则见 [集成指南](references/integration.md)。
+
+## 预览与设计基准
+
+`assets/react-kit` 中的 React 实例和 `src/personal-ui/` 是实际可安装、可运行的组件来源。旧的 `personal-ui-library-preview.html` 是独立的静态设计稿，其原生控件和演示交互不会随 Skill 源码自动更新，也不能被复制到业务页面。v0.2.8 已将基础控件高度、圆角、主色和弹窗间距向该设计稿的默认浅色模式对齐；复杂表单弹窗、嵌套确认和默认内嵌抽屉等新场景则以 React 预览及公开组件 API 为准。
+
+在仓库中运行 `npm --prefix assets/react-kit run dev` 查看最新实例。检查视觉问题时请同时查看真实业务场景、对应的公开组件源码和浏览器中的 React 实例，不要仅从旧设计稿截图推断当前 Skill 的行为。
 
 ## 环境要求
 

@@ -1,6 +1,6 @@
 # Integration
 
-Personal UI v0.2.5 is installed source with an enforced provenance boundary. The target receives the complete managed `src/personal-ui/` tree, its runtime registry, the component manifest, and the provenance scanner. Product code may compose public exports, but it may not fork, imitate, or reach inside the managed implementation.
+Personal UI v0.2.8 is installed source with an enforced provenance boundary. The target receives the complete managed `src/personal-ui/` tree, its runtime registry, the component manifest, and the provenance scanner. Product code may compose public exports, but it may not fork, imitate, or reach inside the managed implementation.
 
 ## Choose A Mode
 
@@ -95,11 +95,11 @@ If canonical source cannot be changed within the task's authority, stop and repo
 
 ## Floating Surfaces
 
-`Select`, searchable selectors, and comboboxes portal their open surfaces to `document.body` and use fixed positioning. Their preferred placement flips when useful, clamps on both axes, and preserves a viewport gutter. Because the surfaces are portaled, they escape clipping ancestors such as tables, drawers, and `overflow: hidden` containers while retaining locally computed `--pui-*` tokens.
+`Select`, searchable selectors, comboboxes, tag suggestions, tree selectors, and dropdown menus portal their open surfaces outside clipped content and use fixed positioning. They attach to the owning modal overlay when present, otherwise to `document.body`, so a nested modal stays above its parent's menu. Their preferred placement flips when useful, clamps on both axes, and preserves a viewport gutter while retaining locally computed `--pui-*` tokens.
 
 Inside `Dialog` or `Drawer`, keep the bundled trigger/surface relationship intact so modal focus containment can follow the portaled surface. Do not wrap or replace these controls in a way that removes their focus and `aria-controls` wiring.
 
-Menus that intentionally remain within their owning container use their component's documented positioning behavior. Tooltips are supplementary and non-interactive; use `OverflowText` when the tooltip should exist only for actual truncation. Verify floating surfaces near every viewport edge and above dialogs or drawers.
+Popover and context-menu surfaces also follow their owning modal overlay. Tooltips are supplementary and non-interactive; use `OverflowText` when the tooltip should exist only for actual truncation. Verify floating surfaces near every viewport edge and above dialogs or drawers.
 
 ## Existing Design Systems
 

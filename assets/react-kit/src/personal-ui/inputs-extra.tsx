@@ -15,6 +15,7 @@ import {
   type ReactNode,
   type TextareaHTMLAttributes,
 } from "react";
+import { createPortal } from "react-dom";
 import {
   Bold,
   Check,
@@ -39,6 +40,7 @@ import {
 } from "lucide-react";
 import { Button, IconButton, Spinner, Tag } from "./primitives";
 import { FieldContext } from "./field-context";
+import { floatingPortalTarget, usePopoverPosition } from "./floating-position";
 import {
   Combobox,
   Input,
@@ -112,15 +114,22 @@ function useOutsideDismiss(
   open: boolean,
   rootRef: React.RefObject<HTMLElement>,
   onDismiss: () => void,
+  popoverRef?: React.RefObject<HTMLElement>,
 ) {
   useEffect(() => {
     if (!open) return;
-    const handlePointer = (event: MouseEvent) => {
-      if (!rootRef.current?.contains(event.target as Node)) onDismiss();
+    const handleOutside = (event: MouseEvent | FocusEvent) => {
+      const target = event.target;
+      if (!(target instanceof Node)) return;
+      if (!rootRef.current?.contains(target) && !popoverRef?.current?.contains(target)) onDismiss();
     };
-    document.addEventListener("mousedown", handlePointer);
-    return () => document.removeEventListener("mousedown", handlePointer);
-  }, [onDismiss, open, rootRef]);
+    document.addEventListener("mousedown", handleOutside);
+    document.addEventListener("focusin", handleOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleOutside);
+      document.removeEventListener("focusin", handleOutside);
+    };
+  }, [onDismiss, open, popoverRef, rootRef]);
 }
 
 export interface FormProps extends FormHTMLAttributes<HTMLFormElement> {
@@ -718,6 +727,8 @@ export function Autocomplete({
   const generatedId = useId();
   const controlId = id ?? `pui-autocomplete-${generatedId}`;
   const rootRef = useRef<HTMLDivElement>(null);
+  const popoverRef = useRef<HTMLDivElement>(null);
+  const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
   const [open, setOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const filtered = useMemo(() => {
@@ -725,10 +736,13 @@ export function Autocomplete({
     const needle = query.trim().toLocaleLowerCase();
     return options.filter((option) => `${option.label} ${option.description ?? ""} ${option.searchText ?? ""}`.toLocaleLowerCase().includes(needle));
   }, [filterOptions, options, query]);
-  useOutsideDismiss(open, rootRef, () => setOpen(false));
+  usePopoverPosition(open, "bottom", rootRef, popoverRef);
+  useOutsideDismiss(open, rootRef, () => setOpen(false), popoverRef);
+  useEffect(() => { setPortalTarget(floatingPortalTarget(rootRef.current)); }, []);
+  useEffect(() => { if (disabled) setOpen(false); }, [disabled]);
   useEffect(() => { if (activeIndex >= filtered.length) setActiveIndex(0); }, [activeIndex, filtered.length]);
   const choose = (option: AutocompleteOption) => {
-    if (option.disabled) return;
+    if (disabled || option.disabled) return;
     onValueChange(option.value);
     onQueryChange(option.label);
     onOptionSelect?.(option);
@@ -747,7 +761,7 @@ export function Autocomplete({
         aria-label={ariaLabel}
         aria-autocomplete="list"
         aria-expanded={open}
-        aria-controls={`${controlId}-listbox`}
+        aria-controls={open ? `${controlId}-listbox` : undefined}
         aria-activedescendant={open && filtered[activeIndex] ? `${controlId}-option-${activeIndex}` : undefined}
         startAdornment={<Search />}
         endAdornment={loading ? <LoaderCircle className="pui-spinner" /> : <ChevronDown />}
@@ -762,6 +776,7 @@ export function Autocomplete({
           if (event.key === "ArrowDown" || event.key === "ArrowUp") {
             event.preventDefault();
             setOpen(true);
+            if (!filtered.length) return;
             const direction = event.key === "ArrowDown" ? 1 : -1;
             let next = activeIndex;
             for (let count = 0; count < filtered.length; count += 1) {
@@ -772,13 +787,15 @@ export function Autocomplete({
           } else if (event.key === "Enter" && open && filtered[activeIndex]) {
             event.preventDefault();
             choose(filtered[activeIndex]);
-          } else if (event.key === "Escape") {
+          } else if (event.key === "Escape" && open) {
+            event.preventDefault();
+            event.stopPropagation();
             setOpen(false);
           }
         }}
       />
-      {open ? (
-        <div id={`${controlId}-listbox`} className="pui-extra-popover pui-autocomplete__list" role="listbox" aria-label={ariaLabel}>
+      {open ? (portalTarget ? createPortal(
+        <div ref={popoverRef} id={`${controlId}-listbox`} className="pui-extra-popover pui-autocomplete__list pui-portal" data-pui-floating-root="true" role="listbox" aria-label={ariaLabel}>
           {loading ? <div className="pui-extra-state"><Spinner label="正在加载" /></div> : filtered.map((option, index) => (
             <button key={option.value} id={`${controlId}-option-${index}`} type="button" className="pui-extra-option" role="option" aria-selected={option.value === value} data-active={index === activeIndex || undefined} disabled={option.disabled} onMouseDown={(event) => event.preventDefault()} onMouseMove={() => setActiveIndex(index)} onClick={() => choose(option)}>
               {option.leading != null ? <span className="pui-extra-option__leading" aria-hidden="true">{option.leading}</span> : null}
@@ -787,8 +804,7 @@ export function Autocomplete({
             </button>
           ))}
           {!loading && !filtered.length ? <div className="pui-extra-state" role="status">{emptyText}</div> : null}
-        </div>
-      ) : null}
+        </div>, portalTarget) : null) : null}
       <FormValueBridge name={name} form={form} value={submittedValue} disabled={disabled} required={required} />
     </div>
   );
@@ -825,6 +841,7 @@ export interface AsyncSelectOption extends ComboboxOption {}
 export interface AsyncSelectProps {
   id?: string;
   options: readonly AsyncSelectOption[];
+  selectedOption?: AsyncSelectOption;
   value?: string;
   query: string;
   onQueryChange: (query: string) => void;
@@ -850,6 +867,7 @@ export interface AsyncSelectProps {
 export function AsyncSelect({
   id,
   options,
+  selectedOption,
   value,
   query,
   onQueryChange,
@@ -875,18 +893,32 @@ export function AsyncSelect({
   const generatedId = useId();
   const controlId = id ?? `pui-async-select-${generatedId}`;
   const rootRef = useRef<HTMLDivElement>(null);
+  const popoverRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
   const [open, setOpen] = useState(false);
   const [retrying, setRetrying] = useState(false);
   const [loadingMoreInternally, setLoadingMoreInternally] = useState(false);
   const [actionError, setActionError] = useState<ReactNode>();
   const [failedAction, setFailedAction] = useState<"retry" | "load-more">();
   const [activeIndex, setActiveIndex] = useState(0);
-  const selected = options.find((option) => option.value === value);
-  useOutsideDismiss(open, rootRef, () => setOpen(false));
-  useEffect(() => { if (open) requestAnimationFrame(() => searchRef.current?.focus()); }, [open]);
+  const selectedCacheRef = useRef<AsyncSelectOption | null>(null);
+  const selected = options.find((option) => option.value === value)
+    ?? (selectedOption?.value === value ? selectedOption : undefined)
+    ?? (selectedCacheRef.current?.value === value ? selectedCacheRef.current : undefined);
+  useEffect(() => { if (selected) selectedCacheRef.current = selected; }, [selected]);
+  usePopoverPosition(open, "bottom", rootRef, popoverRef);
+  useOutsideDismiss(open, rootRef, () => setOpen(false), popoverRef);
+  useEffect(() => { setPortalTarget(floatingPortalTarget(rootRef.current)); }, []);
+  useEffect(() => { if (disabled) setOpen(false); }, [disabled]);
+  useEffect(() => {
+    if (!open || disabled) return;
+    const frame = requestAnimationFrame(() => searchRef.current?.focus());
+    return () => cancelAnimationFrame(frame);
+  }, [disabled, open]);
   const retry = async () => {
-    if (!onRetry || retrying) return;
+    if (disabled || !onRetry || retrying) return;
     setRetrying(true);
     setActionError(undefined);
     try {
@@ -900,7 +932,7 @@ export function AsyncSelect({
     }
   };
   const loadMore = async () => {
-    if (!onLoadMore || loadingMore || loadingMoreInternally) return;
+    if (disabled || !onLoadMore || loadingMore || loadingMoreInternally) return;
     setLoadingMoreInternally(true);
     setActionError(undefined);
     try {
@@ -914,18 +946,19 @@ export function AsyncSelect({
     }
   };
   const choose = (option: AsyncSelectOption) => {
-    if (option.disabled) return;
+    if (disabled || option.disabled) return;
+    selectedCacheRef.current = option;
     if (option.value !== value) onValueChange(option.value);
     setOpen(false);
   };
   return (
     <div ref={rootRef} data-pui-owner="AsyncSelect" className={cx("pui-async-select", className)} data-open={open || undefined}>
-      <button id={controlId} type="button" className="pui-combobox__trigger" role="combobox" aria-label={ariaLabel} aria-haspopup="listbox" aria-expanded={open} aria-controls={open ? `${controlId}-listbox` : undefined} aria-required={required || undefined} disabled={disabled} onClick={() => setOpen((current) => !current)}>
+      <button ref={triggerRef} id={controlId} type="button" className="pui-combobox__trigger" role="combobox" aria-label={ariaLabel} aria-haspopup="listbox" aria-expanded={open} aria-controls={open ? `${controlId}-listbox` : undefined} aria-required={required || undefined} disabled={disabled} onClick={() => setOpen((current) => !current)} onKeyDown={(event) => { if (open && event.key === "Escape") { event.preventDefault(); event.stopPropagation(); setOpen(false); } }}>
         <span className="pui-combobox__value">{selected?.leading != null ? <span className="pui-option__leading" aria-hidden="true">{selected.leading}</span> : null}<span>{selected?.label ?? placeholder}</span></span>
         {loading && !open ? <LoaderCircle className="pui-spinner" aria-hidden="true" /> : <ChevronDown aria-hidden="true" />}
       </button>
       {open ? (
-        <div className="pui-extra-popover pui-async-select__popover">
+        portalTarget ? createPortal(<div ref={popoverRef} className="pui-extra-popover pui-async-select__popover pui-portal" data-pui-floating-root="true" onKeyDown={(event) => { if (event.key === "Escape") { event.preventDefault(); event.stopPropagation(); setOpen(false); triggerRef.current?.focus(); } }}>
           <SearchInput ref={searchRef} value={query} placeholder={searchPlaceholder} aria-label={`搜索${ariaLabel}`} onChange={(event) => { setActionError(undefined); setFailedAction(undefined); onQueryChange(event.target.value); setActiveIndex(0); }} onClear={() => { setActionError(undefined); setFailedAction(undefined); onQueryChange(""); setActiveIndex(0); }} onKeyDown={(event) => {
             if ((event.key === "ArrowDown" || event.key === "ArrowUp") && options.length) {
               event.preventDefault();
@@ -938,7 +971,7 @@ export function AsyncSelect({
           }} />
           <div id={`${controlId}-listbox`} className="pui-async-select__list" role="listbox" aria-label={ariaLabel} aria-busy={loading || undefined}>
             {loading && !options.length ? <div className="pui-extra-state"><Spinner label="正在加载" /></div> : null}
-            {error != null || actionError != null ? <div className="pui-extra-error" role="alert"><span>{error ?? actionError}</span>{onRetry || (failedAction === "load-more" && onLoadMore) ? <Button size="small" loading={failedAction === "load-more" ? loadingMoreInternally : retrying} onClick={() => void (failedAction === "load-more" ? loadMore() : retry())}>重试</Button> : null}</div> : null}
+            {error != null || actionError != null ? <div className="pui-extra-error" role="alert"><span>{error ?? actionError}</span>{onRetry || (failedAction === "load-more" && onLoadMore) ? <Button size="small" disabled={disabled} loading={failedAction === "load-more" ? loadingMoreInternally : retrying} onClick={() => void (failedAction === "load-more" ? loadMore() : retry())}>重试</Button> : null}</div> : null}
             {error == null && actionError == null ? options.map((option, index) => (
               <button key={option.value} type="button" className="pui-extra-option" role="option" aria-selected={option.value === value} data-active={index === activeIndex || undefined} disabled={option.disabled} onMouseMove={() => setActiveIndex(index)} onClick={() => choose(option)}>
                 {option.leading != null ? <span className="pui-extra-option__leading" aria-hidden="true">{option.leading}</span> : null}
@@ -948,8 +981,8 @@ export function AsyncSelect({
             )) : null}
             {!loading && error == null && actionError == null && !options.length ? <div className="pui-extra-state" role="status">{emptyText}</div> : null}
           </div>
-          {error == null && actionError == null && hasMore && onLoadMore ? <div className="pui-async-select__footer"><Button size="small" loading={Boolean(loadingMore || loadingMoreInternally)} onClick={() => void loadMore()}>加载更多</Button></div> : null}
-        </div>
+          {error == null && actionError == null && hasMore && onLoadMore ? <div className="pui-async-select__footer"><Button size="small" disabled={disabled} loading={Boolean(loadingMore || loadingMoreInternally)} onClick={() => void loadMore()}>加载更多</Button></div> : null}
+        </div>, portalTarget) : null
       ) : null}
       <FormValueBridge name={name} form={form} value={value ?? ""} disabled={disabled} required={required} />
     </div>
@@ -1002,6 +1035,10 @@ export function MultiSelect({
   const generatedId = useId();
   const controlId = id ?? `pui-multi-select-${generatedId}`;
   const rootRef = useRef<HTMLDivElement>(null);
+  const popoverRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const searchRef = useRef<HTMLInputElement>(null);
+  const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
   const [open, setOpen] = useState(false);
   const [internalQuery, setInternalQuery] = useState("");
   const search = query ?? internalQuery;
@@ -1011,25 +1048,44 @@ export function MultiSelect({
     const needle = search.trim().toLocaleLowerCase();
     return needle ? options.filter((option) => `${option.label} ${option.description ?? ""} ${option.searchText ?? ""}`.toLocaleLowerCase().includes(needle)) : options;
   }, [options, search]);
-  useOutsideDismiss(open, rootRef, () => setOpen(false));
+  usePopoverPosition(open, "bottom", rootRef, popoverRef);
+  useOutsideDismiss(open, rootRef, () => setOpen(false), popoverRef);
+  useEffect(() => { setPortalTarget(floatingPortalTarget(rootRef.current)); }, []);
+  useEffect(() => { if (disabled) setOpen(false); }, [disabled]);
+  useEffect(() => {
+    if (!open || disabled) return;
+    const frame = requestAnimationFrame(() => searchRef.current?.focus());
+    return () => cancelAnimationFrame(frame);
+  }, [disabled, open]);
   const toggle = (option: MultiSelectOption) => {
-    if (option.disabled) return;
+    if (disabled || option.disabled) return;
     onValueChange(value.includes(option.value) ? value.filter((item) => item !== option.value) : [...value, option.value]);
   };
   const summary = !selectedOptions.length ? placeholder : selectedOptions.length === 1 ? selectedOptions[0].label : `${optionText(selectedOptions[0].label, selectedOptions[0].value)} +${selectedOptions.length - 1}`;
   return (
     <div ref={rootRef} data-pui-owner="MultiSelect" className={cx("pui-multi-select", className)} data-open={open || undefined}>
-      <button id={controlId} type="button" className="pui-multi-select__trigger" role="combobox" aria-label={`${ariaLabel}，已选择 ${value.length} 项`} aria-haspopup="listbox" aria-expanded={open} aria-controls={open ? `${controlId}-listbox` : undefined} aria-required={required || undefined} disabled={disabled} onClick={() => setOpen((current) => !current)}>
+      <button ref={triggerRef} id={controlId} type="button" className="pui-multi-select__trigger" role="combobox" aria-label={`${ariaLabel}，已选择 ${value.length} 项`} aria-haspopup="listbox" aria-expanded={open} aria-controls={open ? `${controlId}-listbox` : undefined} aria-required={required || undefined} disabled={disabled} onClick={() => setOpen((current) => !current)} onKeyDown={(event) => { if (open && event.key === "Escape") { event.preventDefault(); event.stopPropagation(); setOpen(false); } }}>
         <span className={cx("pui-multi-select__summary", !selectedOptions.length && "is-placeholder")}>{summary}</span>
         <span className="pui-multi-select__count" aria-hidden="true">{value.length || null}</span>
         <ChevronDown aria-hidden="true" />
       </button>
       {open ? (
-        <div className="pui-extra-popover pui-multi-select__popover">
-          <SearchInput value={search} placeholder={searchPlaceholder} aria-label={`搜索${ariaLabel}`} onChange={(event) => setSearch(event.target.value)} onClear={() => setSearch("")} />
+        portalTarget ? createPortal(<div ref={popoverRef} className="pui-extra-popover pui-multi-select__popover pui-portal" data-pui-floating-root="true" onKeyDown={(event) => { if (event.key === "Escape") { event.preventDefault(); event.stopPropagation(); setOpen(false); triggerRef.current?.focus(); } }}>
+          <SearchInput ref={searchRef} value={search} placeholder={searchPlaceholder} aria-label={`搜索${ariaLabel}`} onChange={(event) => setSearch(event.target.value)} onClear={() => setSearch("")} onKeyDown={(event) => {
+            if (event.key !== "ArrowDown") return;
+            const firstOption = popoverRef.current?.querySelector<HTMLButtonElement>("[role='option']:not(:disabled)");
+            if (firstOption) { event.preventDefault(); firstOption.focus(); }
+          }} />
           <div id={`${controlId}-listbox`} className="pui-multi-select__list" role="listbox" aria-label={ariaLabel} aria-multiselectable="true">
             {filtered.map((option) => (
-              <button key={option.value} type="button" className="pui-extra-option" role="option" aria-selected={value.includes(option.value)} disabled={option.disabled} onClick={() => toggle(option)}>
+              <button key={option.value} type="button" className="pui-extra-option" role="option" aria-selected={value.includes(option.value)} disabled={option.disabled} onClick={() => toggle(option)} onKeyDown={(event) => {
+                if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
+                const options = Array.from(popoverRef.current?.querySelectorAll<HTMLButtonElement>("[role='option']:not(:disabled)") ?? []);
+                const index = options.indexOf(event.currentTarget);
+                const next = options[index + (event.key === "ArrowDown" ? 1 : -1)];
+                if (next) { event.preventDefault(); next.focus(); }
+                else if (event.key === "ArrowUp" && index === 0) { event.preventDefault(); searchRef.current?.focus(); }
+              }}>
                 <span className="pui-multi-select__check" aria-hidden="true">{value.includes(option.value) ? <Check /> : null}</span>
                 {option.leading != null ? <span className="pui-extra-option__leading" aria-hidden="true">{option.leading}</span> : null}
                 <span className="pui-extra-option__copy"><strong>{option.label}</strong>{option.description ? <span>{option.description}</span> : null}</span>
@@ -1037,8 +1093,8 @@ export function MultiSelect({
             ))}
             {!filtered.length ? <div className="pui-extra-state" role="status">{emptyText}</div> : null}
           </div>
-          <div className="pui-multi-select__footer"><Button size="small" disabled={!value.length} onClick={() => onValueChange([])}>清空</Button><Button size="small" variant="primary" onClick={() => setOpen(false)}>完成</Button></div>
-        </div>
+          <div className="pui-multi-select__footer"><Button size="small" disabled={disabled || !value.length} onClick={() => { if (!disabled) onValueChange([]); }}>清空</Button><Button size="small" variant="primary" disabled={disabled} onClick={() => { setOpen(false); triggerRef.current?.focus(); }}>完成</Button></div>
+        </div>, portalTarget) : null
       ) : null}
       <FormValuesBridge name={name} form={form} values={value} disabled={disabled} required={required} />
     </div>
@@ -1097,9 +1153,18 @@ export function TagInput({
   const controlId = id ?? `pui-tag-input-${generatedId}`;
   const [error, setError] = useState<string>();
   const rootRef = useRef<HTMLDivElement>(null);
+  const popoverRef = useRef<HTMLDivElement>(null);
+  const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
   const [open, setOpen] = useState(false);
-  useOutsideDismiss(open, rootRef, () => setOpen(false));
+  const needle = inputValue.trim().toLocaleLowerCase();
+  const visibleSuggestions = needle ? suggestions.filter((item) => `${item.label ?? ""} ${item.value}`.toLocaleLowerCase().includes(needle) && !value.includes(item.value)) : [];
+  const showSuggestions = open && !disabled && visibleSuggestions.length > 0;
+  usePopoverPosition(showSuggestions, "bottom", rootRef, popoverRef);
+  useOutsideDismiss(open, rootRef, () => setOpen(false), popoverRef);
+  useEffect(() => { setPortalTarget(floatingPortalTarget(rootRef.current)); }, []);
+  useEffect(() => { if (disabled) setOpen(false); }, [disabled]);
   const add = (candidate: string) => {
+    if (disabled) return;
     const normalized = normalizeValue(candidate);
     const validation = !normalized ? "标签不能为空" : validateValue?.(normalized);
     if (validation) { setError(validation); return; }
@@ -1110,18 +1175,17 @@ export function TagInput({
     setError(undefined);
     setOpen(false);
   };
-  const needle = inputValue.trim().toLocaleLowerCase();
-  const visibleSuggestions = needle ? suggestions.filter((item) => `${item.label ?? ""} ${item.value}`.toLocaleLowerCase().includes(needle) && !value.includes(item.value)) : [];
   return (
     <div ref={rootRef} data-pui-owner="TagInput" className={cx("pui-tag-input", error && "is-invalid", disabled && "is-disabled", className)}>
       <div className="pui-tag-input__control" onClick={() => document.getElementById(controlId)?.focus()}>
         {value.map((tag, index) => <Tag key={`${tag}-${index}`} onRemove={disabled ? undefined : () => onValueChange(value.filter((_, itemIndex) => itemIndex !== index))}>{tag}</Tag>)}
-        <input id={controlId} className="pui-tag-input__input" value={inputValue} placeholder={!value.length ? placeholder : undefined} disabled={disabled || (maxTags != null && value.length >= maxTags)} aria-label={ariaLabel} aria-invalid={Boolean(error) || undefined} aria-required={required || undefined} onFocus={() => setOpen(true)} onChange={(event) => { onInputValueChange(event.target.value); setError(undefined); setOpen(true); }} onKeyDown={(event) => {
+        <input id={controlId} className="pui-tag-input__input" value={inputValue} placeholder={!value.length ? placeholder : undefined} disabled={disabled || (maxTags != null && value.length >= maxTags)} role="combobox" aria-autocomplete="list" aria-expanded={showSuggestions} aria-controls={showSuggestions ? `${controlId}-listbox` : undefined} aria-label={ariaLabel} aria-invalid={Boolean(error) || undefined} aria-required={required || undefined} onFocus={() => setOpen(true)} onChange={(event) => { onInputValueChange(event.target.value); setError(undefined); setOpen(true); }} onKeyDown={(event) => {
           if (event.key === "Enter" || event.key === ",") { event.preventDefault(); add(inputValue); }
           else if (event.key === "Backspace" && !inputValue && value.length) onValueChange(value.slice(0, -1));
+          else if (event.key === "Escape" && open) { event.preventDefault(); event.stopPropagation(); setOpen(false); }
         }} />
       </div>
-      {open && visibleSuggestions.length ? <div className="pui-extra-popover pui-tag-input__suggestions" role="listbox" aria-label="标签建议">{visibleSuggestions.map((item) => <button key={item.value} type="button" className="pui-extra-option" role="option" aria-selected="false" disabled={item.disabled} onMouseDown={(event) => event.preventDefault()} onClick={() => add(item.value)}>{item.leading != null ? <span className="pui-extra-option__leading">{item.leading}</span> : null}<span className="pui-extra-option__copy"><strong>{item.label ?? item.value}</strong></span></button>)}</div> : null}
+      {showSuggestions && portalTarget ? createPortal(<div ref={popoverRef} id={`${controlId}-listbox`} className="pui-extra-popover pui-tag-input__suggestions pui-portal" data-pui-floating-root="true" role="listbox" aria-label="标签建议">{visibleSuggestions.map((item) => <button key={item.value} type="button" className="pui-extra-option" role="option" aria-selected="false" disabled={item.disabled} onMouseDown={(event) => event.preventDefault()} onClick={() => add(item.value)}>{item.leading != null ? <span className="pui-extra-option__leading">{item.leading}</span> : null}<span className="pui-extra-option__copy"><strong>{item.label ?? item.value}</strong></span></button>)}</div>, portalTarget) : null}
       {error ? <span className="pui-tag-input__error" role="alert">{error}</span> : null}
       <FormValuesBridge name={name} form={form} values={value} disabled={disabled} required={required} />
     </div>
@@ -1211,10 +1275,15 @@ export function TreeSelect({ id, options, value, onValueChange, placeholder = "�
   const generatedId = useId();
   const controlId = id ?? `pui-tree-select-${generatedId}`;
   const rootRef = useRef<HTMLDivElement>(null);
+  const popoverRef = useRef<HTMLDivElement>(null);
+  const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
   const [open, setOpen] = useState(false);
   const [expanded, setExpanded] = useState<Set<string>>(() => new Set());
   const selected = flat.find((option) => option.value === value);
-  useOutsideDismiss(open, rootRef, () => setOpen(false));
+  usePopoverPosition(open, "bottom", rootRef, popoverRef);
+  useOutsideDismiss(open, rootRef, () => setOpen(false), popoverRef);
+  useEffect(() => { setPortalTarget(floatingPortalTarget(rootRef.current)); }, []);
+  useEffect(() => { if (disabled) setOpen(false); }, [disabled]);
   const toggleExpanded = (itemValue: string) => setExpanded((current) => { const next = new Set(current); if (next.has(itemValue)) next.delete(itemValue); else next.add(itemValue); return next; });
   const renderNodes = (nodes: readonly TreeSelectOption[], depth = 0): ReactNode => nodes.map((option) => {
     const hasChildren = Boolean(option.children?.length);
@@ -1222,8 +1291,8 @@ export function TreeSelect({ id, options, value, onValueChange, placeholder = "�
     return (
       <div key={option.value} role="none">
         <div className="pui-tree-select__row" style={{ paddingInlineStart: `${8 + depth * 20}px` }}>
-          {hasChildren ? <IconButton aria-label={isExpanded ? `折叠${optionText(option.label, option.value)}` : `展开${optionText(option.label, option.value)}`} icon={isExpanded ? <ChevronDown /> : <ChevronRight />} onClick={() => toggleExpanded(option.value)} /> : <span className="pui-tree-select__spacer" />}
-          <button type="button" role="treeitem" aria-selected={option.value === value} aria-expanded={hasChildren ? isExpanded : undefined} disabled={option.disabled} onClick={() => { onValueChange(option.value); setOpen(false); }}>
+          {hasChildren ? <IconButton aria-label={isExpanded ? `折叠${optionText(option.label, option.value)}` : `展开${optionText(option.label, option.value)}`} icon={isExpanded ? <ChevronDown /> : <ChevronRight />} disabled={disabled} onClick={() => toggleExpanded(option.value)} /> : <span className="pui-tree-select__spacer" />}
+          <button type="button" role="treeitem" aria-selected={option.value === value} aria-expanded={hasChildren ? isExpanded : undefined} disabled={disabled || option.disabled} onClick={() => { if (disabled) return; onValueChange(option.value); setOpen(false); }}>
             {option.leading != null ? <span aria-hidden="true">{option.leading}</span> : null}<span>{option.label}</span>{option.value === value ? <Check aria-hidden="true" /> : null}
           </button>
         </div>
@@ -1233,8 +1302,8 @@ export function TreeSelect({ id, options, value, onValueChange, placeholder = "�
   });
   return (
     <div ref={rootRef} data-pui-owner="TreeSelect" className={cx("pui-tree-select", className)} data-open={open || undefined}>
-      <button id={controlId} type="button" className="pui-combobox__trigger" role="combobox" aria-label={ariaLabel} aria-haspopup="tree" aria-expanded={open} aria-controls={open ? `${controlId}-tree` : undefined} aria-required={required || undefined} disabled={disabled} onClick={() => setOpen((currentOpen) => !currentOpen)}><span className="pui-combobox__value">{selected?.leading != null ? <span className="pui-option__leading">{selected.leading}</span> : null}<span>{selected?.label ?? placeholder}</span></span><ChevronDown /></button>
-      {open ? <div id={`${controlId}-tree`} className="pui-extra-popover pui-tree-select__tree" role="tree" aria-label={ariaLabel}>{renderNodes(options)}</div> : null}
+      <button id={controlId} type="button" className="pui-combobox__trigger" role="combobox" aria-label={ariaLabel} aria-haspopup="tree" aria-expanded={open} aria-controls={open ? `${controlId}-tree` : undefined} aria-required={required || undefined} disabled={disabled} onClick={() => setOpen((currentOpen) => !currentOpen)} onKeyDown={(event) => { if (open && event.key === "Escape") { event.preventDefault(); event.stopPropagation(); setOpen(false); } }}><span className="pui-combobox__value">{selected?.leading != null ? <span className="pui-option__leading">{selected.leading}</span> : null}<span>{selected?.label ?? placeholder}</span></span><ChevronDown /></button>
+      {open && portalTarget ? createPortal(<div ref={popoverRef} id={`${controlId}-tree`} className="pui-extra-popover pui-tree-select__tree pui-portal" data-pui-floating-root="true" role="tree" aria-label={ariaLabel} onKeyDown={(event) => { if (event.key === "Escape") { event.preventDefault(); event.stopPropagation(); setOpen(false); document.getElementById(controlId)?.focus(); } }}>{renderNodes(options)}</div>, portalTarget) : null}
       <FormValueBridge name={name} form={form} value={value ?? ""} disabled={disabled} required={required} />
     </div>
   );

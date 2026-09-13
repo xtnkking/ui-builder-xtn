@@ -452,9 +452,38 @@
   max-height: none;
 }
 
+.pui-async-select__popover.pui-portal,
+.pui-multi-select__popover.pui-portal,
+.pui-autocomplete__list.pui-portal,
+.pui-tag-input__suggestions.pui-portal,
+.pui-tree-select__tree.pui-portal {
+  position: fixed;
+  z-index: 130;
+  top: 0;
+  left: 0;
+  width: min(max(var(--pui-floating-anchor-width, 1px), 280px), var(--pui-floating-max-width, calc(100vw - 24px)));
+  min-width: 0;
+  max-height: min(360px, var(--pui-floating-max-height, calc(100dvh - 24px)));
+  visibility: hidden;
+}
+
+.pui-async-select__popover.pui-portal,
+.pui-multi-select__popover.pui-portal {
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  overflow: hidden;
+}
+
+.pui-async-select__popover.pui-portal[data-positioned="true"],
+.pui-multi-select__popover.pui-portal[data-positioned="true"],
+.pui-autocomplete__list.pui-portal[data-positioned="true"],
+.pui-tag-input__suggestions.pui-portal[data-positioned="true"],
+.pui-tree-select__tree.pui-portal[data-positioned="true"] {
+  visibility: visible;
+}
+
 .pui-async-select__list,
 .pui-multi-select__list {
-  min-height: 72px;
+  min-height: 0;
   max-height: 260px;
   overflow: auto;
 }
