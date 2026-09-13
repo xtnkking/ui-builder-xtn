@@ -12,6 +12,19 @@ let browser;
 const danger = "rgb(201, 54, 43)";
 const primary = "rgb(23, 105, 210)";
 
+function assertUniformInset(shadow, label) {
+  const dimensions = shadow
+    .replace(/rgba?\([^)]+\)|#[\da-f]{3,8}|\btransparent\b|var\([^)]+\)/gi, "")
+    .replace(/\binset\b/gi, "")
+    .trim()
+    .split(/\s+/)
+    .map((value) => Number(value.replace(/px$/, "")));
+  assert.match(shadow, /\binset\b/, `${label}: focus indicator must be inset (${shadow})`);
+  assert.equal(dimensions.length, 4, `${label}: focus indicator must declare x, y, blur, and spread (${shadow})`);
+  assert.deepEqual(dimensions.slice(0, 3), [0, 0, 0], `${label}: focus indicator cannot favor one edge (${shadow})`);
+  assert.ok(dimensions[3] > 0, `${label}: uniform focus indicator must have visible spread (${shadow})`);
+}
+
 async function inspectFocus(input, target, expectedColor, label) {
   await input.evaluate(() => new Promise((resolve) => window.setTimeout(resolve, 180)));
   const state = await input.evaluate((element, targetSelector) => {
@@ -32,12 +45,14 @@ async function inspectFocus(input, target, expectedColor, label) {
   if (state.invalid === "true") {
     assert.ok(state.shadow.includes(expectedColor), `${label}: focus indicator is not the error color (${state.shadow})`);
     assert.ok(!state.shadow.includes(primary), `${label}: brand-blue focus indicator conflicts with the red error border`);
+    assertUniformInset(state.shadow, label);
     if (!target) {
       assert.ok(state.autofillStateShadow.includes("#c9362b") || state.autofillStateShadow.includes(danger), `${label}: autofill focus state does not inherit danger color (${state.autofillStateShadow})`);
       assert.ok(!state.autofillStateShadow.includes("#1769d2") && !state.autofillStateShadow.includes(primary), `${label}: autofill focus state still uses brand blue`);
+      assertUniformInset(state.autofillStateShadow, `${label} autofill`);
     }
   } else {
-    assert.ok(!state.shadow.includes(danger), `${label}: old error focus indicator persisted after validation cleared`);
+    assert.equal(state.shadow, "none", `${label}: normal focus unexpectedly retained the error inset`);
     if (!target) {
       assert.ok(state.autofillStateShadow.includes("transparent"), `${label}: autofill focus state did not reset to transparent (${state.autofillStateShadow})`);
       assert.ok(!state.autofillStateShadow.includes("#c9362b") && !state.autofillStateShadow.includes(danger), `${label}: autofill focus state retained danger color`);
@@ -93,7 +108,7 @@ try {
       await page.close();
     }
   }
-  console.log("Input and PasswordInput focus color regression passed at 2560, 1440, 1024, 736, 360, and 320px.");
+  console.log("Input and PasswordInput uniform invalid focus regression passed at 2560, 1440, 1024, 736, 360, and 320px.");
 } finally {
   await browser?.close();
   await server.close();

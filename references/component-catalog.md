@@ -1,6 +1,6 @@
 # Component Catalog
 
-Personal UI v0.2.11 contains 118 source-backed families and preserves all 130 directory aliases from the approved preview. The family ID and aliases are discovery terms, not import paths. Application code must import the listed runtime exports from `src/personal-ui/index.ts`; it must never import a source file named in the final column directly.
+Personal UI v0.2.12 contains 118 source-backed families and preserves all 130 directory aliases from the approved preview. The family ID and aliases are discovery terms, not import paths. Application code must import the listed runtime exports from `src/personal-ui/index.ts`; it must never import a source file named in the final column directly.
 
 `assets/react-kit/component-manifest.json` is the machine-readable authority for this table. The manifest validator requires every family to resolve to real source files, every runtime export to exist in the barrel and registry, and every visual component or pattern to carry its registered source owner marker. Foundation families may be CSS or TypeScript artifacts without a runtime export.
 
@@ -207,7 +207,7 @@ Source names below are relative to `assets/react-kit/src/personal-ui/`; duplicat
 - Searchable selectors, `Autocomplete`, `TagInput` suggestions, `TreeSelect`, and `DropdownMenu` render their open surfaces outside scroll-clipped Dialog content. Keep the bundled trigger and surface wiring intact; the component handles modal focus, viewport bounds, option scrolling, and nested modal stacking.
 - `AsyncSelect` retains the label of an option chosen from earlier remote results when the current response changes. For a controlled value set before its option is fetched, provide a matching `selectedOption` so the trigger can show that value. `MultiSelect` currently requires every selected value to exist in its complete `options` collection; it is not a server-paged multi-select.
 - `Input`, `PasswordInput`, `SearchInput`, and `Textarea` own their adornment geometry. `SearchInput` renders its own search and clear actions. Do not add another clear button outside it.
-- Invalid inputs keep the danger color for both the border and visible focus indicator, including adorned password fields and browser autofill; ordinary focus uses the primary color.
+- Invalid inputs keep the danger color for both the border and an even inset focus indicator on all four sides, including adorned password fields and browser autofill; ordinary focus uses the primary color.
 - `NumberInput` owns one pair of visible step buttons and hides the browser's native stepper without removing number-input keyboard semantics. Wrap it in `Field` or pass `ariaLabel` so each step button names its field; an empty value steps first to `min` or `max` when defined. Keep its end slot free of unrelated adornments.
 - `Field` owns labels, required state, hints, errors, and grouped choice semantics. `Form` is the public form root. The verifier rejects an application-owned native form.
 - Every option, tab, menu item, product, table column, tree node, and row uses a stable, unique business identity. Do not use array positions or values generated during render.
