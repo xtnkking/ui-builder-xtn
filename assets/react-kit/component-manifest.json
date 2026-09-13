@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "kitVersion": "0.2.8",
+  "kitVersion": "0.2.10",
   "entries": [
     {
       "id": "color",
@@ -2137,8 +2137,8 @@
     "layout.tsx": "0529b2666fc95ff370b3be89239c764897d7684ab57a13c50ab096be6d01c62a",
     "navigation-extra.tsx": "10c2357f3fc8706a10220d06311005450451f45e92697c70f5f4886f95cbd1a7",
     "navigation.tsx": "73103ebe95adb1358b19af5a80e8b03e21bff430280ebbe786cdfdcc406b8c31",
-    "overlays-extra.tsx": "8a8ebfaa279d60c1b8042d733d8806cb5b59c3df1cd0848c3277fae0b78cfc1d",
-    "overlays.tsx": "0edb53cbbb49ccb3be499a1f4115473d240448d9960c94cc04dacfbb104e074c",
+    "overlays-extra.tsx": "200f00a38e98e856c74379a60717d6cecd4f5ca8b1dcf78d5e0810232c72f84b",
+    "overlays.tsx": "0e4cceec06a664c4afea368addc2555790b770bfd147101bc7962f757ad3eb11",
     "patterns/family-login-page.tsx": "d96543d8df95f4cd465c7d7413edd39d71d1b438f0b22d9315b6114cf1f67963",
     "patterns/member-management-page.tsx": "0aa2e0e76e0bf3bd1a3ad8b1a6fa8f80d7b83394de09cce276ccdf79a8a533dc",
     "patterns/standard-pages.tsx": "8a5f8b0311fe2fad94b10811d4348ae60897042c039219d675bc6d87f7bb3f26",

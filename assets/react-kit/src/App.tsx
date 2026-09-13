@@ -418,6 +418,7 @@ function DemoContent() {
         open={Boolean(editingMember)}
         onClose={() => { if (!savingMember) setEditingMember(null); }}
         closable={!savingMember}
+        closeOnBackdropClick={false}
         title={`编辑${editingMember?.name ?? "用户"}的权限`}
         description={editingMember?.email}
         footer={<><Button disabled={savingMember} onClick={() => setEditingMember(null)}>取消</Button><Button variant="primary" loading={savingMember} loadingLabel="保存中" onClick={() => void saveListMember()}>保存</Button></>}
@@ -453,6 +454,7 @@ function DemoContent() {
         open={roleDialogOpen}
         onClose={() => { if (!savingRoles) setRoleDialogOpen(false); }}
         closable={!savingRoles}
+        closeOnBackdropClick={false}
         title="分配角色 · xtn"
         description="新增和移除角色需要分两次保存。"
         footer={<><Button disabled={savingRoles} onClick={() => setRoleDialogOpen(false)}>取消</Button><Button variant="primary" loading={savingRoles} loadingLabel="保存中" onClick={async () => { if (savingRoles) return; setSavingRoles(true); await new Promise((resolve) => window.setTimeout(resolve, 500)); setAssignedRoles(draftRoles); setSavingRoles(false); setRoleDialogOpen(false); toast({ tone: "success", description: "角色已保存" }); }}>保存</Button></>}
@@ -474,6 +476,7 @@ function DemoContent() {
       <ConfirmDialog
         open={nestedDialogOpen}
         onOpenChange={setNestedDialogOpen}
+        closeOnBackdropClick={false}
         title="确认国家范围"
         description="此确认层位于角色分配之上。"
         confirmLabel="完成"
@@ -482,6 +485,7 @@ function DemoContent() {
       <Dialog
         open={floatingDialogOpen}
         onClose={() => setFloatingDialogOpen(false)}
+        closeOnBackdropClick={false}
         title="更多选择器"
         description="团队、标签和组织节点。"
         footer={<Button variant="primary" onClick={() => setFloatingDialogOpen(false)}>完成</Button>}

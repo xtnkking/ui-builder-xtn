@@ -14,6 +14,27 @@ async function noHorizontalOverflow(page, label) {
   assert.ok(sizes.document <= sizes.viewport, `${label}: document overflows horizontally (${sizes.document} > ${sizes.viewport})`);
 }
 
+async function clickBackdrop(dialog, label) {
+  const overlay = dialog.locator("..");
+  const backdropIsTopmost = await overlay.evaluate((element) => {
+    const bounds = element.getBoundingClientRect();
+    return document.elementFromPoint(bounds.left + 5, bounds.top + 5) === element;
+  });
+  assert.equal(backdropIsTopmost, true, `${label}: backdrop test point is covered by another surface`);
+  await overlay.click({ position: { x: 5, y: 5 } });
+}
+
+async function inspectMoreSelectorsFocus(dialog, label) {
+  const actionFocused = await dialog.getByRole("button", { name: "完成", exact: true }).evaluate((button) => document.activeElement === button);
+  const focus = await dialog.evaluate((panel) => ({
+    panelFocusVisible: panel.matches(":focus-visible"),
+    panelOutline: getComputedStyle(panel).outlineStyle,
+  }));
+  assert.equal(actionFocused, true, `${label}: initial focus did not reach the safe footer action`);
+  assert.equal(focus.panelFocusVisible, false, `${label}: panel shows a keyboard focus ring`);
+  assert.equal(focus.panelOutline, "none", `${label}: panel has a visible outline`);
+}
+
 async function inspectCompactConfirmation(dialog, label) {
   const geometry = await dialog.evaluate((element) => {
     const panel = element.getBoundingClientRect();
@@ -188,6 +209,9 @@ try {
       await page.keyboard.press("Escape");
       await confirm.waitFor({ state: "detached" });
       assert.equal(await opener.evaluate((button) => document.activeElement === button), true, `${width}px: Escape did not restore opener focus`);
+      await opener.click();
+      await clickBackdrop(confirm, `${width}px default confirmation`);
+      await confirm.waitFor({ state: "detached" });
 
       await responseMode.getByRole("button", { name: "请求失败" }).click();
       await opener.click();
@@ -203,6 +227,17 @@ try {
 
       await page.getByRole("button", { name: "分配角色" }).click();
       const roleDialog = page.getByRole("dialog", { name: "分配角色 · xtn" });
+      await roleDialog.waitFor();
+      await clickBackdrop(roleDialog, `${width}px role dialog`);
+      assert.equal(await roleDialog.isVisible(), true, `${width}px: backdrop closed the role Dialog`);
+      await roleDialog.getByRole("button", { name: "关闭对话框" }).click();
+      await roleDialog.waitFor({ state: "detached" });
+      await page.getByRole("button", { name: "分配角色" }).click();
+      await clickBackdrop(roleDialog, `${width}px reopened role dialog`);
+      assert.equal(await roleDialog.isVisible(), true, `${width}px: backdrop closed the reopened role Dialog`);
+      await page.keyboard.press("Escape");
+      await roleDialog.waitFor({ state: "detached" });
+      await page.getByRole("button", { name: "分配角色" }).click();
       const roleForm = await inspectRoleForm(roleDialog, `${width}px role dialog`);
       await inspectVisualTokens(roleDialog, width);
       if (width === 1440 || width === 320) {
@@ -302,25 +337,60 @@ try {
           await page.screenshot({ path: `${process.env.PERSONAL_UI_DIALOG_SCREENSHOT_PREFIX}-nested-${width}.png` });
         }
       }
+      await clickBackdrop(nested, `${width}px nested confirmation`);
+      assert.equal(await nested.isVisible(), true, `${width}px: backdrop closed the nested ConfirmDialog`);
+      assert.equal(await coveredParent.isVisible(), true, `${width}px: backdrop removed the inert parent Dialog under the nested ConfirmDialog`);
+      await nested.getByRole("button", { name: "关闭对话框" }).click();
+      await nested.waitFor({ state: "detached" });
+      await roleDialog.getByRole("button", { name: "上层确认" }).click();
+      await clickBackdrop(nested, `${width}px reopened nested confirmation`);
+      assert.equal(await nested.isVisible(), true, `${width}px: backdrop closed the reopened nested ConfirmDialog`);
+      await page.keyboard.press("Escape");
+      await nested.waitFor({ state: "detached" });
+      assert.equal(await roleDialog.isVisible(), true, `${width}px: nested Escape closed the parent Dialog`);
+      await roleDialog.getByRole("button", { name: "上层确认" }).click();
       await nested.getByRole("button", { name: "取消" }).click();
       await nested.waitFor({ state: "detached" });
       assert.equal(await roleDialog.isVisible(), true, `${width}px: canceling nested confirmation closed parent dialog`);
       await roleDialog.getByRole("button", { name: "取消" }).click();
       await roleDialog.waitFor({ state: "detached" });
+
+      const moreOpener = page.getByRole("button", { name: "更多选择器" });
+      const moreDialog = page.getByRole("dialog", { name: "更多选择器" });
+      await moreOpener.click();
+      await moreDialog.waitFor();
+      await inspectMoreSelectorsFocus(moreDialog, `${width}px more selectors`);
+      await clickBackdrop(moreDialog, `${width}px more selectors`);
+      assert.equal(await moreDialog.isVisible(), true, `${width}px: backdrop closed the more-selectors Dialog`);
+      await page.keyboard.press("Escape");
+      await moreDialog.waitFor({ state: "detached" });
+      assert.equal(await moreOpener.evaluate((button) => document.activeElement === button), true, `${width}px: more-selectors Escape did not restore opener focus`);
+      await moreOpener.click();
+      await moreDialog.waitFor();
+      await inspectMoreSelectorsFocus(moreDialog, `${width}px reopened more selectors`);
+      await clickBackdrop(moreDialog, `${width}px reopened more selectors`);
+      assert.equal(await moreDialog.isVisible(), true, `${width}px: backdrop closed the reopened more-selectors Dialog`);
+      await moreDialog.getByRole("button", { name: "关闭对话框" }).click();
+      await moreDialog.waitFor({ state: "detached" });
       await noHorizontalOverflow(page, `${width}px final`);
 
-      if (width === 1440 || width === 320) {
-        await page.getByRole("tab", { name: "用户权限" }).click();
-        const edit = page.getByRole("button", { name: "编辑陈沐" });
-        await edit.click();
-        const drawer = page.getByRole("dialog", { name: "编辑陈沐的权限" });
-        const drawerBounds = await drawer.boundingBox();
-        assert.ok(drawerBounds && drawerBounds.x >= -1 && drawerBounds.x + drawerBounds.width <= width + 1 && drawerBounds.y + drawerBounds.height <= height + 1, `${width}px: drawer outside viewport ${JSON.stringify(drawerBounds)}`);
-        assert.ok(await drawer.locator(".pui-drawer__footer").isVisible(), `${width}px: drawer actions clipped`);
-        await page.keyboard.press("Escape");
-        await drawer.waitFor({ state: "detached" });
-        assert.equal(await edit.evaluate((button) => document.activeElement === button), true, `${width}px: drawer failed to restore focus`);
-      }
+      await page.getByRole("tab", { name: "用户权限" }).click();
+      const edit = page.getByRole("button", { name: "编辑陈沐" });
+      await edit.click();
+      const drawer = page.getByRole("dialog", { name: "编辑陈沐的权限" });
+      const drawerBounds = await drawer.boundingBox();
+      assert.ok(drawerBounds && drawerBounds.x >= -1 && drawerBounds.x + drawerBounds.width <= width + 1 && drawerBounds.y + drawerBounds.height <= height + 1, `${width}px: drawer outside viewport ${JSON.stringify(drawerBounds)}`);
+      assert.ok(await drawer.locator(".pui-drawer__footer").isVisible(), `${width}px: drawer actions clipped`);
+      await clickBackdrop(drawer, `${width}px editing drawer`);
+      assert.equal(await drawer.isVisible(), true, `${width}px: backdrop closed the Drawer`);
+      await drawer.getByRole("button", { name: "关闭抽屉" }).click();
+      await drawer.waitFor({ state: "detached" });
+      await edit.click();
+      await clickBackdrop(drawer, `${width}px reopened editing drawer`);
+      assert.equal(await drawer.isVisible(), true, `${width}px: backdrop closed the reopened Drawer`);
+      await page.keyboard.press("Escape");
+      await drawer.waitFor({ state: "detached" });
+      assert.equal(await edit.evaluate((button) => document.activeElement === button), true, `${width}px: drawer failed to restore focus`);
     } finally {
       await page.close();
     }

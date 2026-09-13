@@ -230,6 +230,7 @@ export interface ConfirmDialogProps {
   confirmLabel?: ReactNode;
   cancelLabel?: ReactNode;
   tone?: "primary" | "danger";
+  closeOnBackdropClick?: boolean;
   onConfirm: () => void | Promise<void>;
   errorMessage?: ReactNode;
 }
@@ -242,6 +243,7 @@ export function ConfirmDialog({
   confirmLabel = "确认",
   cancelLabel = "取消",
   tone = "primary",
+  closeOnBackdropClick = true,
   onConfirm,
   errorMessage = "操作失败，请稍后重试。",
 }: ConfirmDialogProps) {
@@ -272,6 +274,7 @@ export function ConfirmDialog({
         description={description}
         width="small"
         closable={!pending}
+        closeOnBackdropClick={closeOnBackdropClick}
         footer={<div className="pui-confirm-actions"><Button autoFocus disabled={pending} onClick={() => onOpenChange(false)}>{cancelLabel}</Button><Button variant={tone} loading={pending} loadingLabel="处理中" onClick={() => void confirm()}>{confirmLabel}</Button></div>}
       >
         {failed ? <Alert tone="danger">{errorMessage}</Alert> : null}
@@ -280,7 +283,7 @@ export function ConfirmDialog({
   );
 }
 
-export interface PopconfirmProps extends Omit<ConfirmDialogProps, "open" | "onOpenChange"> {
+export interface PopconfirmProps extends Omit<ConfirmDialogProps, "open" | "onOpenChange" | "closeOnBackdropClick"> {
   trigger: ReactNode;
   ariaLabel: string;
   placement?: FloatingPlacement;

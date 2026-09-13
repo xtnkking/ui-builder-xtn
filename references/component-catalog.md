@@ -1,6 +1,6 @@
 # Component Catalog
 
-Personal UI v0.2.8 contains 118 source-backed families and preserves all 130 directory aliases from the approved preview. The family ID and aliases are discovery terms, not import paths. Application code must import the listed runtime exports from `src/personal-ui/index.ts`; it must never import a source file named in the final column directly.
+Personal UI v0.2.10 contains 118 source-backed families and preserves all 130 directory aliases from the approved preview. The family ID and aliases are discovery terms, not import paths. Application code must import the listed runtime exports from `src/personal-ui/index.ts`; it must never import a source file named in the final column directly.
 
 `assets/react-kit/component-manifest.json` is the machine-readable authority for this table. The manifest validator requires every family to resolve to real source files, every runtime export to exist in the barrel and registry, and every visual component or pattern to carry its registered source owner marker. Foundation families may be CSS or TypeScript artifacts without a runtime export.
 
@@ -231,6 +231,7 @@ Source names below are relative to `assets/react-kit/src/personal-ui/`; duplicat
 - `Tooltip`, `Popover`, `HoverCard`, `Dialog`, `Drawer`, `ConfirmDialog`, `Popconfirm`, `ContextMenu`, `Lightbox`, and `GuidedTour` own their focus, dismissal, and positioning behavior. Do not reproduce an overlay with application event handlers.
 - A confirmation without additional content has no Dialog body band. For an async destructive action, `ConfirmDialog` focuses Cancel first and reserves its body for a failed request; the close control remains keyboard reachable, not the initial focus target.
 - `Dialog` provides 16px spacing between direct body children. Keep related form fields in one content group and separate action rows from fields; use the 420px `small` width for confirmation and the 520px default for multi-field forms. A nested async confirmation uses `ConfirmDialog`, the same visual and focus contract as a standalone confirmation.
+- `Dialog`, `Drawer`, and `ConfirmDialog` default to closing on backdrop click. Set `closeOnBackdropClick={false}` on each instance that must ignore the backdrop, including nested or adjacent dialogs; the setting persists across close and reopen, and their close icon and Escape remain available. This is independent from `Dialog`/`Drawer` `closable={false}`, which hides the close icon and disables both Escape and backdrop dismissal. Async `ConfirmDialog` suspends dismissal while pending.
 - `Drawer` defaults to an inset rounded desktop panel and rounded-top mobile sheet. Use `variant="edge"` only for a deliberately flush rail.
 
 ## Page Pattern Contracts

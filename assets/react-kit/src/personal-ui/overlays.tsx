@@ -73,6 +73,11 @@ function modalFocusables(panel: HTMLElement): HTMLElement[] {
   ));
 }
 
+function initialModalFocusTarget(panel: HTMLElement): HTMLElement {
+  const footer = panel.querySelector<HTMLElement>(".pui-dialog__footer, .pui-drawer__footer");
+  return (footer && getTabStops(footer)[0]) || panel;
+}
+
 function canRestoreFocus(element: HTMLElement | null): element is HTMLElement {
   return Boolean(
     element?.isConnected
@@ -232,7 +237,7 @@ function useModalBehavior(open: boolean, onClose: () => void, panelRef: RefObjec
         ? preRegistrationFocus
         : Array.from(panel.querySelectorAll<HTMLElement>("[autofocus]"))
           .find((element) => !element.matches(":disabled") && isVisibleElement(element));
-      (autofocus ?? panel).focus();
+      (autofocus ?? initialModalFocusTarget(panel)).focus();
     }
     preRegistrationFocusRef.current = null;
     const handleKeyDown = (event: globalThis.KeyboardEvent) => {
@@ -266,7 +271,7 @@ function useModalBehavior(open: boolean, onClose: () => void, panelRef: RefObjec
       if (!isTopModal(modalId.current)) return;
       const target = event.target;
       if (target instanceof HTMLElement && modalContains(panel, target)) return;
-      (modalFocusables(panel)[0] ?? panel).focus();
+      initialModalFocusTarget(panel).focus();
     };
     document.addEventListener("keydown", handleKeyDown);
     document.addEventListener("focusin", handleFocusIn);
@@ -314,10 +319,11 @@ export interface DialogProps {
   children: ReactNode;
   footer?: ReactNode;
   closable?: boolean;
+  closeOnBackdropClick?: boolean;
   width?: "small" | "medium" | "large";
 }
 
-export function Dialog({ open, onClose, title, description, children, footer, closable = true, width = "medium" }: DialogProps) {
+export function Dialog({ open, onClose, title, description, children, footer, closable = true, closeOnBackdropClick = true, width = "medium" }: DialogProps) {
   const titleId = useId();
   const descriptionId = useId();
   const hasBody = Children.toArray(children).length > 0;
@@ -335,7 +341,7 @@ export function Dialog({ open, onClose, title, description, children, footer, cl
         <div ref={portalRef} className="pui-overlay pui-portal" role="presentation" onMouseDown={(event) => {
           if (event.target === event.currentTarget && isTopModal(modal.id)) {
             event.preventDefault();
-            if (closable) onClose();
+            if (closable && closeOnBackdropClick) onClose();
           }
         }}>
           <div
@@ -374,11 +380,12 @@ export interface DrawerProps {
   children: ReactNode;
   footer?: ReactNode;
   closable?: boolean;
+  closeOnBackdropClick?: boolean;
   width?: "medium" | "large";
   variant?: "inset" | "edge";
 }
 
-export function Drawer({ open, onClose, title, description, children, footer, closable = true, width = "medium", variant = "inset" }: DrawerProps) {
+export function Drawer({ open, onClose, title, description, children, footer, closable = true, closeOnBackdropClick = true, width = "medium", variant = "inset" }: DrawerProps) {
   const titleId = useId();
   const descriptionId = useId();
   const sourceRef = useRef<HTMLSpanElement>(null);
@@ -395,7 +402,7 @@ export function Drawer({ open, onClose, title, description, children, footer, cl
         <div ref={portalRef} className={cx("pui-overlay", "pui-overlay--drawer", `pui-overlay--drawer-${variant}`, "pui-portal")} role="presentation" onMouseDown={(event) => {
           if (event.target === event.currentTarget && isTopModal(modal.id)) {
             event.preventDefault();
-            if (closable) onClose();
+            if (closable && closeOnBackdropClick) onClose();
           }
         }}>
           <aside
