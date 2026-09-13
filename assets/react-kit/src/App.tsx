@@ -1,12 +1,22 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { BarChart3, FileText, Grid2X2, Users } from "lucide-react";
+import { FileText, Grid2X2, Hash, Pencil, RefreshCw, Table2, Users } from "lucide-react";
 import {
+  Button,
+  DataTable,
+  Drawer,
+  Field,
   FamilyLoginPage,
+  IconButton,
+  ListManagementPage,
   MemberManagementPage,
+  NumberInput,
   SegmentedControl,
+  Select,
+  Tag,
   Tabs,
   ToastProvider,
   useToast,
+  type DataColumn,
   type LoginProduct,
   type MemberQuery,
   type MemberRecord,
@@ -93,6 +103,17 @@ const loginProducts: LoginProduct[] = [
 function DemoContent() {
   const [tab, setTab] = useState("data");
   const [scenario, setScenario] = useState<Scenario>("success");
+  const [numberValue, setNumberValue] = useState<number | "">(120);
+  const [emptyNumberValue, setEmptyNumberValue] = useState<number | "">("");
+  const [listPage, setListPage] = useState(1);
+  const [listView, setListView] = useState<"paged" | "all">("paged");
+  const [listEntries, setListEntries] = useState(members);
+  const [listLoading, setListLoading] = useState(false);
+  const [loadingPage, setLoadingPage] = useState<number | undefined>();
+  const [editingMember, setEditingMember] = useState<MemberRecord | null>(null);
+  const [draftRole, setDraftRole] = useState("");
+  const [draftStatus, setDraftStatus] = useState("");
+  const [savingMember, setSavingMember] = useState(false);
   const scenarioRef = useRef(scenario);
   const { toast } = useToast();
 
@@ -170,6 +191,132 @@ function DemoContent() {
     </div>
   );
 
+  const numberCase = (
+    <section className="demo-number-case">
+      <h2>数字输入</h2>
+      <div className="demo-number-case__grid">
+        <Field label="自检周期（分钟）" htmlFor="number-demo-period">
+          <NumberInput id="number-demo-period" value={numberValue} onValueChange={setNumberValue} min={0} max={180} step={10} />
+        </Field>
+        <Field label="空值起点" htmlFor="number-demo-empty">
+          <NumberInput id="number-demo-empty" value={emptyNumberValue} onValueChange={setEmptyNumberValue} min={10} max={30} />
+        </Field>
+        <Field label="只读周期" htmlFor="number-demo-readonly">
+          <NumberInput id="number-demo-readonly" value={60} onValueChange={() => undefined} readOnly />
+        </Field>
+        <Field label="禁用周期" htmlFor="number-demo-disabled">
+          <NumberInput id="number-demo-disabled" value={30} onValueChange={() => undefined} disabled />
+        </Field>
+      </div>
+    </section>
+  );
+
+  const openListEditor = (member: MemberRecord) => {
+    setEditingMember(member);
+    setDraftRole(member.role);
+    setDraftStatus(member.status);
+  };
+  const saveListMember = async () => {
+    if (!editingMember || savingMember) return;
+    const name = editingMember.name;
+    setSavingMember(true);
+    await new Promise((resolve) => window.setTimeout(resolve, 650));
+    setListEntries((entries) => entries.map((member) => member.id === editingMember.id
+      ? { ...member, role: draftRole, status: draftStatus }
+      : member));
+    setSavingMember(false);
+    setEditingMember(null);
+    toast({ tone: "success", description: `${name}的权限已更新` });
+  };
+  const listColumns: DataColumn<MemberRecord>[] = [
+    { id: "name", header: "用户", minWidth: 224, pin: "start", cell: (member) => (
+      <div className="demo-list-user"><strong>{member.name}</strong><span>{member.email}</span></div>
+    ) },
+    { id: "role", header: "角色", width: 142, cell: (member) => member.role },
+    { id: "status", header: "状态", width: 132, cell: (member) => <Tag tone={member.status === "已加入" ? "success" : member.status === "已停用" ? "neutral" : "warning"}>{member.status}</Tag> },
+    { id: "team", header: "团队", minWidth: 148, cell: (member) => member.team },
+    { id: "joinedAt", header: "加入时间", width: 160, cell: (member) => member.joinedAt },
+    { id: "actions", header: "操作", width: 80, pin: "end", align: "center", cell: (member) => (
+      <IconButton aria-label={`编辑${member.name}`} icon={<Pencil aria-hidden="true" />} onClick={() => openListEditor(member)} />
+    ) },
+  ];
+  const renderListMobileRow = (member: MemberRecord) => (
+    <div className="demo-list-mobile-row">
+      <strong>{member.name}</strong><Tag tone={member.status === "已加入" ? "success" : member.status === "已停用" ? "neutral" : "warning"}>{member.status}</Tag>
+      <span className="demo-list-mobile-row__email">{member.email}</span>
+      <span className="demo-list-mobile-row__details"><span>{member.team} · {member.role}</span><span>加入 {member.joinedAt}</span></span>
+      <span className="demo-list-mobile-row__action"><IconButton aria-label={`编辑${member.name}`} icon={<Pencil aria-hidden="true" />} onClick={() => openListEditor(member)} /></span>
+    </div>
+  );
+  const listPageCase = (
+    <div className="demo-list-frame">
+      <ListManagementPage
+        title="用户权限"
+        description="查看用户状态与角色分配。"
+        filters={(
+          <SegmentedControl
+            value={listView}
+            ariaLabel="表格视图"
+            disabled={listLoading}
+            options={[{ value: "paged", label: "分页" }, { value: "all", label: "全部" }]}
+            onValueChange={(view) => { setListView(view); setListPage(1); }}
+          />
+        )}
+        actions={(
+          <Button
+            icon={<RefreshCw aria-hidden="true" />}
+            loading={listLoading && loadingPage === undefined}
+            loadingLabel="刷新中"
+            aria-disabled={listLoading || undefined}
+            onClick={async () => {
+              setListLoading(true);
+              await new Promise((resolve) => window.setTimeout(resolve, 650));
+              setListLoading(false);
+            }}
+          >刷新</Button>
+        )}
+      >
+        <DataTable
+          ariaLabel="用户权限表"
+          columns={listColumns}
+          rows={listView === "paged" ? listEntries.slice((listPage - 1) * 5, listPage * 5) : listEntries}
+          rowKey={(member) => member.id}
+          state={listLoading ? "loading" : "ready"}
+          loadingRows={listView === "paged" ? 5 : listEntries.length}
+          mobileRow={renderListMobileRow}
+          pagination={listView === "paged" ? {
+            page: listPage,
+            pageCount: Math.ceil(listEntries.length / 5),
+            total: listEntries.length,
+            pageSize: 5,
+            loadingPage,
+            onPageChange: async (nextPage) => {
+              setLoadingPage(nextPage);
+              setListLoading(true);
+              await new Promise((resolve) => window.setTimeout(resolve, 650));
+              setListPage(nextPage);
+              setLoadingPage(undefined);
+              setListLoading(false);
+            },
+          } : undefined}
+        />
+      </ListManagementPage>
+      <Drawer
+        open={Boolean(editingMember)}
+        onClose={() => { if (!savingMember) setEditingMember(null); }}
+        closable={!savingMember}
+        title={`编辑${editingMember?.name ?? "用户"}的权限`}
+        description={editingMember?.email}
+        footer={<><Button disabled={savingMember} onClick={() => setEditingMember(null)}>取消</Button><Button variant="primary" loading={savingMember} loadingLabel="保存中" onClick={() => void saveListMember()}>保存</Button></>}
+      >
+        <div className="demo-list-editor">
+          <Field label="角色" htmlFor="demo-list-role"><Select id="demo-list-role" ariaLabel="角色" value={draftRole} onValueChange={setDraftRole} disabled={savingMember} options={[{ value: "管理员", label: "管理员" }, { value: "编辑者", label: "编辑者" }, { value: "查看者", label: "查看者" }]} /></Field>
+          <Field label="状态" htmlFor="demo-list-status"><Select id="demo-list-status" ariaLabel="状态" value={draftStatus} onValueChange={setDraftStatus} disabled={savingMember} options={[{ value: "已加入", label: "已加入" }, { value: "待确认", label: "待确认" }, { value: "已停用", label: "已停用" }]} /></Field>
+        </div>
+      </Drawer>
+    </div>
+  );
+
   return (
     <div className="demo-shell pui-root">
       <header className="demo-topbar">
@@ -188,7 +335,8 @@ function DemoContent() {
             items={[
               { id: "data", label: <><Users aria-hidden="true" />成员管理</>, content: dataPage },
               { id: "login", label: <><FileText aria-hidden="true" />品牌家族登录</>, content: loginPage },
-              { id: "report", label: <><BarChart3 aria-hidden="true" />更多模板</>, disabled: true, content: null },
+              { id: "number", label: <><Hash aria-hidden="true" />数字输入</>, content: numberCase },
+              { id: "list", label: <><Table2 aria-hidden="true" />用户权限</>, content: listPageCase },
             ]}
           />
         </div>

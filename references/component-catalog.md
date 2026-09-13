@@ -1,6 +1,6 @@
 # Component Catalog
 
-Personal UI v0.2.1 contains 118 source-backed families and preserves all 130 directory aliases from the approved preview. The family ID and aliases are discovery terms, not import paths. Application code must import the listed runtime exports from `src/personal-ui/index.ts`; it must never import a source file named in the final column directly.
+Personal UI v0.2.5 contains 118 source-backed families and preserves all 130 directory aliases from the approved preview. The family ID and aliases are discovery terms, not import paths. Application code must import the listed runtime exports from `src/personal-ui/index.ts`; it must never import a source file named in the final column directly.
 
 `assets/react-kit/component-manifest.json` is the machine-readable authority for this table. The manifest validator requires every family to resolve to real source files, every runtime export to exist in the barrel and registry, and every visual component or pattern to carry its registered source owner marker. Foundation families may be CSS or TypeScript artifacts without a runtime export.
 
@@ -205,6 +205,7 @@ Source names below are relative to `assets/react-kit/src/personal-ui/`; duplicat
 
 - Use `Select` for compact options, `SearchableSelect` or `Combobox` for local searchable data, `AsyncSelect` for remote results, and `Autocomplete` when free text plus suggestions is intentional. Use `MultiSelect`, `TagInput`, `Cascader`, `TreeSelect`, or `Transfer` for their explicit selection models instead of adapting a native select.
 - `Input`, `PasswordInput`, `SearchInput`, and `Textarea` own their adornment geometry. `SearchInput` renders its own search and clear actions. Do not add another clear button outside it.
+- `NumberInput` owns one pair of visible step buttons and hides the browser's native stepper without removing number-input keyboard semantics. Wrap it in `Field` or pass `ariaLabel` so each step button names its field; an empty value steps first to `min` or `max` when defined. Keep its end slot free of unrelated adornments.
 - `Field` owns labels, required state, hints, errors, and grouped choice semantics. `Form` is the public form root. The verifier rejects an application-owned native form.
 - Every option, tab, menu item, product, table column, tree node, and row uses a stable, unique business identity. Do not use array positions or values generated during render.
 - `DateField` covers year, month, day, minute, second, time, and time-with-seconds precision. `DateRangeField` owns ranges; `TimezoneSelect` owns timezone choice.
@@ -214,7 +215,9 @@ Source names below are relative to `assets/react-kit/src/personal-ui/`; duplicat
 
 - Commands that wait for data use the component's `loading` or pending API. `AsyncAction` and `RetryButton` cover reusable async commands; do not replace button content manually and cause width changes.
 - Server-backed filters edit draft values. The explicit query button or Enter applies them; sorting and pagination are explicit requests. Preserve the last successful data while a later request is pending or fails.
-- `DataTable` owns desktop columns, sorting, loading skeletons, empty/error states, developer-pinned and hidden columns, and mobile row rendering. Pass the requested page size as `loadingRows` so its surface remains stable.
+- `DataTable` owns desktop columns, sorting, loading skeletons, empty/error states, developer-pinned and hidden columns, and mobile row rendering. Omit `pagination` for an unpaginated 12px rounded surface; pass the typed `pagination` configuration to render the bundled pager within the same rounded frame. Rows are still provided by the caller, so this does not change server/client paging. Pass the requested page size as `loadingRows` so its surface remains stable.
+- `DataTable` fills its containing width. `minWidth` is a flexible lower bound; give compact status, date, numeric, and action columns explicit `width` values, leaving only genuinely long text columns flexible. Keep action columns wide enough for icon-button focus outlines.
+- Use `ListManagementPage` or `SearchFilterPage` for ordinary lists: their default readable width keeps the heading, filters, and table aligned. `layoutWidth="wide"` is for a dense table that benefits from the full viewport. `MemberManagementPage` has the same readable-width behavior built in. Keep `ListManagementPage.footer` for non-table actions rather than a second pager.
 - `VirtualList` is for large flat collections; `Tree` and `TreeTable` own hierarchical data. `LoadMore` and `InfiniteScroll` are distinct fetch models and should not be combined on one surface.
 - Use `OverflowText` for a tooltip only when text is actually truncated. Use `ExpandableText` when the user should deliberately reveal longer content.
 

@@ -1,5 +1,4 @@
 import {
-  createContext,
   forwardRef,
   useContext,
   useEffect,
@@ -18,6 +17,7 @@ import {
 import { createPortal } from "react-dom";
 import { Check, ChevronDown, Eye, EyeOff, LoaderCircle, Search, X } from "lucide-react";
 import { observeComputedStyleChanges } from "./portal-tokens";
+import { FieldContext, type FieldContextValue } from "./field-context";
 import { assertUniqueIdentities, cx, getTabStops } from "./utils";
 
 const useClientLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
@@ -26,17 +26,6 @@ type FieldControlAriaProps = Pick<
   InputHTMLAttributes<HTMLInputElement>,
   "id" | "aria-describedby" | "aria-disabled" | "aria-invalid" | "aria-required"
 >;
-
-interface FieldContextValue {
-  controlId?: string;
-  groupName?: string;
-  describedBy?: string;
-  invalid: boolean;
-  required: boolean;
-  group: boolean;
-}
-
-const FieldContext = createContext<FieldContextValue | null>(null);
 
 function mergeAriaIds(...values: Array<string | undefined>): string | undefined {
   const ids = Array.from(new Set(values.flatMap((value) => value?.split(/\s+/).filter(Boolean) ?? [])));
@@ -268,6 +257,7 @@ export function Field({ label, htmlFor, group = false, required, hint, error, ch
     : hint ? `${fieldId}-hint` : undefined;
   const context = useMemo<FieldContextValue>(() => ({
     controlId: group ? undefined : fieldId,
+    labelId: group ? undefined : `${fieldId}-label`,
     groupName: group ? fieldId : undefined,
     describedBy,
     invalid,
@@ -306,7 +296,7 @@ export function Field({ label, htmlFor, group = false, required, hint, error, ch
 
   return (
     <div className={cx("pui-field", className)} data-invalid={invalid || undefined} data-pui-owner="Field">
-      <label className="pui-label" htmlFor={fieldId}>{labelContent}</label>
+      <label id={`${fieldId}-label`} className="pui-label" htmlFor={fieldId}>{labelContent}</label>
       <FieldContext.Provider value={context}>{children}</FieldContext.Provider>
       {messages}
     </div>

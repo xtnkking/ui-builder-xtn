@@ -19,13 +19,26 @@
 }
 
 .pui-number-input .pui-input--embedded {
-  padding-right: 64px;
+  padding-right: 4px;
+  appearance: textfield;
+}
+
+.pui-number-input .pui-input--embedded::-webkit-inner-spin-button,
+.pui-number-input .pui-input--embedded::-webkit-outer-spin-button {
+  margin: 0;
+  -webkit-appearance: none;
+}
+
+.pui-number-input .pui-input-shell__end {
+  width: 68px;
 }
 
 .pui-number-input__steps {
   display: grid;
   grid-template-columns: repeat(2, 28px);
   gap: 2px;
+  width: 58px;
+  height: 28px;
 }
 
 .pui-number-input__steps > button {
@@ -45,6 +58,18 @@
 .pui-number-input__steps > button:hover:not(:disabled) {
   background: var(--pui-primary-soft);
   color: var(--pui-primary-ink);
+}
+
+.pui-number-input__steps > button:focus-visible {
+  outline: 2px solid var(--pui-primary);
+  outline-offset: -2px;
+  background: var(--pui-primary-soft);
+}
+
+@media (forced-colors: active) {
+  .pui-number-input__steps > button:focus-visible {
+    outline-color: Highlight;
+  }
 }
 
 .pui-number-input__steps > button:disabled {

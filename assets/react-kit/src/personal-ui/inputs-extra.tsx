@@ -2,6 +2,7 @@ import {
   forwardRef,
   useEffect,
   useId,
+  useContext,
   useMemo,
   useRef,
   useState,
@@ -37,6 +38,7 @@ import {
   X,
 } from "lucide-react";
 import { Button, IconButton, Spinner, Tag } from "./primitives";
+import { FieldContext } from "./field-context";
 import {
   Combobox,
   Input,
@@ -186,11 +188,17 @@ export function NumberInput({
   ariaLabel,
   className,
 }: NumberInputProps) {
+  const fieldLabelId = useContext(FieldContext)?.labelId;
+  const increaseId = useId();
+  const decreaseId = useId();
+  const useFieldLabel = Boolean(fieldLabelId && !ariaLabel);
   const clamp = (next: number): number => Math.min(max ?? Number.POSITIVE_INFINITY, Math.max(min ?? Number.NEGATIVE_INFINITY, next));
   const move = (direction: 1 | -1) => {
-    const base = value === "" ? (min ?? 0) : value;
+    const base = value === ""
+      ? direction === 1 ? (min ?? step) - step : (max ?? -step) + step
+      : value;
     const next = clamp(Number((base + direction * step).toFixed(12)));
-    if (next !== value) onValueChange(next);
+    if (Number.isFinite(next) && next !== value) onValueChange(next);
   };
   return (
     <Input
@@ -210,11 +218,14 @@ export function NumberInput({
       invalid={invalid}
       placeholder={placeholder}
       aria-label={ariaLabel}
-      onChange={(event) => onValueChange(event.target.value === "" ? "" : event.target.valueAsNumber)}
+      onChange={(event) => {
+        const next = event.target.valueAsNumber;
+        onValueChange(event.target.value === "" || !Number.isFinite(next) ? "" : next);
+      }}
       endAdornment={(
         <span className="pui-number-input__steps">
-          <button type="button" aria-label="增加" disabled={disabled || readOnly || (typeof max === "number" && value !== "" && value >= max)} onClick={() => move(1)}><Plus /></button>
-          <button type="button" aria-label="减少" disabled={disabled || readOnly || (typeof min === "number" && value !== "" && value <= min)} onClick={() => move(-1)}><Minus /></button>
+          <button type="button" aria-label={useFieldLabel ? undefined : `${ariaLabel ?? "数值"}增加`} aria-labelledby={useFieldLabel ? `${fieldLabelId} ${increaseId}` : undefined} disabled={disabled || readOnly || (typeof max === "number" && value !== "" && value >= max)} onClick={() => move(1)}><Plus aria-hidden="true" /><span id={increaseId} className="pui-sr-only">增加</span></button>
+          <button type="button" aria-label={useFieldLabel ? undefined : `${ariaLabel ?? "数值"}减少`} aria-labelledby={useFieldLabel ? `${fieldLabelId} ${decreaseId}` : undefined} disabled={disabled || readOnly || (typeof min === "number" && value !== "" && value <= min)} onClick={() => move(-1)}><Minus aria-hidden="true" /><span id={decreaseId} className="pui-sr-only">减少</span></button>
         </span>
       )}
     />

@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { ArrowDown, ArrowUp, ArrowUpDown, LoaderCircle, RotateCw, SearchX } from "lucide-react";
 import { Alert, EmptyState } from "./feedback";
+import { Pagination, type PaginationProps } from "./navigation";
 import { Button } from "./primitives";
 import { assertUniqueIdentities, cx } from "./utils";
 
@@ -42,6 +43,7 @@ export interface DataTableProps<T> {
   onRetry?: () => void;
   retrying?: boolean;
   mobileRow?: (row: T) => ReactNode;
+  pagination?: Omit<PaginationProps, "className">;
   className?: string;
 }
 
@@ -163,6 +165,7 @@ export function DataTable<T>({
   onRetry,
   retrying,
   mobileRow,
+  pagination,
   className,
 }: DataTableProps<T>) {
   assertUniqueIdentities("DataTable", "column.id", columns.map((column) => column.id));
@@ -240,12 +243,15 @@ export function DataTable<T>({
   if (empty) {
     return (
       <div className={cx("pui-data-table", "pui-data-table--empty", className)} data-state="empty" data-pui-owner="DataTable">
-        <EmptyState
-          icon={<SearchX aria-hidden="true" />}
-          title={emptyTitle}
-          description={emptyDescription}
-          action={emptyAction}
-        />
+        <div className={cx("pui-data-table__frame", pagination && "pui-data-table__frame--paginated")}>
+          <EmptyState
+            icon={<SearchX aria-hidden="true" />}
+            title={emptyTitle}
+            description={emptyDescription}
+            action={emptyAction}
+          />
+          {pagination ? <div className="pui-data-table__pagination"><Pagination {...pagination} /></div> : null}
+        </div>
       </div>
     );
   }
@@ -271,6 +277,7 @@ export function DataTable<T>({
           {errorDescription}
         </Alert>
       ) : null}
+      <div className={cx("pui-data-table__frame", pagination && "pui-data-table__frame--paginated")}>
       <div
         ref={scrollerRef}
         className="pui-data-table__scroller"
@@ -383,6 +390,8 @@ export function DataTable<T>({
           )) : rows.map((row, rowIndex) => <div className="pui-mobile-data-row" role="listitem" key={rowKeys[rowIndex]}>{mobileRow(row)}</div>)}
         </div>
       ) : null}
+      {pagination ? <div className="pui-data-table__pagination"><Pagination {...pagination} /></div> : null}
+      </div>
     </div>
   );
 }

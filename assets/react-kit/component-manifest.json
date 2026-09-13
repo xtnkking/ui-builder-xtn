@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "kitVersion": "0.2.1",
+  "kitVersion": "0.2.5",
   "entries": [
     {
       "id": "color",
@@ -655,6 +655,7 @@
         "NumberInput"
       ],
       "sourceFiles": [
+        "src/personal-ui/field-context.ts",
         "src/personal-ui/inputs-extra.tsx",
         "src/personal-ui/styles/inputs-extra.css"
       ],
@@ -2114,28 +2115,29 @@
   "sourceIntegrity": {
     "actions.tsx": "9898ddbeb0a72d01483396b762822ccbae6ba13ef960a155ab7c51663ba044f4",
     "data-extra.tsx": "898a6aeaa6c2f93d37ee9a91607c5ba4f4ff70eb8a147f5e6383be79f85b6734",
-    "data-table.tsx": "a395a23993e7ec1570abe2cfa31891593bfbe576c46f6caffc8d01ed4ff1317f",
+    "data-table.tsx": "23d665857d2c5b7aadb06624e2285a4d043d08e13a66588d820fa56388312d93",
     "date-field.tsx": "4030d78edc3858d7e76cad6750201db1522c92cad0e1f39b0763a804aec0bb1d",
     "display.tsx": "89f5cac0d39ea6bd1b32263f1eb3f9afd0b3c9d4a7156f716d36588ae5c72e33",
     "feedback-extra.tsx": "9367bea4dfc69613f7e0ed8149b374a556cc11de5cc012309def7747f66468a3",
     "feedback.tsx": "edd7abdf9424fb38339b56a58afc97687742780de28a22f1bf011a295dc9c69f",
-    "forms.tsx": "253b08a66beeeb1bd9c121f17486935365657d8eaf907534e8cb90d9a48c100b",
+    "field-context.ts": "2bf838e1aa63c16247c518066856556071ffe53305a0492ec7c5e8f9acac152a",
+    "forms.tsx": "4ba84bc4c54a15f111fd9af9bc8bc2681aaf31d6e3145deeba93b157f626a995",
     "index.ts": "97d260c56e0404e41a033d296ce9a2fac198ace8efbb93813c0f35874d93381e",
-    "inputs-extra.tsx": "baed41f372a8d395abccf3cee8f0552210702193d1de59d1ba368b3f0837a4cc",
+    "inputs-extra.tsx": "a678e151bee3a1e9506ce279827d26885da66682e5b181335c05c5227f32fdea",
     "layout.tsx": "0529b2666fc95ff370b3be89239c764897d7684ab57a13c50ab096be6d01c62a",
     "navigation-extra.tsx": "10c2357f3fc8706a10220d06311005450451f45e92697c70f5f4886f95cbd1a7",
     "navigation.tsx": "73103ebe95adb1358b19af5a80e8b03e21bff430280ebbe786cdfdcc406b8c31",
     "overlays-extra.tsx": "beb7ff173a2474d1b43ec1b0a3aad7a670a888b8fe1ff57ffd7e20b74c40843a",
     "overlays.tsx": "d04f36822d55a775c32e2e9e9ed22f5754dd53230dc629d33b6a32367e882751",
     "patterns/family-login-page.tsx": "d96543d8df95f4cd465c7d7413edd39d71d1b438f0b22d9315b6114cf1f67963",
-    "patterns/member-management-page.tsx": "81620c498c71455795338af6ed235dc5d68a2cb9681df0b552f7cae8c56fb142",
-    "patterns/standard-pages.tsx": "ab3eee5dfe3d74d32a7962a801e4aad97b3d2c314b7bf80f88ac47574b0d631d",
+    "patterns/member-management-page.tsx": "0aa2e0e76e0bf3bd1a3ad8b1a6fa8f80d7b83394de09cce276ccdf79a8a533dc",
+    "patterns/standard-pages.tsx": "8a5f8b0311fe2fad94b10811d4348ae60897042c039219d675bc6d87f7bb3f26",
     "portal-tokens.ts": "628b0f31c47f9dcaaa84cf67c5b13318a46f2f47f3a611d6a9075c83358052cd",
     "primitives.tsx": "f1371cafdba78cd484d9e90fbd3cfc7880493fe662ec5e52441e533bb89a5082",
-    "styles/extended.css": "98723c1f0f9620546746e873c348fc4ad551389fc5c588f5f75a6cb528ec1568",
-    "styles/inputs-extra.css": "25e83b083a6a30043a0bdbb9e717c18203f7f6043522a933ed3dc7475939e6be",
+    "styles/extended.css": "b21cb702f9295d0c0e11aa89d0ff8f7bb3e99dd4a39b81ba64880f19f9e863e5",
+    "styles/inputs-extra.css": "9e3967c2d4d0e78e110b9a778fd8d93370d98b238ee976f870c46ec6bcfdb7a1",
     "styles/layout-actions-display.css": "53a24bcd2d9bc0726c3c578fb56a3a47ccecafdd38e3a36ea8418dbde773820e",
-    "styles.css": "4b543bb9b4e99d8bbe77c7d19f049db9a524a36a4826cb197b4c9d7491fa783d",
+    "styles.css": "053a9ce4ccdcb4c0742062c9d1d95850f022198cd8e71d3e8f9bdf00ce6c633c",
     "utils.ts": "fdb9151abf7b8d587098d600199e8dad8d7729535c93c91296557ac9b60f67b5",
     "value-controls.tsx": "be4cd237ded5d3170b2d750439c3909f2589169199d8df04b5229eba724f91ef"
   }

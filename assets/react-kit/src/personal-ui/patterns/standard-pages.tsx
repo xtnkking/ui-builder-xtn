@@ -34,6 +34,7 @@ export interface ListManagementPageProps extends PageHeadingProps {
   bulkActions?: ReactNode;
   children: ReactNode;
   footer?: ReactNode;
+  layoutWidth?: "readable" | "wide";
   className?: string;
 }
 
@@ -42,9 +43,9 @@ type ListManagementPageRootProps = ListManagementPageProps & {
   variantClassName?: string;
 };
 
-function ListManagementPageRoot({ filters, bulkActions, children, footer, className, owner, variantClassName, ...heading }: ListManagementPageRootProps) {
+function ListManagementPageRoot({ filters, bulkActions, children, footer, layoutWidth = "readable", className, owner, variantClassName, ...heading }: ListManagementPageRootProps) {
   return (
-    <main className={cx("pui-page", "pui-list-page", variantClassName, className)} data-pui-owner={owner}>
+    <main className={cx("pui-page", "pui-list-page", layoutWidth === "wide" && "pui-list-page--wide", variantClassName, className)} data-pui-owner={owner}>
       <PageHeading {...heading} />
       {filters != null ? <section className="pui-list-page__filters" aria-label="筛选条件">{filters}</section> : null}
       {bulkActions != null ? <section className="pui-list-page__bulk" aria-label="批量操作">{bulkActions}</section> : null}

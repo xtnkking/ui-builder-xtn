@@ -254,6 +254,8 @@
 .pui-tour__card footer { display: flex; justify-content: space-between; gap: 8px; margin-top: 4px; }
 
 .pui-page { display: grid; gap: 18px; width: 100%; min-width: 0; }
+.pui-list-page { max-width: 1160px; margin-inline: auto; }
+.pui-list-page--wide { max-width: none; }
 .pui-search-filter-page { min-width: 0; }
 .pui-page-heading { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: start; gap: 12px; min-width: 0; }
 .pui-page-heading__copy { display: grid; gap: 3px; min-width: 0; }
@@ -264,6 +266,7 @@
 .pui-list-page__filters, .pui-list-page__bulk { min-width: 0; }
 .pui-list-page__content { min-width: 0; }
 .pui-list-page__footer { display: flex; justify-content: flex-end; }
+.pui-list-page__footer > .pui-pagination { flex: 1 1 100%; min-width: 0; }
 .pui-form-page__form { display: grid; gap: 18px; }
 .pui-form-page__content { display: grid; gap: 14px; width: min(720px, 100%); }
 .pui-form-page__actions, .pui-wizard-page__actions { position: sticky; bottom: 0; display: flex; justify-content: flex-end; gap: 8px; padding: 12px 0; background: var(--pui-surface); }

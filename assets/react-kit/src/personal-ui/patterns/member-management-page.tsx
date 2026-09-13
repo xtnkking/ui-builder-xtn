@@ -10,7 +10,7 @@ import {
 import { Ellipsis, Search, UserPlus } from "lucide-react";
 import { DataTable, type DataColumn, type DataSort, type DataTableState } from "../data-table";
 import { Field, SearchInput, Select } from "../forms";
-import { Pagination, type PaginationPageTrigger } from "../navigation";
+import type { PaginationPageTrigger } from "../navigation";
 import { Drawer, OverflowText } from "../overlays";
 import { Button, IconButton, Tag, type TagTone } from "../primitives";
 
@@ -328,7 +328,7 @@ export function MemberManagementPage({
     {
       id: "name",
       header: "成员",
-      width: 224,
+      minWidth: 224,
       sortable: true,
       pin: "start",
       cell: (member) => (
@@ -342,18 +342,18 @@ export function MemberManagementPage({
       ),
     },
     { id: "team", header: "团队", minWidth: 108, cell: (member) => member.team },
-    { id: "role", header: "角色", minWidth: 104, cell: (member) => member.role },
+    { id: "role", header: "角色", width: 132, cell: (member) => member.role },
     {
       id: "status",
       header: "状态",
-      minWidth: 116,
+      width: 132,
       cell: (member) => <Tag tone={statusTone(member.status)}>{member.status}</Tag>,
     },
-    { id: "joinedAt", header: "加入时间", minWidth: 124, sortable: true, cell: (member) => member.joinedAt },
+    { id: "joinedAt", header: "加入时间", width: 160, sortable: true, cell: (member) => member.joinedAt },
     {
       id: "actions",
       header: <span className="pui-sr-only">行操作</span>,
-      width: 52,
+      width: 72,
       pin: "end",
       align: "center",
       cell: (member) => (
@@ -507,30 +507,27 @@ export function MemberManagementPage({
             <IconButton aria-label={`${member.name}的更多操作`} icon={<Ellipsis aria-hidden="true" />} aria-disabled={requesting || undefined} onClick={() => openMember(member)} />
           </div>
         )}
-      />
-
-      {result.total > 0 && tableState !== "empty" ? (
-        <Pagination
-          page={queryMeta.page}
-          pageCount={pageCount}
-          total={result.total}
-          pageSize={queryMeta.pageSize}
-          pageSizeOptions={availablePageSizes}
-          disabled={paginationDisabled}
-          loadingPage={loadingPage}
-          loadingTarget={loadingPageTarget}
-          loadingPageSize={requesting && requestAction === "page-size"}
-          onPageChange={(page, trigger) => {
+        pagination={result.total > 0 && tableState !== "empty" ? {
+          page: queryMeta.page,
+          pageCount,
+          total: result.total,
+          pageSize: queryMeta.pageSize,
+          pageSizeOptions: availablePageSizes,
+          disabled: paginationDisabled,
+          loadingPage,
+          loadingTarget: loadingPageTarget,
+          loadingPageSize: requesting && requestAction === "page-size",
+          onPageChange: (page, trigger) => {
             if (requestingRef.current || tableState === "loading" || page === queryMeta.page) return;
             setLoadingPageTarget(trigger);
             void execute({ ...currentQuery(), page }, "page");
-          }}
-          onPageSizeChange={(pageSize) => {
+          },
+          onPageSizeChange: (pageSize) => {
             if (requestingRef.current || tableState === "loading" || pageSize === queryMeta.pageSize) return;
             void execute({ ...currentQuery(), page: 1, pageSize }, "page-size");
-          }}
-        />
-      ) : null}
+          },
+        } : undefined}
+      />
 
       <Drawer
         open={Boolean(selectedMember)}

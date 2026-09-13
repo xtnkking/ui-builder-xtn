@@ -1,6 +1,6 @@
 # Integration
 
-Personal UI v0.2.1 is installed source with an enforced provenance boundary. The target receives the complete managed `src/personal-ui/` tree, its runtime registry, the component manifest, and the provenance scanner. Product code may compose public exports, but it may not fork, imitate, or reach inside the managed implementation.
+Personal UI v0.2.5 is installed source with an enforced provenance boundary. The target receives the complete managed `src/personal-ui/` tree, its runtime registry, the component manifest, and the provenance scanner. Product code may compose public exports, but it may not fork, imitate, or reach inside the managed implementation.
 
 ## Choose A Mode
 
@@ -63,6 +63,8 @@ Respect the target's existing package manager and lockfile. Run its install comm
 `src/personal-ui/` in a target project is generated, versioned source. Do not edit it, add files to it, or copy one of its implementation files elsewhere for customization. The verifier treats every missing, changed, or extra file as a release error; there is no local-extension allowance.
 
 Brand and product differences belong in documented props, visual slots, and tokens. If a reusable visual or behavior cannot be expressed by the public API, follow the canonical extension workflow below before continuing the feature.
+
+For a sparse operational list, use the bundled `ListManagementPage` or `SearchFilterPage` with `DataTable` as its content. Pass `DataTable.pagination` to attach the bundled pager inside the table's rounded frame; omit it for an unpaginated table. Do not also place `Pagination` in the page footer. Their default readable width aligns every part of the page; set `layoutWidth="wide"` only for genuinely dense tables. Fixed-width status, date, number, and action columns avoid distributing ultrawide empty space across short values.
 
 The machine-readable authority is `assets/react-kit/component-manifest.json`:
 
