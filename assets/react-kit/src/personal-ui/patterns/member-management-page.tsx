@@ -507,7 +507,7 @@ export function MemberManagementPage({
             <IconButton aria-label={`${member.name}的更多操作`} icon={<Ellipsis aria-hidden="true" />} aria-disabled={requesting || undefined} onClick={() => openMember(member)} />
           </div>
         )}
-        pagination={result.total > 0 && tableState !== "empty" ? {
+        pagination={{
           page: queryMeta.page,
           pageCount,
           total: result.total,
@@ -526,7 +526,7 @@ export function MemberManagementPage({
             if (requestingRef.current || tableState === "loading" || pageSize === queryMeta.pageSize) return;
             void execute({ ...currentQuery(), page: 1, pageSize }, "page-size");
           },
-        } : undefined}
+        }}
       />
 
       <Drawer

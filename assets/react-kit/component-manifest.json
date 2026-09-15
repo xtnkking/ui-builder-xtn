@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "kitVersion": "0.2.12",
+  "kitVersion": "0.2.14",
   "entries": [
     {
       "id": "color",
@@ -2124,7 +2124,7 @@
   "sourceIntegrity": {
     "actions.tsx": "9898ddbeb0a72d01483396b762822ccbae6ba13ef960a155ab7c51663ba044f4",
     "data-extra.tsx": "898a6aeaa6c2f93d37ee9a91607c5ba4f4ff70eb8a147f5e6383be79f85b6734",
-    "data-table.tsx": "23d665857d2c5b7aadb06624e2285a4d043d08e13a66588d820fa56388312d93",
+    "data-table.tsx": "20fde53cf92a01a8cf0a99f02897316e0ed9cc231b35fd627d51a29c3157ca88",
     "date-field.tsx": "4030d78edc3858d7e76cad6750201db1522c92cad0e1f39b0763a804aec0bb1d",
     "display.tsx": "89f5cac0d39ea6bd1b32263f1eb3f9afd0b3c9d4a7156f716d36588ae5c72e33",
     "feedback-extra.tsx": "9367bea4dfc69613f7e0ed8149b374a556cc11de5cc012309def7747f66468a3",
@@ -2136,18 +2136,18 @@
     "inputs-extra.tsx": "7c788ff07ccfea3942370a25e1aab8223e0457e4ca3d1b9a5bf358098630b279",
     "layout.tsx": "0529b2666fc95ff370b3be89239c764897d7684ab57a13c50ab096be6d01c62a",
     "navigation-extra.tsx": "10c2357f3fc8706a10220d06311005450451f45e92697c70f5f4886f95cbd1a7",
-    "navigation.tsx": "73103ebe95adb1358b19af5a80e8b03e21bff430280ebbe786cdfdcc406b8c31",
+    "navigation.tsx": "4b856c5b7d2c2b0d4db7c8c6c87e780ed223e1c60b1d490cd189ba7b513c2cff",
     "overlays-extra.tsx": "200f00a38e98e856c74379a60717d6cecd4f5ca8b1dcf78d5e0810232c72f84b",
     "overlays.tsx": "0e4cceec06a664c4afea368addc2555790b770bfd147101bc7962f757ad3eb11",
     "patterns/family-login-page.tsx": "d96543d8df95f4cd465c7d7413edd39d71d1b438f0b22d9315b6114cf1f67963",
-    "patterns/member-management-page.tsx": "0aa2e0e76e0bf3bd1a3ad8b1a6fa8f80d7b83394de09cce276ccdf79a8a533dc",
+    "patterns/member-management-page.tsx": "6d9a207ab4234215c9b13a5f4fe871c17f757833813a6aa658db6f90bf470c77",
     "patterns/standard-pages.tsx": "8a5f8b0311fe2fad94b10811d4348ae60897042c039219d675bc6d87f7bb3f26",
     "portal-tokens.ts": "628b0f31c47f9dcaaa84cf67c5b13318a46f2f47f3a611d6a9075c83358052cd",
     "primitives.tsx": "f1371cafdba78cd484d9e90fbd3cfc7880493fe662ec5e52441e533bb89a5082",
     "styles/extended.css": "b21cb702f9295d0c0e11aa89d0ff8f7bb3e99dd4a39b81ba64880f19f9e863e5",
     "styles/inputs-extra.css": "2f32ea8cdc1384516c663e2ac6aa3fde2017e46c1b65e462a85014b1e1a16391",
     "styles/layout-actions-display.css": "53a24bcd2d9bc0726c3c578fb56a3a47ccecafdd38e3a36ea8418dbde773820e",
-    "styles.css": "8429fe159e8ed859129e732c98c54ea0efe475df31590ce16589848df6010837",
+    "styles.css": "60db4137049126e27e2a01a6f034cc9b118d7941c33bc8ac84ec0a00b0528436",
     "utils.ts": "fdb9151abf7b8d587098d600199e8dad8d7729535c93c91296557ac9b60f67b5",
     "value-controls.tsx": "776ccbb1ad6c7bfc7ead9bcc8d1a833d4b69403fb737fa0122872d8e8b5cc762"
   }

@@ -240,6 +240,8 @@ export interface PaginationProps {
   page: number;
   pageCount: number;
   onPageChange: (page: number, trigger: PaginationPageTrigger) => void;
+  /** Replaces the generated page or result-count summary while preserving pager geometry. */
+  summary?: ReactNode;
   disabled?: boolean;
   loadingPage?: number;
   loadingTarget?: PaginationLoadingTarget;
@@ -258,6 +260,7 @@ export function Pagination({
   page,
   pageCount,
   onPageChange,
+  summary,
   disabled,
   loadingPage,
   loadingTarget = "auto",
@@ -339,7 +342,9 @@ export function Pagination({
   return (
     <nav ref={rootRef} className={cx("pui-pagination", className)} aria-label="数据分页" aria-busy={paginationBusy || undefined} data-pui-owner="Pagination">
       <span className="pui-pagination__summary">
-        {normalizedTotal !== undefined && normalizedPageSize
+        {summary !== undefined
+          ? summary
+          : normalizedTotal !== undefined && normalizedPageSize
           ? (normalizedTotal ? `${start}-${end} / 共 ${normalizedTotal} 条` : "0 条结果")
           : `${normalizedPage} / ${normalizedCount} 页`}
       </span>

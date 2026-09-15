@@ -34,6 +34,8 @@ export interface DataTableProps<T> {
   onSort?: (sort: DataSort) => void;
   loadingSortColumnId?: string;
   loadingRows?: number;
+  /** Fixed viewport size in standard row-height units. Paginated tables default to five units; use "auto" for content height. Fixed viewports are keyboard-scrollable and reset vertically for new results. */
+  viewportRows?: number | "auto";
   ariaLabel: string;
   emptyTitle?: ReactNode;
   emptyDescription?: ReactNode;
@@ -63,6 +65,10 @@ interface ColumnLayout<T> {
 const DEFAULT_COLUMN_WIDTH = 160;
 const MAX_COLUMN_WIDTH = 10_000;
 const MAX_LOADING_ROWS = 100;
+const DEFAULT_VIEWPORT_ROWS = 5;
+const TABLE_HEADER_HEIGHT = 42;
+const TABLE_ROW_HEIGHT = 58;
+const MOBILE_ROW_HEIGHT = 76;
 const useClientLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
 function normalizedColumnWidth(value: number | undefined): number | undefined {
@@ -74,6 +80,13 @@ function preferredColumnWidth<T>(column: DataColumn<T>): number {
   return normalizedColumnWidth(column.width)
     ?? normalizedColumnWidth(column.minWidth)
     ?? DEFAULT_COLUMN_WIDTH;
+}
+
+function normalizedViewportRows(value: DataTableProps<unknown>["viewportRows"], paginated: boolean): number | undefined {
+  if (value === "auto") return undefined;
+  if (value === undefined) return paginated ? DEFAULT_VIEWPORT_ROWS : undefined;
+  if (!Number.isFinite(value)) return paginated ? DEFAULT_VIEWPORT_ROWS : undefined;
+  return Math.min(MAX_LOADING_ROWS, Math.max(1, Math.trunc(value)));
 }
 
 function columnLayout<T>(columns: DataColumn<T>[], availableWidth: number): ColumnLayout<T> {
@@ -155,7 +168,8 @@ export function DataTable<T>({
   sort,
   onSort,
   loadingSortColumnId,
-  loadingRows = 5,
+  loadingRows,
+  viewportRows,
   ariaLabel,
   emptyTitle = "没有匹配数据",
   emptyDescription = "调整条件后重新查询。",
@@ -174,6 +188,7 @@ export function DataTable<T>({
   }
   const rowKeys = rows.map(rowKey);
   assertUniqueIdentities("DataTable", "rowKey result", rowKeys);
+  const rowIdentityKey = JSON.stringify(rowKeys);
   const scrollerRef = useRef<HTMLDivElement>(null);
   const mobileListRef = useRef<HTMLDivElement>(null);
   const readyScrollerHeightRef = useRef(0);
@@ -190,17 +205,45 @@ export function DataTable<T>({
     : undefined;
   const activeRetrying = state === "error" && Boolean(onRetry) && Boolean(retrying);
   const busy = loading || activeRetrying || activeLoadingSortColumnId !== undefined;
-  const normalizedLoadingRows = Number.isFinite(loadingRows)
-    ? Math.min(MAX_LOADING_ROWS, Math.max(1, Math.trunc(loadingRows)))
-    : 5;
+  const fixedViewportRows = normalizedViewportRows(viewportRows, Boolean(pagination));
+  const desktopScrollable = fixedViewportRows !== undefined
+    || (availableWidth > 0 && minimumTableWidth > availableWidth + 0.5);
+  const paginationPage = pagination?.page;
+  const paginationPageSize = pagination?.pageSize;
+  const requestedLoadingRows = loadingRows ?? fixedViewportRows ?? DEFAULT_VIEWPORT_ROWS;
+  const normalizedLoadingRows = Number.isFinite(requestedLoadingRows)
+    ? Math.min(MAX_LOADING_ROWS, Math.max(1, Math.trunc(requestedLoadingRows)))
+    : DEFAULT_VIEWPORT_ROWS;
   const loadingRowSlots = Math.min(MAX_LOADING_ROWS, Math.max(normalizedLoadingRows, rows.length));
   const skeletonRows = Array.from({ length: loadingRowSlots }, (_, index) => index);
-  const lockedScrollerHeight = loading && readyScrollerHeightRef.current > 0
+  const lockedScrollerHeight = fixedViewportRows === undefined && loading && readyScrollerHeightRef.current > 0
     ? readyScrollerHeightRef.current
     : undefined;
-  const lockedMobileHeight = loading && readyMobileHeightRef.current > 0
+  const lockedMobileHeight = fixedViewportRows === undefined && loading && readyMobileHeightRef.current > 0
     ? readyMobileHeightRef.current
     : undefined;
+  const frameClassName = cx(
+    "pui-data-table__frame",
+    pagination && "pui-data-table__frame--paginated",
+    fixedViewportRows !== undefined && "pui-data-table__frame--fixed-viewport",
+  );
+  const frameStyle = fixedViewportRows === undefined ? undefined : ({
+    "--pui-data-table-desktop-viewport-height": `${TABLE_HEADER_HEIGHT + (fixedViewportRows * TABLE_ROW_HEIGHT)}px`,
+    "--pui-data-table-mobile-viewport-height": `${fixedViewportRows * MOBILE_ROW_HEIGHT}px`,
+  } as CSSProperties);
+  const paginationSummary = pagination?.summary !== undefined
+    ? pagination.summary
+    : loading && rows.length === 0
+      ? "正在加载数据"
+      : state === "error" && rows.length === 0
+        ? "暂无缓存数据"
+        : undefined;
+
+  useClientLayoutEffect(() => {
+    if (fixedViewportRows === undefined) return;
+    if (scrollerRef.current) scrollerRef.current.scrollTop = 0;
+    if (mobileListRef.current) mobileListRef.current.scrollTop = 0;
+  }, [fixedViewportRows, loading, paginationPage, paginationPageSize, rowIdentityKey]);
 
   useClientLayoutEffect(() => {
     if (empty) {
@@ -242,15 +285,22 @@ export function DataTable<T>({
 
   if (empty) {
     return (
-      <div className={cx("pui-data-table", "pui-data-table--empty", className)} data-state="empty" data-pui-owner="DataTable">
-        <div className={cx("pui-data-table__frame", pagination && "pui-data-table__frame--paginated")}>
-          <EmptyState
-            icon={<SearchX aria-hidden="true" />}
-            title={emptyTitle}
-            description={emptyDescription}
-            action={emptyAction}
-          />
-          {pagination ? <div className="pui-data-table__pagination"><Pagination {...pagination} /></div> : null}
+      <div className={cx("pui-data-table", "pui-data-table--empty", mobileRow && "pui-data-table--has-mobile", className)} data-state="empty" data-pui-owner="DataTable">
+        <div className={frameClassName} style={frameStyle}>
+          <div
+            className="pui-data-table__empty-scroller"
+            role={fixedViewportRows !== undefined ? "region" : undefined}
+            aria-label={fixedViewportRows !== undefined ? `${ariaLabel}空状态滚动区域` : undefined}
+            tabIndex={fixedViewportRows !== undefined ? 0 : undefined}
+          >
+            <EmptyState
+              icon={<SearchX aria-hidden="true" />}
+              title={emptyTitle}
+              description={emptyDescription}
+              action={emptyAction}
+            />
+          </div>
+          {pagination ? <div className="pui-data-table__pagination"><Pagination {...pagination} summary={paginationSummary} /></div> : null}
         </div>
       </div>
     );
@@ -277,12 +327,15 @@ export function DataTable<T>({
           {errorDescription}
         </Alert>
       ) : null}
-      <div className={cx("pui-data-table__frame", pagination && "pui-data-table__frame--paginated")}>
+      <div className={frameClassName} style={frameStyle}>
       <div
         ref={scrollerRef}
         className="pui-data-table__scroller"
+        role={desktopScrollable ? "region" : undefined}
+        aria-label={desktopScrollable ? `${ariaLabel}滚动区域` : undefined}
+        tabIndex={desktopScrollable ? 0 : undefined}
         style={lockedScrollerHeight !== undefined ? {
-          minHeight: lockedScrollerHeight,
+          height: lockedScrollerHeight,
           overflowY: "hidden",
         } : undefined}
       >
@@ -377,8 +430,9 @@ export function DataTable<T>({
           role="list"
           aria-label={`${ariaLabel}移动版`}
           aria-busy={busy || undefined}
+          tabIndex={fixedViewportRows !== undefined ? 0 : undefined}
           style={lockedMobileHeight !== undefined ? {
-            minHeight: lockedMobileHeight,
+            height: lockedMobileHeight,
             overflow: "hidden",
           } : undefined}
         >
@@ -390,7 +444,7 @@ export function DataTable<T>({
           )) : rows.map((row, rowIndex) => <div className="pui-mobile-data-row" role="listitem" key={rowKeys[rowIndex]}>{mobileRow(row)}</div>)}
         </div>
       ) : null}
-      {pagination ? <div className="pui-data-table__pagination"><Pagination {...pagination} /></div> : null}
+      {pagination ? <div className="pui-data-table__pagination"><Pagination {...pagination} summary={paginationSummary} /></div> : null}
       </div>
     </div>
   );

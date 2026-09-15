@@ -48,7 +48,14 @@ try {
           frameRadii: [frameStyle.borderTopLeftRadius, frameStyle.borderTopRightRadius, frameStyle.borderBottomRightRadius, frameStyle.borderBottomLeftRadius],
           frameBorders: [frameStyle.borderTopWidth, frameStyle.borderRightWidth, frameStyle.borderBottomWidth, frameStyle.borderLeftWidth],
           paginated: frame.classList.contains("pui-data-table__frame--paginated"),
+          fixedViewport: frame.classList.contains("pui-data-table__frame--fixed-viewport"),
           scroller: { left: scroller.getBoundingClientRect().left, right: scroller.getBoundingClientRect().right },
+          surfaceHeight: surface.getBoundingClientRect().height,
+          surfaceClientHeight: surface.clientHeight,
+          surfaceScrollHeight: surface.scrollHeight,
+          surfaceClientWidth: surface.clientWidth,
+          surfaceScrollWidth: surface.scrollWidth,
+          surfaceTabIndex: surface.tabIndex,
           surfaceRight: surface.getBoundingClientRect().right,
           surfaceBottom: surface.getBoundingClientRect().bottom,
           surfaceRadii: [surfaceStyle.borderTopLeftRadius, surfaceStyle.borderTopRightRadius, surfaceStyle.borderBottomRightRadius, surfaceStyle.borderBottomLeftRadius],
@@ -80,6 +87,10 @@ try {
       assert.deepEqual(ready.frameBorders, ["1px", "1px", "1px", "1px"], `table outline incomplete at ${width}px`);
       assert.deepEqual(ready.surfaceRadii, ["11px", "11px", "0px", "0px"], `paged table surface corners differ at ${width}px`);
       assert.equal(ready.paginated, true, `paged table missing mode marker at ${width}px`);
+      assert.equal(ready.fixedViewport, true, `numeric viewportRows did not fix the paged table height at ${width}px`);
+      assert.equal(ready.surfaceTabIndex, 0, `fixed paged table is not keyboard scrollable at ${width}px`);
+      assert.ok(Math.abs(ready.surfaceHeight - (width <= 640 ? 304 : 274)) <= 1, `viewportRows=4 resolved to the wrong fixed height at ${width}px`);
+      assert.ok(ready.surfaceScrollHeight > ready.surfaceClientHeight, `four-row viewport did not contain the fifth row at ${width}px`);
       assert.ok(ready.pager, `paged table missing attached pagination at ${width}px`);
       assert.equal(ready.pager.borderTop, "1px", `table/pagination divider missing at ${width}px`);
       assert.equal(ready.paginationBorder, "0px", `pagination has duplicate divider at ${width}px`);
@@ -183,17 +194,63 @@ try {
       if (width <= 640) assert.ok(loading.mobileHeight >= ready.mobileHeight - 1, `mobile rows shrank while loading at ${width}px`);
       await page.locator('.demo-list-frame .pui-data-table[data-state="ready"]').waitFor();
 
+      const pageSurface = root.locator(width <= 640 ? ".pui-data-table__mobile" : ".pui-data-table__scroller");
+      const beforePageChange = width > 640 ? await pageSurface.evaluate((element) => {
+        element.scrollTop = element.scrollHeight;
+        return { scrollTop: element.scrollTop, range: element.scrollHeight - element.clientHeight };
+      }) : null;
+      if (beforePageChange) assert.ok(beforePageChange.scrollTop > 0, `could not prepare the equal-height page reset case at ${width}px`);
       await page.getByRole("button", { name: "下一页" }).click();
       await page.getByText("6-10 / 共 23 条").waitFor({ state: "attached" });
       const nextPage = await measure();
       assert.ok(Math.abs(nextPage.surfaceRight - nextPage.pager.right) <= 1, `pagination shifted after page change at ${width}px`);
+      if (beforePageChange) {
+        const afterPageChange = await pageSurface.evaluate((element) => ({
+          scrollTop: element.scrollTop,
+          range: element.scrollHeight - element.clientHeight,
+        }));
+        assert.ok(Math.abs(afterPageChange.range - beforePageChange.range) <= 1, `page change altered the desktop scroll range and could mask reset at ${width}px`);
+        assert.ok(afterPageChange.scrollTop <= 1, `equal-height page change did not reset the fixed viewport at ${width}px`);
+      }
 
       const view = page.getByRole("group", { name: "表格视图" });
+      const heightMode = page.getByRole("group", { name: "表格高度" });
+      await heightMode.getByRole("button", { name: "跟随内容" }).click();
+      const pagedAuto = await measure();
+      assert.equal(pagedAuto.paginated, true, `auto-height paged table lost pagination at ${width}px`);
+      assert.equal(pagedAuto.fixedViewport, false, `viewportRows=auto retained the fixed viewport at ${width}px`);
+      assert.ok(pagedAuto.surfaceScrollHeight <= pagedAuto.surfaceClientHeight + 1, `auto-height paged table still scrolls internally at ${width}px`);
+      assert.equal(
+        pagedAuto.surfaceTabIndex,
+        pagedAuto.surfaceScrollWidth > pagedAuto.surfaceClientWidth + 1 ? 0 : -1,
+        `auto-height paged table scroll focus does not match horizontal overflow at ${width}px`,
+      );
+      assert.ok(pagedAuto.surfaceHeight > ready.surfaceHeight, `auto-height paged table did not follow five rows at ${width}px`);
+      await heightMode.getByRole("button", { name: "固定高度" }).click();
+      const pagedFixedAgain = await measure();
+      assert.equal(pagedFixedAgain.fixedViewport, true, `numeric paged viewport did not restore at ${width}px`);
+      assert.ok(Math.abs(pagedFixedAgain.surfaceHeight - ready.surfaceHeight) <= 1, `restored numeric paged viewport changed height at ${width}px`);
+
       await view.getByRole("button", { name: "全部" }).click();
-      const all = await measure();
+      const allFixed = await measure();
       assert.equal(await view.getByRole("button", { name: "全部" }).getAttribute("aria-pressed"), "true");
-      assert.equal(all.paginated, false, `unpaginated table retained mode marker at ${width}px`);
-      assert.equal(all.pager, null, `unpaginated table retained a pager at ${width}px`);
+      assert.equal(allFixed.paginated, false, `unpaginated table retained mode marker at ${width}px`);
+      assert.equal(allFixed.pager, null, `unpaginated table retained a pager at ${width}px`);
+      assert.equal(allFixed.fixedViewport, true, `numeric viewportRows did not fix the unpaginated table at ${width}px`);
+      assert.ok(Math.abs(allFixed.surfaceHeight - ready.surfaceHeight) <= 1, `numeric unpaginated viewport differs from the paged viewport at ${width}px`);
+      assert.ok(allFixed.surfaceScrollHeight > allFixed.surfaceClientHeight, `numeric unpaginated viewport did not scroll at ${width}px`);
+      assert.equal(allFixed.surfaceTabIndex, 0, `fixed unpaginated table is not keyboard scrollable at ${width}px`);
+      assert.equal(await root.locator(width <= 640 ? ".pui-mobile-data-row" : "tbody tr").count(), 23, `fixed unpaginated mode truncated rows at ${width}px`);
+
+      await heightMode.getByRole("button", { name: "跟随内容" }).click();
+      const all = await measure();
+      assert.equal(all.fixedViewport, false, `auto-height unpaginated table retained the fixed viewport at ${width}px`);
+      assert.ok(all.surfaceScrollHeight <= all.surfaceClientHeight + 1, `auto-height unpaginated table still scrolls internally at ${width}px`);
+      assert.equal(
+        all.surfaceTabIndex,
+        all.surfaceScrollWidth > all.surfaceClientWidth + 1 ? 0 : -1,
+        `auto-height unpaginated table scroll focus does not match horizontal overflow at ${width}px`,
+      );
       assert.deepEqual(all.frameRadii, ready.frameRadii, `unpaginated table changed outer corners at ${width}px`);
       assert.deepEqual(all.surfaceRadii, ["11px", "11px", "11px", "11px"], `unpaginated table surface corners differ at ${width}px`);
       assert.equal(await root.locator(width <= 640 ? ".pui-mobile-data-row" : "tbody tr").count(), 23, `unpaginated mode truncated rows at ${width}px`);
@@ -209,6 +266,7 @@ try {
       assert.equal(allLoading.pager, null, `unpaginated loading gained a pager at ${width}px`);
       assert.ok(Math.abs(allLoading.frame.bottom - all.frame.bottom) <= 1, `unpaginated loading changed table height at ${width}px`);
       await page.locator('.demo-list-frame .pui-data-table[data-state="ready"]').waitFor();
+      await heightMode.getByRole("button", { name: "固定高度" }).click();
       await view.getByRole("button", { name: "分页" }).click();
       assert.equal(await root.locator(".pui-data-table__pagination").count(), 1, `paged mode did not restore pagination at ${width}px`);
       assert.equal(await root.locator(width <= 640 ? ".pui-mobile-data-row" : "tbody tr").count(), 5, `paged mode did not reset to five rows at ${width}px`);

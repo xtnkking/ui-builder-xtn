@@ -13,6 +13,7 @@ import {
   Field,
   FamilyLoginPage,
   IconButton,
+  Inline,
   ListManagementPage,
   MemberManagementPage,
   MultiSelect,
@@ -206,6 +207,7 @@ function DemoContent() {
   const [emptyNumberValue, setEmptyNumberValue] = useState<number | "">("");
   const [listPage, setListPage] = useState(1);
   const [listView, setListView] = useState<"paged" | "all">("paged");
+  const [listViewport, setListViewport] = useState<"fixed" | "auto">("fixed");
   const [listEntries, setListEntries] = useState(members);
   const [listLoading, setListLoading] = useState(false);
   const [loadingPage, setLoadingPage] = useState<number | undefined>();
@@ -367,13 +369,24 @@ function DemoContent() {
         title="用户权限"
         description="查看用户状态与角色分配。"
         filters={(
-          <SegmentedControl
-            value={listView}
-            ariaLabel="表格视图"
-            disabled={listLoading}
-            options={[{ value: "paged", label: "分页" }, { value: "all", label: "全部" }]}
-            onValueChange={(view) => { setListView(view); setListPage(1); }}
-          />
+          <Inline gap="small">
+            <SegmentedControl
+              value={listView}
+              fill="mobile"
+              ariaLabel="表格视图"
+              disabled={listLoading}
+              options={[{ value: "paged", label: "分页" }, { value: "all", label: "全部" }]}
+              onValueChange={(view) => { setListView(view); setListPage(1); }}
+            />
+            <SegmentedControl
+              value={listViewport}
+              fill="mobile"
+              ariaLabel="表格高度"
+              disabled={listLoading}
+              options={[{ value: "fixed", label: "固定高度" }, { value: "auto", label: "跟随内容" }]}
+              onValueChange={setListViewport}
+            />
+          </Inline>
         )}
         actions={(
           <Button
@@ -396,6 +409,7 @@ function DemoContent() {
           rowKey={(member) => member.id}
           state={listLoading ? "loading" : "ready"}
           loadingRows={listView === "paged" ? 5 : listEntries.length}
+          viewportRows={listViewport === "fixed" ? 4 : "auto"}
           mobileRow={renderListMobileRow}
           pagination={listView === "paged" ? {
             page: listPage,
