@@ -100,6 +100,13 @@ body {
   min-width: 0;
 }
 
+.demo-list-mobile-row__identity {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
 .demo-list-mobile-row__email {
   grid-column: 1 / -1;
   grid-row: 2;

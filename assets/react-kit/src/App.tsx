@@ -4,6 +4,7 @@ import {
   Autocomplete,
   AsyncSelect,
   Button,
+  Checkbox,
   ConfirmDialog,
   ContextMenu,
   DataTable,
@@ -25,6 +26,7 @@ import {
   Tabs,
   ToastProvider,
   TreeSelect,
+  VisuallyHidden,
   useToast,
   type DataColumn,
   type LoginProduct,
@@ -209,6 +211,7 @@ function DemoContent() {
   const [listView, setListView] = useState<"paged" | "all">("paged");
   const [listViewport, setListViewport] = useState<"fixed" | "auto">("fixed");
   const [listEntries, setListEntries] = useState(members);
+  const [selectedListIds, setSelectedListIds] = useState<string[]>([]);
   const [listLoading, setListLoading] = useState(false);
   const [loadingPage, setLoadingPage] = useState<number | undefined>();
   const [editingMember, setEditingMember] = useState<MemberRecord | null>(null);
@@ -343,8 +346,47 @@ function DemoContent() {
     setEditingMember(null);
     toast({ tone: "success", description: `${name}的权限已更新` });
   };
+  const visibleListEntries = listView === "paged"
+    ? listEntries.slice((listPage - 1) * 5, listPage * 5)
+    : listEntries;
+  const visibleListIds = visibleListEntries.map((member) => member.id);
+  const allVisibleListEntriesSelected = visibleListIds.length > 0
+    && visibleListIds.every((id) => selectedListIds.includes(id));
+  const setVisibleListSelection = (checked: boolean) => {
+    setSelectedListIds((current) => {
+      const next = new Set(current);
+      visibleListIds.forEach((id) => checked ? next.add(id) : next.delete(id));
+      return [...next];
+    });
+  };
+  const setListEntrySelection = (id: string, checked: boolean) => {
+    setSelectedListIds((current) => checked
+      ? current.includes(id) ? current : [...current, id]
+      : current.filter((currentId) => currentId !== id));
+  };
   const listColumns: DataColumn<MemberRecord>[] = [
-    { id: "name", header: "用户", minWidth: 224, pin: "start", cell: (member) => (
+    {
+      id: "selection",
+      kind: "selection",
+      header: (
+        <Checkbox
+          label={<VisuallyHidden>选择当前页全部用户</VisuallyHidden>}
+          checked={allVisibleListEntriesSelected}
+          disabled={listLoading}
+          onChange={(event) => setVisibleListSelection(event.currentTarget.checked)}
+        />
+      ),
+      width: 52,
+      align: "center",
+      cell: (member) => (
+        <Checkbox
+          label={<VisuallyHidden>选择{member.name}</VisuallyHidden>}
+          checked={selectedListIds.includes(member.id)}
+          onChange={(event) => setListEntrySelection(member.id, event.currentTarget.checked)}
+        />
+      ),
+    },
+    { id: "name", header: "用户", minWidth: 224, cell: (member) => (
       <div className="demo-list-user"><strong>{member.name}</strong><span>{member.email}</span></div>
     ) },
     { id: "role", header: "角色", width: 142, cell: (member) => member.role },
@@ -357,7 +399,7 @@ function DemoContent() {
   ];
   const renderListMobileRow = (member: MemberRecord) => (
     <div className="demo-list-mobile-row">
-      <strong>{member.name}</strong><Tag tone={member.status === "已加入" ? "success" : member.status === "已停用" ? "neutral" : "warning"}>{member.status}</Tag>
+      <span className="demo-list-mobile-row__identity"><Checkbox label={<VisuallyHidden>选择{member.name}</VisuallyHidden>} checked={selectedListIds.includes(member.id)} onChange={(event) => setListEntrySelection(member.id, event.currentTarget.checked)} /><strong>{member.name}</strong></span><Tag tone={member.status === "已加入" ? "success" : member.status === "已停用" ? "neutral" : "warning"}>{member.status}</Tag>
       <span className="demo-list-mobile-row__email">{member.email}</span>
       <span className="demo-list-mobile-row__details"><span>{member.team} · {member.role}</span><span>加入 {member.joinedAt}</span></span>
       <span className="demo-list-mobile-row__action"><IconButton aria-label={`编辑${member.name}`} icon={<Pencil aria-hidden="true" />} onClick={() => openListEditor(member)} /></span>
@@ -405,7 +447,7 @@ function DemoContent() {
         <DataTable
           ariaLabel="用户权限表"
           columns={listColumns}
-          rows={listView === "paged" ? listEntries.slice((listPage - 1) * 5, listPage * 5) : listEntries}
+          rows={visibleListEntries}
           rowKey={(member) => member.id}
           state={listLoading ? "loading" : "ready"}
           loadingRows={listView === "paged" ? 5 : listEntries.length}

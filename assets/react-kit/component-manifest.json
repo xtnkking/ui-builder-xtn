@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "kitVersion": "0.2.14",
+  "kitVersion": "0.2.15",
   "entries": [
     {
       "id": "color",
@@ -2124,7 +2124,7 @@
   "sourceIntegrity": {
     "actions.tsx": "9898ddbeb0a72d01483396b762822ccbae6ba13ef960a155ab7c51663ba044f4",
     "data-extra.tsx": "898a6aeaa6c2f93d37ee9a91607c5ba4f4ff70eb8a147f5e6383be79f85b6734",
-    "data-table.tsx": "20fde53cf92a01a8cf0a99f02897316e0ed9cc231b35fd627d51a29c3157ca88",
+    "data-table.tsx": "1623507b0420f673a5c17436d83b00b1d155d2ee55af122fe445bfd11b9d9609",
     "date-field.tsx": "4030d78edc3858d7e76cad6750201db1522c92cad0e1f39b0763a804aec0bb1d",
     "display.tsx": "89f5cac0d39ea6bd1b32263f1eb3f9afd0b3c9d4a7156f716d36588ae5c72e33",
     "feedback-extra.tsx": "9367bea4dfc69613f7e0ed8149b374a556cc11de5cc012309def7747f66468a3",
@@ -2147,7 +2147,7 @@
     "styles/extended.css": "b21cb702f9295d0c0e11aa89d0ff8f7bb3e99dd4a39b81ba64880f19f9e863e5",
     "styles/inputs-extra.css": "2f32ea8cdc1384516c663e2ac6aa3fde2017e46c1b65e462a85014b1e1a16391",
     "styles/layout-actions-display.css": "53a24bcd2d9bc0726c3c578fb56a3a47ccecafdd38e3a36ea8418dbde773820e",
-    "styles.css": "60db4137049126e27e2a01a6f034cc9b118d7941c33bc8ac84ec0a00b0528436",
+    "styles.css": "26e10c70554407fc4281ab7cac05605658e6140f64cdffb7ceec926fe9e4bbae",
     "utils.ts": "fdb9151abf7b8d587098d600199e8dad8d7729535c93c91296557ac9b60f67b5",
     "value-controls.tsx": "776ccbb1ad6c7bfc7ead9bcc8d1a833d4b69403fb737fa0122872d8e8b5cc762"
   }

@@ -17,10 +17,13 @@ export interface DataColumn<T> {
   id: string;
   header: ReactNode;
   cell: (row: T) => ReactNode;
+  /** Marks a checkbox selection column. When it is the first visible column, the first two visible columns pin to the start by default. */
+  kind?: "selection";
   width?: number;
   minWidth?: number;
   sortable?: boolean;
-  pin?: "start" | "end";
+  /** Explicit pinning wins over selection defaults. Use false to opt a column out of automatic pinning. */
+  pin?: "start" | "end" | false;
   hidden?: boolean;
   align?: "start" | "center" | "end";
 }
@@ -91,13 +94,22 @@ function normalizedViewportRows(value: DataTableProps<unknown>["viewportRows"], 
 
 function columnLayout<T>(columns: DataColumn<T>[], availableWidth: number): ColumnLayout<T> {
   const visibleColumns = columns.filter((column) => !column.hidden);
+  const autoPinSelectionPair = visibleColumns[0]?.kind === "selection"
+    && visibleColumns[0].pin !== false
+    && visibleColumns[0].pin !== "end";
+  const resolvedColumns = visibleColumns.map((column, index) => ({
+    column,
+    pin: column.pin === false
+      ? undefined
+      : column.pin ?? (autoPinSelectionPair && index < 2 ? "start" : undefined),
+  }));
   const visible = [
-    ...visibleColumns.filter((column) => column.pin === "start"),
-    ...visibleColumns.filter((column) => !column.pin),
-    ...visibleColumns.filter((column) => column.pin === "end"),
+    ...resolvedColumns.filter(({ pin }) => pin === "start"),
+    ...resolvedColumns.filter(({ pin }) => !pin),
+    ...resolvedColumns.filter(({ pin }) => pin === "end"),
   ];
-  const widths = visible.map(preferredColumnWidth);
-  const flexibleIndexes = visible.flatMap((column, index) => (
+  const widths = visible.map(({ column }) => preferredColumnWidth(column));
+  const flexibleIndexes = visible.flatMap(({ column }, index) => (
     normalizedColumnWidth(column.width) === undefined ? [index] : []
   ));
   const minimumTableWidth = widths.reduce((total, width) => total + width, 0);
@@ -109,31 +121,31 @@ function columnLayout<T>(columns: DataColumn<T>[], availableWidth: number): Colu
     widths[index] += extraWidth;
   });
 
-  const pinnedStartWidth = visible.reduce((total, column, index) => (
-    column.pin === "start" ? total + widths[index] : total
+  const pinnedStartWidth = visible.reduce((total, { pin }, index) => (
+    pin === "start" ? total + widths[index] : total
   ), 0);
-  const pinnedEndWidth = visible.reduce((total, column, index) => (
-    column.pin === "end" ? total + widths[index] : total
+  const pinnedEndWidth = visible.reduce((total, { pin }, index) => (
+    pin === "end" ? total + widths[index] : total
   ), 0);
   const pinningFits = availableWidth <= 0 || pinnedStartWidth + pinnedEndWidth < availableWidth;
   const starts = new Map<string, number>();
   const ends = new Map<string, number>();
   let startOffset = 0;
-  visible.forEach((column, index) => {
-    if (!pinningFits || column.pin !== "start") return;
+  visible.forEach(({ column, pin }, index) => {
+    if (!pinningFits || pin !== "start") return;
     starts.set(column.id, startOffset);
     startOffset += widths[index];
   });
   let endOffset = 0;
-  visible.slice().reverse().forEach((column, reverseIndex) => {
-    if (!pinningFits || column.pin !== "end") return;
+  visible.slice().reverse().forEach(({ column, pin }, reverseIndex) => {
+    if (!pinningFits || pin !== "end") return;
     const index = visible.length - reverseIndex - 1;
     ends.set(column.id, endOffset);
     endOffset += widths[index];
   });
-  const metrics = visible.map((column, index) => {
+  const metrics = visible.map(({ column, pin }, index) => {
     const width = widths[index];
-    const appliedPin = pinningFits ? column.pin : undefined;
+    const appliedPin = pinningFits ? pin : undefined;
     const style: CSSProperties = {
       left: starts.get(column.id),
       right: ends.get(column.id),
@@ -206,6 +218,9 @@ export function DataTable<T>({
   const activeRetrying = state === "error" && Boolean(onRetry) && Boolean(retrying);
   const busy = loading || activeRetrying || activeLoadingSortColumnId !== undefined;
   const fixedViewportRows = normalizedViewportRows(viewportRows, Boolean(pagination));
+  const viewportHasSlack = fixedViewportRows !== undefined
+    && showRows
+    && rows.length < fixedViewportRows;
   const desktopScrollable = fixedViewportRows !== undefined
     || (availableWidth > 0 && minimumTableWidth > availableWidth + 0.5);
   const paginationPage = pagination?.page;
@@ -226,6 +241,7 @@ export function DataTable<T>({
     "pui-data-table__frame",
     pagination && "pui-data-table__frame--paginated",
     fixedViewportRows !== undefined && "pui-data-table__frame--fixed-viewport",
+    viewportHasSlack && "pui-data-table__frame--viewport-slack",
   );
   const frameStyle = fixedViewportRows === undefined ? undefined : ({
     "--pui-data-table-desktop-viewport-height": `${TABLE_HEADER_HEIGHT + (fixedViewportRows * TABLE_ROW_HEIGHT)}px`,

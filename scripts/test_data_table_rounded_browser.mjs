@@ -127,6 +127,10 @@ try {
   await server.listen();
   const url = server.resolvedUrls?.local?.[0];
   assert.ok(url, "Vite did not expose a local URL");
+  const widths = process.env.PERSONAL_UI_TABLE_WIDTHS
+    ? process.env.PERSONAL_UI_TABLE_WIDTHS.split(",").map(Number).filter((width) => Number.isFinite(width) && width > 0)
+    : [2560, 1440, 1024, 736, 360, 320];
+  assert.ok(widths.length > 0, "PERSONAL_UI_TABLE_WIDTHS did not contain a valid viewport width");
   browser = await chromium.launch({
     headless: true,
     ...(process.env.PERSONAL_UI_CHROMIUM_EXECUTABLE
@@ -134,7 +138,7 @@ try {
       : {}),
   });
 
-  for (const width of [2560, 1440, 1024, 736, 360, 320]) {
+  for (const width of widths) {
     const page = await browser.newPage({ viewport: { width, height: 900 } });
     try {
       await page.goto(url);
@@ -244,6 +248,10 @@ try {
       assert.ok(Math.abs(ready.surface.height - sparse.surface.height) <= 1, `sparse ready result changed table height at ${width}px`);
       assert.ok(Math.abs(ready.frame.height - sparse.frame.height) <= 1, `sparse ready result changed frame height at ${width}px`);
       assert.ok(Math.abs(largestPage.surface.clientWidth - sparse.surface.clientWidth) <= 1, `sparse results changed the reserved scrollbar width at ${width}px`);
+      const sparseLastRowCells = surface.locator(width <= 640 ? ".pui-mobile-data-row:last-child" : ":scope > table > tbody > tr:last-child > td");
+      const sparseLastRowBorders = await sparseLastRowCells.evaluateAll((elements) => elements.map((element) => getComputedStyle(element).borderBottomWidth));
+      assert.ok(sparseLastRowBorders.length > 0, `sparse result last row missing at ${width}px`);
+      assert.ok(sparseLastRowBorders.every((widthValue) => widthValue === "1px"), `sparse result last-row divider incomplete at ${width}px`);
       if (width > 640) {
         assert.equal(largestPage.tableHeaders.length, sparse.tableHeaders.length, `sparse results changed the visible column count at ${width}px`);
         largestPage.tableHeaders.forEach((headerWidth, index) => {
@@ -323,7 +331,7 @@ try {
       await page.close();
     }
   }
-  console.log("DataTable rounded and stable-height ready/loading/sparse/empty/error regression passed at 2560, 1440, 1024, 736, 360, and 320px.");
+  console.log(`DataTable rounded and stable-height ready/loading/sparse/empty/error regression passed at ${widths.map((width) => `${width}px`).join(", ")}.`);
 } finally {
   await browser?.close();
   await server.close();

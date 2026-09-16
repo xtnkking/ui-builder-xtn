@@ -2314,6 +2314,11 @@ input[type="password"]::-ms-reveal {
   border-bottom: 0;
 }
 
+.pui-data-table__frame--viewport-slack > .pui-data-table__scroller > table > tbody > tr:last-child > td,
+.pui-data-table__frame--viewport-slack > .pui-data-table__mobile > .pui-mobile-data-row:last-child {
+  border-bottom: 1px solid var(--pui-border);
+}
+
 .pui-data-table__header-content,
 .pui-data-table__cell-content {
   display: block;
