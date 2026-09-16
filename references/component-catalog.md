@@ -1,6 +1,6 @@
 # Component Catalog
 
-Personal UI v0.2.15 contains 118 source-backed families and preserves all 130 directory aliases from the approved preview. The family ID and aliases are discovery terms, not import paths. Application code must import the listed runtime exports from `src/personal-ui/index.ts`; it must never import a source file named in the final column directly.
+Personal UI v0.2.16 contains 118 source-backed families and preserves all 130 directory aliases from the approved preview. The family ID and aliases are discovery terms, not import paths. Application code must import the listed runtime exports from `src/personal-ui/index.ts`; it must never import a source file named in the final column directly.
 
 `assets/react-kit/component-manifest.json` is the machine-readable authority for this table. The manifest validator requires every family to resolve to real source files, every runtime export to exist in the barrel and registry, and every visual component or pattern to carry its registered source owner marker. Foundation families may be CSS or TypeScript artifacts without a runtime export.
 

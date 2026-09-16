@@ -40,7 +40,7 @@ try {
         const pagerWrap = frame.querySelector(".pui-data-table__pagination");
         const pagination = pagerWrap?.querySelector(".pui-pagination");
         const headers = [...table.querySelectorAll("thead th")].map((header) => header.getBoundingClientRect().width);
-        const firstStatus = table.querySelector("tbody tr:first-child td:nth-child(3) .pui-tag");
+        const firstStatus = table.querySelector("tbody tr:first-child td:nth-child(4) .pui-tag");
         const firstAction = table.querySelector("tbody tr:first-child td:last-child");
         return {
           root: { left: container.left, right: container.right, width: container.width },
@@ -105,9 +105,9 @@ try {
         assert.ok(Math.abs((ready.root.left - frame.x) - (frame.x + frame.width - ready.root.right)) <= 2, `page not centered at ${width}px`);
       }
       if (width > 640) {
-        assert.ok(ready.headers[0] <= 400, `user column stretched at ${width}px`);
-        assert.ok(ready.headers[3] <= 300, `team column stretched at ${width}px`);
-        for (const [index, expected] of [[1, 142], [2, 132], [4, 160], [5, 80]]) {
+        assert.ok(ready.headers[1] <= 400, `user column stretched at ${width}px`);
+        assert.ok(ready.headers[4] <= 300, `team column stretched at ${width}px`);
+        for (const [index, expected] of [[2, 142], [3, 132], [5, 160], [6, 80]]) {
           assert.ok(Math.abs(ready.headers[index] - expected) <= 1, `compact column ${index} drifted at ${width}px`);
         }
         if (width === 736) {

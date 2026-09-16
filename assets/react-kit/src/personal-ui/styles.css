@@ -2212,6 +2212,7 @@ input[type="password"]::-ms-reveal {
 
 .pui-data-table__frame {
   min-width: 0;
+  overflow: hidden;
   border: 1px solid var(--pui-border-strong);
   border-radius: var(--pui-radius-table);
   background: var(--pui-surface);
@@ -2237,6 +2238,16 @@ input[type="password"]::-ms-reveal {
   height: var(--pui-data-table-desktop-viewport-height);
   overflow-y: auto;
   scrollbar-gutter: stable;
+  /* Continue the table bands through the reserved scrollbar gutter. */
+  background: linear-gradient(
+    to bottom,
+    var(--pui-surface-subtle) 0,
+    var(--pui-surface-subtle) 41px,
+    var(--pui-border) 41px,
+    var(--pui-border) 42px,
+    var(--pui-surface) 42px,
+    var(--pui-surface) 100%
+  );
 }
 
 .pui-data-table__frame--fixed-viewport > .pui-data-table__mobile {

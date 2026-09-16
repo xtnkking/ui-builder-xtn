@@ -31,6 +31,28 @@ try {
       const mobile = table.locator(".pui-data-table__mobile");
 
       if (width > 640) {
+        const roundedOverflow = await table.evaluate((element) => {
+          const frame = element.querySelector(".pui-data-table__frame");
+          const scroller = element.querySelector(".pui-data-table__scroller");
+          const frameStyle = getComputedStyle(frame);
+          const scrollerStyle = getComputedStyle(scroller);
+          return {
+            frameOverflow: [frameStyle.overflowX, frameStyle.overflowY],
+            frameBottomRadii: [frameStyle.borderBottomLeftRadius, frameStyle.borderBottomRightRadius],
+            scrollerBottomRadii: [scrollerStyle.borderBottomLeftRadius, scrollerStyle.borderBottomRightRadius],
+            clientWidth: scroller.clientWidth,
+            scrollWidth: scroller.scrollWidth,
+            clientHeight: scroller.clientHeight,
+            scrollHeight: scroller.scrollHeight,
+          };
+        });
+        assert.deepEqual(roundedOverflow.frameOverflow, ["hidden", "hidden"], "unpaginated table frame does not clip the horizontal scrollbar to its rounded corners");
+        assert.deepEqual(roundedOverflow.frameBottomRadii, ["12px", "12px"], "unpaginated table bottom frame corners differ");
+        assert.deepEqual(roundedOverflow.scrollerBottomRadii, ["11px", "11px"], "unpaginated table bottom scroller corners differ");
+        assert.equal(await table.locator(".pui-data-table__pagination").count(), 0, "unpaginated horizontal-overflow fixture unexpectedly rendered pagination");
+        assert.ok(roundedOverflow.scrollWidth > roundedOverflow.clientWidth, "selection table does not have horizontal overflow for the bottom-corner check");
+        assert.ok(roundedOverflow.scrollHeight <= roundedOverflow.clientHeight + 1, "horizontal-overflow fixture accidentally gained vertical scrolling");
+
         const headers = scroller.locator(":scope > table > thead > tr > th");
         const cells = scroller.locator(":scope > table > tbody > tr:first-child > td");
         assert.equal(await headers.count(), 5, "selection table column count changed");
@@ -77,6 +99,7 @@ try {
         assert.equal(await mobile.locator(".pui-mobile-data-row").count(), 1, "mobile selection fixture row count changed");
         assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), "mobile selection example causes horizontal overflow");
       }
+      assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), `selection example escaped the page at ${width}px`);
     } finally {
       await page.close();
     }

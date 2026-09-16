@@ -51,6 +51,45 @@ async function settledWindowScroll(page) {
   }));
 }
 
+async function pixelAt(page, point) {
+  return page.screenshot({
+    clip: {
+      x: Math.floor(point.x),
+      y: Math.floor(point.y),
+      width: 1,
+      height: 1,
+    },
+  });
+}
+
+async function assertDesktopGutterPaint(page, table, label) {
+  const points = await table.evaluate((element) => {
+    const surface = element.querySelector(".pui-data-table__scroller");
+    const header = surface.querySelector("thead th:last-child");
+    const bodyCell = surface.querySelector("tbody tr:first-child td:last-child");
+    const surfaceRect = surface.getBoundingClientRect();
+    const headerRect = header.getBoundingClientRect();
+    const bodyRect = bodyCell.getBoundingClientRect();
+    const gutterWidth = surface.offsetWidth - surface.clientWidth;
+    return {
+      gutterWidth,
+      headerReference: { x: headerRect.right - 4, y: (headerRect.top + headerRect.bottom) / 2 },
+      headerGutter: { x: surfaceRect.right - (gutterWidth / 2), y: (headerRect.top + headerRect.bottom) / 2 },
+      bodyReference: { x: bodyRect.right - 4, y: (bodyRect.top + bodyRect.bottom) / 2 },
+      bodyGutter: { x: surfaceRect.right - (gutterWidth / 2), y: (bodyRect.top + bodyRect.bottom) / 2 },
+    };
+  });
+  assert.ok(points.gutterWidth >= 2, `${label}: stable scrollbar gutter is missing`);
+  const [headerReference, headerGutter, bodyReference, bodyGutter] = await Promise.all([
+    pixelAt(page, points.headerReference),
+    pixelAt(page, points.headerGutter),
+    pixelAt(page, points.bodyReference),
+    pixelAt(page, points.bodyGutter),
+  ]);
+  assert.ok(headerReference.equals(headerGutter), `${label}: scrollbar gutter does not continue the table header background`);
+  assert.ok(bodyReference.equals(bodyGutter), `${label}: scrollbar gutter does not continue the table body background`);
+}
+
 async function assertRounded(table, label, { paginated, empty = false }) {
   const geometry = await table.evaluate((element) => {
     const frame = element.querySelector(".pui-data-table__frame");
@@ -68,6 +107,7 @@ async function assertRounded(table, label, { paginated, empty = false }) {
       width: frameRect.width,
       frameRadii: [frameStyle.borderTopLeftRadius, frameStyle.borderTopRightRadius, frameStyle.borderBottomRightRadius, frameStyle.borderBottomLeftRadius],
       frameBorders: [frameStyle.borderTopWidth, frameStyle.borderRightWidth, frameStyle.borderBottomWidth, frameStyle.borderLeftWidth],
+      frameOverflow: [frameStyle.overflowX, frameStyle.overflowY],
       surfaceRadii: [surfaceStyle.borderTopLeftRadius, surfaceStyle.borderTopRightRadius, surfaceStyle.borderBottomRightRadius, surfaceStyle.borderBottomLeftRadius],
       marker: frame.classList.contains("pui-data-table__frame--paginated"),
       fixedViewport: frame.classList.contains("pui-data-table__frame--fixed-viewport"),
@@ -88,6 +128,7 @@ async function assertRounded(table, label, { paginated, empty = false }) {
         bottom: surface.getBoundingClientRect().bottom,
         height: surface.getBoundingClientRect().height,
         clientWidth: surface.clientWidth,
+        gutterWidth: surface.offsetWidth - surface.clientWidth,
         scrollbarGutter: surfaceStyle.scrollbarGutter,
         role: surface.getAttribute("role"),
         tabIndex: surface.tabIndex,
@@ -98,6 +139,7 @@ async function assertRounded(table, label, { paginated, empty = false }) {
   assert.ok(geometry.width > 0, `${label}: surface collapsed`);
   assert.deepEqual(geometry.frameRadii, ["12px", "12px", "12px", "12px"], `${label}: four frame corners differ`);
   assert.deepEqual(geometry.frameBorders, ["1px", "1px", "1px", "1px"], `${label}: frame outline incomplete`);
+  assert.deepEqual(geometry.frameOverflow, ["hidden", "hidden"], `${label}: frame does not clip scrollbars and row surfaces to its rounded corners`);
   assert.equal(geometry.marker, paginated, `${label}: pagination mode marker differs`);
   assert.deepEqual(geometry.surfaceRadii, paginated ? ["11px", "11px", "0px", "0px"] : ["11px", "11px", "11px", "11px"], `${label}: inner corners differ`);
   assert.ok(Math.abs(geometry.surface.left - (geometry.frame.left + 1)) <= 1, `${label}: surface left edge detached`);
@@ -156,11 +198,14 @@ try {
       await page.locator('.pui-data-page .pui-data-table[data-state="ready"]').waitFor();
       const ready = await assertRounded(table, `ready ${width}px`, { paginated: true });
       const readyRowHeight = await surface.locator(rowSelector).evaluate((element) => element.getBoundingClientRect().height);
+      const readyScrolling = await surface.evaluate((element) => ({ clientHeight: element.clientHeight, scrollHeight: element.scrollHeight }));
       assert.ok(Math.abs(initialLoading.surface.height - ready.surface.height) <= 1, `initial loading changed the fixed viewport at ${width}px`);
       assert.ok(Math.abs(initialLoading.frame.height - ready.frame.height) <= 1, `initial loading changed the table frame at ${width}px`);
       assert.ok(Math.abs(initialLoadingRowHeight - (width <= 640 ? 76 : 58)) <= 1, `loading row differs from the standard row-height unit at ${width}px`);
       assert.ok(Math.abs(readyRowHeight - initialLoadingRowHeight) <= 1, `ready row height differs from its loading skeleton at ${width}px`);
       assert.equal(ready.fixedViewport, true, `paginated table did not enable its stable viewport at ${width}px`);
+      assert.ok(readyScrolling.scrollHeight <= readyScrolling.clientHeight + 1, `ready result unexpectedly started with a vertical scrollbar at ${width}px`);
+      if (width > 640) await assertDesktopGutterPaint(page, table, `ready ${width}px`);
       const lastRow = surface.locator(width <= 640 ? ".pui-mobile-data-row:last-child" : "tbody tr:last-child td:last-child");
       assert.equal(await lastRow.evaluate((element) => getComputedStyle(element).borderBottomWidth), "0px", `double bottom line at ${width}px`);
       const readyHeight = ready.surface.height;
@@ -175,6 +220,17 @@ try {
       await table.getByText("1-20 / 共 23 条", { exact: true }).waitFor();
       const scrolling = await surface.evaluate((element) => ({ clientHeight: element.clientHeight, scrollHeight: element.scrollHeight }));
       assert.ok(scrolling.scrollHeight > scrolling.clientHeight, `large page did not scroll inside the fixed viewport at ${width}px`);
+      assert.ok(Math.abs(ready.surface.clientWidth - largePage.surface.clientWidth) <= 1, `vertical scrollbar changed the table content width at ${width}px`);
+      assert.ok(Math.abs(ready.surface.gutterWidth - largePage.surface.gutterWidth) <= 1, `vertical scrollbar changed the reserved gutter width at ${width}px`);
+      if (width > 640) {
+        assert.equal(ready.tableHeaders.length, largePage.tableHeaders.length, `vertical scrollbar changed the visible column count at ${width}px`);
+        ready.tableHeaders.forEach((headerWidth, index) => {
+          assert.ok(Math.abs(headerWidth - largePage.tableHeaders[index]) <= 1, `vertical scrollbar changed column ${index + 1} width at ${width}px`);
+        });
+      }
+      if (process.env.PERSONAL_UI_TABLE_SCREENSHOT_PREFIX && [1440, 320].includes(width)) {
+        await page.screenshot({ path: `${process.env.PERSONAL_UI_TABLE_SCREENSHOT_PREFIX}-scrolling-${width}.png`, fullPage: true });
+      }
 
       await page.getByRole("button", { name: "查询", exact: true }).focus();
       await page.keyboard.press("Tab");
@@ -245,6 +301,9 @@ try {
       assert.equal(await surface.locator(width <= 640 ? ".pui-mobile-data-row" : "tbody tr").count(), 2, `sparse query did not render two rows at ${width}px`);
       assert.equal(await table.locator(".pui-data-table__pagination").count(), 1, `sparse query removed pagination at ${width}px`);
       await table.getByText("1-2 / 共 2 条", { exact: true }).waitFor();
+      const sparseScrolling = await surface.evaluate((element) => ({ clientHeight: element.clientHeight, scrollHeight: element.scrollHeight }));
+      assert.ok(sparseScrolling.scrollHeight <= sparseScrolling.clientHeight + 1, `sparse results unexpectedly kept a vertical scrollbar at ${width}px`);
+      if (width > 640) await assertDesktopGutterPaint(page, table, `sparse ready ${width}px`);
       assert.ok(Math.abs(ready.surface.height - sparse.surface.height) <= 1, `sparse ready result changed table height at ${width}px`);
       assert.ok(Math.abs(ready.frame.height - sparse.frame.height) <= 1, `sparse ready result changed frame height at ${width}px`);
       assert.ok(Math.abs(largestPage.surface.clientWidth - sparse.surface.clientWidth) <= 1, `sparse results changed the reserved scrollbar width at ${width}px`);
