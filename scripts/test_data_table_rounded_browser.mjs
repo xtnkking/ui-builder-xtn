@@ -90,6 +90,74 @@ async function assertDesktopGutterPaint(page, table, label) {
   assert.ok(bodyReference.equals(bodyGutter), `${label}: scrollbar gutter does not continue the table body background`);
 }
 
+async function assertDesktopScrollbarStartsBelowHeader(page, table, label) {
+  const contract = await table.evaluate((element) => {
+    const surface = element.querySelector(".pui-data-table__scroller");
+    const header = surface.querySelector("thead th:last-child");
+    const surfaceRect = surface.getBoundingClientRect();
+    const headerRect = header.getBoundingClientRect();
+    const gutterWidth = surface.offsetWidth - surface.clientWidth;
+    const buttonStyle = getComputedStyle(surface, "::-webkit-scrollbar-button");
+    let trackMarginRule = "";
+    const visitRules = (rules) => {
+      for (const rule of rules) {
+        if (rule.selectorText === ".pui-data-table__frame--fixed-viewport > .pui-data-table__scroller::-webkit-scrollbar-track:vertical") {
+          trackMarginRule = rule.style.getPropertyValue("margin-block-start");
+        }
+        if (rule.cssRules) visitRules(rule.cssRules);
+      }
+    };
+    for (const sheet of document.styleSheets) {
+      try {
+        visitRules(sheet.cssRules);
+      } catch {
+        // Cross-origin stylesheets are irrelevant to the bundled component rule.
+      }
+    }
+    return {
+      scrollable: surface.scrollHeight > surface.clientHeight,
+      gutterWidth,
+      headerHeight: headerRect.height,
+      headerOffset: getComputedStyle(surface).getPropertyValue("--_pui-data-table-header-height").trim(),
+      buttonDisplay: buttonStyle.display,
+      buttonWidth: buttonStyle.width,
+      buttonHeight: buttonStyle.height,
+      trackMarginRule,
+      samples: [
+        headerRect.top + Math.min(18, headerRect.height / 2),
+        headerRect.bottom - 4,
+      ].map((y) => ({
+        reference: { x: headerRect.right - 4, y },
+        gutter: { x: surfaceRect.right - (gutterWidth / 2), y },
+      })),
+    };
+  });
+  assert.equal(contract.scrollable, true, `${label}: vertical overflow test case is missing`);
+  assert.ok(contract.gutterWidth >= 2, `${label}: stable vertical scrollbar gutter is missing`);
+  assert.ok(Math.abs(contract.headerHeight - 42) <= 1, `${label}: header height changed`);
+  assert.equal(contract.headerOffset, "42px", `${label}: scrollbar offset does not match the header height`);
+  assert.equal(contract.buttonDisplay, "none", `${label}: native scrollbar arrow remains visible in the header`);
+  assert.equal(contract.buttonWidth, "0px", `${label}: native scrollbar button still reserves width`);
+  assert.equal(contract.buttonHeight, "0px", `${label}: native scrollbar button still reserves height`);
+  assert.equal(contract.trackMarginRule, "var(--_pui-data-table-header-height)", `${label}: vertical scrollbar track is not offset below the header`);
+  for (const sample of contract.samples) {
+    const [reference, gutter] = await Promise.all([
+      pixelAt(page, sample.reference),
+      pixelAt(page, sample.gutter),
+    ]);
+    assert.ok(reference.equals(gutter), `${label}: scrollbar is painted inside the fixed header`);
+  }
+}
+
+async function assertMobileScrollbarHasNoHeaderOffset(surface, label) {
+  const contract = await surface.evaluate((element) => ({
+    headerOffset: getComputedStyle(element).getPropertyValue("--_pui-data-table-header-height").trim(),
+    trackMargin: getComputedStyle(element, "::-webkit-scrollbar-track").marginBlockStart,
+  }));
+  assert.equal(contract.headerOffset, "", `${label}: desktop header offset leaked into the mobile list`);
+  assert.equal(contract.trackMargin, "0px", `${label}: mobile scrollbar received a desktop header offset`);
+}
+
 async function assertRounded(table, label, { paginated, empty = false }) {
   const geometry = await table.evaluate((element) => {
     const frame = element.querySelector(".pui-data-table__frame");
@@ -222,6 +290,11 @@ try {
       assert.ok(scrolling.scrollHeight > scrolling.clientHeight, `large page did not scroll inside the fixed viewport at ${width}px`);
       assert.ok(Math.abs(ready.surface.clientWidth - largePage.surface.clientWidth) <= 1, `vertical scrollbar changed the table content width at ${width}px`);
       assert.ok(Math.abs(ready.surface.gutterWidth - largePage.surface.gutterWidth) <= 1, `vertical scrollbar changed the reserved gutter width at ${width}px`);
+      if (width > 640) {
+        await assertDesktopScrollbarStartsBelowHeader(page, table, `large page ready ${width}px`);
+      } else {
+        await assertMobileScrollbarHasNoHeaderOffset(surface, `large page ready ${width}px`);
+      }
       if (width > 640) {
         assert.equal(ready.tableHeaders.length, largePage.tableHeaders.length, `vertical scrollbar changed the visible column count at ${width}px`);
         ready.tableHeaders.forEach((headerWidth, index) => {

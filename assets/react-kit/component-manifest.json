@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "kitVersion": "0.2.16",
+  "kitVersion": "0.2.17",
   "entries": [
     {
       "id": "color",
@@ -2146,8 +2146,8 @@
     "primitives.tsx": "f1371cafdba78cd484d9e90fbd3cfc7880493fe662ec5e52441e533bb89a5082",
     "styles/extended.css": "b21cb702f9295d0c0e11aa89d0ff8f7bb3e99dd4a39b81ba64880f19f9e863e5",
     "styles/inputs-extra.css": "2f32ea8cdc1384516c663e2ac6aa3fde2017e46c1b65e462a85014b1e1a16391",
-    "styles/layout-actions-display.css": "53a24bcd2d9bc0726c3c578fb56a3a47ccecafdd38e3a36ea8418dbde773820e",
-    "styles.css": "bdda5817f1edc39c474158f2104fb53fa14f0d1774f84932524ed900e18a86c5",
+    "styles/layout-actions-display.css": "8b0cb7c175fb9039561a11319a43f5715c490351d14d6002da598128bc980d5e",
+    "styles.css": "fca7a5627b632ac9791663b8b862a039de97e9ed6d10b642a1c2278d07924fba",
     "utils.ts": "fdb9151abf7b8d587098d600199e8dad8d7729535c93c91296557ac9b60f67b5",
     "value-controls.tsx": "776ccbb1ad6c7bfc7ead9bcc8d1a833d4b69403fb737fa0122872d8e8b5cc762"
   }
