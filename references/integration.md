@@ -1,6 +1,6 @@
 # Integration
 
-Personal UI v0.2.17 is installed source with an enforced provenance boundary. The target receives the complete managed `src/personal-ui/` tree, its runtime registry, the component manifest, and the provenance scanner. Product code may compose public exports, but it may not fork, imitate, or reach inside the managed implementation.
+Personal UI v0.2.18 is installed source with an enforced provenance boundary. The target receives the complete managed `src/personal-ui/` tree, its runtime registry, the component manifest, and the provenance scanner. Product code may compose public exports, but it may not fork, imitate, or reach inside the managed implementation.
 
 ## Choose A Mode
 
@@ -44,8 +44,29 @@ import "./personal-ui/styles.css";
 Import every runtime component and pattern through the public barrel:
 
 ```tsx
-import { Button, DataTable, Drawer, SearchInput } from "./personal-ui";
+import { Button, DataTable, Drawer, FilterBar, SearchInput, Select } from "./personal-ui";
 ```
+
+### Field-aligned query controls
+
+Buttons that share a row with the 44px input controls must declare `size="field"`. Keep the query command as a submit button so Enter and click use the same form path; `handleQuery` must call `event.preventDefault()` before starting the application request, and the button must use the bundled loading state while that request is in flight.
+
+```tsx
+<FilterBar
+  ariaLabel="成员筛选"
+  onSubmit={handleQuery}
+  actions={(
+    <Button size="field" type="submit" variant="primary" loading={querying} loadingLabel="查询中">
+      查询
+    </Button>
+  )}
+>
+  <SearchInput aria-label="搜索成员" value={draftQuery} onChange={handleDraftQueryChange} />
+  <Select ariaLabel="按状态筛选" value={draftStatus} options={statusOptions} onValueChange={setDraftStatus} />
+</FilterBar>
+```
+
+The same `size="field"` contract applies when a product intentionally composes the command beside a field inside `Inline`; do not recreate the 44px height with application CSS. Ordinary `Button` instances remain 38px and `size="small"` remains 32px.
 
 Do not deep-import an implementation file:
 

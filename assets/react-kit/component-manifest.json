@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "kitVersion": "0.2.17",
+  "kitVersion": "0.2.18",
   "entries": [
     {
       "id": "color",
@@ -2138,16 +2138,16 @@
     "navigation-extra.tsx": "10c2357f3fc8706a10220d06311005450451f45e92697c70f5f4886f95cbd1a7",
     "navigation.tsx": "4b856c5b7d2c2b0d4db7c8c6c87e780ed223e1c60b1d490cd189ba7b513c2cff",
     "overlays-extra.tsx": "200f00a38e98e856c74379a60717d6cecd4f5ca8b1dcf78d5e0810232c72f84b",
-    "overlays.tsx": "0e4cceec06a664c4afea368addc2555790b770bfd147101bc7962f757ad3eb11",
+    "overlays.tsx": "1aa8eaa5d626079129f9e7704adefcf1af9603aa6cf40ffa662c0515aac78ab4",
     "patterns/family-login-page.tsx": "d96543d8df95f4cd465c7d7413edd39d71d1b438f0b22d9315b6114cf1f67963",
-    "patterns/member-management-page.tsx": "6d9a207ab4234215c9b13a5f4fe871c17f757833813a6aa658db6f90bf470c77",
+    "patterns/member-management-page.tsx": "17323fcda760158d38c1ebe249844c2b7751a61230608990d33f40d524f21b11",
     "patterns/standard-pages.tsx": "8a5f8b0311fe2fad94b10811d4348ae60897042c039219d675bc6d87f7bb3f26",
     "portal-tokens.ts": "628b0f31c47f9dcaaa84cf67c5b13318a46f2f47f3a611d6a9075c83358052cd",
-    "primitives.tsx": "f1371cafdba78cd484d9e90fbd3cfc7880493fe662ec5e52441e533bb89a5082",
+    "primitives.tsx": "54e21988b8255843419fc07a38c31c2a73b98af065e6ee02899128f59fe09d44",
     "styles/extended.css": "b21cb702f9295d0c0e11aa89d0ff8f7bb3e99dd4a39b81ba64880f19f9e863e5",
     "styles/inputs-extra.css": "2f32ea8cdc1384516c663e2ac6aa3fde2017e46c1b65e462a85014b1e1a16391",
-    "styles/layout-actions-display.css": "8b0cb7c175fb9039561a11319a43f5715c490351d14d6002da598128bc980d5e",
-    "styles.css": "fca7a5627b632ac9791663b8b862a039de97e9ed6d10b642a1c2278d07924fba",
+    "styles/layout-actions-display.css": "cb318cb2087b3033e748c45c9b13841cd6908ec0ce957a18a1337be169f98ec0",
+    "styles.css": "e64b01f55240a9c6e85cdbc48d1ed27d127b2bce0b5700a16e238afe68ee6e41",
     "utils.ts": "fdb9151abf7b8d587098d600199e8dad8d7729535c93c91296557ac9b60f67b5",
     "value-controls.tsx": "776ccbb1ad6c7bfc7ead9bcc8d1a833d4b69403fb737fa0122872d8e8b5cc762"
   }

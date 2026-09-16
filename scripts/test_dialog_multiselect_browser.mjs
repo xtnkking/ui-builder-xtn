@@ -170,6 +170,41 @@ try {
     const page = await browser.newPage({ viewport: { width, height } });
     try {
       await page.goto(url);
+      const memberAction = page.getByRole("button", { name: "陈沐的更多操作" });
+      await memberAction.click();
+      const memberDrawer = page.getByRole("dialog", { name: "陈沐" });
+      const descriptionList = memberDrawer.locator('[data-pui-owner="DescriptionList"]');
+      await descriptionList.waitFor();
+      const descriptionGeometry = await descriptionList.evaluate((element) => {
+        const listBounds = element.getBoundingClientRect();
+        const items = [...element.querySelectorAll(".pui-description-list__item")];
+        const itemBounds = items.map((item) => {
+          const bounds = item.getBoundingClientRect();
+          return { left: bounds.left, right: bounds.right, top: bounds.top, bottom: bounds.bottom, width: bounds.width };
+        });
+        const longValue = items[0].querySelector("dd");
+        longValue.textContent = "super_admin";
+        const textRange = document.createRange();
+        textRange.selectNodeContents(longValue);
+        const lineTops = [...textRange.getClientRects()].map((rect) => Math.round(rect.top));
+        return {
+          list: { left: listBounds.left, right: listBounds.right, width: listBounds.width },
+          itemBounds,
+          lineCount: new Set(lineTops).size,
+          longValueWidth: longValue.getBoundingClientRect().width,
+          columnCount: getComputedStyle(element).gridTemplateColumns.split(" ").length,
+        };
+      });
+      assert.equal(descriptionGeometry.columnCount, 1, `${width}px: DescriptionList default outer grid is not one column`);
+      assert.equal(descriptionGeometry.itemBounds.length, 4, `${width}px: member metadata items changed unexpectedly`);
+      for (const item of descriptionGeometry.itemBounds) {
+        assert.ok(Math.abs(item.left - descriptionGeometry.list.left) <= 1 && Math.abs(item.right - descriptionGeometry.list.right) <= 1, `${width}px: DescriptionList item was compressed by an outer grid column`);
+      }
+      assert.ok(descriptionGeometry.longValueWidth >= 80, `${width}px: DescriptionList value column is too narrow for identifiers`);
+      assert.equal(descriptionGeometry.lineCount, 1, `${width}px: super_admin wrapped despite fitting in the Drawer`);
+      await memberDrawer.getByRole("button", { name: "关闭抽屉" }).click();
+      await memberDrawer.waitFor({ state: "detached" });
+
       await page.getByRole("tab", { name: "弹窗" }).click();
       const responseMode = page.getByRole("group", { name: "选择确认操作响应" });
       const opener = page.getByRole("button", { name: "停用用户", exact: true });
@@ -378,8 +413,44 @@ try {
       const edit = page.getByRole("button", { name: "编辑陈沐" });
       await edit.click();
       const drawer = page.getByRole("dialog", { name: "编辑陈沐的权限" });
-      const drawerBounds = await drawer.boundingBox();
-      assert.ok(drawerBounds && drawerBounds.x >= -1 && drawerBounds.x + drawerBounds.width <= width + 1 && drawerBounds.y + drawerBounds.height <= height + 1, `${width}px: drawer outside viewport ${JSON.stringify(drawerBounds)}`);
+      const drawerGeometry = await drawer.evaluate((element) => {
+        const bounds = element.getBoundingClientRect();
+        const style = getComputedStyle(element);
+        const overlayStyle = getComputedStyle(element.parentElement);
+        return {
+          bounds: { left: bounds.left, right: bounds.right, top: bounds.top, bottom: bounds.bottom, width: bounds.width, height: bounds.height },
+          className: element.className,
+          overlayClassName: element.parentElement.className,
+          overlayPadding: overlayStyle.padding,
+          radii: {
+            topLeft: style.borderTopLeftRadius,
+            topRight: style.borderTopRightRadius,
+            bottomRight: style.borderBottomRightRadius,
+            bottomLeft: style.borderBottomLeftRadius,
+          },
+        };
+      });
+      const drawerBounds = drawerGeometry.bounds;
+      assert.ok(drawerBounds.left >= -1 && drawerBounds.right <= width + 1 && drawerBounds.top >= -1 && drawerBounds.bottom <= height + 1, `${width}px: drawer outside viewport ${JSON.stringify(drawerBounds)}`);
+      assert.match(drawerGeometry.className, /(?:^|\s)pui-drawer--edge(?:\s|$)/, `${width}px: Drawer default is not the edge variant`);
+      assert.match(drawerGeometry.overlayClassName, /(?:^|\s)pui-overlay--drawer-edge(?:\s|$)/, `${width}px: Drawer overlay default is not the edge variant`);
+      if (width > 640) {
+        assert.ok(Math.abs(drawerBounds.top) <= 1, `${width}px: desktop Drawer is not flush to the top`);
+        assert.ok(Math.abs(drawerBounds.right - width) <= 1, `${width}px: desktop Drawer is not flush to the right`);
+        assert.ok(Math.abs(drawerBounds.bottom - height) <= 1, `${width}px: desktop Drawer is not flush to the bottom`);
+        assert.equal(drawerGeometry.overlayPadding, "0px", `${width}px: desktop edge Drawer overlay retains an outer gap`);
+        assert.notEqual(drawerGeometry.radii.topLeft, "0px", `${width}px: desktop Drawer lost its top-left radius`);
+        assert.notEqual(drawerGeometry.radii.bottomLeft, "0px", `${width}px: desktop Drawer lost its bottom-left radius`);
+        assert.equal(drawerGeometry.radii.topRight, "0px", `${width}px: desktop Drawer top-right corner is rounded`);
+        assert.equal(drawerGeometry.radii.bottomRight, "0px", `${width}px: desktop Drawer bottom-right corner is rounded`);
+      } else {
+        assert.ok(Math.abs(drawerBounds.left) <= 1 && Math.abs(drawerBounds.right - width) <= 1, `${width}px: mobile Drawer does not span the viewport width`);
+        assert.ok(drawerBounds.top > 0 && Math.abs(drawerBounds.bottom - height) <= 1, `${width}px: mobile Drawer is not a bottom sheet`);
+        assert.notEqual(drawerGeometry.radii.topLeft, "0px", `${width}px: mobile Drawer lost its top-left radius`);
+        assert.notEqual(drawerGeometry.radii.topRight, "0px", `${width}px: mobile Drawer lost its top-right radius`);
+        assert.equal(drawerGeometry.radii.bottomRight, "0px", `${width}px: mobile Drawer bottom-right corner is rounded`);
+        assert.equal(drawerGeometry.radii.bottomLeft, "0px", `${width}px: mobile Drawer bottom-left corner is rounded`);
+      }
       assert.ok(await drawer.locator(".pui-drawer__footer").isVisible(), `${width}px: drawer actions clipped`);
       await clickBackdrop(drawer, `${width}px editing drawer`);
       assert.equal(await drawer.isVisible(), true, `${width}px: backdrop closed the Drawer`);

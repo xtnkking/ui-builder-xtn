@@ -1,6 +1,6 @@
 # Component Catalog
 
-Personal UI v0.2.17 contains 118 source-backed families and preserves all 130 directory aliases from the approved preview. The family ID and aliases are discovery terms, not import paths. Application code must import the listed runtime exports from `src/personal-ui/index.ts`; it must never import a source file named in the final column directly.
+Personal UI v0.2.18 contains 118 source-backed families and preserves all 130 directory aliases from the approved preview. The family ID and aliases are discovery terms, not import paths. Application code must import the listed runtime exports from `src/personal-ui/index.ts`; it must never import a source file named in the final column directly.
 
 `assets/react-kit/component-manifest.json` is the machine-readable authority for this table. The manifest validator requires every family to resolve to real source files, every runtime export to exist in the barrel and registry, and every visual component or pattern to carry its registered source owner marker. Foundation families may be CSS or TypeScript artifacts without a runtime export.
 
@@ -62,6 +62,8 @@ Source names below are relative to `assets/react-kit/src/personal-ui/`; duplicat
 | `toggle-button` | `toggle-button` | `ToggleButton` | `actions.tsx` + `layout-actions-display.css` |
 | `toolbar` | `toolbar-filter-bar` | `Toolbar` | `actions.tsx` + `layout-actions-display.css` |
 | `filter-bar` | `filter-bar` | `FilterBar` | `actions.tsx` + `layout-actions-display.css` |
+
+`Button` exposes three stable heights: `size="small"` is 32px, the default `size="medium"` is 38px, and `size="field"` is 44px for commands aligned with inputs and selectors. Query and reset buttons must use `size="field"` whether they are supplied through `FilterBar.actions` or intentionally composed inside `Inline`; see the [integration example](integration.md#field-aligned-query-controls).
 
 ### Inputs
 
@@ -223,6 +225,7 @@ Source names below are relative to `assets/react-kit/src/personal-ui/`; duplicat
 - Use `ListManagementPage` or `SearchFilterPage` for ordinary lists: their default readable width keeps the heading, filters, and table aligned. `layoutWidth="wide"` is for a dense table that benefits from the full viewport. `MemberManagementPage` has the same readable-width behavior built in. Keep `ListManagementPage.footer` for non-table actions rather than a second pager.
 - `VirtualList` is for large flat collections; `Tree` and `TreeTable` own hierarchical data. `LoadMore` and `InfiniteScroll` are distinct fetch models and should not be combined on one surface.
 - Use `OverflowText` for a tooltip only when text is actually truncated. Use `ExpandableText` when the user should deliberately reveal longer content.
+- Use `DescriptionList` for term-and-value metadata instead of rebuilding it with raw `dl` markup, `Stack`, or `Inline`. `columns` controls grouping on wide surfaces; each item owns its label/value grid, and long unbroken content wraps within that item without compressing neighboring items. The component collapses its item layout at narrow breakpoints.
 
 ## Navigation, Feedback, And Overlay Contracts
 
@@ -233,7 +236,7 @@ Source names below are relative to `assets/react-kit/src/personal-ui/`; duplicat
 - A confirmation without additional content has no Dialog body band. For an async destructive action, `ConfirmDialog` focuses Cancel first and reserves its body for a failed request; the close control remains keyboard reachable, not the initial focus target.
 - `Dialog` provides 16px spacing between direct body children. Keep related form fields in one content group and separate action rows from fields; use the 420px `small` width for confirmation and the 520px default for multi-field forms. A nested async confirmation uses `ConfirmDialog`, the same visual and focus contract as a standalone confirmation.
 - `Dialog`, `Drawer`, and `ConfirmDialog` default to closing on backdrop click. Set `closeOnBackdropClick={false}` on each instance that must ignore the backdrop, including nested or adjacent dialogs; the setting persists across close and reopen, and their close icon and Escape remain available. This is independent from `Dialog`/`Drawer` `closable={false}`, which hides the close icon and disables both Escape and backdrop dismissal. Async `ConfirmDialog` suspends dismissal while pending.
-- `Drawer` defaults to an inset rounded desktop panel and rounded-top mobile sheet. Use `variant="edge"` only for a deliberately flush rail.
+- On desktop, `Drawer` defaults to `variant="edge"`: it is flush to the top, right, and bottom viewport edges, with only the top-left and bottom-left corners rounded. Set `variant="inset"` explicitly for a floating panel with outer spacing. At `640px` and below, both variants use the same rounded-top bottom-sheet layout.
 
 ## Page Pattern Contracts
 

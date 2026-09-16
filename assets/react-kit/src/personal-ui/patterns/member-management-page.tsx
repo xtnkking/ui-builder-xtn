@@ -9,6 +9,7 @@ import {
 } from "react";
 import { Ellipsis, Search, UserPlus } from "lucide-react";
 import { DataTable, type DataColumn, type DataSort, type DataTableState } from "../data-table";
+import { DescriptionList } from "../display";
 import { Field, SearchInput, Select } from "../forms";
 import type { PaginationPageTrigger } from "../navigation";
 import { Drawer, OverflowText } from "../overlays";
@@ -422,6 +423,7 @@ export function MemberManagementPage({
         />
         <div className="pui-query-toolbar__actions">
           <Button
+            size="field"
             disabled={sameFilters(draft, emptyFilters)}
             aria-disabled={requesting || undefined}
             onClick={() => setDraft(emptyFilters)}
@@ -429,6 +431,7 @@ export function MemberManagementPage({
             重置
           </Button>
           <Button
+            size="field"
             type="submit"
             variant="primary"
             icon={<Search aria-hidden="true" />}
@@ -544,12 +547,14 @@ export function MemberManagementPage({
         )}
       >
         {selectedMember ? (
-          <dl className="pui-description-list">
-            <dt>团队</dt><dd>{selectedMember.team}</dd>
-            <dt>角色</dt><dd>{selectedMember.role}</dd>
-            <dt>状态</dt><dd><Tag tone={statusTone(selectedMember.status)}>{selectedMember.status}</Tag></dd>
-            <dt>加入时间</dt><dd>{selectedMember.joinedAt}</dd>
-          </dl>
+          <DescriptionList
+            items={[
+              { id: "team", term: "团队", description: selectedMember.team },
+              { id: "role", term: "角色", description: selectedMember.role },
+              { id: "status", term: "状态", description: <Tag tone={statusTone(selectedMember.status)}>{selectedMember.status}</Tag> },
+              { id: "joinedAt", term: "加入时间", description: selectedMember.joinedAt },
+            ]}
+          />
         ) : null}
       </Drawer>
     </section>

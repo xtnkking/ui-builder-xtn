@@ -385,7 +385,7 @@ export interface DrawerProps {
   variant?: "inset" | "edge";
 }
 
-export function Drawer({ open, onClose, title, description, children, footer, closable = true, closeOnBackdropClick = true, width = "medium", variant = "inset" }: DrawerProps) {
+export function Drawer({ open, onClose, title, description, children, footer, closable = true, closeOnBackdropClick = true, width = "medium", variant = "edge" }: DrawerProps) {
   const titleId = useId();
   const descriptionId = useId();
   const sourceRef = useRef<HTMLSpanElement>(null);

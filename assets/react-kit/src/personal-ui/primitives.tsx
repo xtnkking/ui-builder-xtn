@@ -8,7 +8,7 @@ import { LoaderCircle, X } from "lucide-react";
 import { cx, getTabStops, isVisibleElement } from "./utils";
 
 export type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
-export type ButtonSize = "small" | "medium";
+export type ButtonSize = "small" | "medium" | "field";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;

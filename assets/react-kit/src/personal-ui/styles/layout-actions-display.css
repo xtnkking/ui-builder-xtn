@@ -394,7 +394,7 @@
   justify-content: flex-end;
   gap: 8px;
 }
-.pui-filter-bar__actions .pui-button--medium {
+.pui-filter-bar .pui-button--medium {
   min-height: var(--pui-control-height);
 }
 .pui-filter-bar__active,
