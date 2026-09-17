@@ -439,15 +439,15 @@ try {
         assert.ok(Math.abs(drawerBounds.right - width) <= 1, `${width}px: desktop Drawer is not flush to the right`);
         assert.ok(Math.abs(drawerBounds.bottom - height) <= 1, `${width}px: desktop Drawer is not flush to the bottom`);
         assert.equal(drawerGeometry.overlayPadding, "0px", `${width}px: desktop edge Drawer overlay retains an outer gap`);
-        assert.notEqual(drawerGeometry.radii.topLeft, "0px", `${width}px: desktop Drawer lost its top-left radius`);
-        assert.notEqual(drawerGeometry.radii.bottomLeft, "0px", `${width}px: desktop Drawer lost its bottom-left radius`);
+        assert.equal(drawerGeometry.radii.topLeft, "16px", `${width}px: desktop Drawer top-left radius is not 16px`);
+        assert.equal(drawerGeometry.radii.bottomLeft, "16px", `${width}px: desktop Drawer bottom-left radius is not 16px`);
         assert.equal(drawerGeometry.radii.topRight, "0px", `${width}px: desktop Drawer top-right corner is rounded`);
         assert.equal(drawerGeometry.radii.bottomRight, "0px", `${width}px: desktop Drawer bottom-right corner is rounded`);
       } else {
         assert.ok(Math.abs(drawerBounds.left) <= 1 && Math.abs(drawerBounds.right - width) <= 1, `${width}px: mobile Drawer does not span the viewport width`);
         assert.ok(drawerBounds.top > 0 && Math.abs(drawerBounds.bottom - height) <= 1, `${width}px: mobile Drawer is not a bottom sheet`);
-        assert.notEqual(drawerGeometry.radii.topLeft, "0px", `${width}px: mobile Drawer lost its top-left radius`);
-        assert.notEqual(drawerGeometry.radii.topRight, "0px", `${width}px: mobile Drawer lost its top-right radius`);
+        assert.equal(drawerGeometry.radii.topLeft, "12px", `${width}px: mobile Drawer top-left radius changed`);
+        assert.equal(drawerGeometry.radii.topRight, "12px", `${width}px: mobile Drawer top-right radius changed`);
         assert.equal(drawerGeometry.radii.bottomRight, "0px", `${width}px: mobile Drawer bottom-right corner is rounded`);
         assert.equal(drawerGeometry.radii.bottomLeft, "0px", `${width}px: mobile Drawer bottom-left corner is rounded`);
       }

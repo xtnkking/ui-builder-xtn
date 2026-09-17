@@ -1,6 +1,6 @@
 {
   "name": "personal-ui",
-  "version": "0.2.18",
+  "version": "0.2.19",
   "stack": [
     "react",
     "typescript",
