@@ -10,7 +10,7 @@
       "reason": "Locale-neutral email address format example."
     },
     {
-      "file": "src/personal-ui/value-controls.tsx",
+      "file": "src/personal-ui/input/value-controls.tsx",
       "kind": "attribute",
       "attribute": "placeholder",
       "value": "#1769d2",
@@ -60,7 +60,7 @@
       "reason": "Legacy machine value comparator retained for status tone compatibility; it is never rendered as built-in copy."
     },
     {
-      "file": "src/personal-ui/value-controls.tsx",
+      "file": "src/personal-ui/input/value-controls.tsx",
       "kind": "property",
       "attribute": "label",
       "value": "UTC (±00:00)",
@@ -68,7 +68,7 @@
       "reason": "Locale-neutral IANA time-zone identifier and UTC offset."
     },
     {
-      "file": "src/personal-ui/value-controls.tsx",
+      "file": "src/personal-ui/input/value-controls.tsx",
       "kind": "property",
       "attribute": "label",
       "value": "Asia/Shanghai (UTC+08:00)",
@@ -76,7 +76,7 @@
       "reason": "Locale-neutral IANA time-zone identifier and UTC offset."
     },
     {
-      "file": "src/personal-ui/value-controls.tsx",
+      "file": "src/personal-ui/input/value-controls.tsx",
       "kind": "property",
       "attribute": "label",
       "value": "Asia/Hong Kong (UTC+08:00)",
@@ -84,7 +84,7 @@
       "reason": "Locale-neutral IANA time-zone identifier and UTC offset."
     },
     {
-      "file": "src/personal-ui/value-controls.tsx",
+      "file": "src/personal-ui/input/value-controls.tsx",
       "kind": "property",
       "attribute": "label",
       "value": "Asia/Tokyo (UTC+09:00)",
@@ -92,7 +92,7 @@
       "reason": "Locale-neutral IANA time-zone identifier and UTC offset."
     },
     {
-      "file": "src/personal-ui/value-controls.tsx",
+      "file": "src/personal-ui/input/value-controls.tsx",
       "kind": "property",
       "attribute": "label",
       "value": "Asia/Singapore (UTC+08:00)",
@@ -100,7 +100,7 @@
       "reason": "Locale-neutral IANA time-zone identifier and UTC offset."
     },
     {
-      "file": "src/personal-ui/value-controls.tsx",
+      "file": "src/personal-ui/input/value-controls.tsx",
       "kind": "property",
       "attribute": "label",
       "value": "Europe/London",
@@ -108,7 +108,7 @@
       "reason": "Locale-neutral IANA time-zone identifier."
     },
     {
-      "file": "src/personal-ui/value-controls.tsx",
+      "file": "src/personal-ui/input/value-controls.tsx",
       "kind": "property",
       "attribute": "label",
       "value": "Europe/Paris",
@@ -116,7 +116,7 @@
       "reason": "Locale-neutral IANA time-zone identifier."
     },
     {
-      "file": "src/personal-ui/value-controls.tsx",
+      "file": "src/personal-ui/input/value-controls.tsx",
       "kind": "property",
       "attribute": "label",
       "value": "America/New York",
@@ -124,7 +124,7 @@
       "reason": "Locale-neutral IANA time-zone identifier."
     },
     {
-      "file": "src/personal-ui/value-controls.tsx",
+      "file": "src/personal-ui/input/value-controls.tsx",
       "kind": "property",
       "attribute": "label",
       "value": "America/Chicago",
@@ -132,7 +132,7 @@
       "reason": "Locale-neutral IANA time-zone identifier."
     },
     {
-      "file": "src/personal-ui/value-controls.tsx",
+      "file": "src/personal-ui/input/value-controls.tsx",
       "kind": "property",
       "attribute": "label",
       "value": "America/Denver",
@@ -140,7 +140,7 @@
       "reason": "Locale-neutral IANA time-zone identifier."
     },
     {
-      "file": "src/personal-ui/value-controls.tsx",
+      "file": "src/personal-ui/input/value-controls.tsx",
       "kind": "property",
       "attribute": "label",
       "value": "America/Los Angeles",
@@ -148,7 +148,7 @@
       "reason": "Locale-neutral IANA time-zone identifier."
     },
     {
-      "file": "src/personal-ui/value-controls.tsx",
+      "file": "src/personal-ui/input/value-controls.tsx",
       "kind": "property",
       "attribute": "label",
       "value": "Australia/Sydney",

@@ -1,6 +1,6 @@
 # Personal UI Release Process
 
-Status: local-only M7 release tooling plus M8 evaluation and evidence infrastructure. The repository version remains `0.2.19`. This document does not authorize a commit, tag, installed-copy synchronization, GitHub Release, or public distribution, and no formal release candidate exists yet.
+Status: local M7 release tooling plus M8 evaluation and evidence infrastructure, with one failed hosted run from initial commit `eb32c87`. The exposed issues are fixed in the current working tree, but the corrected head has not passed hosted CI. The repository version remains `0.2.19`. This document does not authorize a commit, tag, installed-copy synchronization, GitHub Release, or public distribution, and no formal release candidate exists yet.
 
 ## One orchestrator
 
@@ -65,6 +65,8 @@ Hosted CI is a file-backed release bundle, not a workflow badge or a binding-onl
 
 The fixture records include the exact Node, Python, package-manager, React, React DOM, TypeScript, and framework versions observed by `run_support_fixture.py`, plus the complete install/render/typecheck/build/verify/upgrade/rollback operation list declared by the frozen fixture catalog. The browser record retains the actual Chromium, Firefox, and WebKit versions and the successful behavior, accessibility, visual, and version-inventory operations. The Safari record must come from system Safari 18 or newer driven by Apple's `safaridriver`; its capabilities, user agent, driver version, rendered root, and public-component interaction are retained. Playwright WebKit is useful engine coverage but is never accepted as real Safari evidence.
 
+The first hosted run, [36315585577](https://github.com/xtnkking/ui-builder-xtn/actions/runs/36315585577) from commit `eb32c87`, failed and is not release evidence. It exposed a stale locale path, raw inline Explorer SVG, Corepack signature incompatibility, missing repository dependencies in integration jobs, React 19 nullable-ref typing, and a platform-incomplete Rollup lockfile. Candidate fixes exist locally, but only a successful rerun from the corrected immutable head and a subsequently validated ten-record bundle can close this gate.
+
 The aggregator calculates `planDigest`, `sourceCommit`, and `archiveSha256` from the same deterministic release-plan logic used by `prepare`, then validates the completed bundle before upload. `scripts/validate_hosted_ci_evidence.py` independently reopens every referenced file and checks its bytes, release bindings, GitHub run identity, environments, operations, browser coverage, and Safari identity. A configured workflow, a triggered run, and a downloaded passing bundle are three different states; support entries may move from `target` to `verified` only after the last state is retained with its run URL and artifact SHA-256.
 
 ## Reproducibility
@@ -123,4 +125,4 @@ Commit subjects and diffs may support changelog reconstruction, but they are not
 
 The user selected the MIT License for this repository. The root `LICENSE`, package metadata, and Skill frontmatter record `MIT` consistently, with copyright attributed to 2026 xtnkking.
 
-`THIRD_PARTY_NOTICES.json` now inventories all 176 unique dependency versions in the lockfile, including the MPL-2.0 development tools and CC-BY-4.0 metadata package. Preflight validates that inventory against the lockfile. Explorer media is project-authored inline SVG rather than a remote runtime asset; bundled documentation and generated test screenshots are project-generated repository assets covered by the repository MIT License. License and notice blockers are therefore closed, while hosted CI, an immutable clean source snapshot, candidate verification, and M8 evidence remain outstanding.
+`THIRD_PARTY_NOTICES.json` now inventories all 226 unique dependency versions in the lockfile, including the MPL-2.0 development tools and CC-BY-4.0 metadata package. Preflight validates that inventory against the lockfile. Explorer media is a project-authored repository SVG asset rather than remote runtime media; bundled documentation and generated test screenshots are project-generated repository assets covered by the repository MIT License. License and notice blockers are therefore closed, while successful hosted CI for the corrected immutable head, candidate verification, and M8 evidence remain outstanding.

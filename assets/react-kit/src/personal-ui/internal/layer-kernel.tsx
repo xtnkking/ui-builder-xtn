@@ -402,9 +402,9 @@ function focusRemainingLayer(state: LayerDocumentState, preferred: HTMLElement |
 
 export interface LayerKernelOptions {
   active: boolean;
-  sourceRef: RefObject<HTMLElement>;
-  portalRef: RefObject<HTMLElement>;
-  panelRef: RefObject<HTMLElement>;
+  sourceRef: RefObject<HTMLElement | null>;
+  portalRef: RefObject<HTMLElement | null>;
+  panelRef: RefObject<HTMLElement | null>;
   mode?: LayerMode;
   dismissPolicy: LayerDismissPolicy;
   initialFocus?: LayerInitialFocus;
@@ -427,7 +427,10 @@ export function useLayerPortalReady(): boolean {
   return useSyncExternalStore(subscribeToClient, () => true, () => false);
 }
 
-export function useLayerPortalTarget(ready: boolean, sourceRef: RefObject<HTMLElement>): HTMLElement | null {
+export function useLayerPortalTarget(
+  ready: boolean,
+  sourceRef: RefObject<HTMLElement | null>,
+): HTMLElement | null {
   const [target, setTarget] = useState<HTMLElement | null>(null);
   useClientLayoutEffect(() => {
     const nextTarget = ready ? sourceRef.current?.ownerDocument.body ?? null : null;

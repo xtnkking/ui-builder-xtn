@@ -23,8 +23,8 @@ function floatingViewportBounds() {
 export function usePopoverPosition(
   open: boolean,
   placement: "bottom" | "top",
-  rootRef: RefObject<HTMLElement>,
-  popoverRef: RefObject<HTMLElement>,
+  rootRef: RefObject<HTMLElement | null>,
+  popoverRef: RefObject<HTMLElement | null>,
   align: "start" | "end" = "start",
 ) {
   useClientLayoutEffect(() => {

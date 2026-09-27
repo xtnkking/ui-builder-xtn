@@ -125,9 +125,9 @@ function optionText(label: ReactNode, fallback: string): string {
 
 function useOutsideDismiss(
   open: boolean,
-  rootRef: React.RefObject<HTMLElement>,
+  rootRef: React.RefObject<HTMLElement | null>,
   onDismiss: () => void,
-  popoverRef?: React.RefObject<HTMLElement>,
+  popoverRef?: React.RefObject<HTMLElement | null>,
 ) {
   useEffect(() => {
     if (!open) return;

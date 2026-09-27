@@ -356,8 +356,8 @@ export function observeComputedStyleChanges(
 
 export function usePersonalUiPortalTokens(
   active: boolean,
-  sourceRef: RefObject<HTMLElement>,
-  portalRef: RefObject<HTMLElement>,
+  sourceRef: RefObject<HTMLElement | null>,
+  portalRef: RefObject<HTMLElement | null>,
 ): void {
   useClientLayoutEffect(() => {
     const source = sourceRef.current;

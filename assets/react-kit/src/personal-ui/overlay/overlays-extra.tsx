@@ -53,8 +53,8 @@ function requireTriggerLabel(componentName: string, value: unknown): string {
 
 function useFloatingPosition(
   open: boolean,
-  triggerRef: React.RefObject<HTMLElement>,
-  panelRef: React.RefObject<HTMLElement>,
+  triggerRef: React.RefObject<HTMLElement | null>,
+  panelRef: React.RefObject<HTMLElement | null>,
   placement: FloatingPlacement,
   align: FloatingAlign,
 ) {

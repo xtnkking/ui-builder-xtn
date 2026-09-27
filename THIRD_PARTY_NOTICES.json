@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "kind": "personal-ui-third-party-notices",
   "generatedFrom": "assets/react-kit/package-lock.json",
-  "dependencyCount": 176,
+  "dependencyCount": 226,
   "items": [
     {
       "name": "@adobe/css-tools",
@@ -150,10 +150,10 @@
     },
     {
       "name": "@babel/parser",
-      "version": "7.29.8",
+      "version": "7.29.9",
       "license": "MIT",
-      "source": "https://registry.npmmirror.com/@babel/parser/-/parser-7.29.8.tgz",
-      "resolved": "https://registry.npmmirror.com/@babel/parser/-/parser-7.29.8.tgz",
+      "source": "https://registry.npmmirror.com/@babel/parser/-/parser-7.29.9.tgz",
+      "resolved": "https://registry.npmmirror.com/@babel/parser/-/parser-7.29.9.tgz",
       "dependencyType": "dev-transitive",
       "optional": false
     },
@@ -266,6 +266,231 @@
       "optional": false
     },
     {
+      "name": "@esbuild/aix-ppc64",
+      "version": "0.25.12",
+      "license": "MIT",
+      "source": "https://registry.npmmirror.com/@esbuild/aix-ppc64/-/aix-ppc64-0.25.12.tgz",
+      "resolved": "https://registry.npmmirror.com/@esbuild/aix-ppc64/-/aix-ppc64-0.25.12.tgz",
+      "dependencyType": "dev-transitive",
+      "optional": true
+    },
+    {
+      "name": "@esbuild/android-arm",
+      "version": "0.25.12",
+      "license": "MIT",
+      "source": "https://registry.npmmirror.com/@esbuild/android-arm/-/android-arm-0.25.12.tgz",
+      "resolved": "https://registry.npmmirror.com/@esbuild/android-arm/-/android-arm-0.25.12.tgz",
+      "dependencyType": "dev-transitive",
+      "optional": true
+    },
+    {
+      "name": "@esbuild/android-arm64",
+      "version": "0.25.12",
+      "license": "MIT",
+      "source": "https://registry.npmmirror.com/@esbuild/android-arm64/-/android-arm64-0.25.12.tgz",
+      "resolved": "https://registry.npmmirror.com/@esbuild/android-arm64/-/android-arm64-0.25.12.tgz",
+      "dependencyType": "dev-transitive",
+      "optional": true
+    },
+    {
+      "name": "@esbuild/android-x64",
+      "version": "0.25.12",
+      "license": "MIT",
+      "source": "https://registry.npmmirror.com/@esbuild/android-x64/-/android-x64-0.25.12.tgz",
+      "resolved": "https://registry.npmmirror.com/@esbuild/android-x64/-/android-x64-0.25.12.tgz",
+      "dependencyType": "dev-transitive",
+      "optional": true
+    },
+    {
+      "name": "@esbuild/darwin-arm64",
+      "version": "0.25.12",
+      "license": "MIT",
+      "source": "https://registry.npmmirror.com/@esbuild/darwin-arm64/-/darwin-arm64-0.25.12.tgz",
+      "resolved": "https://registry.npmmirror.com/@esbuild/darwin-arm64/-/darwin-arm64-0.25.12.tgz",
+      "dependencyType": "dev-transitive",
+      "optional": true
+    },
+    {
+      "name": "@esbuild/darwin-x64",
+      "version": "0.25.12",
+      "license": "MIT",
+      "source": "https://registry.npmmirror.com/@esbuild/darwin-x64/-/darwin-x64-0.25.12.tgz",
+      "resolved": "https://registry.npmmirror.com/@esbuild/darwin-x64/-/darwin-x64-0.25.12.tgz",
+      "dependencyType": "dev-transitive",
+      "optional": true
+    },
+    {
+      "name": "@esbuild/freebsd-arm64",
+      "version": "0.25.12",
+      "license": "MIT",
+      "source": "https://registry.npmmirror.com/@esbuild/freebsd-arm64/-/freebsd-arm64-0.25.12.tgz",
+      "resolved": "https://registry.npmmirror.com/@esbuild/freebsd-arm64/-/freebsd-arm64-0.25.12.tgz",
+      "dependencyType": "dev-transitive",
+      "optional": true
+    },
+    {
+      "name": "@esbuild/freebsd-x64",
+      "version": "0.25.12",
+      "license": "MIT",
+      "source": "https://registry.npmmirror.com/@esbuild/freebsd-x64/-/freebsd-x64-0.25.12.tgz",
+      "resolved": "https://registry.npmmirror.com/@esbuild/freebsd-x64/-/freebsd-x64-0.25.12.tgz",
+      "dependencyType": "dev-transitive",
+      "optional": true
+    },
+    {
+      "name": "@esbuild/linux-arm",
+      "version": "0.25.12",
+      "license": "MIT",
+      "source": "https://registry.npmmirror.com/@esbuild/linux-arm/-/linux-arm-0.25.12.tgz",
+      "resolved": "https://registry.npmmirror.com/@esbuild/linux-arm/-/linux-arm-0.25.12.tgz",
+      "dependencyType": "dev-transitive",
+      "optional": true
+    },
+    {
+      "name": "@esbuild/linux-arm64",
+      "version": "0.25.12",
+      "license": "MIT",
+      "source": "https://registry.npmmirror.com/@esbuild/linux-arm64/-/linux-arm64-0.25.12.tgz",
+      "resolved": "https://registry.npmmirror.com/@esbuild/linux-arm64/-/linux-arm64-0.25.12.tgz",
+      "dependencyType": "dev-transitive",
+      "optional": true
+    },
+    {
+      "name": "@esbuild/linux-ia32",
+      "version": "0.25.12",
+      "license": "MIT",
+      "source": "https://registry.npmmirror.com/@esbuild/linux-ia32/-/linux-ia32-0.25.12.tgz",
+      "resolved": "https://registry.npmmirror.com/@esbuild/linux-ia32/-/linux-ia32-0.25.12.tgz",
+      "dependencyType": "dev-transitive",
+      "optional": true
+    },
+    {
+      "name": "@esbuild/linux-loong64",
+      "version": "0.25.12",
+      "license": "MIT",
+      "source": "https://registry.npmmirror.com/@esbuild/linux-loong64/-/linux-loong64-0.25.12.tgz",
+      "resolved": "https://registry.npmmirror.com/@esbuild/linux-loong64/-/linux-loong64-0.25.12.tgz",
+      "dependencyType": "dev-transitive",
+      "optional": true
+    },
+    {
+      "name": "@esbuild/linux-mips64el",
+      "version": "0.25.12",
+      "license": "MIT",
+      "source": "https://registry.npmmirror.com/@esbuild/linux-mips64el/-/linux-mips64el-0.25.12.tgz",
+      "resolved": "https://registry.npmmirror.com/@esbuild/linux-mips64el/-/linux-mips64el-0.25.12.tgz",
+      "dependencyType": "dev-transitive",
+      "optional": true
+    },
+    {
+      "name": "@esbuild/linux-ppc64",
+      "version": "0.25.12",
+      "license": "MIT",
+      "source": "https://registry.npmmirror.com/@esbuild/linux-ppc64/-/linux-ppc64-0.25.12.tgz",
+      "resolved": "https://registry.npmmirror.com/@esbuild/linux-ppc64/-/linux-ppc64-0.25.12.tgz",
+      "dependencyType": "dev-transitive",
+      "optional": true
+    },
+    {
+      "name": "@esbuild/linux-riscv64",
+      "version": "0.25.12",
+      "license": "MIT",
+      "source": "https://registry.npmmirror.com/@esbuild/linux-riscv64/-/linux-riscv64-0.25.12.tgz",
+      "resolved": "https://registry.npmmirror.com/@esbuild/linux-riscv64/-/linux-riscv64-0.25.12.tgz",
+      "dependencyType": "dev-transitive",
+      "optional": true
+    },
+    {
+      "name": "@esbuild/linux-s390x",
+      "version": "0.25.12",
+      "license": "MIT",
+      "source": "https://registry.npmmirror.com/@esbuild/linux-s390x/-/linux-s390x-0.25.12.tgz",
+      "resolved": "https://registry.npmmirror.com/@esbuild/linux-s390x/-/linux-s390x-0.25.12.tgz",
+      "dependencyType": "dev-transitive",
+      "optional": true
+    },
+    {
+      "name": "@esbuild/linux-x64",
+      "version": "0.25.12",
+      "license": "MIT",
+      "source": "https://registry.npmmirror.com/@esbuild/linux-x64/-/linux-x64-0.25.12.tgz",
+      "resolved": "https://registry.npmmirror.com/@esbuild/linux-x64/-/linux-x64-0.25.12.tgz",
+      "dependencyType": "dev-transitive",
+      "optional": true
+    },
+    {
+      "name": "@esbuild/netbsd-arm64",
+      "version": "0.25.12",
+      "license": "MIT",
+      "source": "https://registry.npmmirror.com/@esbuild/netbsd-arm64/-/netbsd-arm64-0.25.12.tgz",
+      "resolved": "https://registry.npmmirror.com/@esbuild/netbsd-arm64/-/netbsd-arm64-0.25.12.tgz",
+      "dependencyType": "dev-transitive",
+      "optional": true
+    },
+    {
+      "name": "@esbuild/netbsd-x64",
+      "version": "0.25.12",
+      "license": "MIT",
+      "source": "https://registry.npmmirror.com/@esbuild/netbsd-x64/-/netbsd-x64-0.25.12.tgz",
+      "resolved": "https://registry.npmmirror.com/@esbuild/netbsd-x64/-/netbsd-x64-0.25.12.tgz",
+      "dependencyType": "dev-transitive",
+      "optional": true
+    },
+    {
+      "name": "@esbuild/openbsd-arm64",
+      "version": "0.25.12",
+      "license": "MIT",
+      "source": "https://registry.npmmirror.com/@esbuild/openbsd-arm64/-/openbsd-arm64-0.25.12.tgz",
+      "resolved": "https://registry.npmmirror.com/@esbuild/openbsd-arm64/-/openbsd-arm64-0.25.12.tgz",
+      "dependencyType": "dev-transitive",
+      "optional": true
+    },
+    {
+      "name": "@esbuild/openbsd-x64",
+      "version": "0.25.12",
+      "license": "MIT",
+      "source": "https://registry.npmmirror.com/@esbuild/openbsd-x64/-/openbsd-x64-0.25.12.tgz",
+      "resolved": "https://registry.npmmirror.com/@esbuild/openbsd-x64/-/openbsd-x64-0.25.12.tgz",
+      "dependencyType": "dev-transitive",
+      "optional": true
+    },
+    {
+      "name": "@esbuild/openharmony-arm64",
+      "version": "0.25.12",
+      "license": "MIT",
+      "source": "https://registry.npmmirror.com/@esbuild/openharmony-arm64/-/openharmony-arm64-0.25.12.tgz",
+      "resolved": "https://registry.npmmirror.com/@esbuild/openharmony-arm64/-/openharmony-arm64-0.25.12.tgz",
+      "dependencyType": "dev-transitive",
+      "optional": true
+    },
+    {
+      "name": "@esbuild/sunos-x64",
+      "version": "0.25.12",
+      "license": "MIT",
+      "source": "https://registry.npmmirror.com/@esbuild/sunos-x64/-/sunos-x64-0.25.12.tgz",
+      "resolved": "https://registry.npmmirror.com/@esbuild/sunos-x64/-/sunos-x64-0.25.12.tgz",
+      "dependencyType": "dev-transitive",
+      "optional": true
+    },
+    {
+      "name": "@esbuild/win32-arm64",
+      "version": "0.25.12",
+      "license": "MIT",
+      "source": "https://registry.npmmirror.com/@esbuild/win32-arm64/-/win32-arm64-0.25.12.tgz",
+      "resolved": "https://registry.npmmirror.com/@esbuild/win32-arm64/-/win32-arm64-0.25.12.tgz",
+      "dependencyType": "dev-transitive",
+      "optional": true
+    },
+    {
+      "name": "@esbuild/win32-ia32",
+      "version": "0.25.12",
+      "license": "MIT",
+      "source": "https://registry.npmmirror.com/@esbuild/win32-ia32/-/win32-ia32-0.25.12.tgz",
+      "resolved": "https://registry.npmmirror.com/@esbuild/win32-ia32/-/win32-ia32-0.25.12.tgz",
+      "dependencyType": "dev-transitive",
+      "optional": true
+    },
+    {
       "name": "@esbuild/win32-x64",
       "version": "0.25.12",
       "license": "MIT",
@@ -320,6 +545,15 @@
       "optional": false
     },
     {
+      "name": "@napi-rs/lzma-linux-x64-gnu",
+      "version": "1.5.1",
+      "license": "MIT",
+      "source": "https://registry.npmmirror.com/@napi-rs/lzma-linux-x64-gnu/-/lzma-linux-x64-gnu-1.5.1.tgz",
+      "resolved": "https://registry.npmmirror.com/@napi-rs/lzma-linux-x64-gnu/-/lzma-linux-x64-gnu-1.5.1.tgz",
+      "dependencyType": "dev-transitive",
+      "optional": true
+    },
+    {
       "name": "@playwright/test",
       "version": "1.55.1",
       "license": "Apache-2.0",
@@ -338,20 +572,227 @@
       "optional": false
     },
     {
-      "name": "@rollup/rollup-win32-x64-gnu",
-      "version": "4.63.1",
+      "name": "@rollup/rollup-android-arm-eabi",
+      "version": "4.63.5",
       "license": "MIT",
-      "source": "https://registry.npmmirror.com/@rollup/rollup-win32-x64-gnu/-/rollup-win32-x64-gnu-4.63.1.tgz",
-      "resolved": "https://registry.npmmirror.com/@rollup/rollup-win32-x64-gnu/-/rollup-win32-x64-gnu-4.63.1.tgz",
+      "source": "https://registry.npmmirror.com/@rollup/rollup-android-arm-eabi/-/rollup-android-arm-eabi-4.63.5.tgz",
+      "resolved": "https://registry.npmmirror.com/@rollup/rollup-android-arm-eabi/-/rollup-android-arm-eabi-4.63.5.tgz",
+      "dependencyType": "dev-transitive",
+      "optional": true
+    },
+    {
+      "name": "@rollup/rollup-android-arm64",
+      "version": "4.63.5",
+      "license": "MIT",
+      "source": "https://registry.npmmirror.com/@rollup/rollup-android-arm64/-/rollup-android-arm64-4.63.5.tgz",
+      "resolved": "https://registry.npmmirror.com/@rollup/rollup-android-arm64/-/rollup-android-arm64-4.63.5.tgz",
+      "dependencyType": "dev-transitive",
+      "optional": true
+    },
+    {
+      "name": "@rollup/rollup-darwin-arm64",
+      "version": "4.63.5",
+      "license": "MIT",
+      "source": "https://registry.npmmirror.com/@rollup/rollup-darwin-arm64/-/rollup-darwin-arm64-4.63.5.tgz",
+      "resolved": "https://registry.npmmirror.com/@rollup/rollup-darwin-arm64/-/rollup-darwin-arm64-4.63.5.tgz",
+      "dependencyType": "dev-transitive",
+      "optional": true
+    },
+    {
+      "name": "@rollup/rollup-darwin-x64",
+      "version": "4.63.5",
+      "license": "MIT",
+      "source": "https://registry.npmmirror.com/@rollup/rollup-darwin-x64/-/rollup-darwin-x64-4.63.5.tgz",
+      "resolved": "https://registry.npmmirror.com/@rollup/rollup-darwin-x64/-/rollup-darwin-x64-4.63.5.tgz",
+      "dependencyType": "dev-transitive",
+      "optional": true
+    },
+    {
+      "name": "@rollup/rollup-freebsd-arm64",
+      "version": "4.63.5",
+      "license": "MIT",
+      "source": "https://registry.npmmirror.com/@rollup/rollup-freebsd-arm64/-/rollup-freebsd-arm64-4.63.5.tgz",
+      "resolved": "https://registry.npmmirror.com/@rollup/rollup-freebsd-arm64/-/rollup-freebsd-arm64-4.63.5.tgz",
+      "dependencyType": "dev-transitive",
+      "optional": true
+    },
+    {
+      "name": "@rollup/rollup-freebsd-x64",
+      "version": "4.63.5",
+      "license": "MIT",
+      "source": "https://registry.npmmirror.com/@rollup/rollup-freebsd-x64/-/rollup-freebsd-x64-4.63.5.tgz",
+      "resolved": "https://registry.npmmirror.com/@rollup/rollup-freebsd-x64/-/rollup-freebsd-x64-4.63.5.tgz",
+      "dependencyType": "dev-transitive",
+      "optional": true
+    },
+    {
+      "name": "@rollup/rollup-linux-arm-gnueabihf",
+      "version": "4.63.5",
+      "license": "MIT",
+      "source": "https://registry.npmmirror.com/@rollup/rollup-linux-arm-gnueabihf/-/rollup-linux-arm-gnueabihf-4.63.5.tgz",
+      "resolved": "https://registry.npmmirror.com/@rollup/rollup-linux-arm-gnueabihf/-/rollup-linux-arm-gnueabihf-4.63.5.tgz",
+      "dependencyType": "dev-transitive",
+      "optional": true
+    },
+    {
+      "name": "@rollup/rollup-linux-arm-musleabihf",
+      "version": "4.63.5",
+      "license": "MIT",
+      "source": "https://registry.npmmirror.com/@rollup/rollup-linux-arm-musleabihf/-/rollup-linux-arm-musleabihf-4.63.5.tgz",
+      "resolved": "https://registry.npmmirror.com/@rollup/rollup-linux-arm-musleabihf/-/rollup-linux-arm-musleabihf-4.63.5.tgz",
+      "dependencyType": "dev-transitive",
+      "optional": true
+    },
+    {
+      "name": "@rollup/rollup-linux-arm64-gnu",
+      "version": "4.63.5",
+      "license": "MIT",
+      "source": "https://registry.npmmirror.com/@rollup/rollup-linux-arm64-gnu/-/rollup-linux-arm64-gnu-4.63.5.tgz",
+      "resolved": "https://registry.npmmirror.com/@rollup/rollup-linux-arm64-gnu/-/rollup-linux-arm64-gnu-4.63.5.tgz",
+      "dependencyType": "dev-transitive",
+      "optional": true
+    },
+    {
+      "name": "@rollup/rollup-linux-arm64-musl",
+      "version": "4.63.5",
+      "license": "MIT",
+      "source": "https://registry.npmmirror.com/@rollup/rollup-linux-arm64-musl/-/rollup-linux-arm64-musl-4.63.5.tgz",
+      "resolved": "https://registry.npmmirror.com/@rollup/rollup-linux-arm64-musl/-/rollup-linux-arm64-musl-4.63.5.tgz",
+      "dependencyType": "dev-transitive",
+      "optional": true
+    },
+    {
+      "name": "@rollup/rollup-linux-loong64-gnu",
+      "version": "4.63.5",
+      "license": "MIT",
+      "source": "https://registry.npmmirror.com/@rollup/rollup-linux-loong64-gnu/-/rollup-linux-loong64-gnu-4.63.5.tgz",
+      "resolved": "https://registry.npmmirror.com/@rollup/rollup-linux-loong64-gnu/-/rollup-linux-loong64-gnu-4.63.5.tgz",
+      "dependencyType": "dev-transitive",
+      "optional": true
+    },
+    {
+      "name": "@rollup/rollup-linux-loong64-musl",
+      "version": "4.63.5",
+      "license": "MIT",
+      "source": "https://registry.npmmirror.com/@rollup/rollup-linux-loong64-musl/-/rollup-linux-loong64-musl-4.63.5.tgz",
+      "resolved": "https://registry.npmmirror.com/@rollup/rollup-linux-loong64-musl/-/rollup-linux-loong64-musl-4.63.5.tgz",
+      "dependencyType": "dev-transitive",
+      "optional": true
+    },
+    {
+      "name": "@rollup/rollup-linux-ppc64-gnu",
+      "version": "4.63.5",
+      "license": "MIT",
+      "source": "https://registry.npmmirror.com/@rollup/rollup-linux-ppc64-gnu/-/rollup-linux-ppc64-gnu-4.63.5.tgz",
+      "resolved": "https://registry.npmmirror.com/@rollup/rollup-linux-ppc64-gnu/-/rollup-linux-ppc64-gnu-4.63.5.tgz",
+      "dependencyType": "dev-transitive",
+      "optional": true
+    },
+    {
+      "name": "@rollup/rollup-linux-ppc64-musl",
+      "version": "4.63.5",
+      "license": "MIT",
+      "source": "https://registry.npmmirror.com/@rollup/rollup-linux-ppc64-musl/-/rollup-linux-ppc64-musl-4.63.5.tgz",
+      "resolved": "https://registry.npmmirror.com/@rollup/rollup-linux-ppc64-musl/-/rollup-linux-ppc64-musl-4.63.5.tgz",
+      "dependencyType": "dev-transitive",
+      "optional": true
+    },
+    {
+      "name": "@rollup/rollup-linux-riscv64-gnu",
+      "version": "4.63.5",
+      "license": "MIT",
+      "source": "https://registry.npmmirror.com/@rollup/rollup-linux-riscv64-gnu/-/rollup-linux-riscv64-gnu-4.63.5.tgz",
+      "resolved": "https://registry.npmmirror.com/@rollup/rollup-linux-riscv64-gnu/-/rollup-linux-riscv64-gnu-4.63.5.tgz",
+      "dependencyType": "dev-transitive",
+      "optional": true
+    },
+    {
+      "name": "@rollup/rollup-linux-riscv64-musl",
+      "version": "4.63.5",
+      "license": "MIT",
+      "source": "https://registry.npmmirror.com/@rollup/rollup-linux-riscv64-musl/-/rollup-linux-riscv64-musl-4.63.5.tgz",
+      "resolved": "https://registry.npmmirror.com/@rollup/rollup-linux-riscv64-musl/-/rollup-linux-riscv64-musl-4.63.5.tgz",
+      "dependencyType": "dev-transitive",
+      "optional": true
+    },
+    {
+      "name": "@rollup/rollup-linux-s390x-gnu",
+      "version": "4.63.5",
+      "license": "MIT",
+      "source": "https://registry.npmmirror.com/@rollup/rollup-linux-s390x-gnu/-/rollup-linux-s390x-gnu-4.63.5.tgz",
+      "resolved": "https://registry.npmmirror.com/@rollup/rollup-linux-s390x-gnu/-/rollup-linux-s390x-gnu-4.63.5.tgz",
+      "dependencyType": "dev-transitive",
+      "optional": true
+    },
+    {
+      "name": "@rollup/rollup-linux-x64-gnu",
+      "version": "4.63.5",
+      "license": "MIT",
+      "source": "https://registry.npmmirror.com/@rollup/rollup-linux-x64-gnu/-/rollup-linux-x64-gnu-4.63.5.tgz",
+      "resolved": "https://registry.npmmirror.com/@rollup/rollup-linux-x64-gnu/-/rollup-linux-x64-gnu-4.63.5.tgz",
+      "dependencyType": "dev-transitive",
+      "optional": true
+    },
+    {
+      "name": "@rollup/rollup-linux-x64-musl",
+      "version": "4.63.5",
+      "license": "MIT",
+      "source": "https://registry.npmmirror.com/@rollup/rollup-linux-x64-musl/-/rollup-linux-x64-musl-4.63.5.tgz",
+      "resolved": "https://registry.npmmirror.com/@rollup/rollup-linux-x64-musl/-/rollup-linux-x64-musl-4.63.5.tgz",
+      "dependencyType": "dev-transitive",
+      "optional": true
+    },
+    {
+      "name": "@rollup/rollup-openbsd-x64",
+      "version": "4.63.5",
+      "license": "MIT",
+      "source": "https://registry.npmmirror.com/@rollup/rollup-openbsd-x64/-/rollup-openbsd-x64-4.63.5.tgz",
+      "resolved": "https://registry.npmmirror.com/@rollup/rollup-openbsd-x64/-/rollup-openbsd-x64-4.63.5.tgz",
+      "dependencyType": "dev-transitive",
+      "optional": true
+    },
+    {
+      "name": "@rollup/rollup-openharmony-arm64",
+      "version": "4.63.5",
+      "license": "MIT",
+      "source": "https://registry.npmmirror.com/@rollup/rollup-openharmony-arm64/-/rollup-openharmony-arm64-4.63.5.tgz",
+      "resolved": "https://registry.npmmirror.com/@rollup/rollup-openharmony-arm64/-/rollup-openharmony-arm64-4.63.5.tgz",
+      "dependencyType": "dev-transitive",
+      "optional": true
+    },
+    {
+      "name": "@rollup/rollup-win32-arm64-msvc",
+      "version": "4.63.5",
+      "license": "MIT",
+      "source": "https://registry.npmmirror.com/@rollup/rollup-win32-arm64-msvc/-/rollup-win32-arm64-msvc-4.63.5.tgz",
+      "resolved": "https://registry.npmmirror.com/@rollup/rollup-win32-arm64-msvc/-/rollup-win32-arm64-msvc-4.63.5.tgz",
+      "dependencyType": "dev-transitive",
+      "optional": true
+    },
+    {
+      "name": "@rollup/rollup-win32-ia32-msvc",
+      "version": "4.63.5",
+      "license": "MIT",
+      "source": "https://registry.npmmirror.com/@rollup/rollup-win32-ia32-msvc/-/rollup-win32-ia32-msvc-4.63.5.tgz",
+      "resolved": "https://registry.npmmirror.com/@rollup/rollup-win32-ia32-msvc/-/rollup-win32-ia32-msvc-4.63.5.tgz",
+      "dependencyType": "dev-transitive",
+      "optional": true
+    },
+    {
+      "name": "@rollup/rollup-win32-x64-gnu",
+      "version": "4.63.5",
+      "license": "MIT",
+      "source": "https://registry.npmmirror.com/@rollup/rollup-win32-x64-gnu/-/rollup-win32-x64-gnu-4.63.5.tgz",
+      "resolved": "https://registry.npmmirror.com/@rollup/rollup-win32-x64-gnu/-/rollup-win32-x64-gnu-4.63.5.tgz",
       "dependencyType": "dev-transitive",
       "optional": true
     },
     {
       "name": "@rollup/rollup-win32-x64-msvc",
-      "version": "4.63.1",
+      "version": "4.63.5",
       "license": "MIT",
-      "source": "https://registry.npmmirror.com/@rollup/rollup-win32-x64-msvc/-/rollup-win32-x64-msvc-4.63.1.tgz",
-      "resolved": "https://registry.npmmirror.com/@rollup/rollup-win32-x64-msvc/-/rollup-win32-x64-msvc-4.63.1.tgz",
+      "source": "https://registry.npmmirror.com/@rollup/rollup-win32-x64-msvc/-/rollup-win32-x64-msvc-4.63.5.tgz",
+      "resolved": "https://registry.npmmirror.com/@rollup/rollup-win32-x64-msvc/-/rollup-win32-x64-msvc-4.63.5.tgz",
       "dependencyType": "dev-transitive",
       "optional": true
     },
@@ -618,19 +1059,19 @@
     },
     {
       "name": "baseline-browser-mapping",
-      "version": "2.11.21",
+      "version": "2.11.26",
       "license": "Apache-2.0",
-      "source": "https://registry.npmmirror.com/baseline-browser-mapping/-/baseline-browser-mapping-2.11.21.tgz",
-      "resolved": "https://registry.npmmirror.com/baseline-browser-mapping/-/baseline-browser-mapping-2.11.21.tgz",
+      "source": "https://registry.npmmirror.com/baseline-browser-mapping/-/baseline-browser-mapping-2.11.26.tgz",
+      "resolved": "https://registry.npmmirror.com/baseline-browser-mapping/-/baseline-browser-mapping-2.11.26.tgz",
       "dependencyType": "dev-transitive",
       "optional": false
     },
     {
       "name": "browserslist",
-      "version": "4.28.9",
+      "version": "4.29.1",
       "license": "MIT",
-      "source": "https://registry.npmmirror.com/browserslist/-/browserslist-4.28.9.tgz",
-      "resolved": "https://registry.npmmirror.com/browserslist/-/browserslist-4.28.9.tgz",
+      "source": "https://registry.npmmirror.com/browserslist/-/browserslist-4.29.1.tgz",
+      "resolved": "https://registry.npmmirror.com/browserslist/-/browserslist-4.29.1.tgz",
       "dependencyType": "dev-transitive",
       "optional": false
     },
@@ -645,10 +1086,10 @@
     },
     {
       "name": "caniuse-lite",
-      "version": "1.0.30001810",
+      "version": "1.0.30001812",
       "license": "CC-BY-4.0",
-      "source": "https://registry.npmmirror.com/caniuse-lite/-/caniuse-lite-1.0.30001810.tgz",
-      "resolved": "https://registry.npmmirror.com/caniuse-lite/-/caniuse-lite-1.0.30001810.tgz",
+      "source": "https://registry.npmmirror.com/caniuse-lite/-/caniuse-lite-1.0.30001812.tgz",
+      "resolved": "https://registry.npmmirror.com/caniuse-lite/-/caniuse-lite-1.0.30001812.tgz",
       "dependencyType": "dev-transitive",
       "optional": false
     },
@@ -780,10 +1221,10 @@
     },
     {
       "name": "electron-to-chromium",
-      "version": "1.5.426",
+      "version": "1.5.439",
       "license": "ISC",
-      "source": "https://registry.npmmirror.com/electron-to-chromium/-/electron-to-chromium-1.5.426.tgz",
-      "resolved": "https://registry.npmmirror.com/electron-to-chromium/-/electron-to-chromium-1.5.426.tgz",
+      "source": "https://registry.npmmirror.com/electron-to-chromium/-/electron-to-chromium-1.5.439.tgz",
+      "resolved": "https://registry.npmmirror.com/electron-to-chromium/-/electron-to-chromium-1.5.439.tgz",
       "dependencyType": "dev-transitive",
       "optional": false
     },
@@ -1059,19 +1500,19 @@
     },
     {
       "name": "nanoid",
-      "version": "3.3.18",
+      "version": "3.3.19",
       "license": "MIT",
-      "source": "https://registry.npmmirror.com/nanoid/-/nanoid-3.3.18.tgz",
-      "resolved": "https://registry.npmmirror.com/nanoid/-/nanoid-3.3.18.tgz",
+      "source": "https://registry.npmmirror.com/nanoid/-/nanoid-3.3.19.tgz",
+      "resolved": "https://registry.npmmirror.com/nanoid/-/nanoid-3.3.19.tgz",
       "dependencyType": "dev-transitive",
       "optional": false
     },
     {
       "name": "node-releases",
-      "version": "2.0.55",
+      "version": "2.0.57",
       "license": "MIT",
-      "source": "https://registry.npmmirror.com/node-releases/-/node-releases-2.0.55.tgz",
-      "resolved": "https://registry.npmmirror.com/node-releases/-/node-releases-2.0.55.tgz",
+      "source": "https://registry.npmmirror.com/node-releases/-/node-releases-2.0.57.tgz",
+      "resolved": "https://registry.npmmirror.com/node-releases/-/node-releases-2.0.57.tgz",
       "dependencyType": "dev-transitive",
       "optional": false
     },
@@ -1148,6 +1589,15 @@
       "optional": false
     },
     {
+      "name": "playwright-core",
+      "version": "1.63.0",
+      "license": "Apache-2.0",
+      "source": "https://registry.npmmirror.com/playwright-core/-/playwright-core-1.63.0.tgz",
+      "resolved": "https://registry.npmmirror.com/playwright-core/-/playwright-core-1.63.0.tgz",
+      "dependencyType": "dev-transitive",
+      "optional": false
+    },
+    {
       "name": "postcss",
       "version": "8.5.28",
       "license": "MIT",
@@ -1203,10 +1653,10 @@
     },
     {
       "name": "react-hook-form",
-      "version": "7.88.0",
+      "version": "7.89.0",
       "license": "MIT",
-      "source": "https://registry.npmmirror.com/react-hook-form/-/react-hook-form-7.88.0.tgz",
-      "resolved": "https://registry.npmmirror.com/react-hook-form/-/react-hook-form-7.88.0.tgz",
+      "source": "https://registry.npmmirror.com/react-hook-form/-/react-hook-form-7.89.0.tgz",
+      "resolved": "https://registry.npmmirror.com/react-hook-form/-/react-hook-form-7.89.0.tgz",
       "dependencyType": "dev-direct",
       "optional": false
     },
@@ -1239,10 +1689,10 @@
     },
     {
       "name": "rollup",
-      "version": "4.63.1",
+      "version": "4.63.5",
       "license": "MIT",
-      "source": "https://registry.npmmirror.com/rollup/-/rollup-4.63.1.tgz",
-      "resolved": "https://registry.npmmirror.com/rollup/-/rollup-4.63.1.tgz",
+      "source": "https://registry.npmmirror.com/rollup/-/rollup-4.63.5.tgz",
+      "resolved": "https://registry.npmmirror.com/rollup/-/rollup-4.63.5.tgz",
       "dependencyType": "dev-transitive",
       "optional": false
     },
@@ -1455,10 +1905,10 @@
     },
     {
       "name": "update-browserslist-db",
-      "version": "1.3.2",
+      "version": "1.3.3",
       "license": "MIT",
-      "source": "https://registry.npmmirror.com/update-browserslist-db/-/update-browserslist-db-1.3.2.tgz",
-      "resolved": "https://registry.npmmirror.com/update-browserslist-db/-/update-browserslist-db-1.3.2.tgz",
+      "source": "https://registry.npmmirror.com/update-browserslist-db/-/update-browserslist-db-1.3.3.tgz",
+      "resolved": "https://registry.npmmirror.com/update-browserslist-db/-/update-browserslist-db-1.3.3.tgz",
       "dependencyType": "dev-transitive",
       "optional": false
     },
@@ -1554,10 +2004,10 @@
     },
     {
       "name": "ws",
-      "version": "8.21.3",
+      "version": "8.22.0",
       "license": "MIT",
-      "source": "https://registry.npmmirror.com/ws/-/ws-8.21.3.tgz",
-      "resolved": "https://registry.npmmirror.com/ws/-/ws-8.21.3.tgz",
+      "source": "https://registry.npmmirror.com/ws/-/ws-8.22.0.tgz",
+      "resolved": "https://registry.npmmirror.com/ws/-/ws-8.22.0.tgz",
       "dependencyType": "dev-transitive",
       "optional": false
     },

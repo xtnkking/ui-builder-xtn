@@ -6,7 +6,7 @@ import ts from "typescript";
 const TOOL_DIR = path.dirname(fileURLToPath(import.meta.url));
 const KIT_ROOT = path.resolve(TOOL_DIR, "../..");
 const SOURCE_ROOT = path.join(KIT_ROOT, "src", "personal-ui");
-const LOCALE_SOURCE = path.join(SOURCE_ROOT, "locale.tsx");
+const LOCALE_SOURCE = path.join(SOURCE_ROOT, "foundation", "locale.tsx");
 const EXCEPTIONS_FILE = path.join(KIT_ROOT, "locale-hardcoded-exceptions.json");
 const USER_FACING_ATTRIBUTES = new Set([
   "alt",

@@ -8,7 +8,7 @@
 - 新增单一的本地 release orchestrator，提供无写入 dry-run、隔离 prepare、可重复 ZIP、SHA-256、plan digest、verify 和可续跑 journal；当前 publish 仅执行前置检查，没有远端适配器。
 - 新增 artifact-backed hosted CI 证据：8 个支持 fixture、Chromium/Firefox/WebKit 实际版本和 system Safari 18+ smoke 均绑定同一 GitHub run 与候选摘要；每个 job 产物按路径、大小和 SHA-256 重新校验，Playwright WebKit 不能代替真实 Safari。
 - 新增 M8 独立评估目录、候选可见投影 runner 和严格证据 validator；评估输入绑定候选与原始需求，首轮结果不可被修复结果覆盖，薄 `result: passed` JSON 不再满足发布前置条件。
-- 仓库采用 MIT License，并在 Skill 与 React starter/lockfile 元数据中记录相同的许可证标识；`THIRD_PARTY_NOTICES.json` 精确清点 lockfile 中的 176 个依赖及其锁定来源。
+- 仓库采用 MIT License，并在 Skill 与 React starter/lockfile 元数据中记录相同的许可证标识；`THIRD_PARTY_NOTICES.json` 精确清点 lockfile 中的 226 个依赖及其锁定来源。
 
 ### Changed
 
@@ -23,7 +23,7 @@
 ### Release status
 
 - 本节是未发布工作记录，不代表 `v0.3.0`、RC、Git tag 或 GitHub Release 已存在。
-- MIT 及第三方依赖声明已落地，但 hosted CI、干净不可变源快照和 M8 独立消费证据尚未完成；当前候选仍必须标记为 `publishable: false`，且不得打 tag、同步或公开发布。
+- MIT 及第三方依赖声明已落地。首次 hosted CI 已运行但失败，暴露的 locale 路径、Explorer 内联 SVG、Corepack、集成依赖、React 19 ref 和跨平台 Rollup lockfile 问题已在当前工作树修复；新 head 尚未完成 hosted 复验，M8 独立消费证据也尚未完成，因此不得打 tag、同步或公开发布。
 
 ## 0.2.19 - 2026-09-17
 

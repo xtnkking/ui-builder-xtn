@@ -251,12 +251,19 @@ jobs:
         with:
           python-version: "3.13"
 
+      - name: Install repository validator dependencies
+        working-directory: assets/react-kit
+        run: npm ci
+
+      - name: Install current Corepack
+        run: npm install --global --no-audit --no-fund corepack@0.34.0
+
       - name: Activate exact package manager
         env:
           COREPACK_ENABLE_DOWNLOAD_PROMPT: "0"
         run: |
           corepack enable
-          corepack prepare ${{ matrix.package_manager }}@${{ matrix.package_manager_version }} --activate
+          corepack install --global ${{ matrix.package_manager }}@${{ matrix.package_manager_version }}
           ${{ matrix.package_manager }} --version
 
       - name: Run isolated install, build, verify, upgrade, and rollback fixture

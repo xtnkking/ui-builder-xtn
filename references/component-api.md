@@ -274,8 +274,8 @@ export interface FocusTrapProps extends HTMLAttributes<HTMLDivElement> {
     active?: boolean;
     autoFocus?: boolean;
     restoreFocus?: boolean;
-    initialFocusRef?: RefObject<HTMLElement>;
-    additionalContainers?: readonly RefObject<HTMLElement>[];
+    initialFocusRef?: RefObject<HTMLElement | null>;
+    additionalContainers?: readonly RefObject<HTMLElement | null>[];
 }
 ```
 
@@ -9216,22 +9216,7 @@ This complete module is read from the AST-verified Explorer case and consumes th
 ```tsx
 import { Media } from "./personal-ui";
 
-const dashboardPreview = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540">
-    <rect width="960" height="540" fill="#eaf2ff"/>
-    <rect x="68" y="58" width="824" height="424" rx="32" fill="#ffffff"/>
-    <rect x="108" y="98" width="172" height="20" rx="10" fill="#172033"/>
-    <rect x="108" y="140" width="268" height="12" rx="6" fill="#b9c8df"/>
-    <rect x="108" y="194" width="214" height="212" rx="20" fill="#f5f7fb"/>
-    <rect x="350" y="194" width="502" height="212" rx="20" fill="#f5f7fb"/>
-    <rect x="138" y="330" width="34" height="44" rx="8" fill="#9ec1f6"/>
-    <rect x="188" y="286" width="34" height="88" rx="8" fill="#5b98ed"/>
-    <rect x="238" y="240" width="34" height="134" rx="8" fill="#1769d2"/>
-    <path d="M394 350 L468 306 L538 326 L612 256 L686 284 L808 226" fill="none" stroke="#1769d2" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
-    <circle cx="612" cy="256" r="12" fill="#20a475"/>
-    <circle cx="808" cy="226" r="12" fill="#ef9f2f"/>
-  </svg>
-`)}`;
+const dashboardPreview = new URL("../../assets/dashboard-preview.svg", import.meta.url).href;
 
 export function PersonalUiExample() {
   return ((

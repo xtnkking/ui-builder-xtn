@@ -382,8 +382,8 @@ export interface FocusTrapProps extends HTMLAttributes<HTMLDivElement> {
   active?: boolean;
   autoFocus?: boolean;
   restoreFocus?: boolean;
-  initialFocusRef?: RefObject<HTMLElement>;
-  additionalContainers?: readonly RefObject<HTMLElement>[];
+  initialFocusRef?: RefObject<HTMLElement | null>;
+  additionalContainers?: readonly RefObject<HTMLElement | null>[];
 }
 
 export function FocusTrap({

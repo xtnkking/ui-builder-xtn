@@ -228,6 +228,21 @@ class SupportMatrixContractTests(unittest.TestCase):
         report = self.validate(workflow=workflow)
         self.assert_has_error(report, "workflow is missing required job: hosted-evidence")
 
+    def test_integration_job_requires_current_corepack_and_validator_dependencies(self) -> None:
+        workflow = self.workflow.replace("corepack@0.34.0", "corepack@0.29.4", 1)
+        report = self.validate(workflow=workflow)
+        self.assert_has_error(report, "corepack@0.34.0")
+
+        workflow = self.workflow.replace(
+            "      - name: Install repository validator dependencies\n"
+            "        working-directory: assets/react-kit\n"
+            "        run: npm ci\n\n",
+            "",
+            1,
+        )
+        report = self.validate(workflow=workflow)
+        self.assert_has_error(report, "working-directory: assets/react-kit")
+
 
 if __name__ == "__main__":
     unittest.main()
