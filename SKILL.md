@@ -1,94 +1,48 @@
 ---
 name: ui-builder-xtn
 description: Build or revise React and TypeScript product interfaces by installing and composing the bundled Personal UI source components and page patterns. Use for login, forms, CRUD, searchable data lists, tables, feedback, overlays, and operational pages that should follow this personal design system; do not use for backend-only work or a product that must preserve another established UI system.
+license: MIT
 ---
 
 # UI Builder XTN
 
-Build the requested feature from the bundled Personal UI implementation. This Skill is a source kit with an enforced ownership contract, not a prose style guide: every control, feedback surface, navigation control, overlay, data renderer, and bundled page pattern used in the result must come from a registered public export with real React source in this Skill.
+Build the requested interface from the bundled Personal UI implementation. This is an enforced source kit, not a prose style guide: every control, feedback surface, navigation control, overlay, data renderer, and bundled page pattern must be a registered public export with real React source in this Skill.
 
-## Use The Bundled Source
+## Start here
 
-The canonical implementation lives in `assets/react-kit/src/personal-ui/`. Its manifest covers 118 families, 139 runtime exports (136 visual components or patterns and 3 explicitly classified non-visual hooks/constants), and 130 discovery aliases. The installer copies that versioned source into the target project; application code then composes it through the installed public barrel. Never use the archived monolithic preview HTML as application source.
+1. Inspect the target framework, package manager, source root, aliases, existing UI system, and tests. An explicit request to use this Skill chooses Personal UI for the inspected application surface; do not mix component systems.
+2. Read the [integration guide](references/integration.md), then use `scripts/install_personal_ui.py` in `starter` or `integrate` mode. Never copy isolated snippets or use the archived `personal-ui-library-preview.html` as application source.
+3. Find the needed family in the generated [component catalog](references/component-catalog.md), then read its exact Props, defaults, behavior, example, and migration notes in the generated [component API](references/component-api.md). Inspect the matching runnable Explorer route when appearance or interaction matters.
+4. Import runtime components and patterns only from the installed `src/personal-ui/index.ts` barrel, normally through `./personal-ui` or its project alias. Compose business data, callbacks, copy, product media, approved tokens, and non-interactive layout around those exports.
+5. Run the target build, tests, and `python scripts/verify_personal_ui.py --target <project-path>` before handoff. Report the public exports used and any canonical capability added.
 
-The archived `personal-ui-library-preview.html` is a historical design reference, not a live render of the installed kit. Use the runnable React example in `assets/react-kit` to inspect current component appearance; when a visual difference is reported, reconcile it in canonical source, add a representative browser regression, and then reinstall the versioned kit. Do not patch a consumer page to imitate the old HTML.
+## Enforced ownership
 
-1. Inspect the target framework, package manager, source root, aliases, existing design system, and tests. An explicit request to use this Skill chooses Personal UI for the inspected application source; do not mix it with another UI component system.
-2. Read [integration](references/integration.md), then run `scripts/install_personal_ui.py` in `starter` or `integrate` mode. Do not manually copy isolated snippets.
-3. Read [component catalog](references/component-catalog.md) only for the families needed by the request. Confirm that every requested UI capability maps to a `component-manifest.json` entry and at least one public runtime export.
-4. Import runtime components and patterns only from `src/personal-ui/index.ts`, normally through `./personal-ui` or the project's alias to that directory. Deep imports into implementation files are forbidden.
-5. Put only business data, callbacks, copy, product imagery, documented token overrides, and non-interactive page composition in application code. Do not recreate a Personal UI control with native interactive markup, application CSS, a local wrapper, copied source, or a third-party JSX component.
+The canonical implementation is `assets/react-kit/src/personal-ui/`; `assets/react-kit/component-manifest.json` binds every family, runtime export, source file, alias, and ownership marker. The installer copies that versioned source into the target, owns its fixed `verify:personal-ui` command, and prefixes that command directly to the existing `build` script while preserving an unrelated caller-owned `prebuild`.
 
-The installer owns the target's `verify:personal-ui` command and appends that command to the npm `prebuild` lifecycle while preserving an existing prebuild command. Do not remove, rename, weaken, or bypass either script. A normal `npm run build` must fail before compilation when application provenance or managed source integrity fails.
+- Do not recreate a registered control with native interactive markup, application CSS, a local wrapper, copied source, or a third-party JSX component. Do not deep-import implementation files.
+- Do not style protected controls through `.pui-*`, `data-pui-*`, generic control selectors, CSS-in-JS, runtime CSS/DOM mutation, external global styles, or JSX `<style>`.
+- Protected public components must not receive application `className`, `style`, `css`, `sx`, `tw`, `ref`, spread props, or `cloneElement` overrides. Use a surrounding layout element, a documented token, or a canonical typed prop.
+- Use Lucide icons through component props. Keep option, tab, menu-item, product, table-column, and row identities stable, unique, and non-empty within their owner.
+- Keep business copy and machine values consumer-owned. Built-in fallback and ARIA text use the locale contract; product data must not be silently translated or reformatted for submission.
 
-## Missing Capability Gate
+If a requested capability has no registered public export, stop that part of page composition. Add the reusable source and styles to the canonical kit, export it from the public barrel, register it in the Manifest and docs metadata, add a compiled Explorer case and focused tests, refresh integrity/API/coverage artifacts, and only then reinstall it. Never patch an installed `src/personal-ui/` as a local extension or bypass the verifier.
 
-A missing export is a blocked library capability, not permission to improvise in the target project.
+## Read by task
 
-1. Stop page composition for that capability.
-2. Add the reusable implementation and styles to the canonical `assets/react-kit/src/personal-ui/` source, with its source ownership marker and representative states.
-3. Export it from the canonical public barrel, register the runtime export, and bind its family, source files, aliases, and ownership marker in `assets/react-kit/component-manifest.json`.
-4. Add or update tests and the relevant gallery/example, synchronize all kit version declarations, and increment the kit version.
-5. Run `scripts/update_component_manifest_integrity.py`, validate the manifest, typecheck/build the source kit, reinstall that released source into the target, and only then compose the requested feature from the barrel export.
+- Installation, integration, source checks, and field-aligned controls: [integration guide](references/integration.md).
+- Native/composite submission, validation, reset, external forms, and React Hook Form: [form contract](references/form-contract.md).
+- Search, async options, explicit queries, loading, tables, sorting, pinning, height, and pagination: [data workflow contract](references/data-workflows.md).
+- Dialog, Drawer, ConfirmDialog, nested layers, dismissal, focus, Portal, and scroll lock: [overlay contract](references/overlay-contract.md).
+- Login, CRUD/list, create/edit, detail, settings, wizard, import/export, and status shells: [page pattern routing](references/page-patterns.md).
+- Built-in text, `zh-CN`/`en-US`, nested providers, Portal inheritance, SSR, dates, numbers, and plurals: [locale contract](references/locale-contract.md).
+- Public API changes and upgrade action: [v0.3.0 migrations](references/v0.3.0-migrations.md).
+- Canonical source and generated-copy policy: [source authority](references/source-authority.md).
 
-Never edit the installed target `src/personal-ui/` as a local extension. There is no local-extension exception or verifier bypass. If the task does not authorize or permit a canonical addition, report the missing capability instead of shipping a lookalike.
+## Completion contract
 
-## Fixed Implementation Contract
+Use bundled loading APIs for every asynchronous command so dimensions remain stable and duplicate actions are blocked. Server-backed filters edit draft state and fetch only on explicit submit or Enter; sorting and pagination are explicit requests. Preserve the last successful data when a later request fails.
 
-- Default stack for a new app: React, TypeScript, Vite, `lucide-react`, and the bundled CSS tokens. Do not add another component library or Tailwind to recreate controls.
-- Keep control geometry and states owned by `personal-ui/styles.css`. Application CSS must not select `.pui-*` classes, reserved `data-pui-*` ownership markers, or generic protected controls such as `input`, `[type="password"]`, and `button`; safe global `box-sizing`/inherited-font resets remain allowed. Do not inject JSX `<style>`, remote/package-global styles, CSS-in-JS wrappers, protected-selector preprocessor mixins, or runtime DOM/CSSOM styles. Protected Personal UI components must not receive application `className`, `style`, `css`, `sx`, `tw`, `ref`, or spread props through JSX, factories, runtime JSX calls, aliases, or `cloneElement`. Use a surrounding layout element, a manifest-classified layout utility, or a documented token instead, and add a canonical prop or token when a reusable variation is missing.
-- Do not use `eval`, `Function`, computed element factories, runtime HTML insertion, direct DOM event properties, or dynamic role/attribute mutation to construct interface controls outside React provenance.
-- Use Lucide icons through component props. Do not hand-author interface SVG paths.
-- Treat option, tab, menu-item, product, table-column, and table-row identities as data contracts. Values and IDs must be stable, unique, and non-empty within their owning collection unless the component explicitly documents one empty form value.
-- Use `Select` for compact option sets and `Combobox`, `SearchableSelect`, or `AsyncSelect` for searchable or large datasets according to their public APIs. Do not substitute a raw HTML `select`, native popup, or locally built command menu.
-- Use `SearchInput` as the single owner of search and clear adornments. Do not add a second page-level clear icon; keep desktop query fields within the provided toolbar width.
-- Compose `Dialog` with no body content for confirmation-only flows; use `ConfirmDialog` when an async confirm and error state are needed. Do not set initial focus on the close icon; preserve the visible keyboard focus state. Place bundled searchable selectors, tag suggestions, tree selectors, and menus directly inside Dialog or Drawer bodies when needed; their registered viewport-positioned surfaces handle clipping, modal focus, and nested overlay order without a custom overflow workaround.
-- Set `closeOnBackdropClick={false}` on each `Dialog`, `Drawer`, or `ConfirmDialog` instance that must ignore backdrop clicks, including adjacent and nested modals; verify this still holds after Escape and reopening. The close icon and Escape remain active. The default remains `true`; `closable={false}` on `Dialog`/`Drawer` is the separate fully non-dismissible mode. Keep an explicit Cancel or Save path for editing forms.
-- Keep `Dialog` content in coherent field and action groups. Its body gives direct children 16px spacing; confirmation uses the compact 420px variant, while multi-field workflows may use the 520px default. Nested confirmations must use the same `ConfirmDialog` visual contract as standalone ones.
-- Every async command uses the bundled loading API so dimensions stay stable and duplicate submissions are blocked. This includes query, retry, sort, and pagination actions.
-- Use `Button size="field"` for query, reset, and other commands that share a row with 44px input controls, whether they are composed through `FilterBar.actions` or an `Inline`. `FilterBar` also keeps legacy default-medium buttons at field height throughout its own composition, but other query layouts must express the field-aligned size through the component prop rather than application CSS.
-- Search and filter fields on server-backed pages edit draft state. Fetch on the explicit query button or Enter; pagination and sorting are explicit requests. Preserve the last successful rows when a later request fails.
-- Pinned and hidden table columns are developer configuration. Mark a leading checkbox column with `kind: "selection"`; `DataTable` then pins that column and the next visible column to the start by default. Use explicit `pin` values, including `pin: false`, to override this behavior. Do not expose freeze-column controls unless the product explicitly requests them.
-- Keep table column widths, row heights, table height, and pagination placement stable while loading. `loadingRows` controls skeleton count only; it is not a table-height setting.
-- Use `DescriptionList` for term-and-value metadata, including inside dialogs and drawers. Do not recreate it with raw `dl` markup or layout primitives. Its `columns` prop controls wide-surface grouping; long terms and unbroken values must wrap inside their own item without narrowing adjacent items or changing the outer grid contract.
-- For ordinary lists, place `DataTable` inside `ListManagementPage` or `SearchFilterPage`. Pass its typed `pagination` prop for a single rounded table-and-pager surface; paginated tables use a fixed viewport sized from five standard row-height units by default, so sparse results and page-size changes do not move the pager. Keep that pagination prop present for loading, empty, and zero-row error states so the fixed frame does not collapse. Use `viewportRows` to choose another fixed standard-row-height capacity, use `viewportRows="auto"` only when a paginated table should follow content height, and pass a numeric `viewportRows` to opt an unpaginated table into a fixed scrolling viewport. Custom cells may be taller and scroll within that fixed surface; do not clip them to force an exact visible-row count. Every actually scrollable surface is a named keyboard tab stop. A fixed viewport resets only its vertical position when a new request, page, page size, or row identity sequence arrives. Omit `pagination` only for a genuinely unpaginated table and do not duplicate the pager in the page footer. `MemberManagementPage` already follows this composition. Use `layoutWidth="wide"` only for dense tables that need it. `minWidth` grows to fill its container, so assign compact status, date, numeric, and action columns explicit numeric `width`; leave flexible width to genuine long-text columns and allow clearance for action focus outlines.
-- On desktop, `Drawer` defaults to `variant="edge"`: it is flush to the top, right, and bottom viewport edges, with only the top-left and bottom-left corners rounded. Use `variant="inset"` explicitly when a floating panel with outer spacing is required. Both variants become the same rounded-top bottom sheet at `640px` and below.
-- A product-family login keeps one company identity and one form implementation. Product identity changes through the visual slot, accent, name, and copy; never fork the form markup per product.
-- Keep behavior functional down to 320px. Use the bundled mobile table renderer, drawer layout, overflow tooltip, and compact pagination instead of shrinking text.
-- Treat wide-screen geometry as component correctness. Fixed columns and input adornment slots must not stretch or drift, and product-family accents must reach every interactive control in the login surface.
+Exercise applicable loading, success, empty, error, retry, validation, long-content, keyboard, overlay, locale, and mobile states. Keep behavior functional at 320px and inspect relevant wider layouts for stretching, adornment drift, overlap, clipping, overflow, and loading resize. Use component-owned responsive table, Drawer, tooltip, and pagination behavior rather than shrinking type or patching geometry.
 
-## Iterative Maintenance Budget
-
-When the user is interactively reviewing this Skill's own component implementation, keep a narrow visual or behavioral fix narrow:
-
-- Inspect only the affected component, styles, composition, and existing focused regression. Make the canonical fix and run the smallest browser check that proves the reported state and viewport; add one adjacent breakpoint only when the behavior is responsive.
-- Do not run the full deterministic contract suite, the complete six-viewport matrix, consumer-project reinstallation, full-tree hash comparison, version increment, or GitHub operations for each incremental fix. Run those release gates only after the user explicitly asks to update, release, or publish, or confirms that the review batch is ready for release.
-- Escalate beyond focused verification before release only when the change affects a shared primitive, enforcement tooling, the manifest contract, or cross-component behavior that cannot be established by the focused test.
-- Keep command output compact. Report pass/fail and actionable errors; do not print complete manifests, verifier inventories, or build logs when a filtered summary is sufficient.
-
-This budget applies to maintaining the Skill during iterative review. It does not weaken the target-project verification required when the Skill is used to deliver a finished application feature, and it does not waive any release gate below.
-
-## Mandatory Verification
-
-Run the target project's typecheck/build and tests. Exercise loading, success, empty, error, retry, and validation states where applicable. Inspect user-facing pages at 2560px, 1440px, 1024px, 736px, 360px, and 320px for whitespace, stretching, adornment drift, overlap, clipping, horizontal overflow, and loading resize.
-
-After changing the canonical kit or enforcement tools, run the deterministic contract suite:
-
-```powershell
-python scripts/update_component_manifest_integrity.py
-python scripts/validate_component_manifest.py
-python scripts/test_strict_enforcement.py
-npm --prefix assets/react-kit run build
-```
-
-Before handoff, run the verifier without relying on a manually supplied component list:
-
-```powershell
-python scripts/verify_personal_ui.py --target <project-path>
-```
-
-The installed npm prebuild gate scans project source and stylesheets and verifies every managed file against the manifest's canonical SHA-256 map. It rejects deep or computed imports, unregistered exports, raw protected controls and interactive roles, reserved Personal UI classes or ownership markers, generic or preprocessor CSS that can restyle protected controls, CSS-in-JS wrappers, DOM/CSSOM style mutation, component cloning, application style or imperative props on protected components, unapproved external JSX UI, uninspectable markup, and every missing, changed, linked, or extra managed source file. The Python verifier additionally compares installed support, registry, package scripts, dependencies, and canonical source. `--require-component` remains compatibility-only and cannot replace this scan; `--allow-unreferenced` is only for a just-installed kit before composition and must not be used for final handoff.
-
-A release passes only when `upToDate` is true, `errors` is empty, `componentManifest.valid` and `provenance.valid` are true, installed support files match, installed and bundled versions match, all `sourceDrift` lists are empty, and `usedComponents` reflects the components actually rendered or called. There is no warning-only drift mode and no bypass for locally reimplemented controls.
-
-Report the public Personal UI exports used, any canonical component addition and version increment completed before installation, and the verification commands that actually passed.
+For maintenance of this Skill's own component platform, documentation, installer, or release system, first read the [v0.3.0 hardening roadmap](references/v0.3.0-roadmap.md). Preserve milestone scope and evidence; do not upgrade, synchronize generated copies, tag, or publish merely because one milestone passed. Run focused checks while iterating and the milestone gate once at its boundary.

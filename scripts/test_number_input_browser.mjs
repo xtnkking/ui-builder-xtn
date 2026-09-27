@@ -1,36 +1,16 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { createRequire } from "node:module";
-import { fileURLToPath, pathToFileURL } from "node:url";
+import { isPersonalUiRegressionMain, runPersonalUiRegression } from "./browser-test-harness.mjs";
 
-const kitRoot = fileURLToPath(new URL("../assets/react-kit/", import.meta.url));
-const kitRequire = createRequire(new URL("../assets/react-kit/package.json", import.meta.url));
-const { createServer } = await import(pathToFileURL(kitRequire.resolve("vite")).href);
-const playwrightModule = process.env.PERSONAL_UI_PLAYWRIGHT_MODULE || "playwright";
-const { chromium } = createRequire(import.meta.url)(playwrightModule);
 const numberStyles = readFileSync(new URL("../assets/react-kit/src/personal-ui/styles/inputs-extra.css", import.meta.url), "utf8");
 assert.match(numberStyles, /\.pui-number-input \.pui-input--embedded::-webkit-inner-spin-button/);
 assert.match(numberStyles, /-webkit-appearance:\s*none/);
 
-const server = await createServer({ root: kitRoot, server: { host: "127.0.0.1", port: 0 } });
-let browser;
-
-try {
-  await server.listen();
-  const url = server.resolvedUrls?.local?.[0];
-  assert.ok(url, "Vite did not expose a local URL");
-  browser = await chromium.launch({
-    headless: true,
-    ...(process.env.PERSONAL_UI_CHROMIUM_EXECUTABLE
-      ? { executablePath: process.env.PERSONAL_UI_CHROMIUM_EXECUTABLE }
-      : {}),
-  });
-
+export async function runNumberInputRegression({ page, baseURL }) {
+  assert.ok(baseURL, "A baseURL is required");
   for (const width of [2560, 1440, 1024, 736, 360, 320]) {
-    const page = await browser.newPage({ viewport: { width, height: 800 } });
-    try {
-      await page.goto(url);
-      await page.getByRole("tab", { name: "数字输入" }).click();
+    await page.setViewportSize({ width, height: 800 });
+    await page.goto(`${baseURL}/#/components/number`);
       if (process.env.PERSONAL_UI_NUMBER_SCREENSHOT_PREFIX) {
         await page.screenshot({ path: `${process.env.PERSONAL_UI_NUMBER_SCREENSHOT_PREFIX}-${width}.png` });
       }
@@ -120,12 +100,10 @@ try {
         assert.ok(box.top >= geometry.frame.top && box.bottom <= geometry.frame.bottom, `step button clipped vertically at ${width}px`);
       }
       assert.ok(geometry.documentWidth <= geometry.viewportWidth, `horizontal overflow at ${width}px`);
-    } finally {
-      await page.close();
-    }
   }
   console.log("NumberInput browser regression passed at 2560, 1440, 1024, 736, 360, and 320px.");
-} finally {
-  await browser?.close();
-  await server.close();
+}
+
+if (isPersonalUiRegressionMain(import.meta.url)) {
+  await runPersonalUiRegression(runNumberInputRegression);
 }

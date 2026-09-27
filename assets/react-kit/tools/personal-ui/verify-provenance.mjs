@@ -21,6 +21,8 @@ const IGNORED_DIRECTORIES = new Set([
   "dist",
   "node_modules",
   "out",
+  "tests",
+  "__tests__",
 ]);
 const INTERACTIVE_ATTRIBUTES = new Set([
   "contenteditable",
@@ -61,21 +63,22 @@ const CSS_IN_JS_RUNTIME_PACKAGES = new Set([
   "@emotion/styled",
 ]);
 const LEGACY_PUBLIC_ROOT_CLASSES = new Set(["pui-root"]);
-const PROTECTED_COMPONENT_ESCAPE_PROPS = new Set(["classname", "style", "css", "sx", "tw", "ref"]);
-const STYLE_OVERRIDE_LAYOUT_ENTRY_IDS = new Set([
-  "aspect",
-  "collapse",
-  "color",
-  "divider",
-  "focus-trap",
-  "layout",
-  "portal",
-  "resizable",
-  "responsive",
-  "responsive-visibility",
-  "scroll",
-  "sticky",
-  "visually-hidden",
+const PROTECTED_COMPONENT_ESCAPE_PROPS = new Set([
+  "classname",
+  "style",
+  "css",
+  "sx",
+  "tw",
+  "ref",
+  "dangerouslysetinnerhtml",
+]);
+const KNOWN_RESERVED_CONTROL_DATA_PROPS = new Set([
+  "data-pui-owner",
+  "data-pui-floating-root",
+  "data-pui-form-bridge",
+  "data-pui-portal-source",
+  "data-pui-toast-portal-root",
+  "data-pui-slot",
 ]);
 const CSS_CLASS_SCOPABLE_MEDIA_TAGS = new Set(["audio", "svg", "video"]);
 const CSS_ADDITIONAL_PROTECTED_TAGS = new Set(["tbody", "td", "tfoot", "th", "thead", "tr"]);
@@ -166,7 +169,7 @@ function parseArguments(argv) {
     result[name] = value;
     index += 1;
   }
-  for (const required of ["target", "source-root", "manifest"]) {
+  for (const required of ["target", "manifest"]) {
     if (!result[required]) throw new Error(`missing required --${required}`);
   }
   return result;
@@ -178,6 +181,123 @@ function readObject(file, label) {
     throw new Error(`${label} must contain a JSON object: ${file}`);
   }
   return value;
+}
+
+function canonicalRelativePosix(value, label) {
+  if (
+    typeof value !== "string"
+    || !value
+    || value.includes("\\")
+    || value.includes("\0")
+    || value.startsWith("/")
+    || /^[A-Za-z]:/.test(value)
+  ) {
+    throw new Error(`${label} must be a canonical relative POSIX path`);
+  }
+  const parts = value.split("/");
+  if (parts.some((part) => !part || part === "." || part === "..")) {
+    throw new Error(`${label} must not contain empty, dot, or parent segments`);
+  }
+  return value;
+}
+
+function sourceFromInstallState(target) {
+  const statePath = path.join(target, "tools", "personal-ui", "install-state.json");
+  const state = readObject(statePath, "Personal UI install state");
+  if (state.schemaVersion !== 1) {
+    throw new Error("Personal UI install state has an unsupported schema");
+  }
+  if (state.mode !== "starter" && state.mode !== "integrate") {
+    throw new Error("Personal UI install state has an invalid mode");
+  }
+  if (state.packageRoot !== ".") {
+    canonicalRelativePosix(state.packageRoot, "Personal UI install state packageRoot");
+  }
+  if (!["npm", "pnpm", "yarn"].includes(state.packageManager)) {
+    throw new Error("Personal UI install state has an invalid packageManager");
+  }
+  if (!["vite", "next"].includes(state.framework)) {
+    throw new Error("Personal UI install state has an invalid framework");
+  }
+  const sourceRoot = canonicalRelativePosix(
+    state.sourceRoot,
+    "Personal UI install state sourceRoot",
+  );
+  if (!state.ownedFiles || typeof state.ownedFiles !== "object" || Array.isArray(state.ownedFiles)) {
+    throw new Error("Personal UI install state has an invalid ownedFiles inventory");
+  }
+  const registryRelative = `${sourceRoot}/registry.json`;
+  const registryDigest = state.ownedFiles[registryRelative];
+  if (typeof registryDigest !== "string" || !/^[0-9a-f]{64}$/.test(registryDigest)) {
+    throw new Error("Personal UI install state does not own the managed registry");
+  }
+  const registryPath = path.join(target, ...registryRelative.split("/"));
+  if (!fs.existsSync(registryPath)) {
+    throw new Error(`Personal UI managed registry is missing: ${registryPath}`);
+  }
+  const actualRegistryDigest = crypto
+    .createHash("sha256")
+    .update(fs.readFileSync(registryPath))
+    .digest("hex");
+  if (actualRegistryDigest !== registryDigest) {
+    throw new Error("Personal UI install state managed registry hash does not match");
+  }
+  return { sourceRoot, state };
+}
+
+function resolveRegistryPath(target, managedRoot) {
+  const candidates = [path.join(managedRoot, "registry.json"), path.join(target, "registry.json")];
+  const registryPath = candidates.find((candidate) => fs.existsSync(candidate));
+  if (!registryPath) {
+    throw new Error(`Personal UI registry is missing; checked ${candidates.join(", ")}`);
+  }
+  return path.resolve(registryPath);
+}
+
+function classifiedRuntimeExports(registry, classification, publicExports) {
+  const declared = registry.exports;
+  if (!Array.isArray(declared) || declared.some((name) => typeof name !== "string" || !name)) {
+    throw new Error("Personal UI registry exports must be an array of non-empty strings");
+  }
+  const declaredExports = new Set(declared);
+  if (declaredExports.size !== declared.length) {
+    throw new Error("Personal UI registry exports must not contain duplicates");
+  }
+  if (
+    declaredExports.size !== publicExports.size
+    || [...declaredExports].some((name) => !publicExports.has(name))
+  ) {
+    throw new Error("Personal UI registry exports do not match the component manifest public exports");
+  }
+
+  const classifications = registry.exportClassifications;
+  if (!classifications || typeof classifications !== "object" || Array.isArray(classifications)) {
+    throw new Error("Personal UI registry exportClassifications must be an object");
+  }
+  const classified = new Set();
+  for (const [name, values] of Object.entries(classifications)) {
+    if (!Array.isArray(values) || values.some((value) => typeof value !== "string" || !value)) {
+      throw new Error(`Personal UI registry classification ${JSON.stringify(name)} must contain non-empty strings`);
+    }
+    for (const value of values) {
+      if (!declaredExports.has(value)) {
+        throw new Error(`Personal UI registry classification ${JSON.stringify(name)} contains unknown export ${JSON.stringify(value)}`);
+      }
+      if (classified.has(value)) {
+        throw new Error(`Personal UI registry export ${JSON.stringify(value)} has multiple classifications`);
+      }
+      classified.add(value);
+    }
+  }
+  if (classified.size !== declaredExports.size) {
+    const missing = [...declaredExports].filter((name) => !classified.has(name));
+    throw new Error(`Personal UI registry exports lack classifications: ${missing.join(", ")}`);
+  }
+  const values = classifications[classification];
+  if (!Array.isArray(values)) {
+    throw new Error(`Personal UI registry classification ${JSON.stringify(classification)} is missing`);
+  }
+  return new Set(values);
 }
 
 function normalize(file) {
@@ -358,9 +478,12 @@ function callArgumentRanges(code, openingParenthesis) {
   return [];
 }
 
-function protectedPropsOverride(source, code, range) {
+function protectedPropsOverride(source, code, range, allowedReservedMarkerOffsets = null) {
   if (!range) return null;
-  const raw = source.slice(range.start, range.end).trim();
+  const rawRange = source.slice(range.start, range.end);
+  const rawLeading = rawRange.search(/\S|$/);
+  const raw = rawRange.trim();
+  const rawBase = range.start + rawLeading;
   const syntax = code.slice(range.start, range.end).trim();
   if (!syntax || /^(?:null|undefined|void\s+0)$/.test(syntax)) return null;
   if (!syntax.startsWith("{")) return "an opaque props expression";
@@ -397,11 +520,21 @@ function protectedPropsOverride(source, code, range) {
     if (!item) continue;
     if (item.startsWith("...")) return "spread props";
     if (item.startsWith("[")) return "a computed props key";
-    if (/^(?:(?:get|set|async)\s+)?(?:className|style|css|sx|tw|ref)\b/.test(item)) {
-      return `${item.match(/(?:className|style|css|sx|tw|ref)/)?.[0] ?? "style"} prop`;
+    if (/^(?:(?:get|set|async)\s+)?(?:className|style|css|sx|tw|ref|dangerouslySetInnerHTML)\b/.test(item)) {
+      return `${item.match(/(?:className|style|css|sx|tw|ref|dangerouslySetInnerHTML)/)?.[0] ?? "protected"} prop`;
     }
-    const rawItem = stripComments(raw.slice(rawOffset + segment.start, rawOffset + segment.end)).trim();
-    const quoted = rawItem.match(/^(?:get\s+|set\s+|async\s+)?["'](className|style|css|sx|tw|ref)["']\s*(?::|\()/);
+    const rawSegment = stripComments(raw.slice(rawOffset + segment.start, rawOffset + segment.end));
+    const rawItemLeading = rawSegment.search(/\S|$/);
+    const rawItem = rawSegment.trim();
+    const staticReserved = rawItem.match(/^["']([^"']+)["']\s*:\s*(undefined|void\s+0)$/);
+    if (KNOWN_RESERVED_CONTROL_DATA_PROPS.has(staticReserved?.[1].toLowerCase())) {
+      const markerOffset = rawItem.indexOf(staticReserved[1]);
+      allowedReservedMarkerOffsets?.add(
+        rawBase + rawOffset + segment.start + rawItemLeading + markerOffset,
+      );
+      continue;
+    }
+    const quoted = rawItem.match(/^(?:get\s+|set\s+|async\s+)?["'](className|style|css|sx|tw|ref|dangerouslySetInnerHTML|data-pui-[^"']+)["']\s*(?::|\()/i);
     if (quoted) return `${quoted[1]} prop`;
   }
   return null;
@@ -433,6 +566,23 @@ function jsxAttributeNames(openingTag) {
   const pattern = /(?:\s|^)\b([A-Za-z_:][\w:.-]*)\s*(?==|\s|\/?>)/g;
   for (const match of syntaxOnly.matchAll(pattern)) names.add(match[1].toLowerCase());
   return names;
+}
+
+function reservedJsxAttributes(openingTag) {
+  const attributes = [];
+  const syntaxOnly = codeOnly(openingTag);
+  const pattern = /(?:\s|^)\b(data-pui-[\w-]+)\b/g;
+  for (const match of syntaxOnly.matchAll(pattern)) {
+    const offset = (match.index ?? 0) + match[0].indexOf(match[1]);
+    attributes.push({
+      name: match[1].toLowerCase(),
+      offset,
+      staticUndefined: /^\s*=\s*\{\s*(?:undefined|void\s+0)\s*\}(?=\s|\/?>)/.test(
+        syntaxOnly.slice(offset + match[1].length),
+      ),
+    });
+  }
+  return attributes;
 }
 
 function literalAttribute(openingTag, attribute) {
@@ -1167,6 +1317,7 @@ function scanScript(file, source, context) {
   const cloneElementFactories = new Set();
   const componentWrapperFactories = new Set();
   const reactObjects = new Set(["React"]);
+  const allowedReservedMarkerOffsets = new Set();
 
   const addIssue = (code, message, offset = 0) => {
     const key = `${code}:${offset}:${message}`;
@@ -1176,15 +1327,6 @@ function scanScript(file, source, context) {
   };
 
   const commentFreeSource = stripComments(source);
-  for (const match of commentFreeSource.matchAll(/\bdata-pui[\w-]*/gi)) {
-    addIssue("PUI_RESERVED_MARKER", `${match[0]} is reserved for bundled Personal UI source`, match.index ?? 0);
-  }
-  for (const match of commentFreeSource.matchAll(/\bpui-[\w-]+/g)) {
-    if (!LEGACY_PUBLIC_ROOT_CLASSES.has(match[0])) {
-      addIssue("PUI_PRIVATE_CLASS", `Personal UI internal class token is forbidden: ${match[0]}`, match.index ?? 0);
-    }
-  }
-
   const sideEffectStyleImport = /(?:^|[;\n])\s*import\s*["']([^"']+)["']/gm;
   for (const match of commentFreeSource.matchAll(sideEffectStyleImport)) {
     if (isCssInJsRuntimeSpecifier(match[1])) {
@@ -1520,7 +1662,7 @@ function scanScript(file, source, context) {
     const exported = resolvePublicExport(reference);
     if (!exported || !context.styleProtectedExports.has(exported)) return;
     const range = callArgumentRanges(code, openingParenthesis)[propsIndex];
-    const reason = protectedPropsOverride(source, code, range);
+    const reason = protectedPropsOverride(source, code, range, allowedReservedMarkerOffsets);
     if (!reason) return;
     const key = `${exported}:${range?.start ?? openingParenthesis}`;
     if (inspectedComponentProps.has(key)) return;
@@ -1539,6 +1681,7 @@ function scanScript(file, source, context) {
     const end = findOpeningTagEnd(source, offset);
     const openingTag = source.slice(offset, end + 1);
     const openingAttributes = jsxAttributeNames(openingTag);
+    const reservedAttributes = reservedJsxAttributes(openingTag);
     const [openingBase, openingMember] = rawTag.split(".");
     const publicComponentExport = publicAliases.has(openingBase) && !openingMember
       ? publicAliases.get(openingBase)
@@ -1547,6 +1690,11 @@ function scanScript(file, source, context) {
         : null;
     const publicComponent = publicComponentExport && context.styleProtectedExports.has(publicComponentExport);
     if (publicComponent) {
+      for (const attribute of reservedAttributes) {
+        if (!KNOWN_RESERVED_CONTROL_DATA_PROPS.has(attribute.name) || attribute.staticUndefined) {
+          allowedReservedMarkerOffsets.add(offset + attribute.offset);
+        }
+      }
       if (/\{\s*\.\.\./.test(openingTag)) {
         addIssue(
           "PUI_COMPONENT_STYLE_OVERRIDE",
@@ -1554,14 +1702,23 @@ function scanScript(file, source, context) {
           offset,
         );
       }
-      for (const attribute of PROTECTED_COMPONENT_ESCAPE_PROPS) {
-        if (openingAttributes.has(attribute)) {
+      for (const attribute of openingAttributes) {
+        if (PROTECTED_COMPONENT_ESCAPE_PROPS.has(attribute)) {
           addIssue(
             "PUI_COMPONENT_STYLE_OVERRIDE",
-            `${attribute === "classname" ? "className" : attribute} on Personal UI component ${rawTag} is forbidden; use public props or a surrounding layout element`,
+            `${attribute === "classname" ? "className" : attribute === "dangerouslysetinnerhtml" ? "dangerouslySetInnerHTML" : attribute} on Personal UI component ${rawTag} is forbidden; use public props or a surrounding layout element`,
             offset,
           );
         }
+      }
+      for (const attribute of reservedAttributes.filter(
+        (value) => KNOWN_RESERVED_CONTROL_DATA_PROPS.has(value.name) && !value.staticUndefined,
+      )) {
+        addIssue(
+          "PUI_COMPONENT_STYLE_OVERRIDE",
+          `${attribute.name} on Personal UI component ${rawTag} is forbidden; use public props or a surrounding layout element`,
+          offset + attribute.offset,
+        );
       }
     }
     const componentProp = /\b([A-Za-z_$][\w$]*)\s*=\s*\{\s*([A-Za-z_$][\w$]*(?:\s*\.\s*[A-Za-z_$][\w$]*)?)\s*\}/g;
@@ -1896,6 +2053,17 @@ function scanScript(file, source, context) {
       addIssue("PUI_UNINSPECTABLE_MARKUP", `computed DOM method ${folded} can bypass component provenance`, match.index ?? 0);
     }
   }
+  for (const match of commentFreeSource.matchAll(/\bdata-pui[\w-]*/gi)) {
+    if (allowedReservedMarkerOffsets.has(match.index ?? 0)) continue;
+    addIssue("PUI_RESERVED_MARKER", `${match[0]} is reserved for bundled Personal UI source`, match.index ?? 0);
+  }
+  for (const match of commentFreeSource.matchAll(/\bpui-[\w-]+/g)) {
+    const offset = match.index ?? 0;
+    if (allowedReservedMarkerOffsets.has(offset - "data-".length)) continue;
+    if (!LEGACY_PUBLIC_ROOT_CLASSES.has(match[0])) {
+      addIssue("PUI_PRIVATE_CLASS", `Personal UI internal class token is forbidden: ${match[0]}`, offset);
+    }
+  }
   return { issues, used };
 }
 
@@ -1973,17 +2141,33 @@ function main() {
   try {
     args = parseArguments(process.argv.slice(2));
     const target = path.resolve(args.target);
-    const managedRoot = path.resolve(target, args["source-root"]);
+    const stateSource = args["source-root"] ? null : sourceFromInstallState(target);
+    const sourceRoot = args["source-root"] ?? stateSource.sourceRoot;
+    const managedRoot = path.resolve(target, sourceRoot);
+    if (!isInside(managedRoot, target)) {
+      throw new Error("Personal UI managed source root escapes the target package");
+    }
     const manifestPath = path.resolve(args.manifest);
+    if (stateSource) {
+      const manifestDigest = stateSource.state.manifestSha256;
+      if (typeof manifestDigest !== "string" || !/^[0-9a-f]{64}$/.test(manifestDigest)) {
+        throw new Error("Personal UI install state has an invalid manifestSha256");
+      }
+      const actualManifestDigest = crypto
+        .createHash("sha256")
+        .update(fs.readFileSync(manifestPath))
+        .digest("hex");
+      if (actualManifestDigest !== manifestDigest) {
+        throw new Error("Personal UI install state manifest hash does not match");
+      }
+    }
     const manifest = readObject(manifestPath, "component manifest");
     const entries = Array.isArray(manifest.entries) ? manifest.entries : [];
     const policy = manifest.policy && typeof manifest.policy === "object" ? manifest.policy : {};
     const publicExports = new Set(entries.flatMap((entry) => Array.isArray(entry.publicExports) ? entry.publicExports : []));
-    const styleProtectedExports = new Set(entries.flatMap((entry) => {
-      if (!["component", "pattern"].includes(entry.kind) || STYLE_OVERRIDE_LAYOUT_ENTRY_IDS.has(entry.id)) return [];
-      const nonVisual = new Set(Array.isArray(entry.nonVisualExports) ? entry.nonVisualExports : []);
-      return (Array.isArray(entry.publicExports) ? entry.publicExports : []).filter((name) => !nonVisual.has(name));
-    }));
+    const registryPath = resolveRegistryPath(target, managedRoot);
+    const registry = readObject(registryPath, "Personal UI registry");
+    const styleProtectedExports = classifiedRuntimeExports(registry, "fixed-control", publicExports);
     const reservedComponentNames = new Set([
       ...publicExports,
       ...entries.flatMap((entry) => Array.isArray(entry.aliases) ? entry.aliases.map(pascalCase) : []),
@@ -2028,6 +2212,7 @@ function main() {
       valid: issues.length === 0,
       target,
       manifest: manifestPath,
+      registry: registryPath,
       scannedFiles,
       usedPublicExports: [...used].sort(),
       managedSource,

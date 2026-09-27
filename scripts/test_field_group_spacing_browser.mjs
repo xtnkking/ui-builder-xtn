@@ -1,26 +1,10 @@
 import assert from "node:assert/strict";
-import { createRequire } from "node:module";
-import { fileURLToPath, pathToFileURL } from "node:url";
+import { isPersonalUiRegressionMain, runPersonalUiRegression } from "./browser-test-harness.mjs";
 
-const kitRoot = fileURLToPath(new URL("../assets/react-kit/", import.meta.url));
-const kitRequire = createRequire(new URL("../assets/react-kit/package.json", import.meta.url));
-const { createServer } = await import(pathToFileURL(kitRequire.resolve("vite")).href);
-const { chromium } = createRequire(import.meta.url)(process.env.PERSONAL_UI_PLAYWRIGHT_MODULE || "playwright");
-const server = await createServer({ root: kitRoot, server: { host: "127.0.0.1", port: 0 } });
-let browser;
-
-try {
-  await server.listen();
-  const url = server.resolvedUrls?.local?.[0];
-  assert.ok(url, "Vite did not expose a local URL");
-  browser = await chromium.launch({
-    headless: true,
-    ...(process.env.PERSONAL_UI_CHROMIUM_EXECUTABLE
-      ? { executablePath: process.env.PERSONAL_UI_CHROMIUM_EXECUTABLE }
-      : {}),
-  });
-  const page = await browser.newPage({ viewport: { width: 736, height: 700 } });
-  await page.goto(url);
+export async function runFieldGroupSpacingRegression({ page, baseURL }) {
+  assert.ok(baseURL, "A baseURL is required");
+  await page.setViewportSize({ width: 736, height: 700 });
+  await page.goto(baseURL);
 
   const geometry = await page.evaluate(() => {
     const fixture = document.createElement("div");
@@ -61,7 +45,8 @@ try {
   assert.ok(Math.abs(geometry.groupGap - geometry.regularGap) <= 0.1, `group Field gap differs: ${JSON.stringify(geometry)}`);
   assert.ok(Math.abs(geometry.groupHintGap - 7) <= 0.1, `group Field hint gap drifted: ${geometry.groupHintGap}px`);
   console.log(`Field and Field group spacing match at ${geometry.groupGap}px.`);
-} finally {
-  await browser?.close();
-  await server.close();
+}
+
+if (isPersonalUiRegressionMain(import.meta.url)) {
+  await runPersonalUiRegression(runFieldGroupSpacingRegression, { viewport: { width: 736, height: 700 } });
 }

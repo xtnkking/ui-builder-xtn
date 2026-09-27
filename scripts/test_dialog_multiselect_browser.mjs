@@ -1,13 +1,25 @@
 import assert from "node:assert/strict";
-import { createRequire } from "node:module";
-import { fileURLToPath, pathToFileURL } from "node:url";
+import { isPersonalUiRegressionMain, runPersonalUiRegression } from "./browser-test-harness.mjs";
 
-const kitRoot = fileURLToPath(new URL("../assets/react-kit/", import.meta.url));
-const kitRequire = createRequire(new URL("../assets/react-kit/package.json", import.meta.url));
-const { createServer } = await import(pathToFileURL(kitRequire.resolve("vite")).href);
-const { chromium } = createRequire(import.meta.url)(process.env.PERSONAL_UI_PLAYWRIGHT_MODULE || "playwright");
-const server = await createServer({ root: kitRoot, server: { host: "127.0.0.1", port: 0 } });
-let browser;
+async function waitForFocus(page, target, label) {
+  const handle = await target.elementHandle();
+  assert.ok(handle, `${label}: focus target is missing`);
+  try {
+    await page.waitForFunction(
+      (element) => document.activeElement === element,
+      handle,
+      { polling: "raf", timeout: 2000 },
+    );
+  } catch {
+    const state = await target.evaluate((element) => ({
+      active: document.activeElement === element,
+      activeElement: document.activeElement?.outerHTML,
+    }));
+    assert.fail(`${label}: focus did not settle on the target (${JSON.stringify(state)})`);
+  } finally {
+    await handle.dispose();
+  }
+}
 
 async function noHorizontalOverflow(page, label) {
   const sizes = await page.evaluate(() => ({ document: document.documentElement.scrollWidth, viewport: window.innerWidth }));
@@ -24,13 +36,13 @@ async function clickBackdrop(dialog, label) {
   await overlay.click({ position: { x: 5, y: 5 } });
 }
 
-async function inspectMoreSelectorsFocus(dialog, label) {
-  const actionFocused = await dialog.getByRole("button", { name: "完成", exact: true }).evaluate((button) => document.activeElement === button);
+async function inspectMoreSelectorsFocus(page, dialog, label) {
+  const action = dialog.getByRole("button", { name: "完成", exact: true });
+  await waitForFocus(page, action, `${label} safe footer action`);
   const focus = await dialog.evaluate((panel) => ({
     panelFocusVisible: panel.matches(":focus-visible"),
     panelOutline: getComputedStyle(panel).outlineStyle,
   }));
-  assert.equal(actionFocused, true, `${label}: initial focus did not reach the safe footer action`);
   assert.equal(focus.panelFocusVisible, false, `${label}: panel shows a keyboard focus ring`);
   assert.equal(focus.panelOutline, "none", `${label}: panel has a visible outline`);
 }
@@ -154,22 +166,12 @@ async function inspectPopup(page, dialog, popup, label) {
   return geometry;
 }
 
-try {
-  await server.listen();
-  const url = server.resolvedUrls?.local?.[0];
-  assert.ok(url, "Vite did not expose a local URL");
-  browser = await chromium.launch({
-    headless: true,
-    ...(process.env.PERSONAL_UI_CHROMIUM_EXECUTABLE
-      ? { executablePath: process.env.PERSONAL_UI_CHROMIUM_EXECUTABLE }
-      : {}),
-  });
-
+export async function runDialogMultiSelectRegression({ page, baseURL }) {
+  assert.ok(baseURL, "A baseURL is required");
   for (const width of [2560, 1440, 1024, 736, 360, 320]) {
     const height = width <= 360 ? 640 : 900;
-    const page = await browser.newPage({ viewport: { width, height } });
-    try {
-      await page.goto(url);
+    await page.setViewportSize({ width, height });
+    await page.goto(baseURL);
       const memberAction = page.getByRole("button", { name: "陈沐的更多操作" });
       await memberAction.click();
       const memberDrawer = page.getByRole("dialog", { name: "陈沐" });
@@ -205,7 +207,7 @@ try {
       await memberDrawer.getByRole("button", { name: "关闭抽屉" }).click();
       await memberDrawer.waitFor({ state: "detached" });
 
-      await page.getByRole("tab", { name: "弹窗" }).click();
+      await page.goto(`${baseURL}/#/components/dialog`);
       const responseMode = page.getByRole("group", { name: "选择确认操作响应" });
       const opener = page.getByRole("button", { name: "停用用户", exact: true });
       await opener.click();
@@ -234,16 +236,16 @@ try {
           await page.screenshot({ path: `${process.env.PERSONAL_UI_DIALOG_SCREENSHOT_PREFIX}-confirm-${width}.png` });
         }
       }
-      assert.equal(await cancel.evaluate((button) => document.activeElement === button), true, `${width}px: cancel did not receive initial safe focus`);
+      await waitForFocus(page, cancel, `${width}px initial safe focus`);
       await cancel.press("Shift+Tab");
-      assert.equal(await close.evaluate((button) => document.activeElement === button), true, `${width}px: Shift+Tab missed close`);
+      await waitForFocus(page, close, `${width}px Shift+Tab close target`);
       await close.press("Shift+Tab");
-      assert.equal(await danger.evaluate((button) => document.activeElement === button), true, `${width}px: reverse focus trap failed`);
+      await waitForFocus(page, danger, `${width}px reverse focus trap target`);
       await danger.press("Tab");
-      assert.equal(await close.evaluate((button) => document.activeElement === button), true, `${width}px: forward focus trap failed`);
+      await waitForFocus(page, close, `${width}px forward focus trap target`);
       await page.keyboard.press("Escape");
       await confirm.waitFor({ state: "detached" });
-      assert.equal(await opener.evaluate((button) => document.activeElement === button), true, `${width}px: Escape did not restore opener focus`);
+      await waitForFocus(page, opener, `${width}px confirmation Escape focus restoration`);
       await opener.click();
       await clickBackdrop(confirm, `${width}px default confirmation`);
       await confirm.waitFor({ state: "detached" });
@@ -297,7 +299,7 @@ try {
       await popup.waitFor();
       const list = popup.getByRole("listbox", { name: "角色" });
       assert.equal(await list.getByRole("option").count(), 8, `${width}px: options missing`);
-      assert.equal(await popup.getByRole("searchbox", { name: "搜索角色" }).evaluate((input) => document.activeElement === input), true, `${width}px: search was not focused`);
+      await waitForFocus(page, popup.getByRole("searchbox", { name: "搜索角色" }), `${width}px MultiSelect search focus`);
       const initial = await inspectPopup(page, roleDialog, popup, `${width}px initial`);
       if (width === 1440 || width === 320) {
         console.log(`${width}px MultiSelect popup: ${JSON.stringify(initial.bounds)}, visible options: ${initial.visibleOptions}`);
@@ -394,22 +396,22 @@ try {
       const moreDialog = page.getByRole("dialog", { name: "更多选择器" });
       await moreOpener.click();
       await moreDialog.waitFor();
-      await inspectMoreSelectorsFocus(moreDialog, `${width}px more selectors`);
+      await inspectMoreSelectorsFocus(page, moreDialog, `${width}px more selectors`);
       await clickBackdrop(moreDialog, `${width}px more selectors`);
       assert.equal(await moreDialog.isVisible(), true, `${width}px: backdrop closed the more-selectors Dialog`);
       await page.keyboard.press("Escape");
       await moreDialog.waitFor({ state: "detached" });
-      assert.equal(await moreOpener.evaluate((button) => document.activeElement === button), true, `${width}px: more-selectors Escape did not restore opener focus`);
+      await waitForFocus(page, moreOpener, `${width}px more-selectors Escape focus restoration`);
       await moreOpener.click();
       await moreDialog.waitFor();
-      await inspectMoreSelectorsFocus(moreDialog, `${width}px reopened more selectors`);
+      await inspectMoreSelectorsFocus(page, moreDialog, `${width}px reopened more selectors`);
       await clickBackdrop(moreDialog, `${width}px reopened more selectors`);
       assert.equal(await moreDialog.isVisible(), true, `${width}px: backdrop closed the reopened more-selectors Dialog`);
       await moreDialog.getByRole("button", { name: "关闭对话框" }).click();
       await moreDialog.waitFor({ state: "detached" });
       await noHorizontalOverflow(page, `${width}px final`);
 
-      await page.getByRole("tab", { name: "用户权限" }).click();
+      await page.goto(`${baseURL}/#/components/data-table`);
       const edit = page.getByRole("button", { name: "编辑陈沐" });
       await edit.click();
       const drawer = page.getByRole("dialog", { name: "编辑陈沐的权限" });
@@ -461,13 +463,11 @@ try {
       assert.equal(await drawer.isVisible(), true, `${width}px: backdrop closed the reopened Drawer`);
       await page.keyboard.press("Escape");
       await drawer.waitFor({ state: "detached" });
-      assert.equal(await edit.evaluate((button) => document.activeElement === button), true, `${width}px: drawer failed to restore focus`);
-    } finally {
-      await page.close();
-    }
+      await waitForFocus(page, edit, `${width}px drawer focus restoration`);
   }
   console.log("Dialog, ConfirmDialog, MultiSelect, and Drawer browser regression passed at 2560, 1440, 1024, 736, 360, and 320px.");
-} finally {
-  await browser?.close();
-  await server.close();
+}
+
+if (isPersonalUiRegressionMain(import.meta.url)) {
+  await runPersonalUiRegression(runDialogMultiSelectRegression);
 }

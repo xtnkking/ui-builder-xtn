@@ -1,0 +1,9 @@
+# ContextMenu keyboard and focus contract
+
+`ContextMenu` owns a single menu for its children. A static child uses the wrapper as a Tab stop; a child with an existing tabbable control uses that control, without adding another wrapper stop. Right-click opens at the pointer and prevents the native context menu. `ContextMenu` and `Shift+F10` open beside the focused trigger.
+
+The first enabled item receives real focus. ArrowDown/ArrowUp wrap among enabled items; Home/End move to the first/last enabled item. Printable keys search the rendered item label (700 ms sequence); repeated identical letters cycle through matches. Enter/Space activate the focused button. Each item keeps an ID derived from its stable `item.id`, with a single roving `tabIndex=0`. Disabled items never receive roving focus or activate. Submenus are not supported, so left/right keys have no submenu behavior.
+
+Escape closes only this menu and restores the opening control (or its surviving wrapper). Tab closes it and advances from the opening control. A pointer outside the menu surface, including a primary click on the original trigger, closes without swallowing that target's click; clicking the original interactive child keeps focus on that child, while other outside targets retain their own focus behavior. An action restores its trigger before invoking `onSelect`, allowing a child modal to capture the correct return target. A menu opened inside a modal is linked to that modal by `aria-controls` and remains in its interactive branch. The floating surface clamps to a 12 px viewport gutter and updates on resize/scroll.
+
+Evidence: `assets/react-kit/tests/components/context-menu-contracts.test.tsx`, `assets/react-kit/tests/browser/m5-context-menu.spec.ts` (Chromium, Firefox, WebKit, including the original-trigger click and nested Dialog cases), and `assets/react-kit/tests/a11y/m5-context-menu.spec.ts`.

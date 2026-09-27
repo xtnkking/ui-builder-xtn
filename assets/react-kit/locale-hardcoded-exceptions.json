@@ -1,0 +1,159 @@
+{
+  "schemaVersion": 1,
+  "exceptions": [
+    {
+      "file": "src/personal-ui/patterns/family-login-page.tsx",
+      "kind": "attribute",
+      "attribute": "placeholder",
+      "value": "name@company.com",
+      "owner": "FamilyLoginPage",
+      "reason": "Locale-neutral email address format example."
+    },
+    {
+      "file": "src/personal-ui/value-controls.tsx",
+      "kind": "attribute",
+      "attribute": "placeholder",
+      "value": "#1769d2",
+      "owner": "ColorPicker",
+      "reason": "Locale-neutral hexadecimal color format example."
+    },
+    {
+      "file": "src/personal-ui/patterns/member-management-page.tsx",
+      "kind": "language-string",
+      "value": "已加入",
+      "owner": "MemberManagementPage",
+      "reason": "Legacy machine value comparator retained for status tone compatibility; it is never rendered as built-in copy."
+    },
+    {
+      "file": "src/personal-ui/patterns/member-management-page.tsx",
+      "kind": "language-string",
+      "value": "正常",
+      "owner": "MemberManagementPage",
+      "reason": "Legacy machine value comparator retained for status tone compatibility; it is never rendered as built-in copy."
+    },
+    {
+      "file": "src/personal-ui/patterns/member-management-page.tsx",
+      "kind": "language-string",
+      "value": "待确认",
+      "owner": "MemberManagementPage",
+      "reason": "Legacy machine value comparator retained for status tone compatibility; it is never rendered as built-in copy."
+    },
+    {
+      "file": "src/personal-ui/patterns/member-management-page.tsx",
+      "kind": "language-string",
+      "value": "即将过期",
+      "owner": "MemberManagementPage",
+      "reason": "Legacy machine value comparator retained for status tone compatibility; it is never rendered as built-in copy."
+    },
+    {
+      "file": "src/personal-ui/patterns/member-management-page.tsx",
+      "kind": "language-string",
+      "value": "已停用",
+      "owner": "MemberManagementPage",
+      "reason": "Legacy machine value comparator retained for status tone compatibility; it is never rendered as built-in copy."
+    },
+    {
+      "file": "src/personal-ui/patterns/member-management-page.tsx",
+      "kind": "language-string",
+      "value": "已过期",
+      "owner": "MemberManagementPage",
+      "reason": "Legacy machine value comparator retained for status tone compatibility; it is never rendered as built-in copy."
+    },
+    {
+      "file": "src/personal-ui/value-controls.tsx",
+      "kind": "property",
+      "attribute": "label",
+      "value": "UTC (±00:00)",
+      "owner": "TimezoneSelect",
+      "reason": "Locale-neutral IANA time-zone identifier and UTC offset."
+    },
+    {
+      "file": "src/personal-ui/value-controls.tsx",
+      "kind": "property",
+      "attribute": "label",
+      "value": "Asia/Shanghai (UTC+08:00)",
+      "owner": "TimezoneSelect",
+      "reason": "Locale-neutral IANA time-zone identifier and UTC offset."
+    },
+    {
+      "file": "src/personal-ui/value-controls.tsx",
+      "kind": "property",
+      "attribute": "label",
+      "value": "Asia/Hong Kong (UTC+08:00)",
+      "owner": "TimezoneSelect",
+      "reason": "Locale-neutral IANA time-zone identifier and UTC offset."
+    },
+    {
+      "file": "src/personal-ui/value-controls.tsx",
+      "kind": "property",
+      "attribute": "label",
+      "value": "Asia/Tokyo (UTC+09:00)",
+      "owner": "TimezoneSelect",
+      "reason": "Locale-neutral IANA time-zone identifier and UTC offset."
+    },
+    {
+      "file": "src/personal-ui/value-controls.tsx",
+      "kind": "property",
+      "attribute": "label",
+      "value": "Asia/Singapore (UTC+08:00)",
+      "owner": "TimezoneSelect",
+      "reason": "Locale-neutral IANA time-zone identifier and UTC offset."
+    },
+    {
+      "file": "src/personal-ui/value-controls.tsx",
+      "kind": "property",
+      "attribute": "label",
+      "value": "Europe/London",
+      "owner": "TimezoneSelect",
+      "reason": "Locale-neutral IANA time-zone identifier."
+    },
+    {
+      "file": "src/personal-ui/value-controls.tsx",
+      "kind": "property",
+      "attribute": "label",
+      "value": "Europe/Paris",
+      "owner": "TimezoneSelect",
+      "reason": "Locale-neutral IANA time-zone identifier."
+    },
+    {
+      "file": "src/personal-ui/value-controls.tsx",
+      "kind": "property",
+      "attribute": "label",
+      "value": "America/New York",
+      "owner": "TimezoneSelect",
+      "reason": "Locale-neutral IANA time-zone identifier."
+    },
+    {
+      "file": "src/personal-ui/value-controls.tsx",
+      "kind": "property",
+      "attribute": "label",
+      "value": "America/Chicago",
+      "owner": "TimezoneSelect",
+      "reason": "Locale-neutral IANA time-zone identifier."
+    },
+    {
+      "file": "src/personal-ui/value-controls.tsx",
+      "kind": "property",
+      "attribute": "label",
+      "value": "America/Denver",
+      "owner": "TimezoneSelect",
+      "reason": "Locale-neutral IANA time-zone identifier."
+    },
+    {
+      "file": "src/personal-ui/value-controls.tsx",
+      "kind": "property",
+      "attribute": "label",
+      "value": "America/Los Angeles",
+      "owner": "TimezoneSelect",
+      "reason": "Locale-neutral IANA time-zone identifier."
+    },
+    {
+      "file": "src/personal-ui/value-controls.tsx",
+      "kind": "property",
+      "attribute": "label",
+      "value": "Australia/Sydney",
+      "owner": "TimezoneSelect",
+      "reason": "Locale-neutral IANA time-zone identifier."
+    }
+  ]
+}

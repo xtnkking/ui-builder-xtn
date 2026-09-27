@@ -1,10 +1,11 @@
 import type { FormEvent, ReactNode } from "react";
 import { ArrowLeft, Download, Upload } from "lucide-react";
-import { Button, IconButton } from "../primitives";
-import { EmptyState } from "../feedback";
-import { ErrorState } from "../feedback-extra";
-import { Stepper, type StepperItem } from "../navigation-extra";
-import { assertUniqueIdentities, cx } from "../utils";
+import { Button, IconButton } from "../foundation/primitives";
+import { EmptyState } from "../feedback/feedback";
+import { ErrorState } from "../feedback/feedback-extra";
+import { Stepper, type StepperItem } from "../navigation/navigation-extra";
+import { usePersonalUILocale } from "../foundation/locale";
+import { assertUniqueIdentities, cx } from "../internal/utils";
 
 export interface PageHeadingProps {
   title: ReactNode;
@@ -15,10 +16,12 @@ export interface PageHeadingProps {
   backLabel?: string;
 }
 
-export function PageHeading({ title, description, eyebrow, actions, onBack, backLabel = "返回" }: PageHeadingProps) {
+export function PageHeading({ title, description, eyebrow, actions, onBack, backLabel }: PageHeadingProps) {
+  const { message } = usePersonalUILocale();
+  const resolvedBackLabel = backLabel ?? message("page.back");
   return (
     <header className="pui-page-heading" data-pui-owner="PageHeading">
-      {onBack ? <IconButton aria-label={backLabel} icon={<ArrowLeft />} onClick={onBack} /> : null}
+      {onBack ? <IconButton aria-label={resolvedBackLabel} icon={<ArrowLeft />} onClick={onBack} /> : null}
       <div className="pui-page-heading__copy">
         {eyebrow != null ? <span>{eyebrow}</span> : null}
         <h1>{title}</h1>
@@ -44,11 +47,12 @@ type ListManagementPageRootProps = ListManagementPageProps & {
 };
 
 function ListManagementPageRoot({ filters, bulkActions, children, footer, layoutWidth = "readable", className, owner, variantClassName, ...heading }: ListManagementPageRootProps) {
+  const { message } = usePersonalUILocale();
   return (
     <main className={cx("pui-page", "pui-list-page", layoutWidth === "wide" && "pui-list-page--wide", variantClassName, className)} data-pui-owner={owner}>
       <PageHeading {...heading} />
-      {filters != null ? <section className="pui-list-page__filters" aria-label="筛选条件">{filters}</section> : null}
-      {bulkActions != null ? <section className="pui-list-page__bulk" aria-label="批量操作">{bulkActions}</section> : null}
+      {filters != null ? <section className="pui-list-page__filters" aria-label={message("page.filters")}>{filters}</section> : null}
+      {bulkActions != null ? <section className="pui-list-page__bulk" aria-label={message("page.bulkActions")}>{bulkActions}</section> : null}
       <section className="pui-list-page__content">{children}</section>
       {footer != null ? <footer className="pui-list-page__footer">{footer}</footer> : null}
     </main>
@@ -77,15 +81,16 @@ export interface CreateEditPageProps extends PageHeadingProps {
   className?: string;
 }
 
-export function CreateEditPage({ children, onSubmit, submitLabel = "保存", cancelLabel = "取消", onCancel, submitting, submitDisabled, formId, className, ...heading }: CreateEditPageProps) {
+export function CreateEditPage({ children, onSubmit, submitLabel, cancelLabel, onCancel, submitting, submitDisabled, formId, className, ...heading }: CreateEditPageProps) {
+  const { message } = usePersonalUILocale();
   return (
     <main className={cx("pui-page", "pui-form-page", className)} data-pui-owner="CreateEditPage">
       <PageHeading {...heading} />
       <form id={formId} className="pui-form-page__form" onSubmit={onSubmit} noValidate>
         <div className="pui-form-page__content">{children}</div>
         <footer className="pui-form-page__actions">
-          {onCancel ? <Button disabled={submitting} onClick={onCancel}>{cancelLabel}</Button> : null}
-          <Button type="submit" variant="primary" loading={submitting} loadingLabel="保存中" disabled={submitDisabled}>{submitLabel}</Button>
+          {onCancel ? <Button disabled={submitting} onClick={onCancel}>{cancelLabel ?? message("common.cancel")}</Button> : null}
+          <Button type="submit" variant="primary" loading={submitting} loadingLabel={message("common.saving")} disabled={submitDisabled}>{submitLabel ?? message("common.save")}</Button>
         </footer>
       </form>
     </main>
@@ -138,6 +143,7 @@ export interface SettingsPageProps extends PageHeadingProps {
 }
 
 export function SettingsPage({ sections, currentId, onCurrentChange, className, ...heading }: SettingsPageProps) {
+  const { message } = usePersonalUILocale();
   assertUniqueIdentities("SettingsPage", "section.id", sections.map((section) => section.id));
   const current = sections.find((section) => section.id === currentId);
   if (!current && sections.length) throw new RangeError(`SettingsPage cannot find currentId ${JSON.stringify(currentId)}.`);
@@ -145,7 +151,7 @@ export function SettingsPage({ sections, currentId, onCurrentChange, className, 
     <main className={cx("pui-page", "pui-settings-page", className)} data-pui-owner="SettingsPage">
       <PageHeading {...heading} />
       <div className="pui-settings-page__layout">
-        <nav aria-label="设置分类">
+        <nav aria-label={message("page.settings")}>
           {sections.map((section) => <button key={section.id} type="button" disabled={section.disabled} aria-current={section.id === currentId ? "page" : undefined} onClick={() => onCurrentChange(section.id)}>{section.label}</button>)}
         </nav>
         {current ? <section aria-labelledby={`pui-settings-${current.id}`}><header><h2 id={`pui-settings-${current.id}`}>{current.title ?? current.label}</h2>{current.actions}</header><div>{current.content}</div></section> : null}
@@ -168,15 +174,16 @@ export interface WizardFlowProps extends PageHeadingProps {
   className?: string;
 }
 
-export function WizardFlow({ steps, currentId, children, onStepChange, onPrevious, onNext, previousLabel = "上一步", nextLabel = "下一步", nextLoading, nextDisabled, className, ...heading }: WizardFlowProps) {
+export function WizardFlow({ steps, currentId, children, onStepChange, onPrevious, onNext, previousLabel, nextLabel, nextLoading, nextDisabled, className, ...heading }: WizardFlowProps) {
+  const { message } = usePersonalUILocale();
   return (
     <main className={cx("pui-page", "pui-wizard-page", className)} data-pui-owner="WizardFlow">
       <PageHeading {...heading} />
-      <Stepper steps={steps} currentId={currentId} ariaLabel="流程步骤" onStepChange={onStepChange} />
+      <Stepper steps={steps} currentId={currentId} ariaLabel={message("page.workflowSteps")} onStepChange={onStepChange} />
       <section className="pui-wizard-page__content">{children}</section>
       <footer className="pui-wizard-page__actions">
-        <Button disabled={!onPrevious || nextLoading} onClick={onPrevious}>{previousLabel}</Button>
-        <Button variant="primary" loading={nextLoading} loadingLabel="处理中" disabled={!onNext || nextDisabled} onClick={onNext}>{nextLabel}</Button>
+        <Button disabled={!onPrevious || nextLoading} onClick={onPrevious}>{previousLabel ?? message("tour.previous")}</Button>
+        <Button variant="primary" loading={nextLoading} loadingLabel={message("common.processing")} disabled={!onNext || nextDisabled} onClick={onNext}>{nextLabel ?? message("tour.next")}</Button>
       </footer>
     </main>
   );
@@ -191,12 +198,13 @@ export interface MasterDetailProps extends PageHeadingProps {
 }
 
 export function MasterDetail({ master, detail, detailOpen = true, emptyDetail, className, ...heading }: MasterDetailProps) {
+  const { message } = usePersonalUILocale();
   return (
     <main className={cx("pui-page", "pui-master-detail", className)} data-pui-owner="MasterDetail">
       <PageHeading {...heading} />
       <div className="pui-master-detail__layout" data-detail-open={detailOpen || undefined}>
-        <section className="pui-master-detail__master" aria-label="项目列表">{master}</section>
-        <section className="pui-master-detail__detail" aria-label="项目详情">{detailOpen ? detail : emptyDetail}</section>
+        <section className="pui-master-detail__master" aria-label={message("page.master")}>{master}</section>
+        <section className="pui-master-detail__detail" aria-label={message("page.detail")}>{detailOpen ? detail : emptyDetail}</section>
       </div>
     </main>
   );
@@ -213,12 +221,13 @@ export interface ImportExportPageProps extends PageHeadingProps {
 }
 
 export function ImportExportPage({ importContent, exportContent, onImport, onExport, importing, exporting, className, ...heading }: ImportExportPageProps) {
+  const { message } = usePersonalUILocale();
   return (
     <main className={cx("pui-page", "pui-import-export-page", className)} data-pui-owner="ImportExportPage">
       <PageHeading {...heading} />
       <div className="pui-import-export-page__grid">
-        <section><header><Upload aria-hidden="true" /><h2>导入</h2></header><div>{importContent}</div>{onImport ? <Button variant="primary" icon={<Upload />} loading={importing} loadingLabel="导入中" onClick={onImport}>开始导入</Button> : null}</section>
-        <section><header><Download aria-hidden="true" /><h2>导出</h2></header><div>{exportContent}</div>{onExport ? <Button icon={<Download />} loading={exporting} loadingLabel="导出中" onClick={onExport}>导出文件</Button> : null}</section>
+        <section><header><Upload aria-hidden="true" /><h2>{message("page.import")}</h2></header><div>{importContent}</div>{onImport ? <Button variant="primary" icon={<Upload />} loading={importing} loadingLabel={message("page.importing")} onClick={onImport}>{message("page.startImport")}</Button> : null}</section>
+        <section><header><Download aria-hidden="true" /><h2>{message("page.export")}</h2></header><div>{exportContent}</div>{onExport ? <Button icon={<Download />} loading={exporting} loadingLabel={message("page.exporting")} onClick={onExport}>{message("page.exportFile")}</Button> : null}</section>
       </div>
     </main>
   );

@@ -1,13 +1,5 @@
 import assert from "node:assert/strict";
-import { createRequire } from "node:module";
-import { fileURLToPath, pathToFileURL } from "node:url";
-
-const kitRoot = fileURLToPath(new URL("../assets/react-kit/", import.meta.url));
-const kitRequire = createRequire(new URL("../assets/react-kit/package.json", import.meta.url));
-const { createServer } = await import(pathToFileURL(kitRequire.resolve("vite")).href);
-const { chromium } = createRequire(import.meta.url)(process.env.PERSONAL_UI_PLAYWRIGHT_MODULE || "playwright");
-const server = await createServer({ root: kitRoot, server: { host: "127.0.0.1", port: 0 } });
-let browser;
+import { isPersonalUiRegressionMain, runPersonalUiRegression } from "./browser-test-harness.mjs";
 
 async function checkPopover(page, panel, popup, label) {
   await popup.waitFor({ state: 'visible' });
@@ -79,9 +71,9 @@ async function exercise(page, panel, ariaLabel, label) {
   await trigger.click();
   await popup.waitFor({ state: 'visible' });
 
-  const search = popup.getByRole('searchbox', { name: `搜索${ariaLabel}` });
+  const search = popup.getByRole('combobox', { name: `搜索${ariaLabel}` });
   await search.fill('日本');
-  await list.getByText('正在加载').waitFor();
+  await popup.getByText('正在加载').waitFor();
   try {
     await list.getByRole('option', { name: /日本/ }).waitFor({ timeout: 2500 });
   } catch (cause) {
@@ -101,7 +93,7 @@ async function exercise(page, panel, ariaLabel, label) {
 
   await trigger.click();
   await popup.waitFor();
-  await popup.getByRole('searchbox', { name: `搜索${ariaLabel}` }).fill('异常');
+  await popup.getByRole('combobox', { name: `搜索${ariaLabel}` }).fill('异常');
   await popup.getByRole('alert').waitFor();
   assert.ok((await popup.getByRole('alert').textContent())?.includes('国家目录加载失败'), `${label}: error state missing`);
   const retry = popup.getByRole('button', { name: '重试' });
@@ -110,7 +102,7 @@ async function exercise(page, panel, ariaLabel, label) {
   await list.getByRole('option').nth(5).waitFor();
   assert.equal(await popup.getByRole('alert').count(), 0, `${label}: retry did not clear error`);
   await checkPopover(page, panel, popup, `${label} after retry`);
-  await popup.getByRole('searchbox', { name: `搜索${ariaLabel}` }).press('Escape');
+  await popup.getByRole('combobox', { name: `搜索${ariaLabel}` }).press('Escape');
   await popup.waitFor({ state: 'detached' });
   assert.equal(await panel.isVisible(), true, `${label}: Escape closed parent overlay`);
   assert.equal(await trigger.evaluate((button) => document.activeElement === button), true, `${label}: Escape did not return focus to trigger`);
@@ -140,17 +132,12 @@ async function checkSelectorPopup(page, popup, label) {
   assert.ok(geometry.left >= 11 && geometry.right <= geometry.width - 11 && geometry.top >= 11 && geometry.bottom <= geometry.height - 11, `${label}: selector popup escaped viewport ${JSON.stringify(geometry)}`);
 }
 
-try {
-  await server.listen();
-  const url = server.resolvedUrls?.local?.[0];
-  assert.ok(url, 'Vite did not expose a local URL');
-  browser = await chromium.launch({ headless: true, ...(process.env.PERSONAL_UI_CHROMIUM_EXECUTABLE ? { executablePath: process.env.PERSONAL_UI_CHROMIUM_EXECUTABLE } : {}) });
+export async function runAsyncSelectOverlayRegression({ page, baseURL }) {
+  assert.ok(baseURL, 'A baseURL is required');
   for (const width of [2560, 1440, 1024, 736, 360, 320]) {
     const height = width <= 360 ? 640 : 900;
-    const page = await browser.newPage({ viewport: { width, height } });
-    try {
-      await page.goto(url);
-      await page.getByRole('tab', { name: '弹窗' }).click();
+    await page.setViewportSize({ width, height });
+    await page.goto(`${baseURL}/#/components/dialog`);
       await page.getByRole('button', { name: '分配角色' }).click();
       const dialog = page.getByRole('dialog', { name: '分配角色 · xtn' });
       const dialogGeometry = await exercise(page, dialog, '国家或地区', `${width}px Dialog`);
@@ -220,7 +207,7 @@ try {
       await nested.waitFor({ state: 'detached' });
       if (!(await parentPopup.isVisible().catch(() => false))) await dialog.getByRole('combobox', { name: '国家或地区' }).click();
       await parentPopup.waitFor({ state: 'visible' });
-      await parentPopup.getByRole('searchbox', { name: '搜索国家或地区' }).fill('中国');
+      await parentPopup.getByRole('combobox', { name: '搜索国家或地区' }).fill('中国');
       await parentPopup.getByRole('option', { name: /中国/ }).waitFor();
       await page.keyboard.press('Escape');
       await dialog.getByRole('button', { name: '取消' }).click();
@@ -256,7 +243,7 @@ try {
       await selectorDialog.getByRole('button', { name: '完成' }).click();
       await selectorDialog.waitFor({ state: 'detached' });
 
-      await page.getByRole('tab', { name: '用户权限' }).click();
+      await page.goto(`${baseURL}/#/components/data-table`);
       const edit = page.getByRole('button', { name: '编辑陈沐' });
       await edit.click();
       const drawer = page.getByRole('dialog', { name: '编辑陈沐的权限' });
@@ -271,12 +258,10 @@ try {
       await drawer.waitFor({ state: 'detached' });
       assert.equal(await edit.evaluate((button) => document.activeElement === button), true, `${width}px: drawer opener focus not restored`);
       if (width === 1440 || width === 320) console.log(`${width}px Dialog popup: ${JSON.stringify(dialogGeometry.bounds)}; Drawer popup: ${JSON.stringify(drawerGeometry.bounds)}`);
-    } finally {
-      await page.close();
-    }
   }
   console.log('AsyncSelect Dialog/Drawer browser regression passed at 2560, 1440, 1024, 736, 360, and 320px.');
-} finally {
-  await browser?.close();
-  await server.close();
+}
+
+if (isPersonalUiRegressionMain(import.meta.url)) {
+  await runPersonalUiRegression(runAsyncSelectOverlayRegression);
 }

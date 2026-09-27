@@ -1,0 +1,501 @@
+{
+  "schemaVersion": 1,
+  "lastReviewed": "2026-09-27",
+  "selectionPolicy": {
+    "representativeCombinations": true,
+    "fullCartesianProductRequired": false,
+    "rule": "Cover every declared target and every risky package-manager, framework, workspace, and source-root boundary with traceable fixtures. A configured CI lane is not verification evidence."
+  },
+  "targets": {
+    "node": [
+      "22.12.0",
+      "24.0.0"
+    ],
+    "react": [
+      "18.3.1",
+      "19.1.1"
+    ],
+    "reactDom": [
+      "18.3.1",
+      "19.1.1"
+    ],
+    "typescript": [
+      "5.7.3",
+      "5.9.3"
+    ],
+    "packageManagers": {
+      "npm": [
+        "10.9.3",
+        "11.3.0"
+      ],
+      "pnpm": [
+        "9.15.9",
+        "10.17.1"
+      ],
+      "yarn": [
+        "4.9.4"
+      ]
+    },
+    "excludedPackageManagers": [
+      "yarn-classic"
+    ],
+    "frameworks": {
+      "vite": [
+        "6.4.3"
+      ],
+      "next": [
+        "15.5.3"
+      ]
+    },
+    "projectLayouts": [
+      "single-package",
+      "workspace"
+    ],
+    "sourceRootModes": [
+      "canonical",
+      "custom"
+    ],
+    "operations": [
+      "clean-install",
+      "typecheck",
+      "render",
+      "build",
+      "ssr",
+      "verify",
+      "upgrade",
+      "rollback"
+    ]
+  },
+  "ci": {
+    "configurationStatus": "configured-not-executed",
+    "workflow": ".github/workflows/quality.yml",
+    "staticFixtureIds": [
+      "npm10-vite-node22-react18-ts59-single",
+      "npm11-vite-node24-react18-ts59-single"
+    ],
+    "compatibilityFixtureIds": [
+      "npm10-vite-node22-react18-ts57-compat",
+      "npm11-vite-node24-react19-ts59-compat"
+    ],
+    "integrationFixtureIds": [
+      "pnpm9-vite-node22-react18-ts57-workspace",
+      "pnpm10-vite-node24-react19-ts59-custom-root",
+      "yarn4-vite-node22-react19-ts59-workspace",
+      "yarn4-next-node24-react19-ts59-workspace-custom-root"
+    ],
+    "evidence": [],
+    "note": "These IDs configure repeatable jobs. They remain targets until a successful hosted run is recorded as structured evidence."
+  },
+  "fixtures": [
+    {
+      "id": "npm10-vite-node22-react18-ts59-single",
+      "status": "target",
+      "purpose": "Canonical locked dependency tree on the minimum Node line.",
+      "environment": {
+        "node": "22.12.0",
+        "react": "18.3.1",
+        "reactDom": "18.3.1",
+        "reactTypes": "18.3.31",
+        "reactDomTypes": "18.3.7",
+        "typescript": "5.9.3",
+        "packageManager": {
+          "name": "npm",
+          "version": "10.9.3"
+        },
+        "framework": {
+          "name": "vite",
+          "version": "6.4.3"
+        }
+      },
+      "project": {
+        "layout": "single-package",
+        "workspaceRoot": ".",
+        "packageRoot": ".",
+        "sourceRootMode": "canonical",
+        "sourceRoot": "src/personal-ui",
+        "renderMode": "client"
+      },
+      "operations": [
+        "clean-install",
+        "typecheck",
+        "render",
+        "build",
+        "verify",
+        "upgrade",
+        "rollback"
+      ],
+      "ci": {
+        "job": "static-quality",
+        "configuredOperations": [
+          "clean-install",
+          "typecheck",
+          "render",
+          "build",
+          "verify"
+        ],
+        "configurationOnly": true
+      },
+      "evidence": []
+    },
+    {
+      "id": "npm11-vite-node24-react18-ts59-single",
+      "status": "target",
+      "purpose": "Canonical locked dependency tree on the newest supported Node and npm lines.",
+      "environment": {
+        "node": "24.0.0",
+        "react": "18.3.1",
+        "reactDom": "18.3.1",
+        "reactTypes": "18.3.31",
+        "reactDomTypes": "18.3.7",
+        "typescript": "5.9.3",
+        "packageManager": {
+          "name": "npm",
+          "version": "11.3.0"
+        },
+        "framework": {
+          "name": "vite",
+          "version": "6.4.3"
+        }
+      },
+      "project": {
+        "layout": "single-package",
+        "workspaceRoot": ".",
+        "packageRoot": ".",
+        "sourceRootMode": "canonical",
+        "sourceRoot": "src/personal-ui",
+        "renderMode": "client"
+      },
+      "operations": [
+        "clean-install",
+        "typecheck",
+        "render",
+        "build",
+        "verify",
+        "upgrade",
+        "rollback"
+      ],
+      "ci": {
+        "job": "static-quality",
+        "configuredOperations": [
+          "clean-install",
+          "typecheck",
+          "render",
+          "build",
+          "verify"
+        ],
+        "configurationOnly": true
+      },
+      "evidence": []
+    },
+    {
+      "id": "npm10-vite-node22-react18-ts57-compat",
+      "status": "target",
+      "purpose": "Minimum TypeScript with the React 18 line.",
+      "environment": {
+        "node": "22.12.0",
+        "react": "18.3.1",
+        "reactDom": "18.3.1",
+        "reactTypes": "18.3.31",
+        "reactDomTypes": "18.3.7",
+        "typescript": "5.7.3",
+        "packageManager": {
+          "name": "npm",
+          "version": "10.9.3"
+        },
+        "framework": {
+          "name": "vite",
+          "version": "6.4.3"
+        }
+      },
+      "project": {
+        "layout": "single-package",
+        "workspaceRoot": ".",
+        "packageRoot": ".",
+        "sourceRootMode": "canonical",
+        "sourceRoot": "src/personal-ui",
+        "renderMode": "client"
+      },
+      "operations": [
+        "clean-install",
+        "typecheck",
+        "render",
+        "build",
+        "verify",
+        "upgrade",
+        "rollback"
+      ],
+      "ci": {
+        "job": "react-typescript-compatibility",
+        "configuredOperations": [
+          "clean-install",
+          "typecheck",
+          "render",
+          "build",
+          "verify"
+        ],
+        "configurationOnly": true
+      },
+      "evidence": []
+    },
+    {
+      "id": "npm11-vite-node24-react19-ts59-compat",
+      "status": "target",
+      "purpose": "React 19 and current TypeScript compatibility on the newest supported Node line.",
+      "environment": {
+        "node": "24.0.0",
+        "react": "19.1.1",
+        "reactDom": "19.1.1",
+        "reactTypes": "19.1.16",
+        "reactDomTypes": "19.1.9",
+        "typescript": "5.9.3",
+        "packageManager": {
+          "name": "npm",
+          "version": "11.3.0"
+        },
+        "framework": {
+          "name": "vite",
+          "version": "6.4.3"
+        }
+      },
+      "project": {
+        "layout": "single-package",
+        "workspaceRoot": ".",
+        "packageRoot": ".",
+        "sourceRootMode": "canonical",
+        "sourceRoot": "src/personal-ui",
+        "renderMode": "client"
+      },
+      "operations": [
+        "clean-install",
+        "typecheck",
+        "render",
+        "build",
+        "verify",
+        "upgrade",
+        "rollback"
+      ],
+      "ci": {
+        "job": "react-typescript-compatibility",
+        "configuredOperations": [
+          "clean-install",
+          "typecheck",
+          "render",
+          "build",
+          "verify"
+        ],
+        "configurationOnly": true
+      },
+      "evidence": []
+    },
+    {
+      "id": "pnpm9-vite-node22-react18-ts57-workspace",
+      "status": "target",
+      "purpose": "pnpm 9 workspace install, upgrade, verification, and rollback boundary.",
+      "environment": {
+        "node": "22.12.0",
+        "react": "18.3.1",
+        "reactDom": "18.3.1",
+        "reactTypes": "18.3.31",
+        "reactDomTypes": "18.3.7",
+        "typescript": "5.7.3",
+        "packageManager": {
+          "name": "pnpm",
+          "version": "9.15.9"
+        },
+        "framework": {
+          "name": "vite",
+          "version": "6.4.3"
+        }
+      },
+      "project": {
+        "layout": "workspace",
+        "workspaceRoot": ".",
+        "packageRoot": "packages/vite-app",
+        "sourceRootMode": "canonical",
+        "sourceRoot": "src/personal-ui",
+        "renderMode": "client"
+      },
+      "operations": [
+        "clean-install",
+        "typecheck",
+        "render",
+        "build",
+        "verify",
+        "upgrade",
+        "rollback"
+      ],
+      "ci": {
+        "job": "package-manager-framework-integration",
+        "configuredOperations": [
+          "clean-install",
+          "typecheck",
+          "render",
+          "build",
+          "verify",
+          "upgrade",
+          "rollback"
+        ],
+        "configurationOnly": true
+      },
+      "evidence": []
+    },
+    {
+      "id": "pnpm10-vite-node24-react19-ts59-custom-root",
+      "status": "target",
+      "purpose": "pnpm 10 with a non-default Personal UI source root.",
+      "environment": {
+        "node": "24.0.0",
+        "react": "19.1.1",
+        "reactDom": "19.1.1",
+        "reactTypes": "19.1.16",
+        "reactDomTypes": "19.1.9",
+        "typescript": "5.9.3",
+        "packageManager": {
+          "name": "pnpm",
+          "version": "10.17.1"
+        },
+        "framework": {
+          "name": "vite",
+          "version": "6.4.3"
+        }
+      },
+      "project": {
+        "layout": "single-package",
+        "workspaceRoot": ".",
+        "packageRoot": ".",
+        "sourceRootMode": "custom",
+        "sourceRoot": "ui/personal-ui",
+        "renderMode": "client"
+      },
+      "operations": [
+        "clean-install",
+        "typecheck",
+        "render",
+        "build",
+        "verify",
+        "upgrade",
+        "rollback"
+      ],
+      "ci": {
+        "job": "package-manager-framework-integration",
+        "configuredOperations": [
+          "clean-install",
+          "typecheck",
+          "render",
+          "build",
+          "verify",
+          "upgrade",
+          "rollback"
+        ],
+        "configurationOnly": true
+      },
+      "evidence": []
+    },
+    {
+      "id": "yarn4-vite-node22-react19-ts59-workspace",
+      "status": "target",
+      "purpose": "Yarn 4 workspace install and lifecycle enforcement without Yarn Classic assumptions.",
+      "environment": {
+        "node": "22.12.0",
+        "react": "19.1.1",
+        "reactDom": "19.1.1",
+        "reactTypes": "19.1.16",
+        "reactDomTypes": "19.1.9",
+        "typescript": "5.9.3",
+        "packageManager": {
+          "name": "yarn",
+          "version": "4.9.4"
+        },
+        "framework": {
+          "name": "vite",
+          "version": "6.4.3"
+        }
+      },
+      "project": {
+        "layout": "workspace",
+        "workspaceRoot": ".",
+        "packageRoot": "packages/vite-app",
+        "sourceRootMode": "canonical",
+        "sourceRoot": "src/personal-ui",
+        "renderMode": "client"
+      },
+      "operations": [
+        "clean-install",
+        "typecheck",
+        "render",
+        "build",
+        "verify",
+        "upgrade",
+        "rollback"
+      ],
+      "ci": {
+        "job": "package-manager-framework-integration",
+        "configuredOperations": [
+          "clean-install",
+          "typecheck",
+          "render",
+          "build",
+          "verify",
+          "upgrade",
+          "rollback"
+        ],
+        "configurationOnly": true
+      },
+      "evidence": []
+    },
+    {
+      "id": "yarn4-next-node24-react19-ts59-workspace-custom-root",
+      "status": "target",
+      "purpose": "Next.js SSR and hydration in a Yarn 4 workspace with a custom source root.",
+      "environment": {
+        "node": "24.0.0",
+        "react": "19.1.1",
+        "reactDom": "19.1.1",
+        "reactTypes": "19.1.16",
+        "reactDomTypes": "19.1.9",
+        "typescript": "5.9.3",
+        "packageManager": {
+          "name": "yarn",
+          "version": "4.9.4"
+        },
+        "framework": {
+          "name": "next",
+          "version": "15.5.3"
+        }
+      },
+      "project": {
+        "layout": "workspace",
+        "workspaceRoot": ".",
+        "packageRoot": "apps/next-app",
+        "sourceRootMode": "custom",
+        "sourceRoot": "ui/personal-ui",
+        "renderMode": "ssr-hydration"
+      },
+      "operations": [
+        "clean-install",
+        "typecheck",
+        "render",
+        "build",
+        "ssr",
+        "verify",
+        "upgrade",
+        "rollback"
+      ],
+      "ci": {
+        "job": "package-manager-framework-integration",
+        "configuredOperations": [
+          "clean-install",
+          "typecheck",
+          "render",
+          "build",
+          "ssr",
+          "verify",
+          "upgrade",
+          "rollback"
+        ],
+        "configurationOnly": true
+      },
+      "evidence": []
+    }
+  ]
+}

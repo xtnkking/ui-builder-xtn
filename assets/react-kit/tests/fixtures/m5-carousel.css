@@ -1,0 +1,7 @@
+@import "../../src/personal-ui/styles.css";
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--pui-bg); color: var(--pui-text); font-family: var(--pui-font); }
+main { display: grid; gap: 28px; max-width: 720px; padding: 24px; }
+.slide { display: grid; align-content: center; justify-items: start; gap: 10px; min-height: 160px; padding: 20px; background: var(--pui-surface-subtle); }
+.slide strong { font-size: 20px; }

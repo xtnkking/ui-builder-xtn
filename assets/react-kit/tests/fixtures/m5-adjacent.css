@@ -1,0 +1,8 @@
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--pui-bg); color: var(--pui-text); font-family: var(--pui-font); }
+main { display: grid; gap: 28px; max-width: 800px; padding: 24px; }
+main > section { display: grid; gap: 8px; }
+.pui-resizable { height: 220px; }
+section[aria-label="Vertical workspace"] .pui-resizable { height: 300px; }
+.pui-resizable__panel { padding: 12px; }
+output { display: block; }

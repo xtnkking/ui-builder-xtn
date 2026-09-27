@@ -1,5 +1,30 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- 为 142 个 runtime export 建立可搜索 Explorer、逐 export API/示例文档、键盘与 ARIA 证据，以及 `zh-CN` / `en-US` Locale 契约。
+- 新增单一的本地 release orchestrator，提供无写入 dry-run、隔离 prepare、可重复 ZIP、SHA-256、plan digest、verify 和可续跑 journal；当前 publish 仅执行前置检查，没有远端适配器。
+- 新增 artifact-backed hosted CI 证据：8 个支持 fixture、Chromium/Firefox/WebKit 实际版本和 system Safari 18+ smoke 均绑定同一 GitHub run 与候选摘要；每个 job 产物按路径、大小和 SHA-256 重新校验，Playwright WebKit 不能代替真实 Safari。
+- 新增 M8 独立评估目录、候选可见投影 runner 和严格证据 validator；评估输入绑定候选与原始需求，首轮结果不可被修复结果覆盖，薄 `result: passed` JSON 不再满足发布前置条件。
+- 仓库采用 MIT License，并在 Skill 与 React starter/lockfile 元数据中记录相同的许可证标识；`THIRD_PARTY_NOTICES.json` 精确清点 lockfile 中的 176 个依赖及其锁定来源。
+
+### Changed
+
+- 收紧公共 Props、受控/非受控状态和有限 ref 契约，统一 semantic theme、Portal、复合表单、modal layer、高级控件键盘模型、源码模块所有权和 CSS 门禁。
+- 安装与升级继续以 Git checkout 为单一权威来源；安装状态仅能声明受管理源码和固定 support 文件，旧清单、符号链接/联接点、伪造 ownership 和并发写入均在落盘前阻断。
+- 安装器支持显式 project/package/source root、工作区发现、自定义 source root 恢复、确定性 dry-run、包级排他锁与进程内事务回滚；候选版本只写入隔离 staging，不改当前 `0.2.19` 工作树或已安装副本。
+
+### Breaking
+
+- `v0.3.0` 的 Props/ref、主题、表单/浮层、控件能力、Locale 与安装升级迁移见 [迁移说明](references/v0.3.0-migrations.md)。当前兼容报告仍将本工作树判定为 breaking，因此不能作为 `0.2.x` patch 发布。
+
+### Release status
+
+- 本节是未发布工作记录，不代表 `v0.3.0`、RC、Git tag 或 GitHub Release 已存在。
+- MIT 及第三方依赖声明已落地，但 hosted CI、干净不可变源快照和 M8 独立消费证据尚未完成；当前候选仍必须标记为 `publishable: false`，且不得打 tag、同步或公开发布。
+
 ## 0.2.19 - 2026-09-17
 
 - 桌面端默认贴边 `Drawer` 的左上、左下圆角由 `8px` 提升为 `16px`，增强整屏抽屉的轮廓感；右侧继续贴边无圆角，显式 `inset` 和移动端底部抽屉保持原有半径。
@@ -31,3 +56,41 @@
 - `pin: "start"`、`pin: "end"` 和 `pin: false` 可由开发者显式覆盖默认冻结规则；隐藏的勾选列不会触发自动冻结。
 - 固定高度表格在数据不足一屏时保留最后一行分隔线，满屏时避免与容器底边形成双线。
 - React 预览补充桌面端与移动端真实勾选交互，并增加选择列冻结和表格高度的浏览器回归测试。
+
+## 0.2.14 - 2026-09-16
+
+- Git commit `a181164` 中的 package metadata 记录该源码版本，主题为稳定表格视口；没有对应 tag 证据。
+
+## 0.2.12 - 2026-09-13
+
+- Git commit `15b3511` 中的 package metadata 记录该源码版本，主题为统一无效输入聚焦；没有 `0.2.13` 源码版本或对应 tag 的证据。
+
+## 0.2.11 - 2026-09-13
+
+- Git commit `c591699` 中的 package metadata 记录该源码版本，主题为一致的无效输入焦点色；没有对应 tag 证据。
+
+## 0.2.10 - 2026-09-13
+
+- Git commit `a920114` 中的 package metadata 记录该源码版本，主题为 modal dismissal 与 focus 修复；没有对应 tag 证据。
+
+## 0.2.8 - 2026-09-13
+
+- Git commit `54b15d0` 中的 package metadata 记录该源码版本，主题为组件几何与 dialog 对齐；没有 `0.2.9` 源码版本或对应 tag 的证据。
+
+## 0.2.5 - 2026-09-13
+
+- Git commit `a24e11f` 中的 package metadata 记录该源码版本，主题为圆角表格与分页模式；没有 `0.2.6`、`0.2.7` 源码版本或对应 tag 的证据。
+
+## 0.2.1 - 2026-09-13
+
+- Git commit `9d495b2` 中的 package metadata 记录该源码版本，主题为 autofill 与样式门禁修复；没有 `0.2.2` 至 `0.2.4` 源码版本或对应 tag 的证据。
+
+## 0.2.0 - 2026-09-11
+
+- Git commit `91973f8` 中的 package metadata 记录 source-enforced component kit；没有对应 tag 证据。
+
+## 0.1.0 - 2026-09-11
+
+- Git commit `11e8f90` 是初始源码版本记录；没有对应 tag 证据。
+
+历史条目的版本、日期和主题来自对应 commit 的 package metadata 与 commit subject。除本地 annotated baseline tag `v0.2.19` 外，审计时未发现其他 tag；这些记录不能单独证明曾创建公开 GitHub Release。

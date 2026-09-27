@@ -9,7 +9,7 @@
         "ThemeProvider"
       ],
       "sourceFiles": [
-        "src/personal-ui/layout.tsx",
+        "src/personal-ui/foundation/layout.tsx",
         "src/personal-ui/styles/layout-actions-display.css"
       ],
       "aliases": [
@@ -17,6 +17,26 @@
       ],
       "ownerMarkers": [
         "ThemeProvider"
+      ]
+    },
+    {
+      "id": "locale",
+      "kind": "foundation",
+      "publicExports": [
+        "LocaleProvider",
+        "usePersonalUILocale"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/foundation/locale.tsx"
+      ],
+      "aliases": [
+        "i18n",
+        "internationalization"
+      ],
+      "ownerMarkers": [],
+      "nonVisualExports": [
+        "LocaleProvider",
+        "usePersonalUILocale"
       ]
     },
     {
@@ -72,7 +92,7 @@
       "kind": "foundation",
       "publicExports": [],
       "sourceFiles": [
-        "src/personal-ui/primitives.tsx",
+        "src/personal-ui/foundation/primitives.tsx",
         "src/personal-ui/styles.css"
       ],
       "aliases": [
@@ -123,7 +143,7 @@
         "Grid"
       ],
       "sourceFiles": [
-        "src/personal-ui/layout.tsx",
+        "src/personal-ui/foundation/layout.tsx",
         "src/personal-ui/styles/layout-actions-display.css"
       ],
       "aliases": [
@@ -140,7 +160,7 @@
         "ResponsiveVisibility"
       ],
       "sourceFiles": [
-        "src/personal-ui/layout.tsx",
+        "src/personal-ui/foundation/layout.tsx",
         "src/personal-ui/styles/layout-actions-display.css"
       ],
       "aliases": [
@@ -159,7 +179,7 @@
         "Inline"
       ],
       "sourceFiles": [
-        "src/personal-ui/layout.tsx",
+        "src/personal-ui/foundation/layout.tsx",
         "src/personal-ui/styles/layout-actions-display.css"
       ],
       "aliases": [
@@ -178,7 +198,7 @@
         "Divider"
       ],
       "sourceFiles": [
-        "src/personal-ui/layout.tsx",
+        "src/personal-ui/foundation/layout.tsx",
         "src/personal-ui/styles/layout-actions-display.css"
       ],
       "aliases": [
@@ -195,7 +215,7 @@
         "ScrollArea"
       ],
       "sourceFiles": [
-        "src/personal-ui/layout.tsx",
+        "src/personal-ui/foundation/layout.tsx",
         "src/personal-ui/styles/layout-actions-display.css"
       ],
       "aliases": [
@@ -212,7 +232,7 @@
         "ResizablePanels"
       ],
       "sourceFiles": [
-        "src/personal-ui/data-extra.tsx",
+        "src/personal-ui/data/data-extra.tsx",
         "src/personal-ui/styles/extended.css"
       ],
       "aliases": [
@@ -229,7 +249,7 @@
         "StickyHeaderActionBar"
       ],
       "sourceFiles": [
-        "src/personal-ui/layout.tsx",
+        "src/personal-ui/foundation/layout.tsx",
         "src/personal-ui/styles/layout-actions-display.css"
       ],
       "aliases": [
@@ -246,7 +266,8 @@
         "Collapse"
       ],
       "sourceFiles": [
-        "src/personal-ui/layout.tsx",
+        "src/personal-ui/internal/collapse.tsx",
+        "src/personal-ui/foundation/layout.tsx",
         "src/personal-ui/styles/layout-actions-display.css"
       ],
       "aliases": [
@@ -263,7 +284,7 @@
         "AspectRatio"
       ],
       "sourceFiles": [
-        "src/personal-ui/layout.tsx",
+        "src/personal-ui/foundation/layout.tsx",
         "src/personal-ui/styles/layout-actions-display.css"
       ],
       "aliases": [
@@ -292,7 +313,7 @@
         "FocusTrap"
       ],
       "sourceFiles": [
-        "src/personal-ui/layout.tsx",
+        "src/personal-ui/foundation/layout.tsx",
         "src/personal-ui/styles/layout-actions-display.css"
       ],
       "aliases": [
@@ -309,7 +330,7 @@
         "VisuallyHidden"
       ],
       "sourceFiles": [
-        "src/personal-ui/layout.tsx",
+        "src/personal-ui/foundation/layout.tsx",
         "src/personal-ui/styles/layout-actions-display.css"
       ],
       "aliases": [
@@ -326,7 +347,7 @@
         "DragDrop"
       ],
       "sourceFiles": [
-        "src/personal-ui/data-extra.tsx",
+        "src/personal-ui/data/data-extra.tsx",
         "src/personal-ui/styles/extended.css"
       ],
       "aliases": [
@@ -343,7 +364,7 @@
         "SortableList"
       ],
       "sourceFiles": [
-        "src/personal-ui/data-extra.tsx",
+        "src/personal-ui/data/data-extra.tsx",
         "src/personal-ui/styles/extended.css"
       ],
       "aliases": [
@@ -360,7 +381,7 @@
         "KeyboardShortcut"
       ],
       "sourceFiles": [
-        "src/personal-ui/layout.tsx",
+        "src/personal-ui/foundation/layout.tsx",
         "src/personal-ui/styles/layout-actions-display.css"
       ],
       "aliases": [
@@ -377,7 +398,7 @@
         "ClipboardButton"
       ],
       "sourceFiles": [
-        "src/personal-ui/actions.tsx",
+        "src/personal-ui/action/actions.tsx",
         "src/personal-ui/styles/layout-actions-display.css"
       ],
       "aliases": [
@@ -395,9 +416,10 @@
         "ExpandableText"
       ],
       "sourceFiles": [
-        "src/personal-ui/overlays.tsx",
+        "src/personal-ui/overlay/overlays.tsx",
+        "src/personal-ui/internal/overlay-slots.tsx",
         "src/personal-ui/styles.css",
-        "src/personal-ui/data-extra.tsx",
+        "src/personal-ui/data/data-extra.tsx",
         "src/personal-ui/styles/extended.css"
       ],
       "aliases": [
@@ -415,7 +437,7 @@
         "Portal"
       ],
       "sourceFiles": [
-        "src/personal-ui/layout.tsx",
+        "src/personal-ui/foundation/layout.tsx",
         "src/personal-ui/styles/layout-actions-display.css"
       ],
       "aliases": [
@@ -432,7 +454,8 @@
         "Button"
       ],
       "sourceFiles": [
-        "src/personal-ui/primitives.tsx",
+        "src/personal-ui/foundation/primitives.tsx",
+        "src/personal-ui/internal/button-slots.tsx",
         "src/personal-ui/styles.css"
       ],
       "aliases": [
@@ -449,7 +472,7 @@
         "Link"
       ],
       "sourceFiles": [
-        "src/personal-ui/actions.tsx",
+        "src/personal-ui/action/actions.tsx",
         "src/personal-ui/styles/layout-actions-display.css"
       ],
       "aliases": [
@@ -466,7 +489,8 @@
         "IconButton"
       ],
       "sourceFiles": [
-        "src/personal-ui/primitives.tsx",
+        "src/personal-ui/foundation/primitives.tsx",
+        "src/personal-ui/internal/button-slots.tsx",
         "src/personal-ui/styles.css"
       ],
       "aliases": [
@@ -483,7 +507,7 @@
         "ButtonGroup"
       ],
       "sourceFiles": [
-        "src/personal-ui/actions.tsx",
+        "src/personal-ui/action/actions.tsx",
         "src/personal-ui/styles/layout-actions-display.css"
       ],
       "aliases": [
@@ -500,7 +524,12 @@
         "SplitButton"
       ],
       "sourceFiles": [
-        "src/personal-ui/actions.tsx",
+        "src/personal-ui/action/actions.tsx",
+        "src/personal-ui/internal/button-slots.tsx",
+        "src/personal-ui/internal/overlay-slots.tsx",
+        "src/personal-ui/overlay/overlays.tsx",
+        "src/personal-ui/foundation/primitives.tsx",
+        "src/personal-ui/styles.css",
         "src/personal-ui/styles/layout-actions-display.css"
       ],
       "aliases": [
@@ -517,7 +546,9 @@
         "ToggleButton"
       ],
       "sourceFiles": [
-        "src/personal-ui/actions.tsx",
+        "src/personal-ui/action/actions.tsx",
+        "src/personal-ui/internal/button-slots.tsx",
+        "src/personal-ui/foundation/primitives.tsx",
         "src/personal-ui/styles/layout-actions-display.css"
       ],
       "aliases": [
@@ -534,7 +565,7 @@
         "Toolbar"
       ],
       "sourceFiles": [
-        "src/personal-ui/actions.tsx",
+        "src/personal-ui/action/actions.tsx",
         "src/personal-ui/styles/layout-actions-display.css"
       ],
       "aliases": [
@@ -551,7 +582,7 @@
         "FilterBar"
       ],
       "sourceFiles": [
-        "src/personal-ui/actions.tsx",
+        "src/personal-ui/action/actions.tsx",
         "src/personal-ui/styles/layout-actions-display.css"
       ],
       "aliases": [
@@ -568,7 +599,7 @@
         "Form"
       ],
       "sourceFiles": [
-        "src/personal-ui/inputs-extra.tsx",
+        "src/personal-ui/input/inputs-extra.tsx",
         "src/personal-ui/styles/inputs-extra.css"
       ],
       "aliases": [
@@ -585,7 +616,7 @@
         "Field"
       ],
       "sourceFiles": [
-        "src/personal-ui/forms.tsx",
+        "src/personal-ui/input/forms.tsx",
         "src/personal-ui/styles.css"
       ],
       "aliases": [
@@ -603,7 +634,8 @@
         "PasswordInput"
       ],
       "sourceFiles": [
-        "src/personal-ui/forms.tsx",
+        "src/personal-ui/input/forms.tsx",
+        "src/personal-ui/internal/input-slots.tsx",
         "src/personal-ui/styles.css"
       ],
       "aliases": [
@@ -621,7 +653,8 @@
         "SearchInput"
       ],
       "sourceFiles": [
-        "src/personal-ui/forms.tsx",
+        "src/personal-ui/input/forms.tsx",
+        "src/personal-ui/internal/input-slots.tsx",
         "src/personal-ui/styles.css"
       ],
       "aliases": [
@@ -638,7 +671,8 @@
         "Textarea"
       ],
       "sourceFiles": [
-        "src/personal-ui/forms.tsx",
+        "src/personal-ui/input/forms.tsx",
+        "src/personal-ui/internal/input-slots.tsx",
         "src/personal-ui/styles.css"
       ],
       "aliases": [
@@ -655,8 +689,11 @@
         "NumberInput"
       ],
       "sourceFiles": [
-        "src/personal-ui/field-context.ts",
-        "src/personal-ui/inputs-extra.tsx",
+        "src/personal-ui/internal/field-context.ts",
+        "src/personal-ui/input/forms.tsx",
+        "src/personal-ui/input/inputs-extra.tsx",
+        "src/personal-ui/internal/input-slots.tsx",
+        "src/personal-ui/styles.css",
         "src/personal-ui/styles/inputs-extra.css"
       ],
       "aliases": [
@@ -673,7 +710,7 @@
         "OtpInput"
       ],
       "sourceFiles": [
-        "src/personal-ui/inputs-extra.tsx",
+        "src/personal-ui/input/inputs-extra.tsx",
         "src/personal-ui/styles/inputs-extra.css"
       ],
       "aliases": [
@@ -690,7 +727,7 @@
         "FileUpload"
       ],
       "sourceFiles": [
-        "src/personal-ui/inputs-extra.tsx",
+        "src/personal-ui/input/inputs-extra.tsx",
         "src/personal-ui/styles/inputs-extra.css"
       ],
       "aliases": [
@@ -701,19 +738,25 @@
       ]
     },
     {
-      "id": "rich-text",
+      "id": "markdown-editor",
       "kind": "component",
       "publicExports": [
+        "MarkdownEditor",
         "RichTextEditor"
       ],
       "sourceFiles": [
-        "src/personal-ui/inputs-extra.tsx",
+        "src/personal-ui/input/forms.tsx",
+        "src/personal-ui/input/inputs-extra.tsx",
+        "src/personal-ui/internal/input-slots.tsx",
+        "src/personal-ui/styles.css",
         "src/personal-ui/styles/inputs-extra.css"
       ],
       "aliases": [
+        "rich-text",
         "rich-text-editor"
       ],
       "ownerMarkers": [
+        "MarkdownEditor",
         "RichTextEditor"
       ]
     },
@@ -724,7 +767,10 @@
         "CodeEditor"
       ],
       "sourceFiles": [
-        "src/personal-ui/inputs-extra.tsx",
+        "src/personal-ui/input/forms.tsx",
+        "src/personal-ui/input/inputs-extra.tsx",
+        "src/personal-ui/internal/input-slots.tsx",
+        "src/personal-ui/styles.css",
         "src/personal-ui/styles/inputs-extra.css"
       ],
       "aliases": [
@@ -741,7 +787,7 @@
         "InlineEdit"
       ],
       "sourceFiles": [
-        "src/personal-ui/inputs-extra.tsx",
+        "src/personal-ui/input/inputs-extra.tsx",
         "src/personal-ui/styles/inputs-extra.css"
       ],
       "aliases": [
@@ -758,7 +804,7 @@
         "Checkbox"
       ],
       "sourceFiles": [
-        "src/personal-ui/forms.tsx",
+        "src/personal-ui/input/forms.tsx",
         "src/personal-ui/styles.css"
       ],
       "aliases": [
@@ -775,7 +821,7 @@
         "Radio"
       ],
       "sourceFiles": [
-        "src/personal-ui/forms.tsx",
+        "src/personal-ui/input/forms.tsx",
         "src/personal-ui/styles.css"
       ],
       "aliases": [
@@ -792,7 +838,7 @@
         "Switch"
       ],
       "sourceFiles": [
-        "src/personal-ui/forms.tsx",
+        "src/personal-ui/input/forms.tsx",
         "src/personal-ui/styles.css"
       ],
       "aliases": [
@@ -809,7 +855,7 @@
         "SegmentedControl"
       ],
       "sourceFiles": [
-        "src/personal-ui/forms.tsx",
+        "src/personal-ui/input/forms.tsx",
         "src/personal-ui/styles.css"
       ],
       "aliases": [
@@ -828,10 +874,10 @@
         "AsyncSelect"
       ],
       "sourceFiles": [
-        "src/personal-ui/forms.tsx",
-        "src/personal-ui/floating-position.ts",
+        "src/personal-ui/input/forms.tsx",
+        "src/personal-ui/internal/floating-position.ts",
         "src/personal-ui/styles.css",
-        "src/personal-ui/inputs-extra.tsx",
+        "src/personal-ui/input/inputs-extra.tsx",
         "src/personal-ui/styles/inputs-extra.css"
       ],
       "aliases": [
@@ -853,10 +899,10 @@
         "Autocomplete"
       ],
       "sourceFiles": [
-        "src/personal-ui/forms.tsx",
-        "src/personal-ui/floating-position.ts",
+        "src/personal-ui/input/forms.tsx",
+        "src/personal-ui/internal/floating-position.ts",
         "src/personal-ui/styles.css",
-        "src/personal-ui/inputs-extra.tsx",
+        "src/personal-ui/input/inputs-extra.tsx",
         "src/personal-ui/styles/inputs-extra.css"
       ],
       "aliases": [
@@ -875,8 +921,8 @@
         "MultiSelect"
       ],
       "sourceFiles": [
-        "src/personal-ui/inputs-extra.tsx",
-        "src/personal-ui/floating-position.ts",
+        "src/personal-ui/input/inputs-extra.tsx",
+        "src/personal-ui/internal/floating-position.ts",
         "src/personal-ui/styles/inputs-extra.css"
       ],
       "aliases": [
@@ -893,8 +939,8 @@
         "TagInput"
       ],
       "sourceFiles": [
-        "src/personal-ui/inputs-extra.tsx",
-        "src/personal-ui/floating-position.ts",
+        "src/personal-ui/input/inputs-extra.tsx",
+        "src/personal-ui/internal/floating-position.ts",
         "src/personal-ui/styles/inputs-extra.css"
       ],
       "aliases": [
@@ -911,7 +957,7 @@
         "Cascader"
       ],
       "sourceFiles": [
-        "src/personal-ui/inputs-extra.tsx",
+        "src/personal-ui/input/inputs-extra.tsx",
         "src/personal-ui/styles/inputs-extra.css"
       ],
       "aliases": [
@@ -928,8 +974,8 @@
         "TreeSelect"
       ],
       "sourceFiles": [
-        "src/personal-ui/inputs-extra.tsx",
-        "src/personal-ui/floating-position.ts",
+        "src/personal-ui/input/inputs-extra.tsx",
+        "src/personal-ui/internal/floating-position.ts",
         "src/personal-ui/styles/inputs-extra.css"
       ],
       "aliases": [
@@ -946,7 +992,7 @@
         "Transfer"
       ],
       "sourceFiles": [
-        "src/personal-ui/inputs-extra.tsx",
+        "src/personal-ui/input/inputs-extra.tsx",
         "src/personal-ui/styles/inputs-extra.css"
       ],
       "aliases": [
@@ -963,7 +1009,7 @@
         "Slider"
       ],
       "sourceFiles": [
-        "src/personal-ui/value-controls.tsx",
+        "src/personal-ui/input/value-controls.tsx",
         "src/personal-ui/styles/inputs-extra.css"
       ],
       "aliases": [
@@ -980,7 +1026,7 @@
         "Rating"
       ],
       "sourceFiles": [
-        "src/personal-ui/value-controls.tsx",
+        "src/personal-ui/input/value-controls.tsx",
         "src/personal-ui/styles/inputs-extra.css"
       ],
       "aliases": [
@@ -997,7 +1043,7 @@
         "ColorPicker"
       ],
       "sourceFiles": [
-        "src/personal-ui/value-controls.tsx",
+        "src/personal-ui/input/value-controls.tsx",
         "src/personal-ui/styles/inputs-extra.css"
       ],
       "aliases": [
@@ -1017,9 +1063,11 @@
         "DEFAULT_TIMEZONE_OPTIONS"
       ],
       "sourceFiles": [
-        "src/personal-ui/date-field.tsx",
+        "src/personal-ui/input/date-field.tsx",
+        "src/personal-ui/input/forms.tsx",
+        "src/personal-ui/internal/input-slots.tsx",
         "src/personal-ui/styles.css",
-        "src/personal-ui/value-controls.tsx",
+        "src/personal-ui/input/value-controls.tsx",
         "src/personal-ui/styles/inputs-extra.css"
       ],
       "aliases": [
@@ -1044,7 +1092,7 @@
         "BottomNavigation"
       ],
       "sourceFiles": [
-        "src/personal-ui/navigation-extra.tsx",
+        "src/personal-ui/navigation/navigation-extra.tsx",
         "src/personal-ui/styles/extended.css"
       ],
       "aliases": [
@@ -1066,7 +1114,7 @@
         "Breadcrumbs"
       ],
       "sourceFiles": [
-        "src/personal-ui/navigation.tsx",
+        "src/personal-ui/navigation/navigation.tsx",
         "src/personal-ui/styles.css"
       ],
       "aliases": [
@@ -1083,7 +1131,7 @@
         "Tabs"
       ],
       "sourceFiles": [
-        "src/personal-ui/navigation.tsx",
+        "src/personal-ui/navigation/navigation.tsx",
         "src/personal-ui/styles.css"
       ],
       "aliases": [
@@ -1102,12 +1150,15 @@
         "ContextMenu"
       ],
       "sourceFiles": [
-        "src/personal-ui/navigation-extra.tsx",
+        "src/personal-ui/navigation/navigation-extra.tsx",
         "src/personal-ui/styles/extended.css",
-        "src/personal-ui/overlays.tsx",
-        "src/personal-ui/floating-position.ts",
+        "src/personal-ui/overlay/overlays.tsx",
+        "src/personal-ui/internal/floating-position.ts",
+        "src/personal-ui/internal/button-slots.tsx",
+        "src/personal-ui/internal/overlay-slots.tsx",
+        "src/personal-ui/foundation/primitives.tsx",
         "src/personal-ui/styles.css",
-        "src/personal-ui/overlays-extra.tsx"
+        "src/personal-ui/overlay/overlays-extra.tsx"
       ],
       "aliases": [
         "menu",
@@ -1127,7 +1178,7 @@
         "Pagination"
       ],
       "sourceFiles": [
-        "src/personal-ui/navigation.tsx",
+        "src/personal-ui/navigation/navigation.tsx",
         "src/personal-ui/styles.css"
       ],
       "aliases": [
@@ -1144,7 +1195,7 @@
         "LoadMore"
       ],
       "sourceFiles": [
-        "src/personal-ui/navigation-extra.tsx",
+        "src/personal-ui/navigation/navigation-extra.tsx",
         "src/personal-ui/styles/extended.css"
       ],
       "aliases": [
@@ -1161,7 +1212,7 @@
         "InfiniteScroll"
       ],
       "sourceFiles": [
-        "src/personal-ui/navigation-extra.tsx",
+        "src/personal-ui/navigation/navigation-extra.tsx",
         "src/personal-ui/styles/extended.css"
       ],
       "aliases": [
@@ -1178,7 +1229,7 @@
         "Stepper"
       ],
       "sourceFiles": [
-        "src/personal-ui/navigation-extra.tsx",
+        "src/personal-ui/navigation/navigation-extra.tsx",
         "src/personal-ui/styles/extended.css"
       ],
       "aliases": [
@@ -1196,7 +1247,7 @@
         "useCommandPaletteShortcut"
       ],
       "sourceFiles": [
-        "src/personal-ui/navigation-extra.tsx",
+        "src/personal-ui/navigation/navigation-extra.tsx",
         "src/personal-ui/styles/extended.css"
       ],
       "aliases": [
@@ -1216,7 +1267,7 @@
         "AnchorNavigation"
       ],
       "sourceFiles": [
-        "src/personal-ui/navigation-extra.tsx",
+        "src/personal-ui/navigation/navigation-extra.tsx",
         "src/personal-ui/styles/extended.css"
       ],
       "aliases": [
@@ -1234,9 +1285,9 @@
         "VirtualList"
       ],
       "sourceFiles": [
-        "src/personal-ui/display.tsx",
+        "src/personal-ui/display/display.tsx",
         "src/personal-ui/styles/layout-actions-display.css",
-        "src/personal-ui/data-extra.tsx",
+        "src/personal-ui/data/data-extra.tsx",
         "src/personal-ui/styles/extended.css"
       ],
       "aliases": [
@@ -1255,7 +1306,7 @@
         "DescriptionList"
       ],
       "sourceFiles": [
-        "src/personal-ui/display.tsx",
+        "src/personal-ui/display/display.tsx",
         "src/personal-ui/styles/layout-actions-display.css"
       ],
       "aliases": [
@@ -1272,7 +1323,7 @@
         "Card"
       ],
       "sourceFiles": [
-        "src/personal-ui/display.tsx",
+        "src/personal-ui/display/display.tsx",
         "src/personal-ui/styles/layout-actions-display.css"
       ],
       "aliases": [
@@ -1289,7 +1340,7 @@
         "Tree"
       ],
       "sourceFiles": [
-        "src/personal-ui/data-extra.tsx",
+        "src/personal-ui/data/data-extra.tsx",
         "src/personal-ui/styles/extended.css"
       ],
       "aliases": [
@@ -1306,7 +1357,8 @@
         "Accordion"
       ],
       "sourceFiles": [
-        "src/personal-ui/display.tsx",
+        "src/personal-ui/display/display.tsx",
+        "src/personal-ui/internal/collapse.tsx",
         "src/personal-ui/styles/layout-actions-display.css"
       ],
       "aliases": [
@@ -1323,7 +1375,7 @@
         "Timeline"
       ],
       "sourceFiles": [
-        "src/personal-ui/display.tsx",
+        "src/personal-ui/display/display.tsx",
         "src/personal-ui/styles/layout-actions-display.css"
       ],
       "aliases": [
@@ -1340,7 +1392,7 @@
         "Calendar"
       ],
       "sourceFiles": [
-        "src/personal-ui/data-extra.tsx",
+        "src/personal-ui/data/data-extra.tsx",
         "src/personal-ui/styles/extended.css"
       ],
       "aliases": [
@@ -1357,7 +1409,7 @@
         "Scheduler"
       ],
       "sourceFiles": [
-        "src/personal-ui/data-extra.tsx",
+        "src/personal-ui/data/data-extra.tsx",
         "src/personal-ui/styles/extended.css"
       ],
       "aliases": [
@@ -1374,7 +1426,7 @@
         "Statistic"
       ],
       "sourceFiles": [
-        "src/personal-ui/display.tsx",
+        "src/personal-ui/display/display.tsx",
         "src/personal-ui/styles/layout-actions-display.css"
       ],
       "aliases": [
@@ -1391,7 +1443,7 @@
         "BarChart"
       ],
       "sourceFiles": [
-        "src/personal-ui/data-extra.tsx",
+        "src/personal-ui/data/data-extra.tsx",
         "src/personal-ui/styles/extended.css"
       ],
       "aliases": [
@@ -1408,7 +1460,7 @@
         "CodeBlock"
       ],
       "sourceFiles": [
-        "src/personal-ui/display.tsx",
+        "src/personal-ui/display/display.tsx",
         "src/personal-ui/styles/layout-actions-display.css"
       ],
       "aliases": [
@@ -1425,7 +1477,7 @@
         "Meter"
       ],
       "sourceFiles": [
-        "src/personal-ui/display.tsx",
+        "src/personal-ui/display/display.tsx",
         "src/personal-ui/styles/layout-actions-display.css"
       ],
       "aliases": [
@@ -1443,7 +1495,7 @@
         "AvatarGroup"
       ],
       "sourceFiles": [
-        "src/personal-ui/display.tsx",
+        "src/personal-ui/display/display.tsx",
         "src/personal-ui/styles/layout-actions-display.css"
       ],
       "aliases": [
@@ -1461,7 +1513,7 @@
         "Tag"
       ],
       "sourceFiles": [
-        "src/personal-ui/primitives.tsx",
+        "src/personal-ui/foundation/primitives.tsx",
         "src/personal-ui/styles.css"
       ],
       "aliases": [
@@ -1478,7 +1530,7 @@
         "Badge"
       ],
       "sourceFiles": [
-        "src/personal-ui/display.tsx",
+        "src/personal-ui/display/display.tsx",
         "src/personal-ui/styles/layout-actions-display.css"
       ],
       "aliases": [
@@ -1495,7 +1547,7 @@
         "StatusIndicator"
       ],
       "sourceFiles": [
-        "src/personal-ui/display.tsx",
+        "src/personal-ui/display/display.tsx",
         "src/personal-ui/styles/layout-actions-display.css"
       ],
       "aliases": [
@@ -1512,7 +1564,7 @@
         "Media"
       ],
       "sourceFiles": [
-        "src/personal-ui/display.tsx",
+        "src/personal-ui/display/display.tsx",
         "src/personal-ui/styles/layout-actions-display.css"
       ],
       "aliases": [
@@ -1529,7 +1581,7 @@
         "Attachment"
       ],
       "sourceFiles": [
-        "src/personal-ui/display.tsx",
+        "src/personal-ui/display/display.tsx",
         "src/personal-ui/styles/layout-actions-display.css"
       ],
       "aliases": [
@@ -1546,7 +1598,7 @@
         "Gallery"
       ],
       "sourceFiles": [
-        "src/personal-ui/display.tsx",
+        "src/personal-ui/display/display.tsx",
         "src/personal-ui/styles/layout-actions-display.css"
       ],
       "aliases": [
@@ -1563,7 +1615,7 @@
         "Carousel"
       ],
       "sourceFiles": [
-        "src/personal-ui/data-extra.tsx",
+        "src/personal-ui/data/data-extra.tsx",
         "src/personal-ui/styles/extended.css"
       ],
       "aliases": [
@@ -1581,9 +1633,9 @@
         "TreeTable"
       ],
       "sourceFiles": [
-        "src/personal-ui/data-table.tsx",
+        "src/personal-ui/data/data-table.tsx",
         "src/personal-ui/styles.css",
-        "src/personal-ui/data-extra.tsx",
+        "src/personal-ui/data/data-extra.tsx",
         "src/personal-ui/styles/extended.css"
       ],
       "aliases": [
@@ -1602,7 +1654,7 @@
         "InlineMessage"
       ],
       "sourceFiles": [
-        "src/personal-ui/feedback-extra.tsx",
+        "src/personal-ui/feedback/feedback-extra.tsx",
         "src/personal-ui/styles/extended.css"
       ],
       "aliases": [
@@ -1619,7 +1671,7 @@
         "Alert"
       ],
       "sourceFiles": [
-        "src/personal-ui/feedback.tsx",
+        "src/personal-ui/feedback/feedback.tsx",
         "src/personal-ui/styles.css"
       ],
       "aliases": [
@@ -1636,7 +1688,7 @@
         "Banner"
       ],
       "sourceFiles": [
-        "src/personal-ui/feedback-extra.tsx",
+        "src/personal-ui/feedback/feedback-extra.tsx",
         "src/personal-ui/styles/extended.css"
       ],
       "aliases": [
@@ -1654,7 +1706,7 @@
         "useToast"
       ],
       "sourceFiles": [
-        "src/personal-ui/feedback.tsx",
+        "src/personal-ui/feedback/feedback.tsx",
         "src/personal-ui/styles.css"
       ],
       "aliases": [
@@ -1674,7 +1726,7 @@
         "Spinner"
       ],
       "sourceFiles": [
-        "src/personal-ui/primitives.tsx",
+        "src/personal-ui/foundation/primitives.tsx",
         "src/personal-ui/styles.css"
       ],
       "aliases": [
@@ -1692,9 +1744,9 @@
         "ProgressRing"
       ],
       "sourceFiles": [
-        "src/personal-ui/feedback.tsx",
+        "src/personal-ui/feedback/feedback.tsx",
         "src/personal-ui/styles.css",
-        "src/personal-ui/feedback-extra.tsx",
+        "src/personal-ui/feedback/feedback-extra.tsx",
         "src/personal-ui/styles/extended.css"
       ],
       "aliases": [
@@ -1712,7 +1764,7 @@
         "Skeleton"
       ],
       "sourceFiles": [
-        "src/personal-ui/primitives.tsx",
+        "src/personal-ui/foundation/primitives.tsx",
         "src/personal-ui/styles.css"
       ],
       "aliases": [
@@ -1733,9 +1785,11 @@
         "AsyncAction"
       ],
       "sourceFiles": [
-        "src/personal-ui/feedback.tsx",
+        "src/personal-ui/feedback/feedback.tsx",
         "src/personal-ui/styles.css",
-        "src/personal-ui/feedback-extra.tsx",
+        "src/personal-ui/feedback/feedback-extra.tsx",
+        "src/personal-ui/internal/button-slots.tsx",
+        "src/personal-ui/foundation/primitives.tsx",
         "src/personal-ui/styles/extended.css"
       ],
       "aliases": [
@@ -1757,7 +1811,7 @@
         "ValidationSummary"
       ],
       "sourceFiles": [
-        "src/personal-ui/feedback-extra.tsx",
+        "src/personal-ui/feedback/feedback-extra.tsx",
         "src/personal-ui/styles/extended.css"
       ],
       "aliases": [
@@ -1774,7 +1828,8 @@
         "Tooltip"
       ],
       "sourceFiles": [
-        "src/personal-ui/overlays.tsx",
+        "src/personal-ui/overlay/overlays.tsx",
+        "src/personal-ui/internal/overlay-slots.tsx",
         "src/personal-ui/styles.css"
       ],
       "aliases": [
@@ -1791,8 +1846,9 @@
         "Popover"
       ],
       "sourceFiles": [
-        "src/personal-ui/overlays-extra.tsx",
-        "src/personal-ui/floating-position.ts",
+        "src/personal-ui/overlay/overlays-extra.tsx",
+        "src/personal-ui/internal/floating-position.ts",
+        "src/personal-ui/internal/overlay-slots.tsx",
         "src/personal-ui/styles/extended.css"
       ],
       "aliases": [
@@ -1809,8 +1865,9 @@
         "HoverCard"
       ],
       "sourceFiles": [
-        "src/personal-ui/overlays-extra.tsx",
-        "src/personal-ui/floating-position.ts",
+        "src/personal-ui/overlay/overlays-extra.tsx",
+        "src/personal-ui/internal/floating-position.ts",
+        "src/personal-ui/internal/overlay-slots.tsx",
         "src/personal-ui/styles/extended.css"
       ],
       "aliases": [
@@ -1828,9 +1885,9 @@
         "ConfirmDialog"
       ],
       "sourceFiles": [
-        "src/personal-ui/overlays.tsx",
+        "src/personal-ui/overlay/overlays.tsx",
         "src/personal-ui/styles.css",
-        "src/personal-ui/overlays-extra.tsx",
+        "src/personal-ui/overlay/overlays-extra.tsx",
         "src/personal-ui/styles/extended.css"
       ],
       "aliases": [
@@ -1849,8 +1906,8 @@
         "Popconfirm"
       ],
       "sourceFiles": [
-        "src/personal-ui/overlays-extra.tsx",
-        "src/personal-ui/floating-position.ts",
+        "src/personal-ui/overlay/overlays-extra.tsx",
+        "src/personal-ui/internal/floating-position.ts",
         "src/personal-ui/styles/extended.css"
       ],
       "aliases": [
@@ -1867,7 +1924,7 @@
         "Drawer"
       ],
       "sourceFiles": [
-        "src/personal-ui/overlays.tsx",
+        "src/personal-ui/overlay/overlays.tsx",
         "src/personal-ui/styles.css"
       ],
       "aliases": [
@@ -1884,7 +1941,9 @@
         "Lightbox"
       ],
       "sourceFiles": [
-        "src/personal-ui/overlays-extra.tsx",
+        "src/personal-ui/overlay/overlays-extra.tsx",
+        "src/personal-ui/internal/button-slots.tsx",
+        "src/personal-ui/foundation/primitives.tsx",
         "src/personal-ui/styles/extended.css"
       ],
       "aliases": [
@@ -1901,7 +1960,7 @@
         "GuidedTour"
       ],
       "sourceFiles": [
-        "src/personal-ui/overlays-extra.tsx",
+        "src/personal-ui/overlay/overlays-extra.tsx",
         "src/personal-ui/styles/extended.css"
       ],
       "aliases": [
@@ -2122,33 +2181,46 @@
     ]
   },
   "sourceIntegrity": {
-    "actions.tsx": "9898ddbeb0a72d01483396b762822ccbae6ba13ef960a155ab7c51663ba044f4",
-    "data-extra.tsx": "898a6aeaa6c2f93d37ee9a91607c5ba4f4ff70eb8a147f5e6383be79f85b6734",
-    "data-table.tsx": "1623507b0420f673a5c17436d83b00b1d155d2ee55af122fe445bfd11b9d9609",
-    "date-field.tsx": "4030d78edc3858d7e76cad6750201db1522c92cad0e1f39b0763a804aec0bb1d",
-    "display.tsx": "89f5cac0d39ea6bd1b32263f1eb3f9afd0b3c9d4a7156f716d36588ae5c72e33",
-    "feedback-extra.tsx": "9367bea4dfc69613f7e0ed8149b374a556cc11de5cc012309def7747f66468a3",
-    "feedback.tsx": "edd7abdf9424fb38339b56a58afc97687742780de28a22f1bf011a295dc9c69f",
-    "field-context.ts": "2bf838e1aa63c16247c518066856556071ffe53305a0492ec7c5e8f9acac152a",
-    "floating-position.ts": "ba2df63a0e5d769cffe9f607ac7c627478cd551979c0b754cadd7c233c9b659a",
-    "forms.tsx": "fbfec6c10a8f92715a4fd6bf510a5847ba45e219697aa1876ffa8970e844d0f9",
-    "index.ts": "97d260c56e0404e41a033d296ce9a2fac198ace8efbb93813c0f35874d93381e",
-    "inputs-extra.tsx": "7c788ff07ccfea3942370a25e1aab8223e0457e4ca3d1b9a5bf358098630b279",
-    "layout.tsx": "0529b2666fc95ff370b3be89239c764897d7684ab57a13c50ab096be6d01c62a",
-    "navigation-extra.tsx": "10c2357f3fc8706a10220d06311005450451f45e92697c70f5f4886f95cbd1a7",
-    "navigation.tsx": "4b856c5b7d2c2b0d4db7c8c6c87e780ed223e1c60b1d490cd189ba7b513c2cff",
-    "overlays-extra.tsx": "200f00a38e98e856c74379a60717d6cecd4f5ca8b1dcf78d5e0810232c72f84b",
-    "overlays.tsx": "1aa8eaa5d626079129f9e7704adefcf1af9603aa6cf40ffa662c0515aac78ab4",
-    "patterns/family-login-page.tsx": "d96543d8df95f4cd465c7d7413edd39d71d1b438f0b22d9315b6114cf1f67963",
-    "patterns/member-management-page.tsx": "17323fcda760158d38c1ebe249844c2b7751a61230608990d33f40d524f21b11",
-    "patterns/standard-pages.tsx": "8a5f8b0311fe2fad94b10811d4348ae60897042c039219d675bc6d87f7bb3f26",
-    "portal-tokens.ts": "628b0f31c47f9dcaaa84cf67c5b13318a46f2f47f3a611d6a9075c83358052cd",
-    "primitives.tsx": "54e21988b8255843419fc07a38c31c2a73b98af065e6ee02899128f59fe09d44",
-    "styles/extended.css": "b21cb702f9295d0c0e11aa89d0ff8f7bb3e99dd4a39b81ba64880f19f9e863e5",
-    "styles/inputs-extra.css": "2f32ea8cdc1384516c663e2ac6aa3fde2017e46c1b65e462a85014b1e1a16391",
-    "styles/layout-actions-display.css": "cb318cb2087b3033e748c45c9b13841cd6908ec0ce957a18a1337be169f98ec0",
-    "styles.css": "fb930cc785ea5670229c699927542706863ba01535a07e3005f6beed89e1c298",
-    "utils.ts": "fdb9151abf7b8d587098d600199e8dad8d7729535c93c91296557ac9b60f67b5",
-    "value-controls.tsx": "776ccbb1ad6c7bfc7ead9bcc8d1a833d4b69403fb737fa0122872d8e8b5cc762"
+    "action/actions.tsx": "40909ebc6671ce2403cf964c5fda0f400edec335c1f0c6a8f8c6f16fa023f9a8",
+    "data/data-extra.tsx": "71ebb6061fb73758cf3c138931d10cd88e75cf369f562cb2277f306ed70891df",
+    "data/data-table.tsx": "3c48392d469228306935d0a14a80c94e453fd0a95ee8465cd4fc11b4d6bb4fc1",
+    "display/display.tsx": "6382945598fed97546ec82c425ba3647b4430fa382c8a9e50c701ddae39aec34",
+    "feedback/feedback-extra.tsx": "267c0eca04b7c109f1f027766071b1431d04abd92e9e4fef96a90d75356f5825",
+    "feedback/feedback.tsx": "c10563a468ff5bced4db0e8b04b6d3ee39507c071f5cb01b8cfc1c3dfafe079e",
+    "foundation/contracts.ts": "2c371c177b75eeeb8a3697ca19db954b2e3d15b50d152fdd0d822170046df8c1",
+    "foundation/layout.tsx": "2c50da47c628640274d2ffb839c9a39140feb6a3c5502118543417f24215ff80",
+    "foundation/locale.tsx": "53c43e41f69387f670cf064058d7661e435a347c246cdc40a70c0b00e94904ab",
+    "foundation/primitives.tsx": "f2b6779dc1d387ed304038a8ffbc6dc25db239b5f5c7914608017cd193fa3fe7",
+    "index.ts": "c4e969166235ca22e5bea849e4f160e17d2f37451e3fe65a5aa9999c394a5610",
+    "input/date-field.tsx": "33c304c1e6334fbfc0dc91e650c243b8728c90c904b9994827b2d12631e5b3be",
+    "input/forms.tsx": "6899795ae149e4ae8ffe5995da9e80b7a1c849e6095924952165a44ee7eee996",
+    "input/inputs-extra.tsx": "be220628b4e2871e874c9e025ec2d2a1bc81e330d0ac99335cf2ac125f6e5390",
+    "input/value-controls.tsx": "ddf5b10c52f9940363fcf67519b0d0354c156006030f1b1f34a7384d78f8c628",
+    "internal/button-slots.tsx": "52687f592280f8ba9b8e7c177664e5af6fce722e9d89bd264f4936b910794c06",
+    "internal/collapse.tsx": "7b62b5edd9dd03a94cd86f70da0956f404e3b1d78f7c9692bd2d42080955c14a",
+    "internal/composite-form-control.tsx": "d1479e27388145a8ba7aed4125c7f2731d8ddeb78f88fe31ad87b6b27e51448c",
+    "internal/control-handles.ts": "76c9ddb192e8f847f650c6ecaa0a4beee881272d0dd1cf51297b230a454be367",
+    "internal/controllable-state.ts": "444d847ecc60129030c6fe1f80740de5394bd6abf51d29eacf89d64cac546140",
+    "internal/field-context.ts": "2bf838e1aa63c16247c518066856556071ffe53305a0492ec7c5e8f9acac152a",
+    "internal/fixed-control-props.ts": "1487adeb9c4f9a18da5deaaf0319f38f2776555ede29b473fba70c5c8178d843",
+    "internal/floating-position.ts": "a3fc3b5353d19a7c04250ab921e802f7ac85a44c7154f47dfb4203ab906e90f8",
+    "internal/input-slots.tsx": "b93846a135a0cb62968f247ea3076836fd6f8e704b1a951df8738f990434997c",
+    "internal/layer-kernel.tsx": "22db671b0c6ac1439c70b3623fb69e133ae675af852418e18e14821fc7d8f2ce",
+    "internal/overlay-slots.tsx": "8d75012cdaa42a805fd03bee92356f8a7627ea2e3aed62545873697efc2b0965",
+    "internal/portal-tokens.ts": "351931fc633960e55a8cec8e464c1b1aae1d001b5b78ddd748c46cdef2dea956",
+    "internal/theme-contract.ts": "ad430cb9ccf66198da3d94fefddb0f6962739a6d190d27366c6a0170cb03c729",
+    "internal/tree-navigation.ts": "71508b1bb9de51e74322885ec9c4af25c029e5b58311b946d15fe104d523e7ed",
+    "internal/utils.ts": "c18fd3ad380bace2c49d1bf9d73d117b88407b7706eb155eb0cb39c359b06ce8",
+    "navigation/navigation-extra.tsx": "112b00c26fc9d0a9a77f4d4ae488416ef42347eca27e16ee4a172f8bdc321542",
+    "navigation/navigation.tsx": "6bc9c18e19ca91e82d91725118e808691fce409704c143607fb9f9db3bc752e5",
+    "overlay/overlays-extra.tsx": "f226e4ef23cd57c57f61ee4df3e3cc5c124d38c05bbe1da30f3935c5f32acf6f",
+    "overlay/overlays.tsx": "2b0f7bc46f6d4b29262d874b2b2c371ebcf5795b0b89ec0579ca16bbbcc4ee75",
+    "patterns/family-login-page.tsx": "3fed8dce85887be1f753b6be71e2f3afb1061a0aa3b0452e7bebb8f5cb810262",
+    "patterns/member-management-page.tsx": "1e97e9f2ea63da458ecdddab2f32f53057ecce70e30d678f78d0cbef1d9da6c9",
+    "patterns/standard-pages.tsx": "577ab25e1145156acb8bec2a36f268f2897118374ea9961504466874d4c8d87d",
+    "styles/extended.css": "036bc302bdf299d3bfb75e1ec6641f372ac15d95011c10e9bddb69d6df98806d",
+    "styles/inputs-extra.css": "1a734314eeedfec0748388f6908b055e9c11543ee9399ec466e458b6d98370f6",
+    "styles/layout-actions-display.css": "13718c4307e4937fe2e5e90ccbc597be2beb30d3edf67987453f6ca826a66774",
+    "styles.css": "9f0104b9b31a4d33b97d3f04857e4e3b007fec423eb938abbaac39e29510276b"
   }
 }

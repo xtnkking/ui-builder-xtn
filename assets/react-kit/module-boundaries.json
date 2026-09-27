@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "publicBarrel": "src/personal-ui/index.ts",
+  "modules": [
+    {
+      "id": "foundation",
+      "root": "src/personal-ui/foundation"
+    },
+    {
+      "id": "action",
+      "root": "src/personal-ui/action"
+    },
+    {
+      "id": "input",
+      "root": "src/personal-ui/input"
+    },
+    {
+      "id": "navigation",
+      "root": "src/personal-ui/navigation"
+    },
+    {
+      "id": "data",
+      "root": "src/personal-ui/data"
+    },
+    {
+      "id": "display",
+      "root": "src/personal-ui/display"
+    },
+    {
+      "id": "feedback",
+      "root": "src/personal-ui/feedback"
+    },
+    {
+      "id": "overlay",
+      "root": "src/personal-ui/overlay"
+    },
+    {
+      "id": "pattern",
+      "root": "src/personal-ui/patterns"
+    },
+    {
+      "id": "internal",
+      "root": "src/personal-ui/internal"
+    }
+  ]
+}

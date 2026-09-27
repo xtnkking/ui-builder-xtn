@@ -1,0 +1,321 @@
+{
+  "schemaVersion": 2,
+  "lastReviewed": "2026-09-27",
+  "fixtureCatalog": "references/support-fixtures.json",
+  "statusDefinitions": {
+    "declared": "The repository states a range, policy, or capability. This does not prove that a clean environment passed.",
+    "target": "The combination is in the v0.3.0 support goal and has a repeatable fixture plan, but complete evidence has not been recorded.",
+    "verified": "A clean run or release smoke passed and is linked through structured evidence that records exact versions and environment details."
+  },
+  "evidencePolicy": {
+    "verifiedRequiresStructuredEvidence": true,
+    "ciConfigurationIsEvidence": false,
+    "localRunIsHostedCiEvidence": false,
+    "playwrightWebKitIsSafariEvidence": false,
+    "browserEvidenceMustRecordActualVersion": true
+  },
+  "sourceAuthority": {
+    "editableSource": "git-checkout",
+    "canonicalComponentPath": "assets/react-kit/src/personal-ui",
+    "generatedCopies": [
+      "$CODEX_HOME/skills/ui-builder-xtn",
+      "local-backup",
+      "export-archive",
+      "repository-mirror"
+    ],
+    "syncDirection": "git-checkout-to-generated-copies",
+    "generatedCopiesEditable": false
+  },
+  "baseline": {
+    "version": "0.2.19",
+    "tag": "v0.2.19",
+    "commit": "0587d4b08c1a70efff80c228b332f4064a7db6d1",
+    "status": "immutable"
+  },
+  "profiles": {
+    "0.2.19": {
+      "status": "declared",
+      "observation": "baseline-observed",
+      "runtime": {
+        "node": {
+          "declared": ">=18.18",
+          "verifiedMatrix": null,
+          "evidence": "git tag v0.2.19:assets/react-kit/package.json#engines"
+        },
+        "react": {
+          "declared": "^18.3.1",
+          "lockfileVersion": "18.3.1",
+          "evidence": "assets/react-kit/package-lock.json"
+        },
+        "reactDom": {
+          "declared": "^18.3.1",
+          "lockfileVersion": "18.3.1",
+          "evidence": "assets/react-kit/package-lock.json"
+        },
+        "typescript": {
+          "declared": "^5.7.2",
+          "lockfileVersion": "5.9.3",
+          "verifiedBehavior": [
+            "strict-build"
+          ]
+        }
+      },
+      "packageManagers": {
+        "npm": {
+          "status": "declared-and-scripted",
+          "lockfileVersion": 3
+        },
+        "pnpm": {
+          "status": "not-supported"
+        },
+        "yarn": {
+          "status": "not-supported"
+        }
+      },
+      "browsers": {
+        "chromium": {
+          "status": "focused-caller-supplied-runner-at-baseline",
+          "focusedScripts": 10,
+          "limitation": "The baseline tag does not bundle a repository-owned Playwright runner."
+        },
+        "firefox": {
+          "status": "not-verified"
+        },
+        "webkit": {
+          "status": "not-verified"
+        }
+      },
+      "responsiveCssWidths": [
+        2560,
+        1440,
+        1024,
+        736,
+        360,
+        320
+      ]
+    },
+    "hardening-worktree": {
+      "status": "declared",
+      "observation": "local-hardening-gates-observed-unreleased",
+      "runtime": {
+        "node": {
+          "declared": ">=22.12 <25",
+          "configuredCiLines": [
+            "22",
+            "24"
+          ],
+          "verificationStatus": "Local clean-install and release-gate results were reported; hosted CI remains pending."
+        }
+      },
+      "packageManagers": {
+        "npm": {
+          "status": "repository-lockfile-and-local-clean-run"
+        },
+        "pnpm": {
+          "status": "not-yet-fixtured"
+        },
+        "yarn": {
+          "status": "not-yet-fixtured"
+        }
+      },
+      "browsers": {
+        "chromium": {
+          "status": "repository-owned-playwright-project"
+        },
+        "firefox": {
+          "status": "repository-owned-playwright-project"
+        },
+        "webkit": {
+          "status": "repository-owned-playwright-project"
+        },
+        "verificationStatus": "A local three-engine release gate was reported; this is not hosted evidence and is not real Safari evidence."
+      },
+      "qualityGate": {
+        "skill": "npm run validate:skill",
+        "documentation": "npm run docs:check",
+        "contractsAndInstallerFixtures": "npm run test:contracts",
+        "components": "npm run test:components",
+        "browser": "npm run test:browser",
+        "accessibility": "npm run test:a11y",
+        "complete": "npm run release:check"
+      }
+    },
+    "0.3.0": {
+      "status": "target",
+      "fixtureIds": [
+        "npm10-vite-node22-react18-ts59-single",
+        "npm11-vite-node24-react18-ts59-single",
+        "npm10-vite-node22-react18-ts57-compat",
+        "npm11-vite-node24-react19-ts59-compat",
+        "pnpm9-vite-node22-react18-ts57-workspace",
+        "pnpm10-vite-node24-react19-ts59-custom-root",
+        "yarn4-vite-node22-react19-ts59-workspace",
+        "yarn4-next-node24-react19-ts59-workspace-custom-root"
+      ],
+      "verifiedFixtureIds": [],
+      "runtime": {
+        "node": {
+          "status": "target",
+          "declared": ">=22.12 <25",
+          "targets": [
+            "22.12.0",
+            "24.0.0"
+          ],
+          "evidence": []
+        },
+        "reactPairs": {
+          "status": "target",
+          "declared": {
+            "react": ">=18.3.1 <20",
+            "reactDom": ">=18.3.1 <20"
+          },
+          "targets": [
+            {
+              "react": "18.3.1",
+              "reactDom": "18.3.1"
+            },
+            {
+              "react": "19.1.1",
+              "reactDom": "19.1.1"
+            }
+          ],
+          "evidence": []
+        },
+        "typescript": {
+          "status": "target",
+          "declared": ">=5.7 <6",
+          "targets": [
+            "5.7.3",
+            "5.9.3"
+          ],
+          "policy": "minimum-and-current-5.x",
+          "evidence": []
+        }
+      },
+      "packageManagers": {
+        "status": "target",
+        "targets": {
+          "npm": [
+            "10.9.3",
+            "11.3.0"
+          ],
+          "pnpm": [
+            "9.15.9",
+            "10.17.1"
+          ],
+          "yarn": [
+            "4.9.4"
+          ]
+        },
+        "excluded": [
+          "yarn-classic"
+        ],
+        "evidence": []
+      },
+      "projects": {
+        "status": "target",
+        "frameworks": {
+          "vite": [
+            "6.4.3"
+          ],
+          "next": [
+            "15.5.3"
+          ]
+        },
+        "layouts": [
+          "single-package",
+          "workspace"
+        ],
+        "sourceRootModes": [
+          "canonical",
+          "custom"
+        ],
+        "requiredFlow": [
+          "clean-install",
+          "typecheck",
+          "render",
+          "build",
+          "ssr",
+          "verify",
+          "upgrade",
+          "rollback"
+        ],
+        "evidence": []
+      },
+      "browsers": {
+        "chromium": {
+          "status": "target",
+          "releaseChannels": [
+            "current-stable",
+            "previous-stable"
+          ],
+          "actualVersionRequired": true,
+          "evidence": []
+        },
+        "firefox": {
+          "status": "target",
+          "releaseChannels": [
+            "current-stable",
+            "previous-stable"
+          ],
+          "actualVersionRequired": true,
+          "evidence": []
+        },
+        "webkit": {
+          "status": "target",
+          "product": "Playwright WebKit",
+          "releaseChannels": [
+            "current-playwright"
+          ],
+          "actualVersionRequired": true,
+          "realSafari": false,
+          "evidence": []
+        },
+        "safari": {
+          "status": "target",
+          "minimumMajor": 18,
+          "environment": "real-safari-release-smoke",
+          "actualVersionRequired": true,
+          "realSafariRequired": true,
+          "acceptsPlaywrightWebKit": false,
+          "evidence": [],
+          "note": "Playwright WebKit is supporting engine evidence and cannot verify Safari 18+."
+        }
+      },
+      "responsive": {
+        "status": "target",
+        "cssWidths": [
+          2560,
+          1440,
+          1024,
+          736,
+          360,
+          320
+        ],
+        "evidenceMilestone": "M8",
+        "evidence": []
+      },
+      "ciConfiguration": {
+        "status": "declared",
+        "workflow": ".github/workflows/quality.yml",
+        "configuredFixtureIds": [
+          "npm10-vite-node22-react18-ts59-single",
+          "npm11-vite-node24-react18-ts59-single",
+          "npm10-vite-node22-react18-ts57-compat",
+          "npm11-vite-node24-react19-ts59-compat",
+          "pnpm9-vite-node22-react18-ts57-workspace",
+          "pnpm10-vite-node24-react19-ts59-custom-root",
+          "yarn4-vite-node22-react19-ts59-workspace",
+          "yarn4-next-node24-react19-ts59-workspace-custom-root"
+        ],
+        "note": "Workflow configuration is reviewable intent, not a successful hosted run."
+      },
+      "knownGaps": [
+        "Hosted CI evidence has not been recorded for the configured npm, pnpm, Yarn 4, Vite, Next.js, workspace, custom-root, upgrade, and rollback lanes.",
+        "Current and previous stable Chromium and Firefox versions still need exact-version evidence.",
+        "Real Safari 18+ release smoke remains pending; Playwright WebKit cannot close it."
+      ],
+      "promotionRule": "A target becomes verified only after its complete clean-checkout or release-smoke evidence is recorded with exact versions and all required operations pass."
+    }
+  }
+}

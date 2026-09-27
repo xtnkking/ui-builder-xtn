@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "declarationMap": false,
+    "outDir": ".api-temp",
+    "rootDir": "src",
+    "incremental": false
+  },
+  "files": ["src/personal-ui/index.ts"],
+  "include": []
+}

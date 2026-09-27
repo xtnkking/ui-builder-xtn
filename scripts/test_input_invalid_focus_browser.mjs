@@ -1,13 +1,5 @@
 import assert from "node:assert/strict";
-import { createRequire } from "node:module";
-import { fileURLToPath, pathToFileURL } from "node:url";
-
-const kitRoot = fileURLToPath(new URL("../assets/react-kit/", import.meta.url));
-const kitRequire = createRequire(new URL("../assets/react-kit/package.json", import.meta.url));
-const { createServer } = await import(pathToFileURL(kitRequire.resolve("vite")).href);
-const { chromium } = createRequire(import.meta.url)(process.env.PERSONAL_UI_PLAYWRIGHT_MODULE || "playwright");
-const server = await createServer({ root: kitRoot, server: { host: "127.0.0.1", port: 0 } });
-let browser;
+import { isPersonalUiRegressionMain, runPersonalUiRegression } from "./browser-test-harness.mjs";
 
 const danger = "rgb(201, 54, 43)";
 const primary = "rgb(23, 105, 210)";
@@ -60,25 +52,16 @@ async function inspectFocus(input, target, expectedColor, label) {
   }
 }
 
-try {
-  await server.listen();
-  const url = server.resolvedUrls?.local?.[0];
-  assert.ok(url, "Vite did not expose a local URL");
-  browser = await chromium.launch({
-    headless: true,
-    ...(process.env.PERSONAL_UI_CHROMIUM_EXECUTABLE
-      ? { executablePath: process.env.PERSONAL_UI_CHROMIUM_EXECUTABLE }
-      : {}),
-  });
-
+export async function runInputInvalidFocusRegression({ page, baseURL }) {
+  assert.ok(baseURL, "A baseURL is required");
   for (const width of [2560, 1440, 1024, 736, 360, 320]) {
-    const page = await browser.newPage({ viewport: { width, height: 800 } });
-    try {
-      await page.goto(url);
-      await page.getByRole("tab", { name: "品牌家族登录" }).click();
-      const email = page.locator('.pui-auth__form input[name="email"]');
-      const password = page.locator('.pui-auth__form input[name="password"]');
-      await page.getByRole("button", { name: "登录", exact: true }).click();
+    await page.setViewportSize({ width, height: 800 });
+      await page.goto(`${baseURL}/?regressionWidth=${width}#/patterns/authentication`);
+      await page.getByRole("tab", { name: "品牌家族登录预览", exact: true }).click();
+      const authCase = page.getByRole("tabpanel", { name: "品牌家族登录预览", exact: true });
+      const email = authCase.locator('.pui-auth__form input[name="email"]');
+      const password = authCase.locator('.pui-auth__form input[name="password"]');
+      await authCase.getByRole("button", { name: "登录", exact: true }).click();
       assert.equal(await email.getAttribute("aria-invalid"), "true", `${width}px: email validation did not run`);
       assert.equal(await password.getAttribute("aria-invalid"), "true", `${width}px: password validation did not run`);
 
@@ -104,12 +87,10 @@ try {
       if (process.env.PERSONAL_UI_INPUT_FOCUS_SCREENSHOT_PREFIX) {
         await page.screenshot({ path: `${process.env.PERSONAL_UI_INPUT_FOCUS_SCREENSHOT_PREFIX}-normal-${width}.png` });
       }
-    } finally {
-      await page.close();
-    }
   }
   console.log("Input and PasswordInput uniform invalid focus regression passed at 2560, 1440, 1024, 736, 360, and 320px.");
-} finally {
-  await browser?.close();
-  await server.close();
+}
+
+if (isPersonalUiRegressionMain(import.meta.url)) {
+  await runPersonalUiRegression(runInputInvalidFocusRegression);
 }

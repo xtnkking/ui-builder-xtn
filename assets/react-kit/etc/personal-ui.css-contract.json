@@ -1,0 +1,3838 @@
+{
+  "schemaVersion": 1,
+  "layerOrder": [
+    "pui.reset",
+    "pui.tokens",
+    "pui.base",
+    "pui.components",
+    "pui.utilities"
+  ],
+  "files": [
+    "src/personal-ui/styles.css",
+    "src/personal-ui/styles/extended.css",
+    "src/personal-ui/styles/inputs-extra.css",
+    "src/personal-ui/styles/layout-actions-display.css"
+  ],
+  "selectorOwners": [
+    {
+      "selector": ".pui-accordion",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-accordion__item",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-alert",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-alert__action",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-alert__copy",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-alert__icon",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-alert--danger",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-alert--success",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-alert--warning",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-align-center",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-align-end",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-anchor-nav",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-app-nav",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-app-nav__actions",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-app-nav__badge",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-app-nav__brand",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-app-nav__icon",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-app-nav__item",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-app-nav__items",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-app-nav__label",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-app-nav--bottom",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-app-nav--side",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-app-nav--top",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-applied-tags",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-aspect-ratio",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-async-select",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-async-select__footer",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-async-select__list",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-async-select__popover",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-attachment",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-attachment__actions",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-attachment__copy",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-attachment__icon",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-attachment__link",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-auth",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-auth__company",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-auth__create",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-auth__form",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-auth__heading",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-auth__legal",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-auth__options",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-auth__panel",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-auth__product-copy",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-auth__scene",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-auth__visual",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-auth-page",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-auth-page__form",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-auth-page__identity",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-auth-page__visual",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-auth-unavailable",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-autocomplete",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-autocomplete__list",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-avatar",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-avatar-group",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-avatar-group__overflow",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-badge",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-badge__anchor",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-badge__indicator",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-badge__indicator--blue",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-badge__indicator--danger",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-badge__indicator--dot",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-badge__indicator--neutral",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-badge__indicator--success",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-badge__indicator--warning",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-badge--anchored",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-banner",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-banner--sticky",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-bar-chart",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-bar-chart__item",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-bar-chart__label",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-bar-chart__track",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-bar-chart__value",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-box",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-box--default",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-box--pad-large",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-box--pad-medium",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-box--pad-small",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-box--pad-xlarge",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-box--pad-xsmall",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-box--raised",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-box--subtle",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-breadcrumbs",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-button",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-button__content",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-button__icon",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-button__label",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-button__loading",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-button__trailing",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-button--danger",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-button--field",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-button--ghost",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-button--primary",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-button--small",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-button-group",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-button-group--attached",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-calendar",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-calendar__grid",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-card",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-card__body",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-card__footer",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-card__header",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-card__header-content",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-card__heading-copy",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-card--outlined",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-card--raised",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-card--subtle",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-carousel",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-carousel__controls",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-carousel__dots",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-carousel__stage",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-cascader",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-choice",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-clipboard-button",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-code-block",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-code-block__toolbar",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-code-block--wrap",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-code-editor",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-code-editor__input",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-code-editor__meta",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-collapse",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-collapse__content",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-collapse__heading",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-collapse__panel",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-collapse__trigger",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-color-picker",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-color-picker__native",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-color-picker__swatch",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-color-picker__swatches",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-combobox",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-combobox__empty",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-combobox__list",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-combobox__popover",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-combobox__search",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-combobox__trigger",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-combobox__value",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-command",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-command__copy",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-command__icon",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-command__results",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-command__shortcut",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-command__status",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-confirm-actions",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-context-menu",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-context-menu__label",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-context-menu__surface",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-data-page",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-data-table",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-data-table__cell--pin-end",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-data-table__cell--pin-start",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-data-table__cell-content",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-data-table__cell-content--text",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-data-table__empty-scroller",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-data-table__frame",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-data-table__frame--fixed-viewport",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-data-table__frame--paginated",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-data-table__frame--viewport-slack",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-data-table__header-content",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-data-table__header-content--text",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-data-table__mobile",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-data-table__pagination",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-data-table__scroller",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-data-table__skeleton-cell",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-data-table__sort",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-data-table__sort-label",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-data-table--has-mobile",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-date-range",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-date-range__error",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-date-range__separator",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-description-list",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-description-list__item",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-description-list--divided",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-detail-page",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-detail-page__layout",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-detail-page__sections",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-dialog",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-dialog__body",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-dialog__footer",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-dialog__header",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-dialog--large",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-dialog--no-body",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-dialog--small",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-divider",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-divider--horizontal",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-divider--vertical",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-drag-drop",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-drawer",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-drawer__body",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-drawer__footer",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-drawer__header",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-drawer--edge",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-drawer--large",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-dropdown",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-dropdown__item",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-dropdown__item-icon",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-dropdown__item-label",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-dropdown__menu",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-dropdown__menu--end",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-dropdown__menu--start",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-dropdown__trigger-label",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-empty",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-empty__action",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-empty__icon",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-empty--compact",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-expandable-text",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-extra-error",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-extra-option",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-extra-option__copy",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-extra-option__leading",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-extra-popover",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-extra-state",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-field",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-field__error",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-field__hint",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-file-upload",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-file-upload__copy",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-file-upload__dropzone",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-file-upload__file-icon",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-file-upload__footer",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-file-upload__item",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-file-upload__item-actions",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-file-upload__item-copy",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-file-upload__list",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-file-upload__native",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-file-upload__progress",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-filter-bar",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-filter-bar__actions",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-filter-bar__active",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-filter-bar__fields",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-filter-bar__status",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-focus-trap",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-form",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-form-control-bridge",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-form-page__actions",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-form-page__content",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-form-page__form",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-gallery",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-gallery__caption",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-gallery__frame",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-gallery__item",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-gallery-empty",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-grid",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-grid--fixed",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-hover-card",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-icon-button",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-icon-button__icon",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-icon-button--danger",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-icon-button--secondary",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-import-export-page__grid",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-infinite-scroll",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-infinite-scroll__sentinel",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-inline",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-inline-edit",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-inline-edit__actions",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-inline-edit__error",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-inline-edit__value",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-inline-message",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-inline-message--danger",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-inline-message--success",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-inline-message--warning",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-input",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-input--embedded",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-input-action",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-input-shell",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-input-shell__end",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-input-shell__start",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-keyboard-shortcut",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-keyboard-shortcut__separator",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-label",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-label__required",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-layout-portal",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-lightbox",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-lightbox__close",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-lightbox__image-error",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-lightbox__next",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-lightbox__position",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-lightbox__previous",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-link",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-link__icon",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-link__label",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-link__trailing",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-link--danger",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-link--muted",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-link-button",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-list",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-list__item",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-list--divided",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-list-empty",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-list-page",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-list-page__bulk",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-list-page__content",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-list-page__filters",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-list-page__footer",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-list-page--wide",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-load-more",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-load-more__end",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-master-detail__detail",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-master-detail__layout",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-master-detail__master",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-media",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-media__frame",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-member-cell",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-member-mobile-row",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-member-mobile-row__copy",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-menu",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-meter",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-meter-group",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-meter-group__label",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-mobile-data-row__copy",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-mobile-data-row--loading",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-multi-select",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-multi-select__check",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-multi-select__count",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-multi-select__footer",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-multi-select__list",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-multi-select__popover",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-multi-select__summary",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-multi-select__trigger",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-number-input",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-number-input__steps",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-option",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-option__check",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-option__copy",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-option__leading",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-otp",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-otp__cell",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-overflow-text",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-overlay",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-overlay--drawer",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-overlay--drawer-edge",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-page",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-page-button",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-page-button__label",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-page-header",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-page-heading",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-page-heading__actions",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-page-heading__copy",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-pagination",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-pagination__controls",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-pagination__ellipsis",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-pagination__mobile-label",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-pagination__pages",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-pagination__summary",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-popconfirm",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-popconfirm__heading",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-popover",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-popover__surface",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-popover__trigger",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-portal-source",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-progress",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-progress-group",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-progress-group__label",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-progress-ring",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-progress-ring--large",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-progress-ring--small",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-query-state",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-query-toolbar",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-query-toolbar__actions",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-rating",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-rating__stars",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-rating__value",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-resizable",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-resizable__handle",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-resizable__panel",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-resizable--horizontal",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-resizable--vertical",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-responsive-visibility",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-result-summary",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-rich-text",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-rich-text__toolbar",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-scheduler",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-scheduler__agenda",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-scheduler__empty",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-scheduler__event",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-scroll-area",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-scroll-area--both",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-scroll-area--horizontal",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-scroll-area--vertical",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-search-filter-page",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-segmented",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-segmented--fill",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-segmented--mobile-fill",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-select",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-select__indicator",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-select__option",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-select__option-label",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-select__popover",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-select__value",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-select-shell",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-settings-page",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-settings-page__layout",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-skeleton",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-skeleton--avatar",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-skeleton--short",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-slider",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-slider__header",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-slider__range-control",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-sortable",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-sortable__actions",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-spinner",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-spinner-wrap",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-split-button",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-split-button__menu",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-split-button__primary",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-stack",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-statistic",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-statistic__description",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-statistic__label",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-statistic__suffix",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-statistic__trend",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-statistic__trend--negative",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-statistic__trend--positive",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-statistic__value",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-statistic__value-row",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-status-indicator",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-status-indicator__detail",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-status-indicator__dot",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-status-indicator__label",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-status-indicator--blue",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-status-indicator--danger",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-status-indicator--neutral",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-status-indicator--success",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-status-indicator--warning",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-status-page",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-stepper",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-stepper__copy",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-stepper__indicator",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-stepper--responsive",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-stepper--vertical",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-sticky-action-bar",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-sticky-action-bar__actions",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-sticky-action-bar__copy",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-switch",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-switch__track",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-tabs__list",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-tabs__panel",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-tabs--fill",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-tag",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-tag__label",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-tag__leading",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-tag__remove",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-tag--blue",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-tag--danger",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-tag--success",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-tag--warning",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-tag-input",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-tag-input__control",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-tag-input__error",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-tag-input__input",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-tag-input__suggestions",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-textarea",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-timeline",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-timeline__copy",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-timeline__item",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-timeline__marker",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-timeline__marker--blue",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-timeline__marker--danger",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-timeline__marker--success",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-timeline__marker--warning",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-toast",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-toast__action",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-toast__action-content",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-toast__action-loading",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-toast__actions",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-toast__close",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-toast__copy",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-toast__countdown",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-toast__icon",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-toast__main",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-toast--danger",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-toast--pill",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-toast--success",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-toast--warning",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-toast-viewport",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-toast-viewport--bottom-right",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-toast-viewport--top",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-toggle-button",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-toolbar",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-toolbar__end",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-toolbar__main",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-toolbar__start",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-tooltip",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-tooltip__bubble",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-tooltip__trigger",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-tooltip--fill",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-tour",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-tour__card",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-tour__count",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-tour__scrim",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-tour__spotlight",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-transfer",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-transfer__actions",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-transfer__panel",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-tree",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-tree__row",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-tree__spacer",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-tree-select",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-tree-select__expander",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-tree-select__label",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-tree-select__row",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-tree-select__spacer",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-tree-select__tree",
+      "file": "src/personal-ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".pui-tree-table",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-tree-table__empty",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-tree-table__tree-cell",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-validation-summary",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-validation-summary__heading",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-virtual-list",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-virtual-list__empty",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-virtual-list__loading",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-virtual-list__spacer",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-visually-hidden",
+      "file": "src/personal-ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".pui-wizard-page__actions",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-wizard-page__content",
+      "file": "src/personal-ui/styles/extended.css"
+    }
+  ],
+  "tokens": [
+    {
+      "token": "--_pui-auth-visual-bg",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 72
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 151
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 225
+        }
+      ]
+    },
+    {
+      "token": "--_pui-auth-visual-copy",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 75
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 154
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 228
+        }
+      ]
+    },
+    {
+      "token": "--_pui-auth-visual-muted",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 74
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 153
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 227
+        }
+      ]
+    },
+    {
+      "token": "--_pui-auth-visual-text",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 73
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 152
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 226
+        }
+      ]
+    },
+    {
+      "token": "--_pui-backdrop",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 68
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 147
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 221
+        }
+      ]
+    },
+    {
+      "token": "--_pui-carousel-dot",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 83
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 162
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 236
+        }
+      ]
+    },
+    {
+      "token": "--_pui-chart-track",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 82
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 161
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 235
+        }
+      ]
+    },
+    {
+      "token": "--_pui-code-action",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 80
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 159
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 233
+        }
+      ]
+    },
+    {
+      "token": "--_pui-code-bg",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 76
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 155
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 229
+        }
+      ]
+    },
+    {
+      "token": "--_pui-code-border",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 78
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 157
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 231
+        }
+      ]
+    },
+    {
+      "token": "--_pui-code-muted",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 79
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 158
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 232
+        }
+      ]
+    },
+    {
+      "token": "--_pui-code-text",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 77
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 156
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 230
+        }
+      ]
+    },
+    {
+      "token": "--_pui-color-swatch-shadow",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 89
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 168
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 242
+        }
+      ]
+    },
+    {
+      "token": "--_pui-color-swatch-text",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 88
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 167
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 241
+        }
+      ]
+    },
+    {
+      "token": "--_pui-control-hover-bg",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 45
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 124
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 198
+        }
+      ]
+    },
+    {
+      "token": "--_pui-control-hover-border",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 44
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 123
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 197
+        }
+      ]
+    },
+    {
+      "token": "--_pui-danger-border",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 62
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 141
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 215
+        }
+      ]
+    },
+    {
+      "token": "--_pui-danger-hover",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 46
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 125
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 199
+        }
+      ]
+    },
+    {
+      "token": "--_pui-data-table-header-height",
+      "kind": "internal-component",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.components",
+          "line": 2460
+        }
+      ]
+    },
+    {
+      "token": "--_pui-disabled-bg",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 47
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 126
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 200
+        }
+      ]
+    },
+    {
+      "token": "--_pui-disabled-text",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 48
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 127
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 201
+        }
+      ]
+    },
+    {
+      "token": "--_pui-input-autofill-background",
+      "kind": "internal-component",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.components",
+          "line": 656
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.components",
+          "line": 697
+        }
+      ]
+    },
+    {
+      "token": "--_pui-input-autofill-state-shadow",
+      "kind": "internal-component",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.components",
+          "line": 658
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.components",
+          "line": 750
+        }
+      ]
+    },
+    {
+      "token": "--_pui-input-autofill-text",
+      "kind": "internal-component",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.components",
+          "line": 657
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.components",
+          "line": 698
+        }
+      ]
+    },
+    {
+      "token": "--_pui-interactive-hover-bg",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 63
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 142
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 216
+        }
+      ]
+    },
+    {
+      "token": "--_pui-lightbox-backdrop",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 84
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 163
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 237
+        }
+      ]
+    },
+    {
+      "token": "--_pui-lightbox-text",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 85
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 164
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 238
+        }
+      ]
+    },
+    {
+      "token": "--_pui-meter-track",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 81
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 160
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 234
+        }
+      ]
+    },
+    {
+      "token": "--_pui-neutral-tag-bg",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 57
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 136
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 210
+        }
+      ]
+    },
+    {
+      "token": "--_pui-neutral-tag-border",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 56
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 135
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 209
+        }
+      ]
+    },
+    {
+      "token": "--_pui-neutral-tag-text",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 58
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 137
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 211
+        }
+      ]
+    },
+    {
+      "token": "--_pui-placeholder",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 49
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 128
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 202
+        }
+      ]
+    },
+    {
+      "token": "--_pui-primary-border",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 59
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 138
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 212
+        }
+      ]
+    },
+    {
+      "token": "--_pui-progress-track",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 64
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 143
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 217
+        }
+      ]
+    },
+    {
+      "token": "--_pui-rating",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 87
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 166
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 240
+        }
+      ]
+    },
+    {
+      "token": "--_pui-scrollbar-thumb",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 71
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 150
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 224
+        }
+      ]
+    },
+    {
+      "token": "--_pui-segmented-bg",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 53
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 132
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 206
+        }
+      ]
+    },
+    {
+      "token": "--_pui-segmented-border",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 54
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 133
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 207
+        }
+      ]
+    },
+    {
+      "token": "--_pui-segmented-shadow",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 55
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 134
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 208
+        }
+      ]
+    },
+    {
+      "token": "--_pui-skeleton",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 50
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 129
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 203
+        }
+      ]
+    },
+    {
+      "token": "--_pui-success-border",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 60
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 139
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 213
+        }
+      ]
+    },
+    {
+      "token": "--_pui-switch-thumb",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 52
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 131
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 205
+        }
+      ]
+    },
+    {
+      "token": "--_pui-switch-track",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 51
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 130
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 204
+        }
+      ]
+    },
+    {
+      "token": "--_pui-toast-close-hover",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 65
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 144
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 218
+        }
+      ]
+    },
+    {
+      "token": "--_pui-toast-countdown-fill",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 67
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 146
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 220
+        }
+      ]
+    },
+    {
+      "token": "--_pui-toast-countdown-track",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 66
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 145
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 219
+        }
+      ]
+    },
+    {
+      "token": "--_pui-tooltip-bg",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 69
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 148
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 222
+        }
+      ]
+    },
+    {
+      "token": "--_pui-tooltip-text",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 70
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 149
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 223
+        }
+      ]
+    },
+    {
+      "token": "--_pui-tour-backdrop",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 86
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 165
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 239
+        }
+      ]
+    },
+    {
+      "token": "--_pui-warning-border",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 61
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 140
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 214
+        }
+      ]
+    },
+    {
+      "token": "--pui-avatar-font-size",
+      "kind": "internal-component",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles/layout-actions-display.css",
+          "layer": "pui.components",
+          "line": 531
+        },
+        {
+          "file": "src/personal-ui/styles/layout-actions-display.css",
+          "layer": "pui.components",
+          "line": 532
+        },
+        {
+          "file": "src/personal-ui/styles/layout-actions-display.css",
+          "layer": "pui.components",
+          "line": 533
+        },
+        {
+          "file": "src/personal-ui/styles/layout-actions-display.css",
+          "layer": "pui.components",
+          "line": 534
+        }
+      ]
+    },
+    {
+      "token": "--pui-avatar-size",
+      "kind": "internal-component",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles/layout-actions-display.css",
+          "layer": "pui.components",
+          "line": 531
+        },
+        {
+          "file": "src/personal-ui/styles/layout-actions-display.css",
+          "layer": "pui.components",
+          "line": 532
+        },
+        {
+          "file": "src/personal-ui/styles/layout-actions-display.css",
+          "layer": "pui.components",
+          "line": 533
+        },
+        {
+          "file": "src/personal-ui/styles/layout-actions-display.css",
+          "layer": "pui.components",
+          "line": 534
+        }
+      ]
+    },
+    {
+      "token": "--pui-bg",
+      "kind": "public-semantic",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 22
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 101
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 175
+        }
+      ]
+    },
+    {
+      "token": "--pui-border",
+      "kind": "public-semantic",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 27
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 106
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 180
+        }
+      ]
+    },
+    {
+      "token": "--pui-border-strong",
+      "kind": "public-semantic",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 28
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 107
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 181
+        }
+      ]
+    },
+    {
+      "token": "--pui-clamp-lines",
+      "kind": "internal-runtime",
+      "declarations": []
+    },
+    {
+      "token": "--pui-control-height",
+      "kind": "internal-geometry",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 10
+        }
+      ]
+    },
+    {
+      "token": "--pui-danger",
+      "kind": "public-semantic",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 38
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 117
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 191
+        }
+      ]
+    },
+    {
+      "token": "--pui-danger-soft",
+      "kind": "public-semantic",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 39
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 118
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 192
+        }
+      ]
+    },
+    {
+      "token": "--pui-data-table-desktop-viewport-height",
+      "kind": "internal-runtime",
+      "declarations": []
+    },
+    {
+      "token": "--pui-data-table-mobile-viewport-height",
+      "kind": "internal-runtime",
+      "declarations": []
+    },
+    {
+      "token": "--pui-description-columns",
+      "kind": "internal-component",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles/layout-actions-display.css",
+          "layer": "pui.components",
+          "line": 442
+        },
+        {
+          "file": "src/personal-ui/styles/layout-actions-display.css",
+          "layer": "pui.components",
+          "line": 443
+        },
+        {
+          "file": "src/personal-ui/styles/layout-actions-display.css",
+          "layer": "pui.components",
+          "line": 444
+        },
+        {
+          "file": "src/personal-ui/styles/layout-actions-display.css",
+          "layer": "pui.components",
+          "line": 971
+        },
+        {
+          "file": "src/personal-ui/styles/layout-actions-display.css",
+          "layer": "pui.components",
+          "line": 996
+        }
+      ]
+    },
+    {
+      "token": "--pui-event-color",
+      "kind": "internal-runtime",
+      "declarations": []
+    },
+    {
+      "token": "--pui-floating-anchor-width",
+      "kind": "internal-runtime",
+      "declarations": []
+    },
+    {
+      "token": "--pui-floating-max-height",
+      "kind": "internal-runtime",
+      "declarations": []
+    },
+    {
+      "token": "--pui-floating-max-width",
+      "kind": "internal-runtime",
+      "declarations": []
+    },
+    {
+      "token": "--pui-focus-ring",
+      "kind": "public-semantic",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 41
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 120
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 194
+        }
+      ]
+    },
+    {
+      "token": "--pui-font",
+      "kind": "internal-geometry",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 9
+        }
+      ]
+    },
+    {
+      "token": "--pui-gallery-columns",
+      "kind": "internal-component",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles/layout-actions-display.css",
+          "layer": "pui.components",
+          "line": 972
+        },
+        {
+          "file": "src/personal-ui/styles/layout-actions-display.css",
+          "layer": "pui.components",
+          "line": 1008
+        }
+      ]
+    },
+    {
+      "token": "--pui-grid-columns",
+      "kind": "internal-runtime",
+      "declarations": []
+    },
+    {
+      "token": "--pui-grid-min",
+      "kind": "internal-runtime",
+      "declarations": []
+    },
+    {
+      "token": "--pui-meter-color",
+      "kind": "internal-component",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles/layout-actions-display.css",
+          "layer": "pui.components",
+          "line": 839
+        },
+        {
+          "file": "src/personal-ui/styles/layout-actions-display.css",
+          "layer": "pui.components",
+          "line": 844
+        },
+        {
+          "file": "src/personal-ui/styles/layout-actions-display.css",
+          "layer": "pui.components",
+          "line": 845
+        },
+        {
+          "file": "src/personal-ui/styles/layout-actions-display.css",
+          "layer": "pui.components",
+          "line": 846
+        }
+      ]
+    },
+    {
+      "token": "--pui-muted",
+      "kind": "public-semantic",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 26
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 105
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 179
+        }
+      ]
+    },
+    {
+      "token": "--pui-on-danger",
+      "kind": "public-semantic",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 40
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 119
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 193
+        }
+      ]
+    },
+    {
+      "token": "--pui-on-primary",
+      "kind": "public-semantic",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 33
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 112
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 186
+        }
+      ]
+    },
+    {
+      "token": "--pui-panel-size",
+      "kind": "internal-component",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles/extended.css",
+          "layer": "pui.components",
+          "line": 207
+        }
+      ]
+    },
+    {
+      "token": "--pui-primary",
+      "kind": "public-semantic",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 29
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 108
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 182
+        }
+      ]
+    },
+    {
+      "token": "--pui-primary-hover",
+      "kind": "public-semantic",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 30
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 109
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 183
+        }
+      ]
+    },
+    {
+      "token": "--pui-primary-ink",
+      "kind": "public-semantic",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 32
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 111
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 185
+        }
+      ]
+    },
+    {
+      "token": "--pui-primary-soft",
+      "kind": "public-semantic",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 31
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 110
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 184
+        }
+      ]
+    },
+    {
+      "token": "--pui-product-accent",
+      "kind": "public-semantic",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 14
+        }
+      ]
+    },
+    {
+      "token": "--pui-progress-value",
+      "kind": "internal-runtime",
+      "declarations": []
+    },
+    {
+      "token": "--pui-radius-control",
+      "kind": "internal-geometry",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 11
+        }
+      ]
+    },
+    {
+      "token": "--pui-radius-surface",
+      "kind": "internal-geometry",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 12
+        }
+      ]
+    },
+    {
+      "token": "--pui-radius-table",
+      "kind": "internal-geometry",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 13
+        }
+      ]
+    },
+    {
+      "token": "--pui-ring-size",
+      "kind": "internal-component",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles/extended.css",
+          "layer": "pui.components",
+          "line": 38
+        },
+        {
+          "file": "src/personal-ui/styles/extended.css",
+          "layer": "pui.components",
+          "line": 52
+        },
+        {
+          "file": "src/personal-ui/styles/extended.css",
+          "layer": "pui.components",
+          "line": 53
+        }
+      ]
+    },
+    {
+      "token": "--pui-shadow-overlay",
+      "kind": "internal-geometry",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 43
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 122
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 196
+        }
+      ]
+    },
+    {
+      "token": "--pui-shadow-popover",
+      "kind": "internal-geometry",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 42
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 121
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 195
+        }
+      ]
+    },
+    {
+      "token": "--pui-success",
+      "kind": "public-semantic",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 34
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 113
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 187
+        }
+      ]
+    },
+    {
+      "token": "--pui-success-soft",
+      "kind": "public-semantic",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 35
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 114
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 188
+        }
+      ]
+    },
+    {
+      "token": "--pui-surface",
+      "kind": "public-semantic",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 23
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 102
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 176
+        }
+      ]
+    },
+    {
+      "token": "--pui-surface-subtle",
+      "kind": "public-semantic",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 24
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 103
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 177
+        }
+      ]
+    },
+    {
+      "token": "--pui-text",
+      "kind": "public-semantic",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 25
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 104
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 178
+        }
+      ]
+    },
+    {
+      "token": "--pui-toast-duration",
+      "kind": "internal-runtime",
+      "declarations": []
+    },
+    {
+      "token": "--pui-warning",
+      "kind": "public-semantic",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 36
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 115
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 189
+        }
+      ]
+    },
+    {
+      "token": "--pui-warning-soft",
+      "kind": "public-semantic",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 37
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 116
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.tokens",
+          "line": 190
+        }
+      ]
+    }
+  ],
+  "selectorCount": 1115
+}

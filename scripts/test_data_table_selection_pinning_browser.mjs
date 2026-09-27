@@ -1,29 +1,11 @@
 import assert from "node:assert/strict";
-import { createRequire } from "node:module";
-import { fileURLToPath, pathToFileURL } from "node:url";
+import { isPersonalUiRegressionMain, runPersonalUiRegression } from "./browser-test-harness.mjs";
 
-const kitRoot = fileURLToPath(new URL("../assets/react-kit/", import.meta.url));
-const kitRequire = createRequire(new URL("../assets/react-kit/package.json", import.meta.url));
-const { createServer } = await import(pathToFileURL(kitRequire.resolve("vite")).href);
-const { chromium } = createRequire(import.meta.url)(process.env.PERSONAL_UI_PLAYWRIGHT_MODULE || "playwright");
-const server = await createServer({ root: kitRoot, server: { host: "127.0.0.1", port: 0 } });
-let browser;
-
-try {
-  await server.listen();
-  const url = server.resolvedUrls?.local?.[0];
-  assert.ok(url, "Vite did not expose a local URL");
-  browser = await chromium.launch({
-    headless: true,
-    ...(process.env.PERSONAL_UI_CHROMIUM_EXECUTABLE
-      ? { executablePath: process.env.PERSONAL_UI_CHROMIUM_EXECUTABLE }
-      : {}),
-  });
-
+export async function runDataTableSelectionPinningRegression({ page, baseURL }) {
+  assert.ok(baseURL, "A baseURL is required");
   for (const width of [736, 320]) {
-    const page = await browser.newPage({ viewport: { width, height: 900 } });
-    try {
-      await page.goto(new URL("data-table-selection-pinning-test.html", url).href);
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto(new URL("data-table-selection-pinning-test.html", baseURL).href);
       const rootFor = (label) => page.locator(`.pui-data-table:has(table[aria-label="${label}"])`);
       const table = rootFor("默认勾选列");
       await table.waitFor();
@@ -100,13 +82,11 @@ try {
         assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), "mobile selection example causes horizontal overflow");
       }
       assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), `selection example escaped the page at ${width}px`);
-    } finally {
-      await page.close();
-    }
   }
 
   console.log("DataTable leading selection-column pinning passed at 736px and 320px.");
-} finally {
-  await browser?.close();
-  await server.close();
+}
+
+if (isPersonalUiRegressionMain(import.meta.url)) {
+  await runPersonalUiRegression(runDataTableSelectionPinningRegression);
 }

@@ -12,6 +12,14 @@ import subprocess
 from collections import Counter
 from pathlib import Path
 
+from personal_ui_installation import (
+    STATE_RELATIVE,
+    InstallationContext,
+    normalized_absolute,
+    read_json_object as read_installation_json,
+    resolve_context,
+    validate_path_chain,
+)
 from validate_component_manifest import validate_component_manifest
 
 
@@ -23,11 +31,6 @@ COMPONENT_MANIFEST_PATH = ASSET_ROOT / "component-manifest.json"
 PROVENANCE_TOOL_PATH = ASSET_ROOT / "tools" / "personal-ui" / "verify-provenance.mjs"
 INSTALLED_TOOL_ROOT = Path("tools") / "personal-ui"
 PROVENANCE_SCRIPT_NAME = "verify:personal-ui"
-PROVENANCE_SCRIPT_COMMAND = (
-    "node tools/personal-ui/verify-provenance.mjs --target . "
-    "--source-root src/personal-ui --manifest tools/personal-ui/component-manifest.json"
-)
-PREBUILD_GATE_COMMAND = f"npm run {PROVENANCE_SCRIPT_NAME}"
 COMPONENT_SELECTOR = re.compile(r"(?<![\w-])\.pui-[\w-]+")
 OWNER_SELECTOR = re.compile(r"\[\s*data-pui[\w-]*", re.IGNORECASE)
 SEMVER = re.compile(
@@ -72,6 +75,8 @@ IGNORED_APPLICATION_DIRECTORIES = {
     "node_modules",
     "build",
     "coverage",
+    "tests",
+    "__tests__",
 }
 CSS_IN_SCRIPT_SELECTOR = re.compile(
     r'''(?<![\w-])\.pui-[\w-]+[^"'`{};]{0,160}\{''', re.DOTALL
@@ -192,28 +197,62 @@ CSS_SAFE_INHERITED_FONT_PROPERTIES = {
     "font-weight",
     "line-height",
 }
-STYLE_OVERRIDE_LAYOUT_ENTRY_IDS = {
-    "aspect",
-    "collapse",
-    "color",
-    "divider",
-    "focus-trap",
-    "layout",
-    "portal",
-    "resizable",
-    "responsive",
-    "responsive-visibility",
-    "scroll",
-    "sticky",
-    "visually-hidden",
+PROTECTED_COMPONENT_PROPS = (
+    "className",
+    "style",
+    "css",
+    "sx",
+    "tw",
+    "ref",
+    "dangerouslySetInnerHTML",
+)
+PROTECTED_COMPONENT_PROP_NAMES = {
+    value.lower(): value for value in PROTECTED_COMPONENT_PROPS
 }
-PROTECTED_COMPONENT_PROPS = ("className", "style", "css", "sx", "tw", "ref")
+KNOWN_RESERVED_CONTROL_DATA_PROPS = frozenset(
+    {
+        "data-pui-owner",
+        "data-pui-floating-root",
+        "data-pui-form-bridge",
+        "data-pui-portal-source",
+        "data-pui-toast-portal-root",
+        "data-pui-slot",
+    }
+)
 CSS_IN_JS_PACKAGES = {"styled-components", "@emotion/styled", "@emotion/react"}
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--target", type=Path, required=True)
+    roots = parser.add_mutually_exclusive_group(required=True)
+    roots.add_argument(
+        "--target",
+        type=Path,
+        help="Compatibility shorthand for a standalone project/package root.",
+    )
+    roots.add_argument(
+        "--project-root",
+        type=Path,
+        help="Repository or workspace root that bounds the package.",
+    )
+    parser.add_argument(
+        "--package-root",
+        type=Path,
+        help="Application package root, absolute or relative to --project-root.",
+    )
+    parser.add_argument(
+        "--source-root",
+        type=Path,
+        help="Managed Personal UI path relative to the package root.",
+    )
+    parser.add_argument(
+        "--package-manager",
+        choices=("auto", "npm", "pnpm", "yarn"),
+        default="auto",
+    )
+    parser.add_argument(
+        "--framework", choices=("auto", "vite", "next"), default="auto"
+    )
     parser.add_argument(
         "--allow-unreferenced",
         action="store_true",
@@ -232,6 +271,62 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def quote_script_argument(value: str) -> str:
+    if '"' in value or "\r" in value or "\n" in value:
+        raise ValueError(f"script argument cannot be represented safely: {value!r}")
+    return f'"{value}"'
+
+
+def provenance_script_command(_source_relative: Path) -> str:
+    return (
+        "node tools/personal-ui/verify-provenance.mjs --target . "
+        "--manifest tools/personal-ui/component-manifest.json"
+    )
+
+
+def resolve_verification_context(args: argparse.Namespace) -> InstallationContext:
+    anchor = normalized_absolute(args.project_root or args.target or Path.cwd())
+    validate_path_chain(anchor, anchor, label="project root")
+    validate_path_chain(anchor, anchor / "package.json", label="project package.json")
+    if args.package_root is not None:
+        package_root = normalized_absolute(args.package_root, base=anchor)
+        validate_path_chain(anchor, package_root, label="package root")
+        validate_path_chain(
+            anchor, package_root / "package.json", label="package package.json"
+        )
+    context = resolve_context(
+        target=args.target,
+        project_root=args.project_root,
+        package_root=args.package_root,
+        source_root=args.source_root,
+        package_manager=args.package_manager,
+        framework=args.framework,
+    )
+    if args.source_root is not None:
+        return context
+    state_path = context.package_root / STATE_RELATIVE
+    validate_path_chain(
+        context.package_root, state_path, label="Personal UI install state"
+    )
+    if not state_path.is_file():
+        return context
+    try:
+        state = read_installation_json(state_path, label="Personal UI install state")
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError, ValueError):
+        return context
+    state_source = state.get("sourceRoot")
+    if not isinstance(state_source, str) or Path(state_source) == context.source_relative:
+        return context
+    return resolve_context(
+        target=args.target,
+        project_root=args.project_root,
+        package_root=args.package_root,
+        source_root=Path(state_source),
+        package_manager=args.package_manager,
+        framework=args.framework,
+    )
+
+
 def read_json_object(path: Path, *, label: str) -> dict[str, object]:
     value = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(value, dict):
@@ -247,6 +342,7 @@ def validate_registry_shape(registry: dict[str, object], *, label: str) -> list[
         "sourceRoot": str,
         "styleEntry": str,
         "exports": list,
+        "exportClassifications": dict,
         "dependencies": dict,
     }
     for field, expected_type in required_fields.items():
@@ -288,6 +384,18 @@ def validate_registry_shape(registry: dict[str, object], *, label: str) -> list[
     return errors
 
 
+def classified_runtime_exports(
+    registry: dict[str, object], classification: str
+) -> set[str]:
+    classifications = registry.get("exportClassifications")
+    if not isinstance(classifications, dict):
+        return set()
+    values = classifications.get(classification)
+    if not isinstance(values, list):
+        return set()
+    return {value for value in values if isinstance(value, str)}
+
+
 def is_recognized_personal_ui_registry(value: object) -> bool:
     return (
         isinstance(value, dict)
@@ -305,12 +413,33 @@ def is_link_like(path: Path) -> bool:
     return path.is_symlink() or bool(is_junction and is_junction())
 
 
-def validate_project_path_integrity(
-    target: Path, source_root: Path
-) -> list[str]:
+def linked_descendants(root: Path) -> tuple[list[Path], list[str]]:
+    """Find links without traversing them, including Windows junctions."""
+
+    links: list[Path] = []
     errors: list[str] = []
-    if is_link_like(target):
-        errors.append(f"project target must not be a symbolic link or junction: {target}")
+    pending = [root]
+    while pending:
+        current = pending.pop()
+        try:
+            with os.scandir(current) as entries:
+                for entry in entries:
+                    path = Path(entry.path)
+                    if is_link_like(path):
+                        links.append(path)
+                    elif entry.is_dir(follow_symlinks=False):
+                        pending.append(path)
+        except OSError as error:
+            errors.append(f"cannot inspect project path without following links: {error}")
+    return sorted(links), errors
+
+
+def validate_project_path_integrity(target: Path, source_root: Path) -> list[str]:
+    errors: list[str] = []
+    try:
+        validate_path_chain(target, target, label="project target")
+    except (OSError, ValueError) as error:
+        return [str(error)]
 
     target_physical = target.resolve(strict=False)
     skill_physical = SKILL_ROOT.resolve(strict=True)
@@ -325,27 +454,46 @@ def validate_project_path_integrity(
     guarded_paths = {
         "package.json": target / "package.json",
         "application source": target / "src",
+        "Next.js app source": target / "app",
+        "Next.js pages source": target / "pages",
         "managed Personal UI source": source_root,
         "installed Personal UI registry": source_root / "registry.json",
         "installed Personal UI tools": target / INSTALLED_TOOL_ROOT,
+        "installed Personal UI install state": target / STATE_RELATIVE,
         "installed Personal UI component manifest": target
         / INSTALLED_TOOL_ROOT
         / "component-manifest.json",
         "installed Personal UI provenance verifier": target
         / INSTALLED_TOOL_ROOT
         / "verify-provenance.mjs",
+        "legacy Personal UI registry": target / "registry.json",
     }
+    safe_paths: set[Path] = set()
     for label, path in guarded_paths.items():
-        if is_link_like(path):
-            errors.append(f"{label} must not be a symbolic link or junction: {path}")
+        try:
+            validate_path_chain(target, path, label=label)
+            safe_paths.add(path)
+        except (OSError, ValueError) as error:
+            message = str(error)
+            if message not in errors:
+                errors.append(message)
 
-    application_source = target / "src"
-    if application_source.is_dir() and not is_link_like(application_source):
-        for path in application_source.rglob("*"):
-            if is_link_like(path):
-                errors.append(
-                    f"application source contains a symbolic link or junction: {path}"
-                )
+    scan_roots = {
+        "application source": target / "src",
+        "Next.js app source": target / "app",
+        "Next.js pages source": target / "pages",
+        "managed Personal UI source": source_root,
+    }
+    scanned: set[Path] = set()
+    for label, root in scan_roots.items():
+        if root not in safe_paths or root in scanned or not root.is_dir():
+            continue
+        scanned.add(root)
+        links, scan_errors = linked_descendants(root)
+        errors.extend(scan_errors)
+        errors.extend(
+            f"{label} contains a symbolic link or junction: {path}" for path in links
+        )
     return errors
 
 
@@ -1170,6 +1318,33 @@ def find_jsx_opening_tag_end(source: str, start: int) -> int:
     return len(source) - 1
 
 
+def jsx_attribute_names(opening_code: str) -> set[str]:
+    return {
+        match.group(1).lower()
+        for match in re.finditer(
+            r"(?:\s|^)\b([A-Za-z_:][\w:.-]*)\s*(?==|\s|/?>)", opening_code
+        )
+    }
+
+
+def non_static_reserved_jsx_attributes(opening_code: str) -> list[str]:
+    offending: list[str] = []
+    for match in re.finditer(
+        r"(?:\s|^)\b(data-pui-[\w-]+)\b", opening_code
+    ):
+        attribute = match.group(1).lower()
+        if attribute not in KNOWN_RESERVED_CONTROL_DATA_PROPS:
+            continue
+        value = opening_code[match.end() :]
+        if re.match(
+            r"\s*=\s*\{\s*(?:undefined|void\s+0)\s*\}(?=\s|/?>)",
+            value,
+        ):
+            continue
+        offending.append(attribute)
+    return offending
+
+
 def call_argument_ranges(code: str, opening_parenthesis: int) -> list[tuple[int, int]]:
     if opening_parenthesis >= len(code) or code[opening_parenthesis] != "(":
         return []
@@ -1274,12 +1449,29 @@ def protected_props_override(
         raw_item = strip_js_comments(
             raw[raw_offset + item_start : raw_offset + item_end]
         ).strip()
+        static_reserved = re.fullmatch(
+            r'''["']([^"']+)["']\s*:\s*(undefined|void\s+0)''',
+            raw_item,
+        )
+        if (
+            static_reserved
+            and static_reserved.group(1).lower()
+            in KNOWN_RESERVED_CONTROL_DATA_PROPS
+        ):
+            continue
         quoted = re.match(
             rf'''(?:get\s+|set\s+|async\s+)?["']({protected_names})["']\s*(?::|\()''',
             raw_item,
         )
         if quoted:
             return f"{quoted.group(1)} prop"
+        reserved = re.match(
+            r'''(?:get\s+|set\s+|async\s+)?["'](data-pui-[^"']+)["']\s*(?::|\()''',
+            raw_item,
+            re.IGNORECASE,
+        )
+        if reserved:
+            return f"{reserved.group(1)} prop"
     return None
 
 
@@ -1453,10 +1645,13 @@ def inspect_component_style_overrides(
         for match in pattern.finditer(code):
             end = find_jsx_opening_tag_end(source, match.start())
             opening_code = code[match.start() : end + 1]
-            offending = []
-            for prop_name in PROTECTED_COMPONENT_PROPS:
-                if re.search(rf"\b{re.escape(prop_name)}\s*=", opening_code):
-                    offending.append(prop_name)
+            opening_attributes = jsx_attribute_names(opening_code)
+            offending = [
+                PROTECTED_COMPONENT_PROP_NAMES.get(attribute, attribute)
+                for attribute in opening_attributes
+                if attribute in PROTECTED_COMPONENT_PROP_NAMES
+            ]
+            offending.extend(non_static_reserved_jsx_attributes(opening_code))
             if re.search(r"\{\s*\.\.\.", opening_code):
                 offending.append("spread props")
             if not offending:
@@ -2268,7 +2463,7 @@ def resolve_application_modules(
 
 def discover_application_entrypoints(
     target: Path,
-    application_source: Path,
+    application_roots: tuple[Path, ...],
     known_paths: set[Path],
     aliases: list[tuple[str, list[Path]]],
 ) -> set[Path]:
@@ -2287,11 +2482,12 @@ def discover_application_entrypoints(
                 )
             )
 
-    for stem in ("main", "index", "root"):
-        for suffix in SCRIPT_SUFFIXES:
-            candidate = (application_source / f"{stem}{suffix}").resolve(strict=False)
-            if candidate in known_paths:
-                entrypoints.add(candidate)
+    for application_root in application_roots:
+        for stem in ("main", "index", "root"):
+            for suffix in SCRIPT_SUFFIXES:
+                candidate = (application_root / f"{stem}{suffix}").resolve(strict=False)
+                if candidate in known_paths:
+                    entrypoints.add(candidate)
 
     package_path = target / "package.json"
     if package_path.is_file() and not is_link_like(package_path):
@@ -2312,14 +2508,22 @@ def discover_application_entrypoints(
 
     route_names = {"page", "layout", "route", "template", "loading", "error", "not-found"}
     for path in known_paths:
-        try:
-            relative = path.relative_to(application_source.resolve(strict=False))
-        except ValueError:
-            continue
-        if relative.parts and relative.parts[0] == "app" and path.stem in route_names:
-            entrypoints.add(path)
-        elif relative.parts and relative.parts[0] == "pages":
-            if not path.name.endswith((".test.ts", ".test.tsx", ".spec.ts", ".spec.tsx")):
+        for application_root in application_roots:
+            try:
+                relative = path.relative_to(application_root.resolve(strict=False))
+            except ValueError:
+                continue
+            is_app_route = application_root.name == "app" or (
+                relative.parts and relative.parts[0] == "app"
+            )
+            is_pages_route = application_root.name == "pages" or (
+                relative.parts and relative.parts[0] == "pages"
+            )
+            if is_app_route and path.stem in route_names:
+                entrypoints.add(path)
+            elif is_pages_route and not path.name.endswith(
+                (".test.ts", ".test.tsx", ".spec.ts", ".spec.tsx")
+            ):
                 entrypoints.add(path)
     return entrypoints
 
@@ -2347,6 +2551,15 @@ def inspect_application_usage(
     errors: list[str],
 ) -> tuple[bool, int, list[str]]:
     application_source = target / "src"
+    application_roots = tuple(
+        path
+        for path in (
+            application_source,
+            target / "app",
+            target / "pages",
+        )
+        if path.is_dir()
+    )
     used_components: set[str] = set()
     style_path = target / style_entry.replace("\\", "/")
     aliases = load_typescript_aliases(target)
@@ -2355,7 +2568,7 @@ def inspect_application_usage(
     direct_aliases: dict[Path, dict[str, str]] = {}
     namespaces: dict[Path, set[str]] = {}
 
-    if not application_source.is_dir():
+    if not application_roots:
         return False, 0, []
     for path in target.rglob("*"):
         if not path.is_file() or is_inside(path, source_root):
@@ -2435,7 +2648,7 @@ def inspect_application_usage(
                     f"remote JSX stylesheet link is forbidden: {specifier!r}"
                 )
 
-        if not is_inside(path, application_source):
+        if not any(is_inside(path, root) for root in application_roots):
             continue
         if suffix in SCRIPT_SUFFIXES:
             mask = code_position_mask(raw_text)
@@ -2517,7 +2730,7 @@ def inspect_application_usage(
                 personal_style_imports[path] = personal_style_imports.get(path, 0) + 1
 
     entrypoints = discover_application_entrypoints(
-        target, application_source, known_paths, aliases
+        target, application_roots, known_paths, aliases
     )
     reachable = reachable_modules(entrypoints, edges)
     style_import_count = sum(
@@ -2626,11 +2839,15 @@ def inspect_dependencies(
 
 def inspect_build_gate(
     package_path: Path,
+    source_relative: Path,
     errors: list[str],
 ) -> dict[str, object]:
+    expected_command = provenance_script_command(source_relative)
     report: dict[str, object] = {
         "verifyScript": None,
         "verifyScriptMatches": False,
+        "build": None,
+        "buildIncludesGate": False,
         "prebuild": None,
         "prebuildIncludesGate": False,
     }
@@ -2646,32 +2863,111 @@ def inspect_build_gate(
         return report
 
     verify_script = scripts.get(PROVENANCE_SCRIPT_NAME)
+    build = scripts.get("build")
     prebuild = scripts.get("prebuild")
     report["verifyScript"] = verify_script
+    report["build"] = build
     report["prebuild"] = prebuild
-    report["verifyScriptMatches"] = verify_script == PROVENANCE_SCRIPT_COMMAND
+    report["verifyScriptMatches"] = verify_script == expected_command
+    report["buildIncludesGate"] = isinstance(build, str) and build.startswith(
+        f"{expected_command} && "
+    )
     prebuild_parts = (
         [part.strip() for part in prebuild.split("&&")]
         if isinstance(prebuild, str)
         else []
     )
-    report["prebuildIncludesGate"] = PREBUILD_GATE_COMMAND in prebuild_parts
-    if verify_script != PROVENANCE_SCRIPT_COMMAND:
+    report["prebuildIncludesGate"] = "npm run verify:personal-ui" in prebuild_parts
+    if verify_script != expected_command:
         errors.append(
             f"package.json script {PROVENANCE_SCRIPT_NAME!r} does not match the mandatory Personal UI provenance gate"
         )
-    if PREBUILD_GATE_COMMAND not in prebuild_parts:
+    if report["buildIncludesGate"] is not True:
         errors.append(
-            "package.json prebuild does not invoke the mandatory Personal UI provenance gate"
+            "package.json build does not invoke the mandatory Personal UI provenance gate before the application build"
         )
+    return report
+
+
+def inspect_install_state(
+    context: InstallationContext,
+    bundled_version: object,
+    errors: list[str],
+) -> dict[str, object]:
+    path = context.package_root / STATE_RELATIVE
+    report: dict[str, object] = {
+        "path": str(path),
+        "present": False,
+        "valid": False,
+        "mode": None,
+        "version": None,
+        "sourceRoot": None,
+        "packageManager": None,
+        "framework": None,
+    }
+    if not path.is_file() or is_link_like(path):
+        errors.append(f"missing Personal UI install state: {path}")
+        return report
+    try:
+        state = read_installation_json(path, label="Personal UI install state")
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError, ValueError) as error:
+        errors.append(f"invalid Personal UI install state: {error}")
+        return report
+    report.update(
+        {
+            "present": True,
+            "mode": state.get("mode"),
+            "version": state.get("version"),
+            "sourceRoot": state.get("sourceRoot"),
+            "packageManager": state.get("packageManager"),
+            "framework": state.get("framework"),
+        }
+    )
+    if state.get("schemaVersion") != 1:
+        errors.append("Personal UI install state has an unsupported schema")
+    if state.get("mode") not in ("starter", "integrate"):
+        errors.append("Personal UI install state has an invalid mode")
+    if state.get("version") != bundled_version:
+        errors.append("Personal UI install state version does not match the bundled version")
+    if state.get("sourceRoot") != context.source_relative.as_posix():
+        errors.append("Personal UI install state sourceRoot does not match the resolved source root")
+    if state.get("packageManager") != context.package_manager:
+        errors.append("Personal UI install state package manager does not match project detection")
+    if state.get("framework") != context.framework:
+        errors.append("Personal UI install state framework does not match project detection")
+    owned = state.get("ownedFiles")
+    if not isinstance(owned, dict) or not owned:
+        errors.append("Personal UI install state has no owned file inventory")
+    report["valid"] = not any(
+        message.startswith("Personal UI install state")
+        or message.startswith("invalid Personal UI install state")
+        or message.startswith("missing Personal UI install state")
+        for message in errors
+    )
     return report
 
 
 def main() -> int:
     args = parse_args()
-    target = Path(os.path.abspath(args.target))
     errors: list[str] = []
     warnings: list[str] = []
+    try:
+        context = resolve_verification_context(args)
+    except (FileNotFoundError, OSError, ValueError) as error:
+        print(
+            json.dumps(
+                {
+                    "target": str(args.target or args.project_root),
+                    "upToDate": False,
+                    "errors": [f"cannot resolve installation context: {error}"],
+                    "warnings": [],
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
+        )
+        return 1
+    target = context.package_root
     raw_required_components = list(args.require_component)
     required_components = sorted(
         {value.strip() for value in raw_required_components if value.strip()}
@@ -2725,8 +3021,8 @@ def main() -> int:
     )
     errors.extend(runtime_export_errors)
     source_root_value = bundled_registry.get("sourceRoot")
-    style_entry_value = bundled_registry.get("styleEntry")
-    source_root = target / str(source_root_value or "src/personal-ui")
+    source_root = context.source_root
+    style_entry_value = (context.source_relative / "styles.css").as_posix()
     manifest_path = source_root / "registry.json"
     legacy_path = target / "registry.json"
     installed_component_manifest_path = (
@@ -2737,6 +3033,57 @@ def main() -> int:
     )
     path_integrity_errors = validate_project_path_integrity(target, source_root)
     errors.extend(path_integrity_errors)
+    if path_integrity_errors:
+        registered_exports_value = runtime_export_report.get("registered", [])
+        registered_exports = {
+            name for name in registered_exports_value if isinstance(name, str)
+        }
+        unknown_required_components = sorted(
+            set(required_components) - registered_exports
+        )
+        report = {
+            "target": str(target),
+            "projectRoot": str(context.project_root),
+            "packageRoot": str(context.package_root),
+            "packageManager": context.package_manager,
+            "framework": context.framework,
+            "manifestPath": str(manifest_path),
+            "legacyManifestPath": None,
+            "installedVersion": None,
+            "bundledVersion": bundled_registry.get("version"),
+            "upToDate": False,
+            "sourceRoot": str(source_root),
+            "usedByApplication": False,
+            "usedComponents": [],
+            "requiredComponents": required_components,
+            "missingRequiredComponents": required_components,
+            "unknownRequiredComponents": unknown_required_components,
+            "stylesheetImportCount": 0,
+            "runtimeExports": runtime_export_report,
+            "componentManifest": component_manifest_report,
+            "installedSupport": {},
+            "provenance": {
+                "valid": False,
+                "scannedFiles": 0,
+                "usedPublicExports": [],
+                "issues": [],
+                "errors": [
+                    "provenance scan skipped because project path integrity failed"
+                ],
+            },
+            "sourceDrift": {},
+            "dependencies": {},
+            "buildGate": {},
+            "installState": {},
+            "pathIntegrity": {
+                "valid": False,
+                "errors": path_integrity_errors,
+            },
+            "errors": errors,
+            "warnings": warnings,
+        }
+        print(json.dumps(report, ensure_ascii=False, indent=2))
+        return 1
     installed_support = {
         "componentManifest": compare_installed_support_file(
             COMPONENT_MANIFEST_PATH,
@@ -2818,33 +3165,20 @@ def main() -> int:
         errors,
         warnings,
     )
-    build_gate_report = inspect_build_gate(target / "package.json", errors)
+    build_gate_report = inspect_build_gate(
+        target / "package.json", context.source_relative, errors
+    )
+    install_state_report = inspect_install_state(
+        context, bundled_registry.get("version"), errors
+    )
     registered_exports_value = runtime_export_report.get("registered", [])
     registered_exports = {
         name for name in registered_exports_value if isinstance(name, str)
     }
-    style_protected_exports: set[str] = set()
-    manifest_entries = component_manifest_report.get("entries", [])
-    if isinstance(manifest_entries, list):
-        for entry in manifest_entries:
-            if not isinstance(entry, dict):
-                continue
-            if entry.get("id") in STYLE_OVERRIDE_LAYOUT_ENTRY_IDS:
-                continue
-            if entry.get("kind") not in {"component", "pattern"}:
-                continue
-            non_visual = {
-                value
-                for value in entry.get("nonVisualExports", [])
-                if isinstance(value, str)
-            }
-            style_protected_exports.update(
-                value
-                for value in entry.get("publicExports", [])
-                if isinstance(value, str)
-                and value in registered_exports
-                and value not in non_visual
-            )
+    style_protected_exports = (
+        classified_runtime_exports(bundled_registry, "fixed-control")
+        & registered_exports
+    )
     unknown_required_components = sorted(
         set(required_components) - registered_exports
     )
@@ -2925,12 +3259,17 @@ def main() -> int:
             for item in installed_support.values()
         )
         and provenance_report.get("valid") is True
+        and install_state_report.get("valid") is True
         and not has_source_drift
         and not legacy_conflict
         and not errors
     )
     report = {
         "target": str(target),
+        "projectRoot": str(context.project_root),
+        "packageRoot": str(context.package_root),
+        "packageManager": context.package_manager,
+        "framework": context.framework,
         "manifestPath": str(manifest_path),
         "legacyManifestPath": str(legacy_path) if legacy_registry is not None else None,
         "installedVersion": installed_version,
@@ -2950,6 +3289,7 @@ def main() -> int:
         "sourceDrift": source_drift,
         "dependencies": dependency_report,
         "buildGate": build_gate_report,
+        "installState": install_state_report,
         "errors": errors,
         "warnings": warnings,
     }

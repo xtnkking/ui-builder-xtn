@@ -1,6 +1,23 @@
 # Integration
 
-Personal UI v0.2.19 is installed source with an enforced provenance boundary. The target receives the complete managed `src/personal-ui/` tree, its runtime registry, the component manifest, and the provenance scanner. Product code may compose public exports, but it may not fork, imitate, or reach inside the managed implementation.
+Personal UI v0.2.19 is installed source with an enforced provenance boundary. The application package receives the complete managed source tree, its runtime registry, the component manifest, the provenance scanner, and `tools/personal-ui/install-state.json`. Product code may compose public exports, but it may not fork, imitate, or reach inside the managed implementation.
+
+## Resolve The Installation Roots
+
+The installer and verifier use the same three-root model:
+
+- **Project root** is the repository or workspace root. It bounds every write and owns the workspace lockfile.
+- **Package root** is the Vite or Next.js application package whose `package.json` is updated. In a standalone application it is the same directory as the project root.
+- **Source root** is the managed Personal UI directory relative to the package root. It defaults to `src/personal-ui`; it must not be absolute or escape the package root.
+
+`--target <application>` remains the shorthand for a standalone project. In a workspace, pass the roots explicitly; `--package-root` may be omitted only when exactly one application package can be inferred:
+
+```powershell
+python scripts/install_personal_ui.py --mode integrate --project-root <workspace> --package-root apps/web --source-root src/personal-ui
+python scripts/verify_personal_ui.py --project-root <workspace> --package-root apps/web
+```
+
+The tool detects npm, pnpm, or Yarn from the root lockfile and `packageManager` declarations, and detects Vite or Next.js from the application package. Conflicting evidence, multiple possible application packages, a nested workspace lockfile, an undeclared package root, Yarn Classic, or a linked/junction path fails before any write. Use `--package-manager` or `--framework` only to make otherwise valid intent explicit; these flags do not override conflicting metadata.
 
 ## Choose A Mode
 
@@ -8,37 +25,87 @@ Use the deterministic installer rather than manually copying snippets.
 
 ### New React application
 
-The destination must be absent or empty. `--force` permits overwriting starter-owned paths in a non-empty destination, but it does not delete unrelated application files; use it only after reviewing the dry-run plan.
+The destination must be absent or empty on its first install. A later starter rerun recognizes its install state; `--force` can then replace only modified files recorded as installer-owned. An unrelated non-empty destination is always a conflict, including with `--force`.
 
 ```powershell
 python scripts/install_personal_ui.py --mode starter --target <destination>
 python scripts/install_personal_ui.py --mode starter --target <destination> --force --dry-run
 ```
 
-This copies the runnable Vite starter and the complete Personal UI source. The installed runtime registry lives at `src/personal-ui/registry.json`; enforcement support lives under `tools/personal-ui/`. Replace the demo composition in `src/App.tsx`, but keep every UI control and reusable pattern imported from `src/personal-ui`.
+This copies the allowlisted runnable Vite starter and the complete Personal UI source. The installed runtime registry lives at `src/personal-ui/registry.json`; enforcement support and installation state live under `tools/personal-ui/`. Replace the demo composition in `src/App.tsx`, but keep every UI control and reusable pattern imported from `src/personal-ui`.
 
-The starter includes a dependency lockfile. Run `npm ci` for the verified dependency set before the first build. Regenerate the lockfile only as a deliberate dependency upgrade followed by the complete build and browser verification gate.
+The starter includes a dependency lockfile. The installer does not run npm or write `node_modules`; run the install and build commands returned in `plan.commands` after the transaction commits. Regenerate the lockfile only as a deliberate dependency upgrade followed by the complete build and browser verification gate.
 
 ### Existing React and TypeScript application
 
 ```powershell
-python scripts/install_personal_ui.py --mode integrate --target <project-root>
+python scripts/install_personal_ui.py --mode integrate --target <application-root>
 ```
 
-The command copies the complete `src/personal-ui` source, installs the matching component manifest and provenance scanner under `tools/personal-ui`, records missing kit dependencies in `package.json`, and leaves application routes and entrypoints unchanged. It also installs the exact `verify:personal-ui` command and appends it to npm's `prebuild` lifecycle, preserving an existing prebuild command. Compatible dependency declarations are preserved whether they live in `dependencies` or `devDependencies`. An incompatible dependency or conflicting reserved verifier command fails before any write.
+The command copies the complete managed source, installs the matching component manifest and provenance scanner under `tools/personal-ui`, records missing kit dependencies in `package.json`, and leaves application routes, aliases, and entrypoints unchanged. It installs the exact `verify:personal-ui` script and prefixes that verifier directly to the existing `build` command. This guarantees that npm, pnpm, and Yarn builds execute the gate without depending on package-manager lifecycle behavior. An unrelated existing `prebuild` remains unchanged; the installer removes only its own exact legacy `npm run verify:personal-ui` segment during migration. Compatible dependency declarations are preserved whether they live in `dependencies` or `devDependencies`. An incompatible dependency or malformed reserved script fails before any write.
+
+Workspace examples:
+
+```powershell
+# npm workspace + Vite
+python scripts/install_personal_ui.py --mode integrate --project-root <repo> --package-root apps/web --package-manager npm --framework vite
+
+# pnpm workspace + Next.js + custom managed source location
+python scripts/install_personal_ui.py --mode integrate --project-root <repo> --package-root apps/portal --source-root ui/personal-ui --package-manager pnpm --framework next
+
+# Yarn 4 workspace + Vite
+python scripts/install_personal_ui.py --mode integrate --project-root <repo> --package-root packages/admin --package-manager yarn --framework vite
+```
+
+The JSON report supplies the exact follow-up command arrays. For a workspace these use npm `--workspace`, pnpm `--filter`, or `yarn workspace` as appropriate. Run the reported install command from the project root only after a successful apply; neither normal apply nor `--dry-run` invokes a package manager or modifies a lockfile.
 
 Preview every update before replacing managed source:
 
 ```powershell
-python scripts/install_personal_ui.py --mode integrate --target <project-root> --force --dry-run
+python scripts/install_personal_ui.py --mode integrate --target <application-root> --force --dry-run
 ```
 
-The JSON plan lists the bundled version, files to create, overwrite, and delete, and dependency changes. Running without `--dry-run` replaces the complete managed directory as one versioned unit, so removed files and unauthorized additions cannot linger. A root `registry.json` is removed during migration only when it identifies itself as a legacy Personal UI registry; unrelated root registries remain untouched.
+The deterministic JSON plan uses project-relative paths and lists SHA-256 values, files to create/update/delete, dependency changes, build-gate changes, conflicts, follow-up commands, and `planDigest`. Its `operation` is:
 
-After installation, import the stylesheet exactly once at the application entrypoint:
+- `install` when no prior Personal UI state or recognized legacy installation exists;
+- `upgrade` when a prior installation requires managed changes or state migration;
+- `noop` when files, package metadata, and state already match;
+- a conflict report when an existing path cannot be changed under the ownership rules.
+
+Exit code `0` means a valid plan or completed apply, `2` means invalid roots/metadata or another operational error, and `3` means unresolved conflicts. A conflicting dry-run still prints its plan and exits `3`. Dry-run writes no source, package, state, lockfile, backup, timestamp, or dependency artifact, so repeating the same input produces the same `planDigest`.
+
+Every managed file and its last installed hash is recorded in `tools/personal-ui/install-state.json`. A normal upgrade changes or retires only clean files owned by that state. A modified owned file is a conflict; `--force` permits replacing that file after it appears in the plan. `--force` cannot replace an unowned collision, remove an unowned file inside the managed source root, clear a directory, or cross the project/package boundaries. A recognized v0.2.19 installation without state can be migrated from its manifest inventory, while an unrelated root `registry.json` remains untouched.
+
+Apply holds a package-scoped operating-system lock, stages individual files, validates the result, and rechecks each destination hash and physical parent chain immediately before its write or deletion. An active lock fails without waiting; an unlocked record left by a crashed process is treated as stale and reused. The lock lives in the operating-system temporary directory, so dry-run does not create a project file or lock record.
+
+On an ordinary in-process failure, the installer restores only writes made by that transaction when they still contain the transaction's value; unrelated files and concurrent user changes are preserved. This is not a durable crash journal: process termination, machine restart, or power loss can interrupt an apply after some files changed. After such an interruption, rerun dry-run and the verifier, review conflicts, and apply again rather than assuming automatic rollback.
+
+For Vite, import the stylesheet exactly once from the application entrypoint (adjust the relative path for a custom source root):
 
 ```tsx
 import "./personal-ui/styles.css";
+```
+
+For a root-level Next.js App Router, keep the global stylesheet import in the server `app/layout.tsx` boundary:
+
+```tsx
+import "../src/personal-ui/styles.css";
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return <html><body>{children}</body></html>;
+}
+```
+
+Place `'use client'` only on a consumer boundary that renders interactive Personal UI exports or uses client hooks. Do not mark the whole layout client-side merely to install the kit:
+
+```tsx
+'use client';
+
+import { Button } from "../src/personal-ui";
+
+export default function Page() {
+  return <Button>Run</Button>;
+}
 ```
 
 Import every runtime component and pattern through the public barrel:
@@ -77,7 +144,7 @@ import { Button } from "./personal-ui/primitives";
 
 Application code may own business state, data fetching, copy, product images, and non-interactive semantic layout. It must not add native protected controls, interactive ARIA roles, locally styled lookalikes, third-party JSX controls, `.pui-*` selectors, reserved `data-pui-*` markers, generic CSS selectors that can restyle protected controls, protected-selector mixins or `@apply`, JSX `<style>`, remote/package-global CSS, CSS-in-JS wrappers, or DOM/CSSOM style mutation. Protected Personal UI components must not receive application `className`, `style`, `css`, `sx`, `tw`, `ref`, or spread props through JSX, factories, runtime JSX calls, aliases, or `cloneElement`; put layout classes on a surrounding element or use a manifest-classified layout utility. A local wrapper is acceptable only when it composes public Personal UI exports without implementing or restyling a replacement control.
 
-Respect the target's existing package manager and lockfile. Run its install command after the installer updates `package.json`.
+Respect the target's existing package manager and project-root lockfile. Run the exact install and build commands from `plan.commands` after the installer updates `package.json`; the installer deliberately does not execute them inside its file transaction.
 
 ## Managed Source Boundary
 
@@ -128,24 +195,26 @@ The provenance scanner inspects script, JSX/TSX, MDX, HTML, CSS, PostCSS, SCSS, 
 
 ## Updating An Installed Kit
 
-Run the verifier before upgrading and preserve any application composition outside `src/personal-ui/`:
+Run the verifier before upgrading and preserve application composition outside the configured managed source root:
 
 ```powershell
-python scripts/verify_personal_ui.py --target <project-root>
-python scripts/install_personal_ui.py --mode integrate --target <project-root> --force --dry-run
-python scripts/install_personal_ui.py --mode integrate --target <project-root> --force
+python scripts/verify_personal_ui.py --target <application-root>
+python scripts/install_personal_ui.py --mode integrate --target <application-root> --dry-run
+python scripts/install_personal_ui.py --mode integrate --target <application-root>
 ```
+
+For a workspace, use the same `--project-root` and `--package-root` values for both tools. The verifier reads a previously installed custom `sourceRoot` from install state when `--source-root` is omitted. If the plan reports a user-modified owned file that you intentionally want to replace, rerun dry-run with `--force`, inspect the exact forced paths, and only then apply with `--force`. Unowned conflicts remain non-forceable.
 
 Do not rerun starter mode to upgrade a customized application. Starter mode also owns `src/App.tsx`, `src/main.tsx`, `src/demo.css`, and build configuration, so its force mode is for deliberately resetting those starter-owned paths.
 
-After installation, build and test the application, then run the verifier again:
+After installation, run the install and build arrays reported in `plan.commands`, test the application, and then run the verifier again. For a standalone npm package this is typically:
 
 ```powershell
 npm run build
-python scripts/verify_personal_ui.py --target <project-root>
+python scripts/verify_personal_ui.py --target <application-root>
 ```
 
-`npm run build` automatically runs `verify:personal-ui` first. The prebuild gate checks both application provenance and the managed source SHA-256 inventory, so a changed, missing, linked, or extra component source file stops the build before TypeScript or Vite runs. Directly invoking a lower-level compiler or bundler is not an accepted release verification path.
+The installed `build` script begins with the provenance command and then invokes the package's original build string. The gate checks both application provenance and the managed source SHA-256 inventory, so a changed, missing, linked, or extra component source file stops npm, pnpm, or Yarn before TypeScript, Vite, or Next.js runs. Directly invoking a lower-level compiler or bundler is not an accepted release verification path.
 
 The verifier automatically scans reachable application source; no component list is needed. `--require-component` is compatibility-only and may add an explicit assertion, but it never weakens or replaces automatic provenance. `--allow-unreferenced` may be used only to check a fresh installation before any application code consumes it; final delivery must run without that flag.
 
@@ -155,7 +224,8 @@ A passing report requires:
 - Equal installed and bundled versions and registries.
 - `componentManifest.valid: true` and matching installed enforcement support.
 - `provenance.valid: true`, with actual rendered or called barrel exports in `usedComponents`.
-- `buildGate.verifyScriptMatches: true` and `buildGate.prebuildIncludesGate: true`.
+- `installState.valid: true` with matching source root, framework, and package manager.
+- `buildGate.verifyScriptMatches: true` and `buildGate.buildIncludesGate: true`.
 - Empty `sourceDrift.missing`, `sourceDrift.changed`, and `sourceDrift.extra` lists.
 - Exactly one application import of the Personal UI stylesheet and compatible dependencies.
 

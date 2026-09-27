@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "kind": "personal-ui-m8-scenarios",
+  "scenarios": [
+    {
+      "id": "family-login",
+      "request": {
+        "path": "evaluation/m8/requests/family-login.md",
+        "sha256": "cdafa9d0f78d1f4b729bfad7361b37bf7a9ddd7a63cd0d34a61b97069ab4e897"
+      },
+      "supportFixtureId": "npm10-vite-node22-react18-ts59-single",
+      "allowedDeliverables": [
+        "consumer-project",
+        "run-instructions",
+        "verification-record",
+        "screenshots",
+        "known-limitations"
+      ]
+    },
+    {
+      "id": "member-crud",
+      "request": {
+        "path": "evaluation/m8/requests/member-crud.md",
+        "sha256": "e565334afe5e9e088fea7ceed1821d73081fe671a33e93e2d3cf096fbae4999a"
+      },
+      "supportFixtureId": "npm11-vite-node24-react18-ts59-single",
+      "allowedDeliverables": [
+        "consumer-project",
+        "run-instructions",
+        "verification-record",
+        "screenshots",
+        "known-limitations"
+      ]
+    },
+    {
+      "id": "complex-form",
+      "request": {
+        "path": "evaluation/m8/requests/complex-form.md",
+        "sha256": "3a842e716e41b7fc7080541ab44a4b8cf6881654e31aa524a2db96b064afe981"
+      },
+      "supportFixtureId": "pnpm9-vite-node22-react18-ts57-workspace",
+      "allowedDeliverables": [
+        "consumer-project",
+        "run-instructions",
+        "verification-record",
+        "screenshots",
+        "known-limitations"
+      ]
+    },
+    {
+      "id": "searchable-table",
+      "request": {
+        "path": "evaluation/m8/requests/searchable-table.md",
+        "sha256": "c93403440557c9b1c286fe3035ed615c37eaf598f77c6bb019524ed14293596e"
+      },
+      "supportFixtureId": "pnpm10-vite-node24-react19-ts59-custom-root",
+      "allowedDeliverables": [
+        "consumer-project",
+        "run-instructions",
+        "verification-record",
+        "screenshots",
+        "known-limitations"
+      ]
+    },
+    {
+      "id": "detail-panel",
+      "request": {
+        "path": "evaluation/m8/requests/detail-panel.md",
+        "sha256": "aa75f590cdf0d64e492082063dd1faa05f023f4e41aaf1cffe175c101f3f1d31"
+      },
+      "supportFixtureId": "yarn4-next-node24-react19-ts59-workspace-custom-root",
+      "allowedDeliverables": [
+        "consumer-project",
+        "run-instructions",
+        "verification-record",
+        "screenshots",
+        "known-limitations"
+      ]
+    },
+    {
+      "id": "nested-modal",
+      "request": {
+        "path": "evaluation/m8/requests/nested-modal.md",
+        "sha256": "164e9352c9e0dc1c5c0e8a01b4d1c3529959abb4318c9975af628d46a5c4b216"
+      },
+      "supportFixtureId": "yarn4-vite-node22-react19-ts59-workspace",
+      "allowedDeliverables": [
+        "consumer-project",
+        "run-instructions",
+        "verification-record",
+        "screenshots",
+        "known-limitations"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,494 @@
+name: Quality
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  PUI_SOURCE_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
+
+concurrency:
+  group: quality-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  support-contract:
+    name: Support matrix contract
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      static_matrix: ${{ steps.support-matrix.outputs.static_matrix }}
+      compatibility_matrix: ${{ steps.support-matrix.outputs.compatibility_matrix }}
+      integration_matrix: ${{ steps.support-matrix.outputs.integration_matrix }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.PUI_SOURCE_COMMIT }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Validate support targets and emit CI matrices
+        id: support-matrix
+        run: python scripts/validate_support_matrix.py --github-output "$GITHUB_OUTPUT"
+
+      - name: Run support matrix contract tests
+        run: python scripts/test_support_matrix.py
+
+      - name: Run hosted evidence contract tests
+        run: python scripts/test_validate_hosted_ci_evidence.py
+
+  static-quality:
+    name: Static quality (${{ matrix.fixture_id }})
+    needs: support-contract
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.support-contract.outputs.static_matrix) }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.PUI_SOURCE_COMMIT }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+          cache-dependency-path: assets/react-kit/package-lock.json
+
+      - name: Pin npm
+        run: npm install --global --no-audit --no-fund npm@${{ matrix.npm }}
+
+      - name: Record runtime versions
+        env:
+          SUPPORT_FIXTURE_ID: ${{ matrix.fixture_id }}
+        run: |
+          echo "fixture=$SUPPORT_FIXTURE_ID"
+          node --version
+          npm --version
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        working-directory: assets/react-kit
+        run: npm ci
+
+      - name: Validate Skill package
+        run: python scripts/validate_skill.py .
+
+      - name: Validate generated documentation
+        working-directory: assets/react-kit
+        run: npm run docs:check
+
+      - name: Validate API compatibility and version policy
+        working-directory: assets/react-kit
+        run: npm run api:compat:check
+
+      - name: Test API compatibility policy
+        working-directory: assets/react-kit
+        run: npm run test:api-compat
+
+      - name: Validate public TypeScript contracts
+        working-directory: assets/react-kit
+        run: npm run test:types
+
+      - name: Run source, Manifest, coverage, and installer contracts
+        working-directory: assets/react-kit
+        run: npm run test:contracts
+
+      - name: Run component tests
+        working-directory: assets/react-kit
+        run: npm run test:components
+
+      - name: Type-check and build
+        working-directory: assets/react-kit
+        run: npm run build
+
+      - name: Run the complete support fixture flow
+        run: >-
+          python scripts/run_support_fixture.py
+          --fixture-id ${{ matrix.fixture_id }}
+          --report-output test-results/hosted-ci/fixture-report.json
+
+      - name: Record hosted fixture evidence
+        run: >-
+          python scripts/generate_hosted_ci_evidence.py record-fixture
+          --fixture-id ${{ matrix.fixture_id }}
+          --report test-results/hosted-ci/fixture-report.json
+          --output test-results/hosted-ci/fixtures/${{ matrix.fixture_id }}.json
+
+      - name: Upload hosted fixture evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: hosted-ci-fixture-${{ matrix.fixture_id }}
+          path: test-results/hosted-ci/fixtures/${{ matrix.fixture_id }}.json
+          if-no-files-found: error
+          retention-days: 30
+
+  react-typescript-compatibility:
+    name: React and TypeScript (${{ matrix.fixture_id }})
+    needs: support-contract
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.support-contract.outputs.compatibility_matrix) }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.PUI_SOURCE_COMMIT }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+          cache-dependency-path: assets/react-kit/package-lock.json
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Pin npm
+        run: npm install --global --no-audit --no-fund npm@${{ matrix.npm }}
+
+      - name: Install locked dependencies
+        working-directory: assets/react-kit
+        run: npm ci
+
+      - name: Install exact compatibility dependencies
+        working-directory: assets/react-kit
+        run: >-
+          npm install --no-save --package-lock=false --ignore-scripts
+          react@${{ matrix.react }}
+          react-dom@${{ matrix.react_dom }}
+          @types/react@${{ matrix.react_types }}
+          @types/react-dom@${{ matrix.react_dom_types }}
+          typescript@${{ matrix.typescript }}
+
+      - name: Record compatibility versions
+        working-directory: assets/react-kit
+        env:
+          SUPPORT_FIXTURE_ID: ${{ matrix.fixture_id }}
+        run: |
+          echo "fixture=$SUPPORT_FIXTURE_ID"
+          node --version
+          npm --version
+          node -p "require('react/package.json').version"
+          node -p "require('react-dom/package.json').version"
+          node -p "require('typescript/package.json').version"
+
+      - name: Validate public TypeScript contracts
+        working-directory: assets/react-kit
+        run: npm run test:types
+
+      - name: Run focused render compatibility
+        working-directory: assets/react-kit
+        run: npm exec -- vitest run --config vitest.config.ts tests/components/simple-fixed-controls.test.tsx
+
+      - name: Verify source and build
+        working-directory: assets/react-kit
+        run: npm run build
+
+      - name: Run the complete support fixture flow
+        run: >-
+          python scripts/run_support_fixture.py
+          --fixture-id ${{ matrix.fixture_id }}
+          --report-output test-results/hosted-ci/fixture-report.json
+
+      - name: Record hosted fixture evidence
+        run: >-
+          python scripts/generate_hosted_ci_evidence.py record-fixture
+          --fixture-id ${{ matrix.fixture_id }}
+          --report test-results/hosted-ci/fixture-report.json
+          --output test-results/hosted-ci/fixtures/${{ matrix.fixture_id }}.json
+
+      - name: Upload hosted fixture evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: hosted-ci-fixture-${{ matrix.fixture_id }}
+          path: test-results/hosted-ci/fixtures/${{ matrix.fixture_id }}.json
+          if-no-files-found: error
+          retention-days: 30
+
+  package-manager-framework-integration:
+    name: Integration fixture (${{ matrix.fixture_id }})
+    needs: support-contract
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.support-contract.outputs.integration_matrix) }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.PUI_SOURCE_COMMIT }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Activate exact package manager
+        env:
+          COREPACK_ENABLE_DOWNLOAD_PROMPT: "0"
+        run: |
+          corepack enable
+          corepack prepare ${{ matrix.package_manager }}@${{ matrix.package_manager_version }} --activate
+          ${{ matrix.package_manager }} --version
+
+      - name: Run isolated install, build, verify, upgrade, and rollback fixture
+        run: >-
+          python scripts/run_support_fixture.py
+          --fixture-id ${{ matrix.fixture_id }}
+          --report-output test-results/hosted-ci/fixture-report.json
+
+      - name: Record hosted fixture evidence
+        run: >-
+          python scripts/generate_hosted_ci_evidence.py record-fixture
+          --fixture-id ${{ matrix.fixture_id }}
+          --report test-results/hosted-ci/fixture-report.json
+          --output test-results/hosted-ci/fixtures/${{ matrix.fixture_id }}.json
+
+      - name: Upload hosted fixture evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: hosted-ci-fixture-${{ matrix.fixture_id }}
+          path: test-results/hosted-ci/fixtures/${{ matrix.fixture_id }}.json
+          if-no-files-found: error
+          retention-days: 30
+
+  browser-quality:
+    name: Browser behavior and accessibility
+    needs: [static-quality, react-typescript-compatibility]
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.PUI_SOURCE_COMMIT }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+          cache: npm
+          cache-dependency-path: assets/react-kit/package-lock.json
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Pin npm
+        run: npm install --global --no-audit --no-fund npm@10.9.3
+
+      - name: Install dependencies
+        working-directory: assets/react-kit
+        run: npm ci
+
+      - name: Install Playwright browsers
+        working-directory: assets/react-kit
+        run: npm exec -- playwright install --with-deps chromium firefox webkit
+
+      - name: Run browser regressions
+        working-directory: assets/react-kit
+        run: npm run test:browser
+
+      - name: Run accessibility checks
+        working-directory: assets/react-kit
+        run: npm run test:a11y
+
+      - name: Compare stable Chromium visual baselines
+        working-directory: assets/react-kit
+        run: npm run test:visual
+
+      - name: Record actual Playwright browser versions
+        if: always()
+        working-directory: assets/react-kit
+        run: node tools/personal-ui/report-browser-versions.mjs --output test-results/browser-version-evidence.json
+
+      - name: Record hosted browser evidence
+        run: >-
+          python scripts/generate_hosted_ci_evidence.py record-browser
+          --report assets/react-kit/test-results/browser-version-evidence.json
+          --output test-results/hosted-ci/jobs/browser-quality.json
+
+      - name: Upload hosted browser evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: hosted-ci-browser-quality
+          path: test-results/hosted-ci/jobs/browser-quality.json
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload browser version evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-version-evidence-${{ github.run_attempt }}
+          path: assets/react-kit/test-results/browser-version-evidence.json
+          if-no-files-found: ignore
+          retention-days: 30
+
+      - name: Upload Playwright diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-diagnostics
+          path: |
+            assets/react-kit/playwright-report
+            assets/react-kit/test-results
+          if-no-files-found: ignore
+          retention-days: 7
+
+  safari-quality:
+    name: Real Safari 18+ smoke
+    needs: support-contract
+    runs-on: macos-15
+    timeout-minutes: 20
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.PUI_SOURCE_COMMIT }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+          cache: npm
+          cache-dependency-path: assets/react-kit/package-lock.json
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Pin npm
+        run: npm install --global --no-audit --no-fund npm@10.9.3
+
+      - name: Install dependencies
+        working-directory: assets/react-kit
+        run: npm ci
+
+      - name: Enable Safari remote automation
+        run: sudo safaridriver --enable
+
+      - name: Run real Safari component smoke
+        working-directory: assets/react-kit
+        shell: bash
+        run: |
+          npm run dev -- --host 127.0.0.1 --port 4173 > "$RUNNER_TEMP/pui-vite.log" 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          python ../../scripts/run_safari_smoke.py \
+            --url http://127.0.0.1:4173/#/components/button \
+            --output test-results/real-safari-smoke.json
+
+      - name: Record hosted Safari evidence
+        run: >-
+          python scripts/generate_hosted_ci_evidence.py record-safari
+          --report assets/react-kit/test-results/real-safari-smoke.json
+          --output test-results/hosted-ci/jobs/safari-quality.json
+
+      - name: Upload hosted Safari evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: hosted-ci-safari-quality
+          path: test-results/hosted-ci/jobs/safari-quality.json
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload Safari diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: safari-diagnostics
+          path: |
+            assets/react-kit/test-results/real-safari-smoke.json
+            ${{ runner.temp }}/pui-vite.log
+          if-no-files-found: ignore
+          retention-days: 7
+
+  hosted-evidence:
+    name: Assemble hosted release evidence
+    needs:
+      - support-contract
+      - static-quality
+      - react-typescript-compatibility
+      - package-manager-framework-integration
+      - browser-quality
+      - safari-quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out exact source commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.PUI_SOURCE_COMMIT }}
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Download hosted evidence inputs
+        uses: actions/download-artifact@v4
+        with:
+          pattern: hosted-ci-*
+          path: ${{ runner.temp }}/hosted-ci-inputs
+          merge-multiple: true
+
+      - name: Build deterministic RC bindings without writing a candidate
+        run: >-
+          python scripts/release_personal_ui.py prepare
+          --root .
+          --output "${{ runner.temp }}/unused-release-output"
+          --version 0.3.0-rc.1
+          --source-mode commit
+          --source-ref "${PUI_SOURCE_COMMIT}"
+          --dry-run
+          > "${{ runner.temp }}/release-plan.json"
+
+      - name: Assemble and validate artifact-backed hosted evidence
+        run: |
+          python scripts/generate_hosted_ci_evidence.py assemble \
+            --plan "${{ runner.temp }}/release-plan.json" \
+            --input "${{ runner.temp }}/hosted-ci-inputs" \
+            --output "${{ runner.temp }}/hosted-ci-bundle/hosted-ci.json"
+          python scripts/validate_hosted_ci_evidence.py \
+            "${{ runner.temp }}/hosted-ci-bundle/hosted-ci.json" \
+            --fixtures references/support-fixtures.json
+
+      - name: Upload hosted release evidence bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: hosted-ci-release-evidence-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/hosted-ci-bundle
+          if-no-files-found: error
+          retention-days: 90

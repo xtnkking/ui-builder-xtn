@@ -1,9 +1,11 @@
 import { useEffect, useId, useMemo, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { ArrowRight, Building2 } from "lucide-react";
-import { Alert } from "../feedback";
-import { Checkbox, Field, Input, PasswordInput, SegmentedControl } from "../forms";
-import { Button } from "../primitives";
-import { assertUniqueIdentities, type CSSVariableProperties } from "../utils";
+import type { TextControlHandle } from "../foundation/contracts";
+import { Alert } from "../feedback/feedback";
+import { Checkbox, Field, Input, PasswordInput, SegmentedControl } from "../input/forms";
+import { usePersonalUILocale } from "../foundation/locale";
+import { Button } from "../foundation/primitives";
+import { assertUniqueIdentities, type CSSVariableProperties } from "../internal/utils";
 
 export interface LoginProduct {
   id: string;
@@ -39,6 +41,12 @@ export interface FamilyLoginPageProps {
   legal?: ReactNode;
 }
 
+type LoginErrors = {
+  email?: "invalid";
+  password?: "required";
+  submit?: { kind: "default" } | { kind: "business"; message: string };
+};
+
 export function FamilyLoginPage({
   companyName,
   companyMark,
@@ -52,6 +60,7 @@ export function FamilyLoginPage({
   onCreateAccount,
   legal,
 }: FamilyLoginPageProps) {
+  const { message } = usePersonalUILocale();
   assertUniqueIdentities("FamilyLoginPage", "product.id", products.map((product) => product.id));
   const productTitleId = useId();
   const emailId = useId();
@@ -61,12 +70,19 @@ export function FamilyLoginPage({
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [errors, setErrors] = useState<{ email?: string; password?: string; submit?: string }>({});
-  const emailRef = useRef<HTMLInputElement>(null);
-  const passwordRef = useRef<HTMLInputElement>(null);
+  const [errors, setErrors] = useState<LoginErrors>({});
+  const emailRef = useRef<TextControlHandle>(null);
+  const passwordRef = useRef<TextControlHandle>(null);
   const submittingRef = useRef(false);
   const product = useMemo(() => products.find((item) => item.id === productId) ?? products[0], [productId, products]);
   const resolvedProductId = product?.id ?? "";
+  const emailError = errors.email ? message("login.invalidEmail") : undefined;
+  const passwordError = errors.password ? message("login.passwordRequired") : undefined;
+  const submitError = errors.submit?.kind === "business"
+    ? errors.submit.message
+    : errors.submit
+      ? message("login.failedDefault")
+      : undefined;
 
   useEffect(() => {
     if (productId !== resolvedProductId) setProductId(resolvedProductId);
@@ -75,8 +91,8 @@ export function FamilyLoginPage({
   if (!product) {
     return (
       <div className="pui-auth-unavailable pui-root" data-pui-owner="FamilyLoginPage">
-        <Alert tone="danger" title="登录暂不可用">
-          当前没有可用的产品配置，请联系管理员。
+        <Alert tone="danger" title={message("login.unavailableTitle")}>
+          {message("login.unavailableDescription")}
         </Alert>
       </div>
     );
@@ -85,9 +101,9 @@ export function FamilyLoginPage({
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (submittingRef.current) return;
-    const nextErrors: { email?: string; password?: string } = {};
-    if (!/^\S+@\S+\.\S+$/.test(email.trim())) nextErrors.email = "请输入有效的邮箱地址";
-    if (!password) nextErrors.password = "请输入密码";
+    const nextErrors: LoginErrors = {};
+    if (!/^\S+@\S+\.\S+$/.test(email.trim())) nextErrors.email = "invalid";
+    if (!password) nextErrors.password = "required";
     if (Object.keys(nextErrors).length) {
       setErrors(nextErrors);
       (nextErrors.email ? emailRef : passwordRef).current?.focus();
@@ -99,8 +115,10 @@ export function FamilyLoginPage({
     try {
       await onSubmit({ email: email.trim(), password, remember, productId: product.id });
     } catch (error) {
-      const message = error instanceof Error ? error.message.trim() : "";
-      setErrors({ submit: message || "暂时无法登录，请稍后重试" });
+      const errorMessage = error instanceof Error ? error.message.trim() : "";
+      setErrors({ submit: errorMessage
+        ? { kind: "business", message: errorMessage }
+        : { kind: "default" } });
     } finally {
       submittingRef.current = false;
       setSubmitting(false);
@@ -135,7 +153,7 @@ export function FamilyLoginPage({
         {products.length > 1 ? (
           <SegmentedControl
             value={product.id}
-            ariaLabel="选择产品"
+            ariaLabel={message("login.productSelector")}
             disabled={submitting}
             options={products.map((item) => ({ value: item.id, label: item.name }))}
             onValueChange={(nextProductId) => {
@@ -149,23 +167,23 @@ export function FamilyLoginPage({
 
         <form className="pui-auth__form" noValidate aria-busy={submitting || undefined} onSubmit={handleSubmit}>
           <div className="pui-auth__heading">
-            <h2>登录{product.name}</h2>
-            <p>使用你的 {companyName} 账户继续。</p>
+            <h2>{message("login.heading", { product: product.name })}</h2>
+            <p>{message("login.continue", { company: companyName })}</p>
           </div>
 
-          {errors.submit ? <Alert tone="danger" title="登录失败">{errors.submit}</Alert> : null}
+          {submitError ? <Alert tone="danger" title={message("login.failedTitle")}>{submitError}</Alert> : null}
 
-          <Field label="邮箱" htmlFor={emailId} required error={errors.email}>
+          <Field label={message("login.email")} htmlFor={emailId} required error={emailError}>
             <Input
               id={emailId}
-              ref={emailRef}
+              controlRef={emailRef}
               name="email"
               type="email"
               disabled={submitting}
               autoComplete="email"
               value={email}
               invalid={Boolean(errors.email)}
-              aria-describedby={errors.email ? `${emailId}-error` : undefined}
+              aria-describedby={emailError ? `${emailId}-error` : undefined}
               placeholder="name@company.com"
               onChange={(event) => {
                 setEmail(event.target.value);
@@ -174,16 +192,16 @@ export function FamilyLoginPage({
             />
           </Field>
 
-          <Field label="密码" htmlFor={passwordId} required error={errors.password}>
+          <Field label={message("login.password")} htmlFor={passwordId} required error={passwordError}>
             <PasswordInput
               id={passwordId}
-              ref={passwordRef}
+              controlRef={passwordRef}
               name="password"
               disabled={submitting}
               autoComplete="current-password"
               value={password}
               invalid={Boolean(errors.password)}
-              placeholder="输入密码"
+              placeholder={message("login.passwordPlaceholder")}
               onChange={(event) => {
                 setPassword(event.target.value);
                 if (errors.password || errors.submit) setErrors((current) => ({ ...current, password: undefined, submit: undefined }));
@@ -192,9 +210,9 @@ export function FamilyLoginPage({
           </Field>
 
           <div className="pui-auth__options">
-            <Checkbox label="保持登录" checked={remember} disabled={submitting} onChange={(event) => setRemember(event.target.checked)} />
-            {forgotPasswordHref ? <a href={forgotPasswordHref}>忘记密码？</a> : onForgotPassword ? (
-              <button type="button" className="pui-link-button" disabled={submitting} onClick={onForgotPassword}>忘记密码？</button>
+            <Checkbox label={message("login.remember")} checked={remember} disabled={submitting} onChange={(event) => setRemember(event.target.checked)} />
+            {forgotPasswordHref ? <a href={forgotPasswordHref}>{message("login.forgot")}</a> : onForgotPassword ? (
+              <button type="button" className="pui-link-button" disabled={submitting} onClick={onForgotPassword}>{message("login.forgot")}</button>
             ) : null}
           </div>
 
@@ -203,21 +221,21 @@ export function FamilyLoginPage({
             variant="primary"
             trailingIcon={<ArrowRight aria-hidden="true" />}
             loading={submitting}
-            loadingLabel="登录中"
+            loadingLabel={message("login.submitting")}
           >
-            登录
+            {message("login.submit")}
           </Button>
 
           {createAccountHref || onCreateAccount ? (
             <p className="pui-auth__create">
-              还没有账户？ {createAccountHref ? <a href={createAccountHref}>创建账户</a> : (
-                <button type="button" className="pui-link-button" disabled={submitting} onClick={onCreateAccount}>创建账户</button>
+              {message("login.noAccount")} {createAccountHref ? <a href={createAccountHref}>{message("login.createAccount")}</a> : (
+                <button type="button" className="pui-link-button" disabled={submitting} onClick={onCreateAccount}>{message("login.createAccount")}</button>
               )}
             </p>
           ) : null}
         </form>
 
-        <footer className="pui-auth__legal">{legal ?? <>登录即表示你同意服务条款与隐私政策。</>}</footer>
+        <footer className="pui-auth__legal">{legal ?? message("login.legal")}</footer>
       </section>
     </div>
   );

@@ -1,0 +1,7 @@
+{
+  "tenant": "migration-fixture",
+  "locale": "zh-CN",
+  "featureFlags": {
+    "memberDrawer": true
+  }
+}

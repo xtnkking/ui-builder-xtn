@@ -57,6 +57,116 @@ body {
   padding: 30px 24px 56px;
 }
 
+.demo-explorer-layout {
+  display: grid;
+  grid-template-columns: 292px minmax(0, 1fr);
+  min-height: calc(100vh - 57px);
+}
+
+.demo-explorer-sidebar {
+  position: sticky;
+  top: 0;
+  align-self: start;
+  height: calc(100vh - 57px);
+  overflow: auto;
+  border-inline-end: 1px solid var(--pui-border);
+  background: var(--pui-surface);
+}
+
+.demo-explorer-search {
+  position: sticky;
+  z-index: 2;
+  top: 0;
+  display: grid;
+  gap: 8px;
+  padding: 16px;
+  border-bottom: 1px solid var(--pui-border);
+  background: var(--pui-surface);
+}
+
+.demo-explorer-search > span {
+  color: var(--pui-muted);
+  font-size: 12px;
+}
+
+.demo-explorer-directory {
+  padding-block: 8px 24px;
+}
+
+.demo-explorer-directory__group + .demo-explorer-directory__group {
+  margin-top: 6px;
+}
+
+.demo-explorer-directory__group h2 {
+  margin: 0;
+  padding: 12px 16px 4px;
+  color: var(--pui-muted);
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.demo-explorer-main {
+  min-width: 0;
+  padding: 28px clamp(20px, 3vw, 48px) 64px;
+}
+
+.demo-explorer-main > .demo-explorer-cases,
+.demo-explorer-main > .demo-explorer-pending {
+  margin-top: 24px;
+}
+
+.demo-explorer-mobile-command {
+  display: none;
+  margin-bottom: 16px;
+}
+
+.demo-explorer-case {
+  min-width: 0;
+}
+
+.demo-explorer-case__summary {
+  padding: 18px 2px;
+}
+
+.demo-explorer-case__summary h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.demo-explorer-case__summary p {
+  max-width: 72ch;
+  margin: 6px 0 0;
+  color: var(--pui-muted);
+  line-height: 1.65;
+}
+
+.demo-explorer-case__states {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.demo-explorer-preview {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--pui-border);
+  border-radius: var(--pui-radius-surface);
+  background: var(--pui-surface);
+}
+
+.demo-explorer-pending {
+  min-height: 300px;
+  display: grid;
+  place-items: center;
+  border-top: 1px solid var(--pui-border);
+}
+
+.demo-explorer-mobile-directory {
+  display: grid;
+  gap: 12px;
+}
+
 .demo-number-case {
   padding: 20px 24px 28px;
 }
@@ -347,6 +457,24 @@ body {
   .demo-product-scene {
     height: 100%;
     min-height: 0;
+  }
+}
+
+@media (max-width: 900px) {
+  .demo-explorer-layout {
+    display: block;
+  }
+
+  .demo-explorer-sidebar {
+    display: none;
+  }
+
+  .demo-explorer-main {
+    padding: 22px 16px 48px;
+  }
+
+  .demo-explorer-mobile-command {
+    display: block;
   }
 }
 
