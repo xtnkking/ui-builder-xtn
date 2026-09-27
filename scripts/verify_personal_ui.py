@@ -70,6 +70,7 @@ STYLE_SUFFIXES = {".css", ".pcss", ".postcss", ".scss", ".sass", ".less"}
 HTML_SUFFIXES = {".html", ".htm"}
 IGNORED_APPLICATION_DIRECTORIES = {
     ".git",
+    ".next",
     ".personal-ui-stage",
     "dist",
     "node_modules",

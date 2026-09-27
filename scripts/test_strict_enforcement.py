@@ -204,6 +204,7 @@ def test_test_directory_exclusions() -> None:
         "test-only fixture directories are excluded",
         {
             "src/App.tsx": safe_application,
+            ".next/static/css/app.css": "input { border-radius: 0; }",
             "tests/root-fixture.tsx": intentionally_invalid_fixture,
             "src/__tests__/source-fixture.tsx": intentionally_invalid_fixture,
             "src/features/tests/nested-fixture.tsx": intentionally_invalid_fixture,
@@ -224,6 +225,7 @@ def test_test_directory_exclusions() -> None:
         target = Path(temporary)
         (target / "src").mkdir(parents=True)
         for relative in (
+            ".next/static/css/app.css",
             "tests/root-fixture.css",
             "src/__tests__/source-fixture.css",
             "src/features/tests/nested-fixture.css",

@@ -230,7 +230,7 @@ describe("core component contracts", () => {
     await user.keyboard("{Escape}");
     await waitFor(() => expect(screen.queryByRole("dialog", { name: "账户设置" })).not.toBeInTheDocument());
     expect(closeCount).toBe(1);
-    expect(openButton).toHaveFocus();
+    await waitFor(() => expect(openButton).toHaveFocus());
 
     await user.click(openButton);
     const reopenedDialog = await screen.findByRole("dialog", { name: "账户设置" });
