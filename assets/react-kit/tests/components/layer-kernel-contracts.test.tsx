@@ -98,11 +98,12 @@ describe("modal layer kernel contracts", () => {
     const dialog = screen.getByRole("dialog", { name: "受控弹窗" });
     const cancel = within(dialog).getByRole("button", { name: "取消" });
     const save = within(dialog).getByRole("button", { name: "保存" });
+    const close = within(dialog).getByRole("button", { name: "关闭对话框" });
     expect(cancel).toHaveFocus();
     save.focus();
-    await user.tab();
-    expect(within(dialog).getByRole("button", { name: "关闭对话框" })).toHaveFocus();
-    await user.tab({ shift: true });
+    fireEvent.keyDown(save, { key: "Tab" });
+    expect(close).toHaveFocus();
+    fireEvent.keyDown(close, { key: "Tab", shiftKey: true });
     expect(save).toHaveFocus();
 
     await user.keyboard("{Escape}");
