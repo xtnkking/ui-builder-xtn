@@ -6,7 +6,9 @@ from __future__ import annotations
 import copy
 import json
 import unittest
+from unittest import mock
 
+import run_support_fixture as fixture_runner
 from validate_support_matrix import (
     DEFAULT_FIXTURES,
     DEFAULT_MATRIX,
@@ -244,6 +246,20 @@ class SupportMatrixContractTests(unittest.TestCase):
         workflow = self.workflow.replace("          name: m8-real-safari-smoke\n", "", 1)
         report = self.validate(workflow=workflow)
         self.assert_has_error(report, "m8-real-safari-smoke")
+
+    def test_only_yarn_scratch_fixtures_disable_initial_lockfile_hardening(self) -> None:
+        with mock.patch.dict(fixture_runner.os.environ, {}, clear=True):
+            yarn_environment = fixture_runner.execution_environment(
+                {"packageManager": "yarn"}
+            )
+            self.assertEqual(yarn_environment["YARN_ENABLE_HARDENED_MODE"], "0")
+            self.assertEqual(yarn_environment["YARN_ENABLE_IMMUTABLE_INSTALLS"], "0")
+
+            npm_environment = fixture_runner.execution_environment(
+                {"packageManager": "npm"}
+            )
+            self.assertNotIn("YARN_ENABLE_HARDENED_MODE", npm_environment)
+            self.assertNotIn("YARN_ENABLE_IMMUTABLE_INSTALLS", npm_environment)
 
     def test_integration_job_requires_current_corepack_and_validator_dependencies(self) -> None:
         workflow = self.workflow.replace("corepack@0.34.0", "corepack@0.29.4", 1)

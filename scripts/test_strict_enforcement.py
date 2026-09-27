@@ -26,11 +26,12 @@ MANIFEST = SKILL_ROOT / "assets" / "react-kit" / "component-manifest.json"
 REGISTRY = SKILL_ROOT / "assets" / "react-kit" / "registry.json"
 MANAGED_SOURCE = SKILL_ROOT / "assets" / "react-kit" / "src" / "personal-ui"
 MANAGED_STYLES = MANAGED_SOURCE / "styles.css"
+MANAGED_FORM_SOURCE = "src/personal-ui/input/forms.tsx"
 INSTALLER = SKILL_ROOT / "scripts" / "install_personal_ui.py"
 FULL_VERIFIER = SKILL_ROOT / "scripts" / "verify_personal_ui.py"
 VERIFY_SCRIPT = (
     "node tools/personal-ui/verify-provenance.mjs --target . "
-    '--source-root "src/personal-ui" --manifest tools/personal-ui/component-manifest.json'
+    "--manifest tools/personal-ui/component-manifest.json"
 )
 
 
@@ -1375,7 +1376,7 @@ def main() -> int:
 
     expect_issue(
         "changed managed source",
-        {"src/personal-ui/forms.tsx": "export const tampered = true;"},
+        {MANAGED_FORM_SOURCE: "export const tampered = true;"},
         {"PUI_MANAGED_CHANGED"},
     )
     expect_issue(
@@ -1387,7 +1388,7 @@ def main() -> int:
         "missing managed source",
         {},
         {"PUI_MANAGED_MISSING"},
-        remove=("src/personal-ui/forms.tsx",),
+        remove=(MANAGED_FORM_SOURCE,),
     )
 
     test_autofill_contract()

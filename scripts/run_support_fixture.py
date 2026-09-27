@@ -378,6 +378,21 @@ def assert_runtime_versions(
     }
 
 
+def execution_environment(plan: dict[str, Any]) -> dict[str, str]:
+    environment = dict(os.environ)
+    environment.update({"CI": "1", "NEXT_TELEMETRY_DISABLED": "1"})
+    if plan["packageManager"] == "yarn":
+        # The generated scratch fixture has no lockfile yet. Public-PR hardened
+        # mode must not turn that intentional first install into an immutable one.
+        environment.update(
+            {
+                "YARN_ENABLE_HARDENED_MODE": "0",
+                "YARN_ENABLE_IMMUTABLE_INSTALLS": "0",
+            }
+        )
+    return environment
+
+
 def execute_fixture(fixture: dict[str, Any], workspace: Path) -> dict[str, Any]:
     plan = build_fixture_plan(fixture)
     if plan["catalogStatus"] not in {"target", "verified"}:
@@ -402,8 +417,7 @@ def execute_fixture(fixture: dict[str, Any], workspace: Path) -> dict[str, Any]:
     if installed["operation"] != "install":
         raise RuntimeError(f"expected install operation, received {installed['operation']}")
 
-    environment = dict(os.environ)
-    environment.update({"CI": "1", "NEXT_TELEMETRY_DISABLED": "1"})
+    environment = execution_environment(plan)
     run(plan["commands"]["cleanInstall"], cwd=project_root, environment=environment)
     actual_environment = assert_runtime_versions(
         fixture, plan, cwd=package_root, environment=environment
