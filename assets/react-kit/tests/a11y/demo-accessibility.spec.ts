@@ -40,7 +40,7 @@ test.describe("Personal UI example accessibility", () => {
 
   test("number inputs have no blocking automated violations", async ({ page }) => {
     await openExample(page, "/#/components/number");
-    await expect(page.getByRole("heading", { name: "数字输入" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "数字步进输入", exact: true })).toBeVisible();
     await expectNoBlockingViolations(page, "number inputs");
   });
 
