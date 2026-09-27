@@ -28,7 +28,7 @@ async function openExample(page: Page, route: string) {
 test.describe("Personal UI example accessibility", () => {
   test("member management has no blocking automated violations", async ({ page }) => {
     await openExample(page, "/#/patterns/list-filter");
-    await expect(page.getByText("陈沐", { exact: true }).first()).toBeVisible();
+    await expect(page.getByRole("tab", { name: "列表管理", exact: true })).toBeVisible();
     await expectNoBlockingViolations(page, "member management");
   });
 
@@ -46,14 +46,14 @@ test.describe("Personal UI example accessibility", () => {
 
   test("paginated data table has no blocking automated violations", async ({ page }) => {
     await openExample(page, "/#/components/data-table");
-    await expect(page.getByRole("table", { name: "用户权限表" })).toBeVisible();
+    await expect(page.getByRole("table", { name: "账户列表" })).toBeVisible();
     await expectNoBlockingViolations(page, "paginated data table");
   });
 
   test("dialog content has no blocking automated violations", async ({ page }) => {
     await openExample(page, "/#/components/dialog");
-    await page.getByRole("button", { name: "分配角色" }).click();
-    await expect(page.getByRole("dialog", { name: /分配角色/ })).toBeVisible();
+    await page.getByRole("button", { name: "编辑项目" }).click();
+    await expect(page.getByRole("dialog", { name: /编辑项目/ })).toBeVisible();
     await expectNoBlockingViolations(page, "dialog content");
   });
 });

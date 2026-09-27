@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { isPersonalUiRegressionMain, runPersonalUiRegression } from "./browser-test-harness.mjs";
+import { legacyExplorerCaseTabs, selectExplorerCase } from "./browser-explorer-case.mjs";
 
 async function focusWithKeyboard(page, target, label) {
   await target.focus();
@@ -29,8 +30,9 @@ export async function runListPageWidthRegression({ page, baseURL }) {
   assert.ok(baseURL, "A baseURL is required");
   for (const width of [2560, 1440, 1024, 736, 360, 320]) {
     await page.setViewportSize({ width, height: 900 });
-    await page.goto(`${baseURL}/#/components/data-table`);
-      const root = page.locator(".demo-list-frame .pui-list-page");
+    await page.goto(`${baseURL}/?legacy=list-width-${width}#/components/data-table`);
+      const dataTableCase = await selectExplorerCase(page, legacyExplorerCaseTabs.dataTable);
+      const root = dataTableCase.locator(".demo-list-frame .pui-list-page");
       await root.waitFor();
       const measure = () => root.evaluate((element) => {
         const container = element.getBoundingClientRect();
@@ -212,7 +214,7 @@ export async function runListPageWidthRegression({ page, baseURL }) {
       }) : null;
       if (beforePageChange) assert.ok(beforePageChange.scrollTop > 0, `could not prepare the equal-height page reset case at ${width}px`);
       await page.getByRole("button", { name: "下一页" }).click();
-      await page.getByText("6-10 / 共 23 条").waitFor({ state: "attached" });
+      await page.getByText("6-10 / 23 条结果").waitFor({ state: "attached" });
       const nextPage = await measure();
       assert.ok(Math.abs(nextPage.surfaceRight - nextPage.pager.right) <= 1, `pagination shifted after page change at ${width}px`);
       if (beforePageChange) {

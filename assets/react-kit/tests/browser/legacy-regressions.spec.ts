@@ -1,6 +1,9 @@
 // @personal-ui-coverage {"kind":"browser","runner":"browser","exports":["AsyncSelect","Autocomplete","ConfirmDialog","ContextMenu","DataTable","DescriptionList","Dialog","Drawer","DropdownMenu","Field","FilterBar","Inline","Input","List","MultiSelect","NumberInput","PasswordInput","TagInput","TreeSelect"]}
 import { expect, test, type Page } from "@playwright/test";
-import { runAsyncSelectOverlayRegression } from "../../../../scripts/test_async_select_overlay_browser.mjs";
+import {
+  asyncSelectOverlayWidths,
+  runAsyncSelectOverlayRegression,
+} from "../../../../scripts/test_async_select_overlay_browser.mjs";
 import { runDataTableFocusRegression } from "../../../../scripts/test_data_table_focus_browser.mjs";
 import { runDataTableRoundedRegression } from "../../../../scripts/test_data_table_rounded_browser.mjs";
 import { runDataTableSelectionPinningRegression } from "../../../../scripts/test_data_table_selection_pinning_browser.mjs";
@@ -13,8 +16,16 @@ import { runQueryControlAlignmentRegression } from "../../../../scripts/test_que
 
 type BrowserRegression = (options: { page: Page; baseURL: string }) => Promise<void>;
 
+const asyncSelectOverlayRegressions = asyncSelectOverlayWidths.map(
+  (width) => [
+    `async select and overlay positioning at ${width}px`,
+    ({ page, baseURL }: { page: Page; baseURL: string }) =>
+      runAsyncSelectOverlayRegression({ page, baseURL, widths: [width] }),
+  ] as const,
+);
+
 const browserRegressions = [
-  ["async select and overlay positioning", runAsyncSelectOverlayRegression],
+  ...asyncSelectOverlayRegressions,
   ["data table action focus", runDataTableFocusRegression],
   ["data table rounding and stable height", runDataTableRoundedRegression],
   ["data table selection pinning", runDataTableSelectionPinningRegression],
@@ -27,7 +38,6 @@ const browserRegressions = [
 ] satisfies ReadonlyArray<readonly [string, BrowserRegression]>;
 
 test.describe("browser regressions", () => {
-  test.describe.configure({ mode: "default" });
   for (const [name, regression] of browserRegressions) {
     test(name, async ({ page, baseURL }) => {
       test.setTimeout(330_000);

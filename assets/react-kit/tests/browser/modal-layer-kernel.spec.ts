@@ -1,10 +1,12 @@
 // @personal-ui-coverage {"kind":"browser","runner":"browser","exports":["ConfirmDialog","Dialog","Drawer"]}
 import { expect, test } from "@playwright/test";
+import { legacyExplorerCaseTabs, selectExplorerCase } from "../../../../scripts/browser-explorer-case.mjs";
 
 test("keeps nested modal focus, dismissal, inert, and scroll state coherent", async ({ page }) => {
   await page.goto("/#/components/dialog");
 
-  const opener = page.getByRole("button", { name: "分配角色" });
+  const dialogCase = await selectExplorerCase(page, legacyExplorerCaseTabs.dialog);
+  const opener = dialogCase.getByRole("button", { name: "分配角色" });
   await opener.click();
   const dialog = page.locator("[data-pui-owner='Dialog']").filter({ hasText: "分配角色 · xtn" }).first();
   await expect(dialog).toBeVisible();
@@ -45,7 +47,8 @@ test("keeps nested modal focus, dismissal, inert, and scroll state coherent", as
 test("keeps Drawer modal state and focus restoration aligned with Dialog", async ({ page }) => {
   await page.goto("/#/components/data-table");
 
-  const opener = page.getByRole("button", { name: "编辑陈沐" });
+  const dataTableCase = await selectExplorerCase(page, legacyExplorerCaseTabs.dataTable);
+  const opener = dataTableCase.getByRole("button", { name: "编辑陈沐" });
   await opener.click();
   const drawer = page.getByRole("dialog", { name: "编辑陈沐的权限" });
   await expect(drawer).toBeVisible();

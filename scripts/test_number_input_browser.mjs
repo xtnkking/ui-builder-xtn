@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { isPersonalUiRegressionMain, runPersonalUiRegression } from "./browser-test-harness.mjs";
+import { legacyExplorerCaseTabs, selectExplorerCase } from "./browser-explorer-case.mjs";
 
 const numberStyles = readFileSync(new URL("../assets/react-kit/src/personal-ui/styles/inputs-extra.css", import.meta.url), "utf8");
 assert.match(numberStyles, /\.pui-number-input \.pui-input--embedded::-webkit-inner-spin-button/);
@@ -11,6 +12,7 @@ export async function runNumberInputRegression({ page, baseURL }) {
   for (const width of [2560, 1440, 1024, 736, 360, 320]) {
     await page.setViewportSize({ width, height: 800 });
     await page.goto(`${baseURL}/#/components/number`);
+      await selectExplorerCase(page, legacyExplorerCaseTabs.number);
       if (process.env.PERSONAL_UI_NUMBER_SCREENSHOT_PREFIX) {
         await page.screenshot({ path: `${process.env.PERSONAL_UI_NUMBER_SCREENSHOT_PREFIX}-${width}.png` });
       }
@@ -33,6 +35,7 @@ export async function runNumberInputRegression({ page, baseURL }) {
       await emptyInput.pressSequentially("e");
       assert.equal(await emptyInput.inputValue(), "", "invalid number input should not emit NaN");
 
+      await input.fill("120");
       assert.equal(await input.inputValue(), "120");
       await input.focus();
       await page.keyboard.press("Tab");

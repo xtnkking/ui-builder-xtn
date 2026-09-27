@@ -1,4 +1,10 @@
 import { expect, test, type Page } from "@playwright/test";
+import { readFileSync } from "node:fs";
+
+const componentManifest = JSON.parse(
+  readFileSync(new URL("../../component-manifest.json", import.meta.url), "utf8"),
+) as { entries: unknown[] };
+const explorerFamilyCount = componentManifest.entries.length;
 
 async function expectCurrentRoute(page: Page, route: string, heading: string | RegExp) {
   await expect(page).toHaveURL(new RegExp(`${route.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`));
@@ -17,7 +23,7 @@ test.describe("component explorer", () => {
 
     await page.goto("/#/components/typography");
     await expectCurrentRoute(page, "/#/components/typography", "Typography 字体规范");
-    await expect(page.getByText("118 个组件家族", { exact: true })).toBeVisible();
+    await expect(page.getByText(`${explorerFamilyCount} 个组件家族`, { exact: true })).toBeVisible();
     await expect(page.getByText("基础规范，无独立 runtime export", { exact: true })).toBeVisible();
 
     await page.goto("/#/components/button");
@@ -58,7 +64,7 @@ test.describe("component explorer", () => {
     await expect(directory.getByText("没有匹配的组件", { exact: true })).toBeVisible();
 
     await directory.getByRole("button", { name: "清除搜索" }).click();
-    await expect(resultStatus).toHaveText("118 个结果");
+    await expect(resultStatus).toHaveText(`${explorerFamilyCount} 个结果`);
     await expect(search).toHaveValue("");
   });
 
@@ -103,18 +109,18 @@ test.describe("component explorer", () => {
 
   test("keeps all five legacy workflows addressable by stable routes", async ({ page }) => {
     const workflows = [
-      ["/#/patterns/list-filter", "列表与筛选页面", () => page.getByText("陈沐", { exact: true }).first()],
+      ["/#/patterns/list-filter", "列表与筛选页面", () => page.getByRole("tab", { name: "列表管理", exact: true })],
       ["/#/patterns/authentication", "认证与品牌登录", () => page.getByRole("button", { name: "登录" })],
-      ["/#/components/number", "NumberInput", () => page.getByRole("heading", { name: "数字输入", exact: true })],
-      ["/#/components/data-table", "DataTable / TreeTable", () => page.getByRole("table", { name: "用户权限表" })],
-      ["/#/components/dialog", "Dialog / ConfirmDialog", () => page.getByRole("button", { name: "分配角色" })],
+      ["/#/components/number", "NumberInput", () => page.getByRole("heading", { name: "数字步进输入", exact: true })],
+      ["/#/components/data-table", "DataTable / TreeTable", () => page.getByRole("table", { name: "账户列表" })],
+      ["/#/components/dialog", "Dialog / ConfirmDialog", () => page.getByRole("button", { name: "编辑项目" })],
     ] as const;
 
     for (const [route, heading, witness] of workflows) {
       await page.goto(route);
       await expectCurrentRoute(page, route, heading);
       await expect(witness()).toBeVisible();
-      await expect(page.getByRole("tab", { name: "代码", exact: true })).toBeVisible();
+      await expect(page.getByRole("tab", { name: /代码$/ }).first()).toBeVisible();
     }
   });
 });

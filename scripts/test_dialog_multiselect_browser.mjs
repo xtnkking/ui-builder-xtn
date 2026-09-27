@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { isPersonalUiRegressionMain, runPersonalUiRegression } from "./browser-test-harness.mjs";
+import { legacyExplorerCaseTabs, selectExplorerCase } from "./browser-explorer-case.mjs";
 
 async function waitForFocus(page, target, label) {
   const handle = await target.elementHandle();
@@ -171,8 +172,9 @@ export async function runDialogMultiSelectRegression({ page, baseURL }) {
   for (const width of [2560, 1440, 1024, 736, 360, 320]) {
     const height = width <= 360 ? 640 : 900;
     await page.setViewportSize({ width, height });
-    await page.goto(baseURL);
-      const memberAction = page.getByRole("button", { name: "陈沐的更多操作" });
+    await page.goto(`${baseURL}/#/patterns/list-filter`);
+      const listFilterCase = await selectExplorerCase(page, legacyExplorerCaseTabs.listFilter);
+      const memberAction = listFilterCase.getByRole("button", { name: "陈沐的更多操作" });
       await memberAction.click();
       const memberDrawer = page.getByRole("dialog", { name: "陈沐" });
       const descriptionList = memberDrawer.locator('[data-pui-owner="DescriptionList"]');
@@ -208,8 +210,9 @@ export async function runDialogMultiSelectRegression({ page, baseURL }) {
       await memberDrawer.waitFor({ state: "detached" });
 
       await page.goto(`${baseURL}/#/components/dialog`);
-      const responseMode = page.getByRole("group", { name: "选择确认操作响应" });
-      const opener = page.getByRole("button", { name: "停用用户", exact: true });
+      const dialogCase = await selectExplorerCase(page, legacyExplorerCaseTabs.dialog);
+      const responseMode = dialogCase.getByRole("group", { name: "选择确认操作响应" });
+      const opener = dialogCase.getByRole("button", { name: "停用用户", exact: true });
       await opener.click();
       const confirm = page.getByRole("dialog", { name: "停用用户" });
       await confirm.waitFor();
@@ -262,19 +265,19 @@ export async function runDialogMultiSelectRegression({ page, baseURL }) {
       assert.equal(await page.getByRole("dialog", { name: "停用用户" }).getByRole("alert").count(), 0, `${width}px: error persisted on reopen`);
       await page.keyboard.press("Escape");
 
-      await page.getByRole("button", { name: "分配角色" }).click();
+      await dialogCase.getByRole("button", { name: "分配角色" }).click();
       const roleDialog = page.getByRole("dialog", { name: "分配角色 · xtn" });
       await roleDialog.waitFor();
       await clickBackdrop(roleDialog, `${width}px role dialog`);
       assert.equal(await roleDialog.isVisible(), true, `${width}px: backdrop closed the role Dialog`);
       await roleDialog.getByRole("button", { name: "关闭对话框" }).click();
       await roleDialog.waitFor({ state: "detached" });
-      await page.getByRole("button", { name: "分配角色" }).click();
+      await dialogCase.getByRole("button", { name: "分配角色" }).click();
       await clickBackdrop(roleDialog, `${width}px reopened role dialog`);
       assert.equal(await roleDialog.isVisible(), true, `${width}px: backdrop closed the reopened role Dialog`);
       await page.keyboard.press("Escape");
       await roleDialog.waitFor({ state: "detached" });
-      await page.getByRole("button", { name: "分配角色" }).click();
+      await dialogCase.getByRole("button", { name: "分配角色" }).click();
       const roleForm = await inspectRoleForm(roleDialog, `${width}px role dialog`);
       await inspectVisualTokens(roleDialog, width);
       if (width === 1440 || width === 320) {
@@ -343,7 +346,7 @@ export async function runDialogMultiSelectRegression({ page, baseURL }) {
       await country.click();
       const countryPopup = page.locator(".pui-overlay > .pui-async-select__popover");
       await countryPopup.waitFor({ state: "visible" });
-      await countryPopup.getByRole("searchbox", { name: "搜索国家或地区" }).fill("日本");
+      await countryPopup.getByRole("combobox", { name: "搜索国家或地区" }).fill("日本");
       await countryPopup.getByRole("option", { name: /日本/ }).click();
       await countryPopup.waitFor({ state: "detached" });
       assert.ok((await country.textContent())?.includes("日本"), `${width}px: selected country is not rendered`);
@@ -412,7 +415,8 @@ export async function runDialogMultiSelectRegression({ page, baseURL }) {
       await noHorizontalOverflow(page, `${width}px final`);
 
       await page.goto(`${baseURL}/#/components/data-table`);
-      const edit = page.getByRole("button", { name: "编辑陈沐" });
+      const dataTableCase = await selectExplorerCase(page, legacyExplorerCaseTabs.dataTable);
+      const edit = dataTableCase.getByRole("button", { name: "编辑陈沐" });
       await edit.click();
       const drawer = page.getByRole("dialog", { name: "编辑陈沐的权限" });
       const drawerGeometry = await drawer.evaluate((element) => {

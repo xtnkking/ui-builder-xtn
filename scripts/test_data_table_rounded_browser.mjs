@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { isPersonalUiRegressionMain, runPersonalUiRegression } from "./browser-test-harness.mjs";
+import { legacyExplorerCaseTabs, selectExplorerCase } from "./browser-explorer-case.mjs";
 
 async function settledScrollTop(locator, baseline) {
   return locator.evaluate((element, initial) => new Promise((resolve) => {
@@ -235,8 +236,7 @@ export async function runDataTableRoundedRegression({ page, baseURL }) {
   for (const width of widths) {
     await page.setViewportSize({ width, height: 900 });
     await page.goto(`${baseURL}/?regressionWidth=${width}#/patterns/list-filter`);
-      await page.getByRole("tab", { name: "成员管理预览", exact: true }).click();
-      const casePanel = page.getByRole("tabpanel", { name: "成员管理预览", exact: true });
+      const casePanel = await selectExplorerCase(page, legacyExplorerCaseTabs.listFilter);
       const table = casePanel.locator(".pui-data-page .pui-data-table");
       const surfaceSelector = width <= 640
         ? ".pui-data-page .pui-data-table__mobile"
@@ -270,7 +270,7 @@ export async function runDataTableRoundedRegression({ page, baseURL }) {
       const largePage = await assertRounded(table, `large page ready ${width}px`, { paginated: true });
       assert.ok(Math.abs(ready.surface.height - largePage.surface.height) <= 1, `page size changed the fixed viewport at ${width}px`);
       assert.ok(Math.abs(ready.frame.height - largePage.frame.height) <= 1, `page size changed the table frame at ${width}px`);
-      await table.getByText("1-20 / 共 23 条", { exact: true }).waitFor();
+      await table.getByText("1-20 / 23 条结果", { exact: true }).waitFor();
       const scrolling = await surface.evaluate((element) => ({ clientHeight: element.clientHeight, scrollHeight: element.scrollHeight }));
       assert.ok(scrolling.scrollHeight > scrolling.clientHeight, `large page did not scroll inside the fixed viewport at ${width}px`);
       assert.ok(Math.abs((ready.surface.right - ready.surface.left) - (largePage.surface.right - largePage.surface.left)) <= 1, `vertical scrollbar changed the table surface width at ${width}px (${ready.surface.right - ready.surface.left} -> ${largePage.surface.right - largePage.surface.left})`);
@@ -339,7 +339,7 @@ export async function runDataTableRoundedRegression({ page, baseURL }) {
       const largestPageLoading = await assertRounded(table, `50-row loading ${width}px`, { paginated: true });
       assert.ok(Math.abs(ready.surface.height - largestPageLoading.surface.height) <= 1, `50-row loading changed the fixed viewport at ${width}px`);
       await tableState("ready").waitFor();
-      await table.getByText("1-23 / 共 23 条", { exact: true }).waitFor();
+      await table.getByText("1-23 / 23 条结果", { exact: true }).waitFor();
       const largestPage = await assertRounded(table, `50-row ready ${width}px`, { paginated: true });
       assert.ok(Math.abs(ready.surface.height - largestPage.surface.height) <= 1, `50-row ready changed the fixed viewport at ${width}px`);
       assert.ok(await surface.evaluate((element) => element.scrollTop) <= 1, `table did not remain at the top after page-size data changed at ${width}px`);
@@ -355,7 +355,7 @@ export async function runDataTableRoundedRegression({ page, baseURL }) {
       const sparse = await assertRounded(table, `sparse ready ${width}px`, { paginated: true });
       assert.equal(await surface.locator(width <= 640 ? ".pui-mobile-data-row" : "tbody tr").count(), 2, `sparse query did not render two rows at ${width}px`);
       assert.equal(await table.locator(".pui-data-table__pagination").count(), 1, `sparse query removed pagination at ${width}px`);
-      await table.getByText("1-2 / 共 2 条", { exact: true }).waitFor();
+      await table.getByText("1-2 / 2 条结果", { exact: true }).waitFor();
       await assertRowsFitSurface(surface, width <= 640 ? ".pui-mobile-data-row" : "tbody tr", `sparse ready ${width}px`);
       if (width > 640) await assertDesktopBandLayout(table, `sparse ready ${width}px`);
       assert.ok(Math.abs(ready.surface.height - sparse.surface.height) <= 1, `sparse ready result changed table height at ${width}px`);
@@ -380,7 +380,7 @@ export async function runDataTableRoundedRegression({ page, baseURL }) {
       await casePanel.getByRole("button", { name: "查询", exact: true }).click();
       await tableState("loading").waitFor();
       await tableState("ready").waitFor();
-      await table.getByText("1-23 / 共 23 条", { exact: true }).waitFor();
+      await table.getByText("1-23 / 23 条结果", { exact: true }).waitFor();
 
       await scenario.getByRole("button", { name: "空结果" }).click();
       await casePanel.getByRole("button", { name: "查询", exact: true }).click();

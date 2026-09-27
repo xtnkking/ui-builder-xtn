@@ -29,6 +29,14 @@ FRAGMENT_NAME = "quality-fragment.json"
 ACCEPTANCE_NAME = "m8-acceptance.json"
 QUALITY_RAW_INVENTORY_KIND = "personal-ui-m8-quality-raw-artifact-inventory"
 REVIEW_INPUTS_KIND = "personal-ui-m8-review-inputs"
+EVALUATOR_COMMAND_ROLES = frozenset(
+    {
+        "evaluator-command-index",
+        "evaluator-command-record",
+        "evaluator-command-stdout",
+        "evaluator-command-stderr",
+    }
+)
 PLACEHOLDER_PATTERN = re.compile(
     r"(?:\b(?:todo|tbd|fixme|placeholder)\b|<\s*(?:fill|replace)[^>]*>|replace\s+me)",
     re.IGNORECASE,
@@ -731,6 +739,7 @@ def _required_quality_roles() -> set[str]:
         "evaluator-final-sourceInventory",
         "evaluator-final-verification",
         "browser-version-report",
+        *EVALUATOR_COMMAND_ROLES,
     }
     for purpose in ("typecheck", "build", "verifier", "browser-quality"):
         roles.update({f"command-{purpose}-stdout", f"command-{purpose}-stderr"})
@@ -747,6 +756,128 @@ def _required_quality_roles() -> set[str]:
     return roles
 
 
+def _validate_evaluator_command_provenance(
+    *,
+    scenario_id: str,
+    run_id: object,
+    role_map: Mapping[str, Sequence[tuple[Mapping[str, object], Path]]],
+) -> None:
+    index_entries = role_map.get("evaluator-command-index", ())
+    if len(index_entries) != 1:
+        raise AssemblyError(
+            f"quality command index must be unique: {scenario_id}"
+        )
+    index = _read_json(
+        index_entries[0][1], label=f"{scenario_id} evaluator command index"
+    )
+    descriptors = index.get("commands")
+    if (
+        index.get("schemaVersion") != SCHEMA_VERSION
+        or index.get("kind") != "personal-ui-m8-command-index"
+        or index.get("runId") != run_id
+        or not isinstance(descriptors, list)
+        or not descriptors
+    ):
+        raise AssemblyError(f"quality command index is incomplete: {scenario_id}")
+
+    def by_source_path(
+        role: str,
+    ) -> dict[str, tuple[Mapping[str, object], Path]]:
+        entries = role_map.get(role, ())
+        result: dict[str, tuple[Mapping[str, object], Path]] = {}
+        for item, path in entries:
+            source_path = item.get("sourcePath")
+            if not isinstance(source_path, str) or source_path in result:
+                raise AssemblyError(
+                    f"quality command raw role is duplicated: {scenario_id}/{role}"
+                )
+            result[source_path] = (item, path)
+        if not result:
+            raise AssemblyError(
+                f"quality command raw role is missing: {scenario_id}/{role}"
+            )
+        return result
+
+    record_entries = by_source_path("evaluator-command-record")
+    stdout_entries = by_source_path("evaluator-command-stdout")
+    stderr_entries = by_source_path("evaluator-command-stderr")
+    descriptor_paths: set[str] = set()
+    used_stdout: set[str] = set()
+    used_stderr: set[str] = set()
+    for sequence, descriptor in enumerate(descriptors, start=1):
+        if not _descriptor_shape(descriptor):
+            raise AssemblyError(
+                f"quality command descriptor is invalid: {scenario_id}/{sequence}"
+            )
+        assert isinstance(descriptor, dict)
+        relative = descriptor.get("path")
+        if not isinstance(relative, str) or relative in descriptor_paths:
+            raise AssemblyError(
+                f"quality command descriptor is duplicated: {scenario_id}/{sequence}"
+            )
+        descriptor_paths.add(relative)
+        retained = record_entries.get(relative)
+        if retained is None:
+            raise AssemblyError(
+                f"quality command record is not retained: {scenario_id}/{sequence}"
+            )
+        raw_item, record_path = retained
+        if (
+            raw_item.get("size") != descriptor.get("size")
+            or raw_item.get("sha256") != descriptor.get("sha256")
+        ):
+            raise AssemblyError(
+                f"quality command descriptor mismatch: {scenario_id}/{sequence}"
+            )
+        record = _read_json(
+            record_path, label=f"{scenario_id} evaluator command {sequence}"
+        )
+        if (
+            record.get("schemaVersion") != SCHEMA_VERSION
+            or record.get("kind") != "personal-ui-m8-command"
+            or record.get("runId") != run_id
+            or record.get("sequence") != sequence
+        ):
+            raise AssemblyError(
+                f"quality command record is incomplete: {scenario_id}/{sequence}"
+            )
+        for field, entries, used in (
+            ("stdout", stdout_entries, used_stdout),
+            ("stderr", stderr_entries, used_stderr),
+        ):
+            value = record.get(field)
+            if not _descriptor_shape(value):
+                raise AssemblyError(
+                    f"quality command {field} descriptor is invalid: "
+                    f"{scenario_id}/{sequence}"
+                )
+            assert isinstance(value, dict)
+            output_relative = value.get("path")
+            if not isinstance(output_relative, str):
+                raise AssemblyError(
+                    f"quality command {field} path is invalid: {scenario_id}/{sequence}"
+                )
+            output = entries.get(output_relative)
+            if output is None:
+                raise AssemblyError(
+                    f"quality command {field} is not retained: {scenario_id}/{sequence}"
+                )
+            output_item, _ = output
+            if (
+                output_item.get("size") != value.get("size")
+                or output_item.get("sha256") != value.get("sha256")
+            ):
+                raise AssemblyError(
+                    f"quality command {field} mismatch: {scenario_id}/{sequence}"
+                )
+            used.add(output_relative)
+
+    if set(record_entries) != descriptor_paths:
+        raise AssemblyError(f"quality command records are not exact: {scenario_id}")
+    if set(stdout_entries) != used_stdout or set(stderr_entries) != used_stderr:
+        raise AssemblyError(f"quality command outputs are not exact: {scenario_id}")
+
+
 def _validate_quality_raw_provenance(
     *,
     fragment: Mapping[str, object],
@@ -754,7 +885,9 @@ def _validate_quality_raw_provenance(
     items: Sequence[object],
     candidate_summary: Mapping[str, object],
 ) -> None:
-    by_scenario: dict[str, dict[str, tuple[Mapping[str, object], Path]]] = {
+    by_scenario: dict[
+        str, dict[str, list[tuple[Mapping[str, object], Path]]]
+    ] = {
         scenario_id: {} for scenario_id in validator.M8_SCENARIOS
     }
     required_roles = _required_quality_roles()
@@ -785,9 +918,7 @@ def _validate_quality_raw_provenance(
             source_root, raw_item, label=f"quality raw evidence artifact {index}"
         )
         for role in roles:
-            if role in by_scenario[scenario_id]:
-                raise AssemblyError(f"quality raw producer role is duplicated: {scenario_id}/{role}")
-            by_scenario[scenario_id][role] = (raw_item, source)
+            by_scenario[scenario_id].setdefault(role, []).append((raw_item, source))
 
     summaries = fragment.get("scenarios")
     if not isinstance(summaries, list):
@@ -804,7 +935,26 @@ def _validate_quality_raw_provenance(
                 f"quality raw producer roles are incomplete for {scenario_id} "
                 f"(missing={missing[:3]}, extra={extra[:3]})"
             )
-        visible = _read_json(role_map["visible-inputs"][1], label=f"{scenario_id} visible inputs")
+        singleton_roles = required_roles - {
+            "evaluator-command-record",
+            "evaluator-command-stdout",
+            "evaluator-command-stderr",
+        }
+        duplicated = sorted(
+            role for role in singleton_roles if len(role_map.get(role, ())) != 1
+        )
+        if duplicated:
+            raise AssemblyError(
+                f"quality raw producer role must be unique for {scenario_id}: "
+                f"{duplicated[:3]}"
+            )
+
+        def single(role: str) -> tuple[Mapping[str, object], Path]:
+            return role_map[role][0]
+
+        visible = _read_json(
+            single("visible-inputs")[1], label=f"{scenario_id} visible inputs"
+        )
         visible_candidate = visible.get("candidate")
         visible_scenario = visible.get("scenario")
         if (
@@ -817,6 +967,33 @@ def _validate_quality_raw_provenance(
             or visible_scenario.get("id") != scenario_id
         ):
             raise AssemblyError(f"quality raw visible-inputs manifest is unbound: {scenario_id}")
+        visible_run = visible.get("run")
+        run_id = visible_run.get("id") if isinstance(visible_run, dict) else None
+        _validate_evaluator_command_provenance(
+            scenario_id=scenario_id,
+            run_id=run_id,
+            role_map=role_map,
+        )
+        final_verification = _read_json(
+            single("evaluator-final-verification")[1],
+            label=f"{scenario_id} evaluator final verification",
+        )
+        command_index = _read_json(
+            single("evaluator-command-index")[1],
+            label=f"{scenario_id} evaluator command index",
+        )
+        if (
+            final_verification.get("schemaVersion") != SCHEMA_VERSION
+            or final_verification.get("kind")
+            != "personal-ui-m8-quality-verification"
+            or final_verification.get("runId") != run_id
+            or final_verification.get("candidate") != visible_candidate
+            or final_verification.get("result") != "passed"
+            or final_verification.get("commands") != command_index.get("commands")
+        ):
+            raise AssemblyError(
+                f"quality final verification is incomplete or unbound: {scenario_id}"
+            )
         summary = summary_by_id.get(scenario_id)
         descriptor = summary.get("artifact") if isinstance(summary, dict) else None
         if not isinstance(descriptor, dict):
@@ -825,7 +1002,7 @@ def _validate_quality_raw_provenance(
             source_root, descriptor, label=f"quality scenario record {scenario_id}"
         )
         record = _read_json(record_path, label=f"quality scenario record {scenario_id}")
-        if record.get("sourceReportSha256") != role_map["scenario-quality-report"][0].get("sha256"):
+        if record.get("sourceReportSha256") != single("scenario-quality-report")[0].get("sha256"):
             raise AssemblyError(f"quality scenario report provenance mismatch: {scenario_id}")
         commands = record.get("commands")
         if not isinstance(commands, list) or {item.get("purpose") for item in commands if isinstance(item, dict)} != {
@@ -839,9 +1016,9 @@ def _validate_quality_raw_provenance(
             if (
                 command.get("exitCode") != 0
                 or command.get("stdoutSha256")
-                != role_map[f"command-{purpose}-stdout"][0].get("sha256")
+                != single(f"command-{purpose}-stdout")[0].get("sha256")
                 or command.get("stderrSha256")
-                != role_map[f"command-{purpose}-stderr"][0].get("sha256")
+                != single(f"command-{purpose}-stderr")[0].get("sha256")
             ):
                 raise AssemblyError(f"quality command raw evidence mismatch: {scenario_id}/{purpose}")
         measurements = record.get("measurements")
@@ -858,11 +1035,11 @@ def _validate_quality_raw_provenance(
                 raise AssemblyError(f"quality measurement provenance is incomplete: {scenario_id}")
             prefix = f"{engine}-{width}"
             if any(
-                raw.get(role) != role_map[f"{prefix}-{role}"][0].get("sha256")
+                raw.get(role) != single(f"{prefix}-{role}")[0].get("sha256")
                 for role in ("behavior", "axe", "responsive")
-            ) or not isinstance(screenshot, dict) or screenshot.get("sha256") != role_map[
+            ) or not isinstance(screenshot, dict) or screenshot.get("sha256") != single(
                 f"{prefix}-screenshot"
-            ][0].get("sha256"):
+            )[0].get("sha256"):
                 raise AssemblyError(f"quality measurement raw evidence mismatch: {scenario_id}/{prefix}")
 
 

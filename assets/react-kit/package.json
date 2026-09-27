@@ -25,7 +25,7 @@
     "test:verifier-paths": "python ../../scripts/test_verifier_path_boundaries.py",
     "test:release": "python ../../scripts/test_release_personal_ui.py && python ../../scripts/test_release_publish_adapter.py",
     "test:hosted-evidence": "python ../../scripts/test_validate_hosted_ci_evidence.py",
-    "test:m8": "python ../../scripts/test_run_m8_consumer.py && python ../../scripts/test_m8_evidence.py && python ../../scripts/test_validate_m8_evidence.py && python ../../scripts/test_run_m8_migration.py && python ../../scripts/test_run_m8_quality.py && python ../../scripts/test_assemble_m8_acceptance.py",
+    "test:m8": "python ../../scripts/test_run_m8_consumer.py && python ../../scripts/test_m8_evidence.py && python ../../scripts/test_validate_m8_evidence.py && python ../../scripts/test_run_m8_migration.py && python ../../scripts/test_run_m8_quality.py && python ../../scripts/test_run_m8_scenario_quality.py && python ../../scripts/test_assemble_m8_acceptance.py",
     "docs:write": "node tools/personal-ui/generate-component-docs.mjs --write",
     "component-docs:check": "node tools/personal-ui/generate-component-docs.mjs --check",
     "examples:check": "node tools/personal-ui/validate-explorer-cases.mjs",

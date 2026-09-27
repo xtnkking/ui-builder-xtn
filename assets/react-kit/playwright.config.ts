@@ -21,6 +21,7 @@ export default defineConfig({
   reporter: process.env.CI ? [["github"], ["line"]] : "list",
   use: {
     baseURL,
+    actionTimeout: 15_000,
     locale: "zh-CN",
     timezoneId: "Asia/Shanghai",
     trace: "retain-on-failure",

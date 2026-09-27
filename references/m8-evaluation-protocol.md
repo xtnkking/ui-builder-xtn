@@ -75,9 +75,41 @@ Each evaluator workspace has one UUID-backed run id and three ownership areas:
 - `consumer/` is the evaluator-owned writable project area;
 - `evidence/` is the coordinator-owned append-only record area.
 
-Use `scripts/m8_evidence.py` in this order: `start`, one or more `record-command` calls, `freeze-initial`, `record-review`, zero or more `record-repair` calls, `freeze-final`, then `scenario-fragment`. Every record is created once, read back after writing, and made read-only. Command records retain argv, workspace-relative cwd, timestamps, exit code, and file-backed stdout/stderr. Source freezes create a deterministic ZIP and inventory while excluding dependency caches and generated build output.
+Use `scripts/m8_evidence.py` in this order: `start`, one or more `record-command` calls, `freeze-initial`, `record-review`, zero or more `record-repair` calls, the final producer command records, `build-quality-verification`, `freeze-final`, then `scenario-fragment`. Every record is created once, read back after writing, and made read-only. Command records retain argv, workspace-relative cwd, timestamps, exit code, and file-backed stdout/stderr. Source freezes create a deterministic ZIP and inventory while excluding dependency caches and generated build output.
 
 Coordinator input shapes for the actual environment, command record, six checks, widths, and engines are in `evaluation/m8/evidence-record-templates.json`. They are templates only; copied placeholder values are not evidence.
+
+## Scenario Quality Producer
+
+Run `scripts/run_m8_scenario_quality.py` inside each official evaluator workspace after the consumer has supplied its project and browser scenario. The producer accepts an existing workspace, a plan stored inside the consumer project, and a new output directory inside the workspace but outside the project source:
+
+```text
+python scripts/run_m8_scenario_quality.py \
+  --workspace <evaluator-workspace> \
+  --plan consumer/project/m8-quality-plan.json \
+  --output quality
+```
+
+The plan has `schemaVersion: 1`, kind `personal-ui-m8-scenario-quality-plan`, a workspace-relative `projectRoot`, direct argv arrays for `typecheck`, `build`, and `verifier`, and this browser object:
+
+```json
+{
+  "nodeArgv": ["node"],
+  "serverArgv": ["npm", "run", "dev", "--", "--host", "127.0.0.1", "--port", "4173"],
+  "readyUrl": "http://127.0.0.1:4173/",
+  "url": "http://127.0.0.1:4173/scenario",
+  "behaviorModule": "consumer/project/tests/m8-quality.mjs",
+  "viewportHeight": 900,
+  "serverTimeoutSeconds": 120,
+  "actionTimeoutMs": 30000
+}
+```
+
+Both URLs must address the same explicit loopback HTTP server. The behavior module must be a real file inside `projectRoot` and export `runScenario({ page, expect, check, engine, width, url })`. It owns the consumer-specific workflow and must execute at least one named assertion through `await check(name, async () => { ... })` for every engine and width. A returned `result`, including `result: "passed"`, is ignored and cannot replace executed assertions.
+
+The producer directly executes typecheck, build, verifier, and its Node browser worker without a shell. The worker starts the declared server and uses the consumer project's installed Playwright and axe dependencies. It creates a fresh browser context and page for every Chromium, Firefox, and WebKit measurement at 2560, 1440, 1024, 736, 360, and 320 CSS px. It retains the actual browser version, user agent, URL, axe result, DOM width measurements, viewport PNG, and timestamps. Critical or serious axe violations or incomplete results, page-level horizontal overflow, blank screenshots, missing assertions, missing artifacts, or any failed command prevent creation of a passed report.
+
+Successful output ends with `scenario-report.json`. The four files under `command-captures/`, in numbered order, are also valid `m8_evidence.py record-command --record` inputs: they retain argv, workspace-relative cwd, exit code, timestamps, and workspace-relative stdout/stderr paths. Register them before the applicable `freeze-initial` or `freeze-final` operation. After organizer review and the final four captures are registered, run `m8_evidence.py build-quality-verification --workspace <workspace> --scenario-report quality/scenario-report.json`; this deterministically binds the producer report to the append-only command records and writes `evidence/quality-verification.json`. Pass that generated file to `freeze-final --verification`; a handwritten passed verification or any command appended after generation is rejected. The producer normally runs before `freeze-final`; after final evidence is frozen, `scripts/run_m8_quality.py` revalidates the unchanged scenario report, all raw artifacts, command logs, final source snapshot, and candidate binding. On any producer failure, only `failure.json` and available diagnostic artifacts are retained; `scenario-report.json` is not written.
 
 ## Review, Attribution, And Repair Trail
 

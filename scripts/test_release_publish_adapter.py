@@ -48,6 +48,42 @@ def prepare_real_candidate(temporary: str) -> tuple[Path, Path, dict[str, object
     return root, candidate, plan
 
 
+def prepare_real_stable_candidate(
+    temporary: str,
+) -> tuple[Path, Path, dict[str, object]]:
+    root = Path(temporary) / "repository"
+    root.mkdir()
+    fixtures.write_fixture(root, fixtures.fixture_files(licensed=True))
+    run_git(root, "init", "-b", "main")
+    run_git(root, "config", "user.name", "Release Contract")
+    run_git(root, "config", "user.email", "release-contract@example.invalid")
+    run_git(root, "remote", "add", "origin", "https://github.com/example/ui-builder-xtn.git")
+    run_git(root, "add", "--all")
+    run_git(root, "commit", "-m", "fixture baseline")
+    rc = Path(temporary) / "candidate"
+    release.prepare_release(
+        root,
+        rc,
+        candidate_version="0.3.0-rc.1",
+        source_mode="commit",
+        source_ref="HEAD",
+        existing_versions=[],
+    )
+    release.verify_release(rc, command_runner=lambda _argv, _cwd: 0)
+    stable = Path(temporary) / "candidate-stable"
+    plan = release.prepare_release(
+        root,
+        stable,
+        candidate_version="0.3.0",
+        source_mode="commit",
+        source_ref="HEAD",
+        promotion_from=str(rc),
+        existing_versions=[],
+    )
+    release.verify_release(stable, command_runner=lambda _argv, _cwd: 0)
+    return root, stable, plan
+
+
 def record_step(candidate: Path, step: str, result: dict[str, object]) -> None:
     path = candidate / release.JOURNAL_NAME
     journal = json.loads(path.read_text("utf-8"))
@@ -197,6 +233,18 @@ class GitAndTagContracts(unittest.TestCase):
                 any(call.args and call.args[0] == "push" for call in git.call_args_list)
             )
 
+    def test_promoted_candidate_creates_the_stable_immutable_tag(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root, candidate, plan = prepare_real_stable_candidate(temporary)
+            adapter = publisher.GitHubPublishAdapter(repository_root=root)
+            freeze = adapter.execute("freeze-release-commit", plan, candidate)
+            record_step(candidate, "freeze-release-commit", dict(freeze))
+            tag = adapter.execute("create-immutable-tag", plan, candidate)
+            self.assertEqual(tag["tag"], "v0.3.0")
+            self.assertEqual(
+                run_git(root, "rev-parse", "v0.3.0^{}"), freeze["releaseCommit"]
+            )
+
 
 class GeneratedCopyContracts(unittest.TestCase):
     def test_sync_is_explicit_idempotent_and_preserves_unmanaged_files(self) -> None:
@@ -334,6 +382,30 @@ class GitHubContracts(unittest.TestCase):
             with mock.patch.object(adapter, "_release_by_tag", return_value=foreign):
                 with self.assertRaisesRegex(release.ReleaseError, "release-conflict"):
                     adapter._create_draft_github_release(plan, candidate)
+
+    def test_promoted_release_is_not_marked_as_a_github_prerelease(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root, candidate, plan = prepare_real_stable_candidate(temporary)
+            adapter = publisher.GitHubPublishAdapter(
+                repository_root=root, repository="example/ui-builder-xtn"
+            )
+            created = {
+                "id": 43,
+                "tag_name": "v0.3.0",
+                "body": f"<!-- {publisher.PLAN_MARKER_PREFIX}{plan['planDigest']} -->",
+                "draft": True,
+                "html_url": "https://github.com/example/ui-builder-xtn/releases/tag/v0.3.0",
+            }
+            with (
+                mock.patch.object(adapter, "_release_by_tag", return_value=None),
+                mock.patch.object(adapter, "_release_commit", return_value="c" * 40),
+                mock.patch.object(adapter, "_api_json", return_value=created) as api,
+            ):
+                adapter._create_draft_github_release(plan, candidate)
+            payload = api.call_args.kwargs["payload"]
+            self.assertEqual(payload["tag_name"], "v0.3.0")
+            self.assertFalse(payload["prerelease"])
+            self.assertIn("Stable release prepared", payload["body"])
 
     def test_uploaded_assets_are_downloaded_and_hashed_before_completion(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:

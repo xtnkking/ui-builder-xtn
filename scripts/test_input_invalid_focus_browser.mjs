@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { isPersonalUiRegressionMain, runPersonalUiRegression } from "./browser-test-harness.mjs";
+import { legacyExplorerCaseTabs, selectExplorerCase } from "./browser-explorer-case.mjs";
 
 const danger = "rgb(201, 54, 43)";
 const primary = "rgb(23, 105, 210)";
@@ -57,8 +58,7 @@ export async function runInputInvalidFocusRegression({ page, baseURL }) {
   for (const width of [2560, 1440, 1024, 736, 360, 320]) {
     await page.setViewportSize({ width, height: 800 });
       await page.goto(`${baseURL}/?regressionWidth=${width}#/patterns/authentication`);
-      await page.getByRole("tab", { name: "品牌家族登录预览", exact: true }).click();
-      const authCase = page.getByRole("tabpanel", { name: "品牌家族登录预览", exact: true });
+      const authCase = await selectExplorerCase(page, legacyExplorerCaseTabs.authentication);
       const email = authCase.locator('.pui-auth__form input[name="email"]');
       const password = authCase.locator('.pui-auth__form input[name="password"]');
       await authCase.getByRole("button", { name: "登录", exact: true }).click();

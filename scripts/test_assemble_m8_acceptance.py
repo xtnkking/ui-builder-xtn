@@ -5,14 +5,20 @@ from __future__ import annotations
 
 import copy
 import json
+import shutil
 import tempfile
 import unittest
 from pathlib import Path
 from unittest import mock
 
 import assemble_m8_acceptance as assembler
+import m8_evidence as evidence_records
 import release_personal_ui as release
 import run_m8_migration as migration_runner
+import run_m8_quality as quality_runner
+import run_m8_scenario_quality as scenario_producer
+import test_run_m8_quality as quality_fixture
+import test_run_m8_scenario_quality as producer_fixture
 import test_validate_m8_evidence as evidence_fixture
 import validate_m8_evidence as validator
 
@@ -262,6 +268,87 @@ class M8AcceptanceAssemblerContracts(unittest.TestCase):
                 visible_path.read_bytes(),
                 source_path="visible-inputs.json",
             )
+            visible = json.loads(visible_path.read_text(encoding="utf-8"))
+            run_id = visible["run"]["id"]
+            evaluator_stdout = raw_artifact(
+                scenario_id,
+                "evaluator-command-stdout",
+                b"quality command passed\n",
+                source_path="quality/logs/typecheck.stdout.log",
+            )
+            evaluator_stderr = raw_artifact(
+                scenario_id,
+                "evaluator-command-stderr",
+                b"",
+                source_path="quality/logs/typecheck.stderr.log",
+            )
+
+            def workspace_descriptor(item: dict[str, object]) -> dict[str, object]:
+                return {
+                    "path": item["sourcePath"],
+                    "size": item["size"],
+                    "sha256": item["sha256"],
+                }
+
+            command_record = {
+                "schemaVersion": 1,
+                "kind": "personal-ui-m8-command",
+                "runId": run_id,
+                "sequence": 1,
+                "argv": ["npm", "run", "typecheck"],
+                "cwd": "consumer/project",
+                "exitCode": 0,
+                "startedAt": evidence_fixture.TIMESTAMP,
+                "endedAt": evidence_fixture.TIMESTAMP,
+                "stdout": workspace_descriptor(evaluator_stdout),
+                "stderr": workspace_descriptor(evaluator_stderr),
+            }
+            command_item = raw_artifact(
+                scenario_id,
+                "evaluator-command-record",
+                release.pretty_json_bytes(command_record),
+                source_path="evidence/commands/0001.json",
+            )
+            command_descriptor = workspace_descriptor(command_item)
+            raw_artifact(
+                scenario_id,
+                "evaluator-command-index",
+                release.pretty_json_bytes(
+                    {
+                        "schemaVersion": 1,
+                        "kind": "personal-ui-m8-command-index",
+                        "runId": run_id,
+                        "commands": [command_descriptor],
+                    }
+                ),
+                source_path="evidence/command-index.json",
+            )
+            raw_artifact(
+                scenario_id,
+                "evaluator-final-verification",
+                release.pretty_json_bytes(
+                    {
+                        "schemaVersion": 1,
+                        "kind": "personal-ui-m8-quality-verification",
+                        "runId": run_id,
+                        "candidate": visible["candidate"],
+                        "result": "passed",
+                        "checks": {
+                            name: "passed"
+                            for name in (
+                                "typecheck",
+                                "build",
+                                "verifier",
+                                "behavior",
+                                "a11y",
+                                "responsive",
+                            )
+                        },
+                        "commands": [command_descriptor],
+                    }
+                ),
+                source_path="evidence/final/verification.json",
+            )
             source_report = raw_artifact(
                 scenario_id,
                 "scenario-quality-report",
@@ -274,7 +361,6 @@ class M8AcceptanceAssemblerContracts(unittest.TestCase):
                 "evaluator-final-result",
                 "evaluator-final-sourceArchive",
                 "evaluator-final-sourceInventory",
-                "evaluator-final-verification",
                 "browser-version-report",
             ):
                 raw_artifact(scenario_id, role, f"{scenario_id}:{role}\n".encode("utf-8"))
@@ -437,6 +523,109 @@ class M8AcceptanceAssemblerContracts(unittest.TestCase):
             self.assertIn("python -m zipfile -e", preview)
             self.assertIn("npm ci", preview)
             self.assertIn("npm run dev", preview)
+
+    def test_producer_quality_bundle_is_accepted_by_assembler(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="pui-m8-producer-assembly-") as temporary:
+            root = Path(temporary)
+            pairs: list[tuple[Path, Path]] = []
+            producer_report: Path | None = None
+            for index, scenario_id in enumerate(validator.M8_SCENARIOS, start=1):
+                workspace, report = quality_fixture.make_workspace(
+                    root,
+                    scenario_id,
+                    copy.deepcopy(self.candidate),
+                    index,
+                )
+                if scenario_id == "family-login":
+                    shutil.rmtree(workspace / "quality")
+                    behavior = workspace / "consumer/tests/m8-quality.mjs"
+                    behavior.parent.mkdir(parents=True)
+                    behavior.write_text(
+                        "export async function runScenario() { return { result: 'passed' }; }\n",
+                        encoding="utf-8",
+                    )
+                    with mock.patch.object(
+                        producer_fixture, "SCENARIO_ID", scenario_id
+                    ):
+                        plan = producer_fixture.producer_plan()
+                        plan_path = workspace / "consumer/m8-quality-plan.json"
+                        quality_fixture.write_workspace_json(
+                            workspace,
+                            "consumer/m8-quality-plan.json",
+                            plan,
+                        )
+                        with mock.patch.object(
+                            scenario_producer,
+                            "run_browser_worker",
+                            side_effect=lambda inputs: producer_fixture.fake_browser_worker(
+                                inputs
+                            ),
+                        ):
+                            report = scenario_producer.produce_scenario_quality(
+                                workspace=workspace,
+                                plan=plan_path,
+                                output=Path("quality"),
+                            )
+                    source_files = evidence_records._source_files(
+                        workspace / "consumer"
+                    )
+                    source_archive = quality_fixture.write_workspace_bytes(
+                        workspace,
+                        "evidence/final/source.zip",
+                        release.deterministic_zip_bytes(
+                            source_files,
+                            epoch=int(self.candidate["sourceDateEpoch"]),
+                        ),
+                    )
+                    source_inventory = quality_fixture.write_workspace_json(
+                        workspace,
+                        "evidence/final/source-inventory.json",
+                        {
+                            "schemaVersion": 1,
+                            "kind": "personal-ui-m8-source-inventory",
+                            "contentDigest": release.digest_file_map(source_files),
+                            "files": release.file_inventory(source_files),
+                        },
+                    )
+                    final_path = workspace / "evidence/final/result.json"
+                    final = json.loads(final_path.read_text(encoding="utf-8"))
+                    final["sourceArchive"] = source_archive
+                    final["sourceInventory"] = source_inventory
+                    final_path.write_bytes(quality_runner.canonical_json(final))
+                    producer_report = report
+                pairs.append((workspace, report))
+
+            assert producer_report is not None
+            producer_document = json.loads(
+                producer_report.read_text(encoding="utf-8")
+            )
+            self.assertEqual(
+                [item["purpose"] for item in producer_document["commands"]],
+                list(scenario_producer.PURPOSES),
+            )
+            self.assertEqual(len(producer_document["measurements"]), 18)
+
+            safari = quality_fixture.make_safari(root, self.candidate)
+            quality_output = root / "quality-bundle"
+            quality_runner.build_quality_bundle(
+                candidate_path=self.candidate_root,
+                workspace_report_pairs=pairs,
+                safari_report_path=safari,
+                output_path=quality_output,
+            )
+            assembled = root / "assembled-quality"
+            assembled.mkdir()
+            quality_result = assembler._assemble_quality(
+                quality_output,
+                assembled,
+                validator._candidate_summary(self.candidate),
+            )
+            self.assertEqual(quality_result["result"], "passed")
+            retained_report = (
+                assembled
+                / "quality/raw/family-login/workspace/quality/scenario-report.json"
+            )
+            self.assertEqual(retained_report.read_bytes(), producer_report.read_bytes())
 
     def test_candidate_requires_the_exact_formal_verification_command_set(self) -> None:
         plan, _ = release.load_candidate(self.candidate_root)

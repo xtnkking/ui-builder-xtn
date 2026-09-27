@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import copy
 import json
 import tempfile
 import unittest
@@ -34,7 +35,8 @@ def fixture_files(*, licensed: bool) -> dict[str, bytes]:
         "SKILL.md": b"",
         "CHANGELOG.md": (
             b"# Changelog\n\n## [Unreleased]\n\n"
-            b"- Local hardening changes remain unreleased.\n\n"
+            b"### Added\n\n- Local hardening changes.\n\n"
+            b"### Release status\n\n- This fixture remains unreleased.\n\n"
             b"## 0.2.19 - 2026-09-17\n\n- Baseline.\n"
         ),
         "references/release-process.md": b"# Release Process\n",
@@ -372,7 +374,7 @@ def write_hosted_evidence(path: Path, plan: dict[str, object]) -> None:
 
 
 class SemVerContracts(unittest.TestCase):
-    def test_rc_is_allowed_but_stable_promotion_fails_closed(self) -> None:
+    def test_rc_and_explicit_same_line_stable_promotion_are_allowed(self) -> None:
         release.validate_target_version(
             baseline_value="0.2.19",
             release_target_value="0.3.0",
@@ -380,14 +382,29 @@ class SemVerContracts(unittest.TestCase):
             classification="breaking",
             existing_versions=["v0.3.0-rc.1"],
         )
-        with self.assertRaisesRegex(release.ReleaseError, "stable release preparation is disabled"):
+        release.validate_target_version(
+            baseline_value="0.2.19",
+            release_target_value="0.3.0",
+            candidate_value="0.3.0",
+            classification="breaking",
+            promotion_from="v0.3.0-rc.2",
+        )
+        with self.assertRaisesRegex(release.ReleaseError, "promotion-from"):
             release.validate_target_version(
                 baseline_value="0.2.19",
                 release_target_value="0.3.0",
                 candidate_value="0.3.0",
                 classification="breaking",
-                promotion_from="v0.3.0-rc.2",
             )
+        for invalid in ("v0.2.20-rc.1", "v0.3.0-beta.1", "v0.3.0"):
+            with self.subTest(invalid=invalid), self.assertRaises(release.ReleaseError):
+                release.validate_target_version(
+                    baseline_value="0.2.19",
+                    release_target_value="0.3.0",
+                    candidate_value="0.3.0",
+                    classification="breaking",
+                    promotion_from=invalid,
+                )
 
     def test_wrong_line_duplicate_and_noncanonical_rc_are_rejected(self) -> None:
         cases = [
@@ -895,6 +912,336 @@ class PrepareVerifyContracts(unittest.TestCase):
                     for step in release.PUBLISH_STEPS
                 )
             )
+
+
+class PromotionContracts(unittest.TestCase):
+    def _prepare_verified_rc(
+        self,
+        root: Path,
+        output: Path,
+        files: dict[str, bytes],
+    ) -> dict[str, object]:
+        plan = release.prepare_release(
+            root,
+            output,
+            candidate_version="0.3.0-rc.1",
+            source_snapshot=snapshot(files, publishable_source=True),
+            existing_versions=[],
+        )
+        release.verify_release(output, command_runner=lambda _argv, _cwd: 0)
+        return plan
+
+    def test_stable_promotion_requires_one_verified_rc_candidate(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary) / "repo"
+            root.mkdir()
+            files = fixture_files(licensed=True)
+            output = Path(temporary) / "candidate"
+            rc = Path(temporary) / "candidate-rc"
+            release.prepare_release(
+                root,
+                rc,
+                candidate_version="0.3.0-rc.1",
+                source_snapshot=snapshot(files, publishable_source=True),
+                existing_versions=[],
+                verification_commands=(),
+            )
+            with self.assertRaisesRegex(release.ReleaseError, "verified RC"):
+                release.prepare_release(
+                    root,
+                    output,
+                    candidate_version="0.3.0",
+                    source_snapshot=snapshot(files, publishable_source=True),
+                    existing_versions=[],
+                    promotion_from=str(rc),
+                    verification_commands=(),
+                )
+            self.assertFalse(output.exists())
+
+            release.verify_release(rc, command_runner=lambda _argv, _cwd: 0)
+            with self.assertRaisesRegex(release.ReleaseError, "formal verification"):
+                release.prepare_release(
+                    root,
+                    output,
+                    candidate_version="0.3.0",
+                    source_snapshot=snapshot(files, publishable_source=True),
+                    existing_versions=[],
+                    promotion_from=str(rc),
+                )
+            self.assertFalse(output.exists())
+
+            with self.assertRaisesRegex(release.ReleaseError, "promotion-from"):
+                release.prepare_release(
+                    root,
+                    output,
+                    candidate_version="0.3.0",
+                    source_snapshot=snapshot(files, publishable_source=True),
+                    existing_versions=[],
+                    verification_commands=(),
+                )
+            self.assertFalse(output.exists())
+
+    def test_stable_plan_binds_verified_rc_and_only_release_metadata_changes(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary) / "repo"
+            root.mkdir()
+            files = fixture_files(licensed=True)
+            rc = Path(temporary) / "candidate-rc"
+            rc_plan = self._prepare_verified_rc(root, rc, files)
+            stable = Path(temporary) / "candidate-stable"
+            plan = release.prepare_release(
+                root,
+                stable,
+                candidate_version="0.3.0",
+                source_snapshot=snapshot(files, publishable_source=True),
+                existing_versions=[],
+                promotion_from=str(rc),
+            )
+
+            promotion = plan["promotion"]
+            self.assertEqual(promotion["kind"], "personal-ui-release-promotion")
+            self.assertEqual(promotion["fromVersion"], "0.3.0-rc.1")
+            self.assertEqual(promotion["planDigest"], rc_plan["planDigest"])
+            self.assertEqual(
+                promotion["sourceCommit"], rc_plan["source"]["commit"]
+            )
+            self.assertEqual(
+                promotion["archiveSha256"],
+                rc_plan["artifacts"]["archive"]["sha256"],
+            )
+            self.assertEqual(promotion["reviewedPlan"], rc_plan)
+            self.assertEqual(promotion["verificationRecord"]["status"], "complete")
+            self.assertEqual(
+                promotion["fileDelta"]["changedPaths"],
+                sorted(release.PROMOTION_METADATA_PATHS),
+            )
+            self.assertEqual(
+                promotion["fileDelta"]["targetCandidateContentDigest"],
+                plan["candidateContentDigest"],
+            )
+            self.assertEqual(plan["versionPolicy"]["promotionFrom"], "0.3.0-rc.1")
+
+            changelog = (
+                stable / "staging/ui-builder-xtn/CHANGELOG.md"
+            ).read_text("utf-8")
+            self.assertIn("## [Unreleased]", changelog)
+            self.assertIn("## [0.3.0] - 2027-01-15", changelog)
+            self.assertNotIn("This fixture remains unreleased", changelog)
+            self.assertIn("Promoted from verified `0.3.0-rc.1`", changelog)
+            self.assertLess(
+                changelog.index("## [Unreleased]"), changelog.index("## [0.3.0]")
+            )
+            notes = (stable / "artifacts" / release.NOTES_NAME).read_text("utf-8")
+            self.assertIn("Stable release prepared from verified `0.3.0-rc.1`", notes)
+            self.assertNotIn("Local release candidate", notes)
+            self.assertIn(str(rc_plan["planDigest"]), notes)
+            journal = release.verify_release(
+                stable, command_runner=lambda _argv, _cwd: 0
+            )
+            self.assertEqual(journal["status"], "verified")
+
+            tampered = copy.deepcopy(plan)
+            tampered["promotion"]["fileDelta"]["changedPaths"].pop()
+            tampered = release.attach_plan_digest(tampered)
+            with self.assertRaisesRegex(release.ReleaseError, "file delta"):
+                release.verify_candidate_files(
+                    tampered, release.collect_staged_files(stable)
+                )
+
+            staged_files = release.collect_staged_files(stable)
+            forged_files = dict(staged_files)
+            forged_files["README.md"] = b"# Changed after RC review\n"
+            forged = copy.deepcopy(plan)
+            forged["candidateFiles"] = release.file_inventory(forged_files)
+            forged["candidateContentDigest"] = release.digest_file_map(forged_files)
+            forged["promotion"]["fileDelta"]["targetCandidateContentDigest"] = forged[
+                "candidateContentDigest"
+            ]
+            forged = release.attach_plan_digest(forged)
+            with self.assertRaisesRegex(release.ReleaseError, "file delta"):
+                release.verify_candidate_files(forged, forged_files)
+
+            widened_files = dict(staged_files)
+            package_path = release.VERSION_PATHS["package"]
+            package = json.loads(widened_files[package_path].decode("utf-8"))
+            package["scripts"] = {"release:check": "node -e \"process.exit(0)\""}
+            widened_files[package_path] = json_bytes(package)
+            widened = copy.deepcopy(plan)
+            widened["candidateFiles"] = release.file_inventory(widened_files)
+            widened["candidateContentDigest"] = release.digest_file_map(widened_files)
+            widened["promotion"]["fileDelta"]["targetCandidateContentDigest"] = widened[
+                "candidateContentDigest"
+            ]
+            package_entry = next(
+                entry
+                for entry in widened["promotion"]["fileDelta"]["entries"]
+                if entry["path"] == package_path
+            )
+            package_entry["after"] = {
+                "size": len(widened_files[package_path]),
+                "sha256": release.sha256_bytes(widened_files[package_path]),
+            }
+            widened = release.attach_plan_digest(widened)
+            with self.assertRaisesRegex(release.ReleaseError, "deterministic version transform"):
+                release.verify_candidate_files(widened, widened_files)
+
+            wrong_rc = copy.deepcopy(plan)
+            wrong_rc["promotion"]["fromVersion"] = "0.3.0-rc.999"
+            wrong_rc["versionPolicy"]["promotionFrom"] = "0.3.0-rc.999"
+            wrong_rc = release.attach_plan_digest(wrong_rc)
+            with self.assertRaisesRegex(release.ReleaseError, "reviewed RC plan"):
+                release.verify_candidate_files(wrong_rc, staged_files)
+
+    def test_changelog_promotion_preserves_sections_and_rejects_duplicates(self) -> None:
+        promotion = {
+            "fromVersion": "0.3.0-rc.1",
+            "planDigest": "a" * 64,
+        }
+        changelog = (
+            b"# Changelog\n\n## [Unreleased]\n\n"
+            b"### Release status\n\n- Not released.\n\n"
+            b"### Fixed\n\n- A reviewed fix.\n\n"
+            b"## [0.2.19]\n\n- Baseline.\n"
+        )
+        promoted = release.promote_changelog(
+            changelog,
+            candidate_version="0.3.0",
+            source_epoch=0,
+            promotion=promotion,
+        ).decode("utf-8")
+        self.assertIn("public reinstall checks.\n\n### Fixed", promoted)
+        self.assertNotIn("public reinstall checks.### Fixed", promoted)
+
+        duplicate_status = changelog.replace(
+            b"### Fixed",
+            b"### Release status\n\n- Still not released.\n\n### Fixed",
+        )
+        with self.assertRaisesRegex(release.ReleaseError, "exactly one.*Release status"):
+            release.promote_changelog(
+                duplicate_status,
+                candidate_version="0.3.0",
+                source_epoch=0,
+                promotion=promotion,
+            )
+
+        duplicate_unreleased = changelog.replace(
+            b"## [0.2.19]",
+            b"## [Unreleased]\n\n- Duplicate.\n\n## [0.2.19]",
+        )
+        with self.assertRaisesRegex(release.ReleaseError, "exactly one Unreleased"):
+            release.promote_changelog(
+                duplicate_unreleased,
+                candidate_version="0.3.0",
+                source_epoch=0,
+                promotion=promotion,
+            )
+
+        dated_unreleased = changelog.replace(
+            b"## [0.2.19]",
+            b"## [Unreleased] - 2026-09-27\n\n- Dated duplicate.\n\n## [0.2.19]",
+        )
+        with self.assertRaisesRegex(release.ReleaseError, "exactly one Unreleased"):
+            release.promote_changelog(
+                dated_unreleased,
+                candidate_version="0.3.0",
+                source_epoch=0,
+                promotion=promotion,
+            )
+
+    def test_promotion_rejects_tampered_rc_and_different_source_snapshot(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary) / "repo"
+            root.mkdir()
+            files = fixture_files(licensed=True)
+            rc = Path(temporary) / "candidate-rc"
+            self._prepare_verified_rc(root, rc, files)
+            output = Path(temporary) / "candidate-stable"
+
+            changed = dict(files)
+            changed["README.md"] = b"# Different immutable source\n"
+            with self.assertRaisesRegex(release.ReleaseError, "same immutable source"):
+                release.prepare_release(
+                    root,
+                    output,
+                    candidate_version="0.3.0",
+                    source_snapshot=snapshot(changed, publishable_source=True),
+                    existing_versions=[],
+                    promotion_from=str(rc),
+                )
+            self.assertFalse(output.exists())
+
+            (rc / "staging/ui-builder-xtn/README.md").write_text(
+                "tampered after verify\n", encoding="utf-8"
+            )
+            with self.assertRaisesRegex(release.ReleaseError, "staged candidate"):
+                release.prepare_release(
+                    root,
+                    output,
+                    candidate_version="0.3.0",
+                    source_snapshot=snapshot(files, publishable_source=True),
+                    existing_versions=[],
+                    promotion_from=str(rc),
+                )
+            self.assertFalse(output.exists())
+
+    def test_stable_publish_preflight_inherits_exact_rc_evidence_bindings(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary) / "repo"
+            root.mkdir()
+            files = fixture_files(licensed=True)
+            write_fixture(root, files)
+            rc = Path(temporary) / "candidate"
+            rc_plan = self._prepare_verified_rc(root, rc, files)
+            stable = Path(temporary) / "candidate-stable"
+            stable_plan = release.prepare_release(
+                root,
+                stable,
+                candidate_version="0.3.0",
+                source_snapshot=snapshot(files, publishable_source=True),
+                existing_versions=[],
+                promotion_from=str(rc),
+            )
+            release.verify_release(stable, command_runner=lambda _argv, _cwd: 0)
+            m8 = Path(temporary) / "m8.json"
+            ci = Path(temporary) / "ci.json"
+            write_evidence(m8, rc_plan, "m8-acceptance")
+            write_evidence(ci, rc_plan, "hosted-ci")
+
+            with mock.patch.object(release, "_git", return_value=""):
+                blockers = release.publish_preflight(
+                    stable,
+                    authorization=str(stable_plan["planDigest"]),
+                    m8_evidence=m8,
+                    ci_evidence=ci,
+                    remote_adapter_configured=True,
+                    repository_root=root,
+                )
+            self.assertEqual(blockers, [])
+
+            with mock.patch.object(release, "_git", return_value=""):
+                blockers = release.publish_preflight(
+                    stable,
+                    authorization=str(rc_plan["planDigest"]),
+                    m8_evidence=m8,
+                    ci_evidence=ci,
+                    remote_adapter_configured=True,
+                    repository_root=root,
+                )
+            self.assertIn("explicit-publication-authorization-missing", blockers)
+
+            evidence = json.loads(m8.read_text("utf-8"))
+            evidence["planDigest"] = stable_plan["planDigest"]
+            m8.write_bytes(json_bytes(evidence))
+            with mock.patch.object(release, "_git", return_value=""):
+                blockers = release.publish_preflight(
+                    stable,
+                    authorization=str(stable_plan["planDigest"]),
+                    m8_evidence=m8,
+                    ci_evidence=ci,
+                    remote_adapter_configured=True,
+                    repository_root=root,
+                )
+            self.assertIn("m8-acceptance-evidence-binding-mismatch", blockers)
 
 
 class RecordingAdapter:

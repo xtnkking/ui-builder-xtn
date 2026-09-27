@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -59,10 +60,6 @@ class M8AppendOnlyEvidenceContracts(unittest.TestCase):
             project = output / "consumer" / "project"
             project.mkdir()
             (project / "app.tsx").write_text("export const App = () => null;\n", "utf-8")
-            stdout = output / "consumer" / "build.stdout"
-            stderr = output / "consumer" / "build.stderr"
-            stdout.write_text("passed\n", "utf-8")
-            stderr.write_bytes(b"")
             verification = output / "consumer" / "verification.json"
             verification.write_text('{"result":"passed"}\n', "utf-8")
 
@@ -72,16 +69,23 @@ class M8AppendOnlyEvidenceContracts(unittest.TestCase):
                 actual_environment=ACTUAL_ENVIRONMENT,
                 started_at=TIMESTAMP,
             )
-            evidence.record_command(
-                output,
-                argv=["npm", "run", "build"],
-                cwd="consumer/project",
-                exit_code=0,
-                stdout=stdout,
-                stderr=stderr,
-                started_at=TIMESTAMP,
-                ended_at=TIMESTAMP,
-            )
+            recorded_commands: list[tuple[str, dict[str, object]]] = []
+            for purpose in evidence.QUALITY_PURPOSES:
+                stdout = output / "consumer" / f"{purpose}.stdout"
+                stderr = output / "consumer" / f"{purpose}.stderr"
+                stdout.write_text(f"{purpose} passed\n", "utf-8")
+                stderr.write_bytes(b"")
+                record = evidence.record_command(
+                    output,
+                    argv=["npm", "run", purpose],
+                    cwd="consumer/project",
+                    exit_code=0,
+                    stdout=stdout,
+                    stderr=stderr,
+                    started_at=TIMESTAMP,
+                    ended_at=TIMESTAMP,
+                )
+                recorded_commands.append((purpose, record))
             evidence.freeze_result(
                 output,
                 stage="initial",
@@ -110,12 +114,55 @@ class M8AppendOnlyEvidenceContracts(unittest.TestCase):
                 observations=["All organizer rules passed."],
                 reviewed_at=TIMESTAMP,
             )
+            manifest = json.loads(
+                (output / consumer.MANIFEST_NAME).read_text(encoding="utf-8")
+            )
+            report_commands = []
+            for purpose, record in recorded_commands:
+                report_commands.append(
+                    {
+                        "purpose": purpose,
+                        **{
+                            field: record[field]
+                            for field in (
+                                "argv",
+                                "cwd",
+                                "exitCode",
+                                "startedAt",
+                                "endedAt",
+                                "stdout",
+                                "stderr",
+                            )
+                        },
+                    }
+                )
+            report = output / "quality" / "scenario-report.json"
+            report.parent.mkdir()
+            report.write_text(
+                json.dumps(
+                    {
+                        "schemaVersion": 1,
+                        "kind": evidence.QUALITY_REPORT_KIND,
+                        "result": "passed",
+                        "scenarioId": fixtures.SCENARIO_ID,
+                        "runId": start["runId"],
+                        "candidate": manifest["candidate"],
+                        "commands": report_commands,
+                    }
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            quality_verification = evidence.build_quality_verification(
+                output,
+                scenario_report=report,
+            )
             evidence.freeze_result(
                 output,
                 stage="final",
                 result="passed",
                 source=project,
-                verification=verification,
+                verification=output.joinpath(*evidence.QUALITY_VERIFICATION_PATH.parts),
                 checks=PASSED_CHECKS,
                 frozen_at=TIMESTAMP,
             )
@@ -123,9 +170,13 @@ class M8AppendOnlyEvidenceContracts(unittest.TestCase):
 
             self.assertEqual(fragment["result"], "passed")
             self.assertEqual(fragment["run"]["runId"], start["runId"])
-            self.assertEqual(len(fragment["run"]["commands"]), 1)
+            self.assertEqual(len(fragment["run"]["commands"]), 4)
             self.assertEqual(fragment["run"]["repairs"], [])
             self.assertEqual(fragment["run"]["checks"], PASSED_CHECKS)
+            self.assertEqual(
+                quality_verification["scenarioReport"]["sha256"],
+                evidence.release.sha256_bytes(report.read_bytes()),
+            )
 
     def test_records_are_create_once_and_repairs_are_contiguous(self) -> None:
         with tempfile.TemporaryDirectory(prefix="pui-m8-record-") as temporary:

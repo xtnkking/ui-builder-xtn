@@ -1,5 +1,8 @@
 import assert from "node:assert/strict";
 import { isPersonalUiRegressionMain, runPersonalUiRegression } from "./browser-test-harness.mjs";
+import { legacyExplorerCaseTabs, selectExplorerCase } from "./browser-explorer-case.mjs";
+
+export const asyncSelectOverlayWidths = Object.freeze([2560, 1440, 1024, 736, 360, 320]);
 
 async function checkPopover(page, panel, popup, label) {
   await popup.waitFor({ state: 'visible' });
@@ -36,7 +39,8 @@ async function checkPopover(page, panel, popup, label) {
 }
 
 async function exercise(page, panel, ariaLabel, label) {
-  const trigger = panel.getByRole('combobox', { name: ariaLabel });
+  const trigger = panel.getByLabel(ariaLabel, { exact: true });
+  assert.equal(await trigger.getAttribute('role'), 'combobox', `${label}: closed trigger is not exposed as a combobox`);
   const footer = panel.locator('.pui-dialog__footer, .pui-drawer__footer');
   const footerBefore = await footer.boundingBox();
   await trigger.click();
@@ -132,13 +136,14 @@ async function checkSelectorPopup(page, popup, label) {
   assert.ok(geometry.left >= 11 && geometry.right <= geometry.width - 11 && geometry.top >= 11 && geometry.bottom <= geometry.height - 11, `${label}: selector popup escaped viewport ${JSON.stringify(geometry)}`);
 }
 
-export async function runAsyncSelectOverlayRegression({ page, baseURL }) {
+export async function runAsyncSelectOverlayRegression({ page, baseURL, widths = asyncSelectOverlayWidths }) {
   assert.ok(baseURL, 'A baseURL is required');
-  for (const width of [2560, 1440, 1024, 736, 360, 320]) {
+  for (const width of widths) {
     const height = width <= 360 ? 640 : 900;
     await page.setViewportSize({ width, height });
     await page.goto(`${baseURL}/#/components/dialog`);
-      await page.getByRole('button', { name: '分配角色' }).click();
+      const dialogCase = await selectExplorerCase(page, legacyExplorerCaseTabs.dialog);
+      await dialogCase.getByRole('button', { name: '分配角色' }).click();
       const dialog = page.getByRole('dialog', { name: '分配角色 · xtn' });
       const dialogGeometry = await exercise(page, dialog, '国家或地区', `${width}px Dialog`);
       await dialog.getByRole('button', { name: '角色操作菜单' }).click();
@@ -159,8 +164,9 @@ export async function runAsyncSelectOverlayRegression({ page, baseURL }) {
       await dropdown.waitFor({ state: 'detached' });
       await page.keyboard.press('Escape');
       const priorFocus = dialog.getByRole('button', { name: '角色操作菜单' });
+      const contextTrigger = dialog.getByRole('button', { name: '角色右键菜单' });
       await priorFocus.focus();
-      await dialog.locator('.demo-context-target').click({ button: 'right' });
+      await contextTrigger.click({ button: 'right' });
       const context = page.getByRole('menu', { name: '角色右键菜单' });
       await checkMenu(page, context, `${width}px ContextMenu`);
       if (process.env.PERSONAL_UI_ASYNC_SCREENSHOT_PREFIX && (width === 1440 || width === 320)) {
@@ -170,12 +176,12 @@ export async function runAsyncSelectOverlayRegression({ page, baseURL }) {
       await page.keyboard.press('Escape');
       await context.waitFor({ state: 'detached' });
       assert.equal(await dialog.isVisible(), true, `${width}px: context menu Escape closed parent Dialog`);
-      assert.equal(await priorFocus.evaluate((button) => document.activeElement === button), true, `${width}px: context menu Escape did not restore previous focus`);
-      await dialog.locator('.demo-context-target').click({ button: 'right' });
+      assert.equal(await contextTrigger.evaluate((button) => document.activeElement === button), true, `${width}px: context menu Escape did not restore its trigger focus`);
+      await contextTrigger.click({ button: 'right' });
       await context.getByRole('menuitem', { name: '查看权限详情' }).click();
       await context.waitFor({ state: 'detached' });
-      assert.equal(await priorFocus.evaluate((button) => document.activeElement === button), true, `${width}px: context menu selection did not restore previous focus`);
-      await dialog.locator('.demo-context-target').click({ button: 'right' });
+      assert.equal(await contextTrigger.evaluate((button) => document.activeElement === button), true, `${width}px: context menu selection did not restore its trigger focus`);
+      await contextTrigger.click({ button: 'right' });
       await context.waitFor();
       await priorFocus.click();
       await context.waitFor({ state: 'detached' });
@@ -232,7 +238,7 @@ export async function runAsyncSelectOverlayRegression({ page, baseURL }) {
       await selectorDialog.getByRole('combobox', { name: '组织节点' }).click();
       const tree = page.getByRole('tree', { name: '组织节点' });
       await checkSelectorPopup(page, tree, `${width}px TreeSelect`);
-      await tree.getByRole('button', { name: '展开总部' }).click();
+      await tree.getByRole('treeitem', { name: '总部' }).press('ArrowRight');
       await tree.getByRole('treeitem', { name: '产品组' }).click();
       await tree.waitFor({ state: 'detached' });
       assert.equal(await selectorDialog.isVisible(), true, `${width}px: TreeSelect selection closed parent`);
@@ -244,7 +250,8 @@ export async function runAsyncSelectOverlayRegression({ page, baseURL }) {
       await selectorDialog.waitFor({ state: 'detached' });
 
       await page.goto(`${baseURL}/#/components/data-table`);
-      const edit = page.getByRole('button', { name: '编辑陈沐' });
+      const dataTableCase = await selectExplorerCase(page, legacyExplorerCaseTabs.dataTable);
+      const edit = dataTableCase.getByRole('button', { name: '编辑陈沐' });
       await edit.click();
       const drawer = page.getByRole('dialog', { name: '编辑陈沐的权限' });
       const drawerGeometry = await exercise(page, drawer, '所属国家或地区', `${width}px Drawer`);
@@ -259,7 +266,7 @@ export async function runAsyncSelectOverlayRegression({ page, baseURL }) {
       assert.equal(await edit.evaluate((button) => document.activeElement === button), true, `${width}px: drawer opener focus not restored`);
       if (width === 1440 || width === 320) console.log(`${width}px Dialog popup: ${JSON.stringify(dialogGeometry.bounds)}; Drawer popup: ${JSON.stringify(drawerGeometry.bounds)}`);
   }
-  console.log('AsyncSelect Dialog/Drawer browser regression passed at 2560, 1440, 1024, 736, 360, and 320px.');
+  console.log(`AsyncSelect Dialog/Drawer browser regression passed at ${widths.map((width) => `${width}px`).join(', ')}.`);
 }
 
 if (isPersonalUiRegressionMain(import.meta.url)) {

@@ -1,6 +1,6 @@
 # Personal UI Release Process
 
-Status: local M7 release tooling plus M8 evaluation, evidence, review, and guarded publication infrastructure, with one failed hosted run from initial commit `eb32c87`. The exposed issues are fixed in the current working tree, but the corrected head has not passed hosted CI. The repository version remains `0.2.19`. This document does not authorize a commit, tag, installed-copy synchronization, GitHub Release, or public distribution, and no formal release candidate exists yet.
+Status: local M7 release tooling plus M8 evaluation, evidence, review, guarded RC-to-stable promotion, and publication infrastructure. The canonical development checkout may remain at the immutable `0.2.19` baseline while candidates are prepared in isolation. A release exists only when its journal, immutable tag, GitHub Release, checksums, and generated copies all record the same completed plan. This document by itself does not authorize a commit, tag, synchronization, GitHub Release, or public distribution.
 
 ## One orchestrator
 
@@ -35,6 +35,19 @@ Prepare takes an explicit source ref, source mode, target version, and new outpu
 
 A dirty worktree is rejected unless `--allow-dirty-local` is explicit. That option creates a content-addressed local snapshot but permanently marks the candidate non-publishable. It is useful for testing M7 itself, not for a release review. A publishable candidate must come from an immutable commit snapshot.
 
+Preparing stable `0.3.0` is a separate promotion operation. `--promotion-from` must be the filesystem path of an already verified, publishable `0.3.0-rc.N` candidate that ran the frozen formal verification command set; a tag name, version string, plan digest, thin verification plan, or unverified directory is insufficient. The stable candidate must retain that same formal command set. The RC and stable preparation must use the same immutable commit, tree, source content digest, and source timestamp. The stable plan hash-binds the RC plan, archive, candidate inventory, verification record, and source identity. It records the complete RC-to-stable file delta and rejects any change outside the fixed version-bearing metadata files plus `CHANGELOG.md`.
+
+```text
+python scripts/release_personal_ui.py prepare \
+  --output <new-stable-candidate-directory> \
+  --version 0.3.0 \
+  --source-mode commit \
+  --source-ref <the-reviewed-source-commit> \
+  --promotion-from <verified-rc-candidate-directory>
+```
+
+Promotion leaves an empty `[Unreleased]` section and moves its reviewed content into a dated `[0.3.0]` section. The structured `Release status` subsection is replaced with the RC binding and remaining publication conditions, so an old “unreleased” warning cannot be copied into the stable entry. Stable release notes identify the verified RC plan instead of claiming to be a local RC or an already published release.
+
 ## Verify
 
 Verify first validates the plan digest, staged file inventory, archive members, and every artifact hash and size. The plan binds the ZIP, manifest, release notes, and checksum file; the manifest must exactly equal the deterministic projection of the plan, and `SHA256SUMS` must exactly equal the deterministic checksum projection. It then executes the frozen verification command list in staging: clean dependency installation, the focused release-orchestrator contracts, and the existing complete release gate. Build output, dependencies, caches, logs, test results, environment files, and secrets are excluded from the archive.
@@ -54,6 +67,8 @@ Publication remains blocked unless all of the following are true:
 - explicit authorization equals the reviewed plan digest;
 - no existing version or tag would be reused;
 - the guarded Git/GitHub adapter passes its own safety preflight.
+
+For an RC, M8 and hosted-CI evidence bind directly to that candidate. For a promoted stable candidate, those records remain bound to the exact reviewed RC plan and archive recorded in the stable plan; publication must not fabricate structurally identical evidence with the stable archive hash. The final authorization is different: it must equal the promoted stable plan digest so the user approves the exact version metadata, changelog, release notes, archive, and checksums that will be published.
 
 `THIRD_PARTY_NOTICES.json` uses schema version `1`, kind `personal-ui-third-party-notices`, `generatedFrom: assets/react-kit/package-lock.json`, the exact integer `dependencyCount`, and a non-empty `items` array. Every item records non-empty `name`, `version`, `license`, `source`, `resolved`, and `dependencyType` strings plus a boolean `optional` value. `source` and `resolved` both identify the exact locked tarball; the release preflight derives the expected inventory from the lockfile and rejects duplicate, missing, extra, source, license, resolution, dependency-type, optional, count, or generator metadata mismatches. Refresh with `python scripts/generate_third_party_notices.py --write` and verify with `--check`. M8 and CI evidence are JSON objects with schema version `1`, kind `personal-ui-release-evidence`, their respective `type` (`m8-acceptance` or `hosted-ci`), the exact `planDigest`, `sourceCommit`, and `archiveSha256`, plus `result: passed`. M8 acceptance additionally requires all six unique consumer scenarios, immutable request/input/initial/final artifact hashes, fresh-context and forbidden-input assertions, a fixed attribution, and passed typecheck, build, verifier, behavior, accessibility, and responsive checks. `scripts/validate_m8_evidence.py` enforces that structure; a binding-only JSON record is rejected.
 
@@ -92,8 +107,8 @@ The local review bundle retains the candidate archive, checksums, migration guid
 The immutable compatibility baseline is `0.2.19`; the current hardening release line is `0.3.0`.
 
 - Before `1.0.0`, a breaking public API change requires the next minor line and an additive public API change requires at least a patch. At or after `1.0.0`, breaking changes require a major and additive changes require a minor.
-- This cycle currently prepares only `0.3.0-rc.N`, where `N` is a positive integer without leading zeroes. Beta, arbitrary prerelease labels, build metadata, downgrades, other release lines, reused versions, and stable versions fail.
-- RC numbers increase monotonically. Stable `0.3.0` remains hard-blocked until the orchestrator can load a real verified RC candidate, bind its evidence, and prove that only reviewed release metadata changed. A tag name or `--promotion-from` string alone is not promotion evidence.
+- This cycle prepares `0.3.0-rc.N`, where `N` is a positive integer without leading zeroes, and permits stable `0.3.0` only through the verified promotion contract below. Beta, arbitrary prerelease labels, build metadata, downgrades, other release lines, and reused versions fail.
+- RC numbers increase monotonically. Stable `0.3.0` is allowed only when `--promotion-from` resolves to a real verified RC candidate on the same release line. The stable plan must prove the same immutable source, retain the RC evidence bindings, and show that only the fixed version/changelog metadata set changed. A tag name, version string, or digest alone is not promotion evidence.
 - Package metadata may stay at `0.2.19` during development. Candidate version changes happen in isolated staging. The canonical checkout changes version only in a separately authorized release operation.
 
 These rules are enforced by the release orchestrator and by the API compatibility gate; prose alone is not release evidence.

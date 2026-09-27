@@ -21,6 +21,10 @@ SCHEMA_VERSION = 1
 RESULTS = frozenset({"passed", "failed", "blocked"})
 CHECK_RESULTS = frozenset({"passed", "failed", "blocked", "not-run"})
 CHECKS = ("typecheck", "build", "verifier", "behavior", "a11y", "responsive")
+QUALITY_PURPOSES = ("typecheck", "build", "verifier", "browser-quality")
+QUALITY_REPORT_KIND = "personal-ui-m8-scenario-quality-report"
+QUALITY_VERIFICATION_KIND = "personal-ui-m8-quality-verification"
+QUALITY_VERIFICATION_PATH = PurePosixPath("evidence/quality-verification.json")
 ATTRIBUTIONS = frozenset(
     {
         "none",
@@ -270,6 +274,10 @@ def record_command(
     start_path = root / "evidence" / "run-start.json"
     if not start_path.is_file():
         raise M8EvidenceError("run-start must be frozen before command records")
+    if (root / QUALITY_VERIFICATION_PATH.as_posix()).exists():
+        raise M8EvidenceError(
+            "command records cannot change after quality verification is frozen"
+        )
     if not argv or any(not isinstance(value, str) or not value for value in argv):
         raise M8EvidenceError("command argv must contain non-empty strings")
     if not isinstance(exit_code, int):
@@ -301,6 +309,190 @@ def record_command(
     _make_file_read_only(_safe_existing(stdout, root, label="command stdout"))
     _make_file_read_only(_safe_existing(stderr, root, label="command stderr"))
     return record
+
+
+def _quality_command_projection(value: Mapping[str, object]) -> dict[str, object]:
+    return {
+        field: value.get(field)
+        for field in (
+            "argv",
+            "cwd",
+            "exitCode",
+            "startedAt",
+            "endedAt",
+            "stdout",
+            "stderr",
+        )
+    }
+
+
+def _recorded_command_materials(
+    root: Path, run_id: object
+) -> tuple[list[dict[str, object]], list[dict[str, object]]]:
+    command_root = root / "evidence" / "commands"
+    command_paths = sorted(command_root.glob("*.json")) if command_root.exists() else []
+    if not command_paths:
+        raise M8EvidenceError("quality verification requires recorded commands")
+    records: list[dict[str, object]] = []
+    descriptors: list[dict[str, object]] = []
+    for sequence, path in enumerate(command_paths, start=1):
+        if path.stem != f"{sequence:04d}":
+            raise M8EvidenceError(
+                "command records are not a contiguous append-only sequence"
+            )
+        try:
+            record = json.loads(path.read_text(encoding="utf-8"))
+        except (UnicodeDecodeError, json.JSONDecodeError) as error:
+            raise M8EvidenceError(f"command record {sequence} is invalid") from error
+        if (
+            not isinstance(record, dict)
+            or record.get("schemaVersion") != SCHEMA_VERSION
+            or record.get("kind") != "personal-ui-m8-command"
+            or record.get("runId") != run_id
+            or record.get("sequence") != sequence
+        ):
+            raise M8EvidenceError(f"command record {sequence} is incomplete or unbound")
+        records.append(record)
+        descriptors.append(descriptor(root, path))
+    return records, descriptors
+
+
+def build_quality_verification(
+    workspace: Path,
+    *,
+    scenario_report: Path,
+) -> dict[str, object]:
+    """Bind a passed producer report to the append-only evaluator commands."""
+
+    root, manifest = _workspace(workspace)
+    if not (root / "evidence" / "run-start.json").is_file():
+        raise M8EvidenceError("run-start must be frozen before quality verification")
+    if not (root / "evidence" / "review" / "review.json").is_file():
+        raise M8EvidenceError("organizer review must be frozen before quality verification")
+    if (root / "evidence" / "final" / "result.json").exists():
+        raise M8EvidenceError("final result is already frozen")
+
+    report_input = (
+        scenario_report
+        if scenario_report.is_absolute()
+        else root.joinpath(*scenario_report.parts)
+    )
+    report_path = _safe_existing(
+        report_input,
+        root,
+        label="scenario quality report",
+    )
+    try:
+        report = json.loads(report_path.read_text(encoding="utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise M8EvidenceError("scenario quality report must be valid UTF-8 JSON") from error
+    run = manifest.get("run")
+    scenario = manifest.get("scenario")
+    run_id = run.get("id") if isinstance(run, dict) else None
+    scenario_id = scenario.get("id") if isinstance(scenario, dict) else None
+    if (
+        not isinstance(report, dict)
+        or report.get("schemaVersion") != SCHEMA_VERSION
+        or report.get("kind") != QUALITY_REPORT_KIND
+        or report.get("result") != "passed"
+        or report.get("runId") != run_id
+        or report.get("scenarioId") != scenario_id
+        or report.get("candidate") != manifest.get("candidate")
+    ):
+        raise M8EvidenceError(
+            "scenario quality report is incomplete or bound to another evaluator run"
+        )
+
+    report_commands = report.get("commands")
+    if (
+        not isinstance(report_commands, list)
+        or [
+            item.get("purpose") if isinstance(item, dict) else None
+            for item in report_commands
+        ]
+        != list(QUALITY_PURPOSES)
+    ):
+        raise M8EvidenceError(
+            "scenario quality report must contain the four producer commands in order"
+        )
+
+    command_records, command_descriptors = _recorded_command_materials(root, run_id)
+
+    matched_sequences: set[int] = set()
+    for report_command in report_commands:
+        assert isinstance(report_command, dict)
+        if report_command.get("exitCode") != 0:
+            raise M8EvidenceError("passed quality report contains a failed command")
+        projection = _quality_command_projection(report_command)
+        matches = [
+            int(record["sequence"])
+            for record in command_records
+            if _quality_command_projection(record) == projection
+        ]
+        if len(matches) != 1 or matches[0] in matched_sequences:
+            raise M8EvidenceError(
+                "each producer command must match one distinct recorded command"
+            )
+        matched_sequences.add(matches[0])
+
+    verification: dict[str, object] = {
+        "schemaVersion": SCHEMA_VERSION,
+        "kind": QUALITY_VERIFICATION_KIND,
+        "runId": run_id,
+        "candidate": manifest.get("candidate"),
+        "result": "passed",
+        "checks": {name: "passed" for name in CHECKS},
+        "commands": command_descriptors,
+        "scenarioReport": descriptor(root, report_path),
+    }
+    target = root.joinpath(*QUALITY_VERIFICATION_PATH.parts)
+    _write_once_json(target, verification, root)
+    return verification
+
+
+def _validate_quality_verification_record(
+    root: Path,
+    manifest: Mapping[str, object],
+    verification_path: Path,
+    verification: Mapping[str, object],
+) -> None:
+    expected_path = root.joinpath(*QUALITY_VERIFICATION_PATH.parts).resolve(strict=True)
+    if verification_path != expected_path:
+        raise M8EvidenceError(
+            "a passed final result must use the generated quality verification"
+        )
+    run = manifest.get("run")
+    run_id = run.get("id") if isinstance(run, dict) else None
+    _, command_descriptors = _recorded_command_materials(root, run_id)
+    report_descriptor = verification.get("scenarioReport")
+    if not isinstance(report_descriptor, dict):
+        raise M8EvidenceError("quality verification lacks its scenario report binding")
+    report_relative = PurePosixPath(str(report_descriptor.get("path", "")))
+    if (
+        report_relative.is_absolute()
+        or any(part in {"", ".", ".."} for part in report_relative.parts)
+    ):
+        raise M8EvidenceError("quality verification scenario report path is unsafe")
+    report_path = _safe_existing(
+        root.joinpath(*report_relative.parts),
+        root,
+        label="quality verification scenario report",
+    )
+    if descriptor(root, report_path) != report_descriptor:
+        raise M8EvidenceError("quality verification scenario report binding is stale")
+    checks = verification.get("checks")
+    if (
+        verification.get("schemaVersion") != SCHEMA_VERSION
+        or verification.get("kind") != QUALITY_VERIFICATION_KIND
+        or verification.get("runId") != run_id
+        or verification.get("candidate") != manifest.get("candidate")
+        or verification.get("result") != "passed"
+        or checks != {name: "passed" for name in CHECKS}
+        or verification.get("commands") != command_descriptors
+    ):
+        raise M8EvidenceError(
+            "generated quality verification is incomplete, stale, or unbound"
+        )
 
 
 def _source_files(source: Path) -> dict[str, bytes]:
@@ -397,6 +589,13 @@ def freeze_result(
         raise M8EvidenceError(f"{stage} verification must be valid UTF-8 JSON") from error
     if not isinstance(verification_record, dict) or verification_record.get("result") != result:
         raise M8EvidenceError(f"{stage} verification result does not match {result}")
+    if stage == "final" and result == "passed":
+        _validate_quality_verification_record(
+            root,
+            manifest,
+            verification_path,
+            verification_record,
+        )
     if not (root / "evidence" / "run-start.json").is_file():
         raise M8EvidenceError("run-start must be frozen before results")
     if stage == "final" and not (root / "evidence" / "review" / "review.json").is_file():
@@ -532,7 +731,7 @@ def record_repair(
 
 
 def _freeze_indexes(root: Path, run_id: str) -> None:
-    commands = sorted((root / "evidence" / "commands").glob("*.json"))
+    _, command_descriptors = _recorded_command_materials(root, run_id)
     repairs = sorted((root / "evidence" / "repairs").glob("*/record.json"))
     _write_once_json(
         root / "evidence" / "command-index.json",
@@ -540,7 +739,7 @@ def _freeze_indexes(root: Path, run_id: str) -> None:
             "schemaVersion": SCHEMA_VERSION,
             "kind": "personal-ui-m8-command-index",
             "runId": run_id,
-            "commands": [descriptor(root, path) for path in commands],
+            "commands": command_descriptors,
         },
         root,
     )
@@ -665,6 +864,9 @@ def _parser() -> argparse.ArgumentParser:
     command = subparsers.add_parser("record-command")
     command.add_argument("--workspace", type=Path, required=True)
     command.add_argument("--record", type=Path, required=True)
+    quality_verification = subparsers.add_parser("build-quality-verification")
+    quality_verification.add_argument("--workspace", type=Path, required=True)
+    quality_verification.add_argument("--scenario-report", type=Path, required=True)
     for stage in ("initial", "final"):
         freeze = subparsers.add_parser(f"freeze-{stage}")
         freeze.add_argument("--workspace", type=Path, required=True)
@@ -718,6 +920,11 @@ def main(argv: Sequence[str] | None = None) -> int:
                 stderr=_workspace_argument(args.workspace, record.get("stderr", "")),
                 started_at=str(record.get("startedAt", "")),
                 ended_at=str(record.get("endedAt", "")),
+            )
+        elif args.command == "build-quality-verification":
+            value = build_quality_verification(
+                args.workspace,
+                scenario_report=args.scenario_report,
             )
         elif args.command in {"freeze-initial", "freeze-final"}:
             value = freeze_result(
