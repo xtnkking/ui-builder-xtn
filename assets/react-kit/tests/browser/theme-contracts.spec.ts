@@ -144,7 +144,7 @@ test("resolves light, dark, inherited, nested, system, and portal themes", async
   });
 
   if (testInfo.project.name === "chromium") {
-    await expect(page.locator("#theme-contract-fixture")).toHaveScreenshot("theme-modes.png", {
+    await expect(page.locator("#theme-contract-fixture")).toHaveScreenshot(`theme-modes-${process.platform}.png`, {
       animations: "disabled",
       maxDiffPixels: 0,
     });

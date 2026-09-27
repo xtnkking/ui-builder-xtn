@@ -19,19 +19,27 @@ function assertUniformInset(shadow, label) {
 }
 
 async function inspectFocus(input, target, expectedColor, label) {
-  await input.evaluate(() => new Promise((resolve) => window.setTimeout(resolve, 180)));
-  const state = await input.evaluate((element, targetSelector) => {
-    const control = targetSelector ? element.closest(targetSelector) : element;
-    const controlStyle = getComputedStyle(control);
-    return {
-      focused: document.activeElement === element,
-      focusVisible: element.matches(":focus-visible"),
-      border: controlStyle.borderColor,
-      shadow: controlStyle.boxShadow,
-      invalid: element.getAttribute("aria-invalid"),
-      autofillStateShadow: getComputedStyle(element).getPropertyValue("--_pui-input-autofill-state-shadow").trim().toLowerCase(),
+  const state = await input.evaluate(async (element, options) => {
+    const read = () => {
+      const control = options.targetSelector ? element.closest(options.targetSelector) : element;
+      const controlStyle = getComputedStyle(control);
+      return {
+        focused: document.activeElement === element,
+        focusVisible: element.matches(":focus-visible"),
+        border: controlStyle.borderColor,
+        shadow: controlStyle.boxShadow,
+        invalid: element.getAttribute("aria-invalid"),
+        autofillStateShadow: getComputedStyle(element).getPropertyValue("--_pui-input-autofill-state-shadow").trim().toLowerCase(),
+      };
     };
-  }, target);
+    const deadline = performance.now() + 1500;
+    let snapshot = read();
+    while (snapshot.border !== options.expectedColor && performance.now() < deadline) {
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+      snapshot = read();
+    }
+    return snapshot;
+  }, { targetSelector: target, expectedColor });
   assert.equal(state.focused, true, `${label}: input did not receive keyboard focus`);
   assert.equal(state.focusVisible, true, `${label}: keyboard focus indication is missing`);
   assert.equal(state.border, expectedColor, `${label}: border color conflicts with the field state`);

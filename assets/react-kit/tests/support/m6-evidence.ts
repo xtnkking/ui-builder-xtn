@@ -286,13 +286,26 @@ export function registerKeyboardEvidence(cases: readonly KeyboardEvidenceCase[])
       }
 
       if (evidence.strategy === "tab") {
-        const handle = await target.elementHandle();
-        let moved = false;
-        for (let press = 0; press < 8 && !moved; press += 1) {
-          await page.keyboard.press(evidence.key ?? "Tab");
-          moved = await page.evaluate((element) => document.activeElement !== element, handle);
+        const sentinelAttribute = `m6-tab-sentinel-${evidence.exportName}`;
+        await target.evaluate((element, attribute) => {
+          const sentinel = document.createElement("button");
+          sentinel.type = "button";
+          sentinel.setAttribute("data-m6-tab-sentinel", attribute);
+          sentinel.setAttribute("aria-label", `${attribute} target`);
+          sentinel.style.cssText = "position:fixed;inline-size:1px;block-size:1px;opacity:0.01;";
+          element.insertAdjacentElement("afterend", sentinel);
+        }, sentinelAttribute);
+        const sentinel = page.locator(`[data-m6-tab-sentinel="${sentinelAttribute}"]`);
+        try {
+          let moved = false;
+          for (let press = 0; press < 8 && !moved; press += 1) {
+            await page.keyboard.press(evidence.key ?? "Tab");
+            moved = await target.evaluate((element) => document.activeElement !== element);
+          }
+          expect(moved, `${evidence.exportName} must let Tab leave its keyboard target`).toBe(true);
+        } finally {
+          await sentinel.evaluateAll((elements) => elements.forEach((element) => element.remove()));
         }
-        expect(moved, `${evidence.exportName} must let Tab leave its keyboard target`).toBe(true);
         return;
       }
 

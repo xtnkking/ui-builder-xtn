@@ -1,12 +1,14 @@
 import assert from "node:assert/strict";
 import { isPersonalUiRegressionMain, runPersonalUiRegression } from "./browser-test-harness.mjs";
+import { legacyExplorerCaseTabs, selectExplorerCase } from "./browser-explorer-case.mjs";
 
 export async function runDataTableFocusRegression({ page, baseURL }) {
   assert.ok(baseURL, "A baseURL is required");
   for (const width of [2560, 1440, 1024, 736]) {
     await page.setViewportSize({ width, height: 900 });
-    await page.goto(baseURL);
-      const action = page.locator(".pui-data-table tbody tr .pui-data-table__cell--pin-end .pui-icon-button").first();
+    await page.goto(`${baseURL}/?regressionWidth=${width}#/components/data-table`);
+      const casePanel = await selectExplorerCase(page, legacyExplorerCaseTabs.dataTable);
+      const action = casePanel.locator(".pui-data-table tbody tr .pui-data-table__cell--pin-end .pui-icon-button").first();
       await action.waitFor();
       for (let index = 0; index < 80 && !await action.evaluate((button) => document.activeElement === button); index += 1) {
         await page.keyboard.press("Tab");

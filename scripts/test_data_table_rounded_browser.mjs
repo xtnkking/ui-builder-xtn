@@ -244,24 +244,29 @@ export async function runDataTableRoundedRegression({ page, baseURL }) {
       const surface = casePanel.locator(surfaceSelector);
       const scenario = casePanel.getByRole("group", { name: "选择下一次查询响应" });
       const tableState = (state) => casePanel.locator(`.pui-data-page .pui-data-table[data-state="${state}"]`);
-      await tableState("loading").waitFor({ state: "visible" });
-      await tableState("loading").getByText("正在加载数据", { exact: false }).first().waitFor();
-      const initialLoading = await assertRounded(table, `initial loading ${width}px`, { paginated: true });
       const rowSelector = width <= 640 ? ".pui-mobile-data-row:first-child" : "tbody tr:first-child";
-      const initialLoadingRowHeight = await surface.locator(rowSelector).evaluate((element) => element.getBoundingClientRect().height);
       await tableState("ready").waitFor();
       const ready = await assertRounded(table, `ready ${width}px`, { paginated: true });
       const readyRowHeight = await surface.locator(rowSelector).evaluate((element) => element.getBoundingClientRect().height);
-      assert.ok(Math.abs(initialLoading.surface.height - ready.surface.height) <= 1, `initial loading changed the fixed viewport at ${width}px`);
-      assert.ok(Math.abs(initialLoading.frame.height - ready.frame.height) <= 1, `initial loading changed the table frame at ${width}px`);
-      assert.ok(Math.abs(initialLoadingRowHeight - (width <= 640 ? 76 : 58)) <= 1, `loading row differs from the standard row-height unit at ${width}px`);
-      assert.ok(Math.abs(readyRowHeight - initialLoadingRowHeight) <= 1, `ready row height differs from its loading skeleton at ${width}px`);
       assert.equal(ready.fixedViewport, true, `paginated table did not enable its stable viewport at ${width}px`);
       await assertRowsFitSurface(surface, rowSelector, `ready ${width}px`);
       if (width > 640) await assertDesktopBandLayout(table, `ready ${width}px`);
       const lastRow = surface.locator(width <= 640 ? ".pui-mobile-data-row:last-child" : "tbody tr:last-child td:last-child");
       assert.equal(await lastRow.evaluate((element) => getComputedStyle(element).borderBottomWidth), "0px", `double bottom line at ${width}px`);
       const readyHeight = ready.surface.height;
+
+      await casePanel.getByRole("button", { name: "查询", exact: true }).click();
+      await tableState("loading").waitFor({ state: "visible" });
+      await surface.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+      const explicitLoading = await assertRounded(table, `explicit loading ${width}px`, { paginated: true });
+      const loadingRowHeight = await surface.locator(rowSelector).evaluate((element) => element.getBoundingClientRect().height);
+      assert.ok(Math.abs(explicitLoading.surface.height - ready.surface.height) <= 1, `loading changed the fixed viewport at ${width}px`);
+      assert.ok(Math.abs(explicitLoading.frame.height - ready.frame.height) <= 1, `loading changed the table frame at ${width}px`);
+      assert.ok(Math.abs(loadingRowHeight - (width <= 640 ? 76 : 58)) <= 1, `loading row differs from the standard row-height unit at ${width}px`);
+      await tableState("ready").waitFor();
+      const refreshedRowHeight = await surface.locator(rowSelector).evaluate((element) => element.getBoundingClientRect().height);
+      assert.ok(Math.abs(refreshedRowHeight - loadingRowHeight) <= 1, `ready row height differs from its loading skeleton at ${width}px`);
+      assert.ok(Math.abs(refreshedRowHeight - readyRowHeight) <= 1, `refresh changed the standard row-height unit at ${width}px`);
 
       await table.getByRole("combobox", { name: "每页数量" }).click();
       await page.getByRole("option", { name: "20 条" }).click();

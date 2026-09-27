@@ -151,8 +151,16 @@ test("CommandPalette focuses search, skips disabled commands, and owns async fai
   await expect(search).toHaveAttribute("aria-activedescendant", /option-0$/);
   await search.fill("second");
   await expect(dialog.getByRole("option", { name: "Beta" })).toBeVisible();
-  await search.press("Enter");
-  await search.press("Enter");
+  await search.evaluate((element) => {
+    const enter = () => element.dispatchEvent(new KeyboardEvent("keydown", {
+      key: "Enter",
+      code: "Enter",
+      bubbles: true,
+      cancelable: true,
+    }));
+    enter();
+    enter();
+  });
   await expect(section.getByLabel("Command count")).toHaveText("1");
   await expect(dialog).toHaveCount(0);
   await expect(opener).toBeFocused();
