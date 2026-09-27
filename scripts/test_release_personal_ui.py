@@ -619,6 +619,24 @@ class ArchiveContracts(unittest.TestCase):
 
 
 class PrepareVerifyContracts(unittest.TestCase):
+    def test_default_command_runner_resolves_platform_command_shims(self) -> None:
+        cwd = Path("workspace")
+        completed = mock.Mock(returncode=0)
+        with (
+            mock.patch.object(release.shutil, "which", return_value=r"C:\tools\npm.CMD") as which,
+            mock.patch.object(release.subprocess, "run", return_value=completed) as run,
+        ):
+            self.assertEqual(release.default_command_runner(["npm", "ci"], cwd), 0)
+
+        which.assert_called_once_with("npm")
+        run.assert_called_once_with([r"C:\tools\npm.CMD", "ci"], cwd=cwd, check=False)
+
+        with (
+            mock.patch.object(release.shutil, "which", return_value=None),
+            self.assertRaisesRegex(release.ReleaseError, "verification executable was not found"),
+        ):
+            release.default_command_runner(["missing-tool"], cwd)
+
     def test_dry_run_is_stable_and_writes_nothing(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary) / "repo"

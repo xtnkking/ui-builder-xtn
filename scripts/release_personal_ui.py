@@ -2133,7 +2133,10 @@ def _atomic_write_json(path: Path, value: object) -> None:
 
 
 def default_command_runner(argv: Sequence[str], cwd: Path) -> int:
-    process = subprocess.run(list(argv), cwd=cwd, check=False)
+    executable = shutil.which(argv[0])
+    if executable is None:
+        raise ReleaseError(f"verification executable was not found: {argv[0]}")
+    process = subprocess.run([executable, *argv[1:]], cwd=cwd, check=False)
     return process.returncode
 
 
