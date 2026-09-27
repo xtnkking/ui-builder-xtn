@@ -161,8 +161,11 @@ export async function runAsyncSelectOverlayRegression({ page, baseURL, widths = 
       await dialog.getByRole('button', { name: '角色操作菜单' }).click();
       await dropdown.waitFor();
       await dialog.getByRole('combobox', { name: /角色，已选择/ }).click();
+      const roleListbox = page.getByRole('listbox', { name: '角色', exact: true });
+      await roleListbox.waitFor({ state: 'visible' });
       await dropdown.waitFor({ state: 'detached' });
       await page.keyboard.press('Escape');
+      await roleListbox.waitFor({ state: 'detached' });
       const priorFocus = dialog.getByRole('button', { name: '角色操作菜单' });
       const contextTrigger = dialog.getByRole('button', { name: '角色右键菜单' });
       await priorFocus.focus();
@@ -263,7 +266,13 @@ export async function runAsyncSelectOverlayRegression({ page, baseURL, widths = 
       }
       await page.keyboard.press('Escape');
       await drawer.waitFor({ state: 'detached' });
-      assert.equal(await edit.evaluate((button) => document.activeElement === button), true, `${width}px: drawer opener focus not restored`);
+      const drawerOpener = await edit.elementHandle();
+      assert.ok(drawerOpener, `${width}px: drawer opener was removed`);
+      try {
+        await page.waitForFunction((button) => document.activeElement === button, drawerOpener, { timeout: 2000 });
+      } catch (cause) {
+        throw new Error(`${width}px: drawer opener focus not restored`, { cause });
+      }
       if (width === 1440 || width === 320) console.log(`${width}px Dialog popup: ${JSON.stringify(dialogGeometry.bounds)}; Drawer popup: ${JSON.stringify(drawerGeometry.bounds)}`);
   }
   console.log(`AsyncSelect Dialog/Drawer browser regression passed at ${widths.map((width) => `${width}px`).join(', ')}.`);

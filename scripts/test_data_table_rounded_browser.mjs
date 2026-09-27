@@ -255,8 +255,10 @@ export async function runDataTableRoundedRegression({ page, baseURL }) {
       assert.equal(await lastRow.evaluate((element) => getComputedStyle(element).borderBottomWidth), "0px", `double bottom line at ${width}px`);
       const readyHeight = ready.surface.height;
 
-      await casePanel.getByRole("button", { name: "查询", exact: true }).click();
-      await tableState("loading").waitFor({ state: "visible" });
+      await Promise.all([
+        tableState("loading").waitFor({ state: "visible" }),
+        casePanel.getByRole("button", { name: "查询", exact: true }).click(),
+      ]);
       await surface.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
       const explicitLoading = await assertRounded(table, `explicit loading ${width}px`, { paginated: true });
       const loadingRowHeight = await surface.locator(rowSelector).evaluate((element) => element.getBoundingClientRect().height);
@@ -269,8 +271,10 @@ export async function runDataTableRoundedRegression({ page, baseURL }) {
       assert.ok(Math.abs(refreshedRowHeight - readyRowHeight) <= 1, `refresh changed the standard row-height unit at ${width}px`);
 
       await table.getByRole("combobox", { name: "每页数量" }).click();
-      await page.getByRole("option", { name: "20 条" }).click();
-      await tableState("loading").waitFor();
+      await Promise.all([
+        tableState("loading").waitFor({ state: "visible" }),
+        page.getByRole("option", { name: "20 条" }).click(),
+      ]);
       await tableState("ready").waitFor();
       const largePage = await assertRounded(table, `large page ready ${width}px`, { paginated: true });
       assert.ok(Math.abs(ready.surface.height - largePage.surface.height) <= 1, `page size changed the fixed viewport at ${width}px`);
@@ -332,8 +336,10 @@ export async function runDataTableRoundedRegression({ page, baseURL }) {
       });
       assert.ok(beforePageSizeReset.scrollTop > 0, `could not prepare the table scroll reset case at ${width}px`);
       await table.getByRole("combobox", { name: "每页数量" }).click();
-      await page.getByRole("option", { name: "50 条" }).click();
-      await tableState("loading").waitFor();
+      await Promise.all([
+        tableState("loading").waitFor({ state: "visible" }),
+        page.getByRole("option", { name: "50 条" }).click(),
+      ]);
       const loadingScroll = await surface.evaluate((element) => ({
         scrollTop: element.scrollTop,
         clientHeight: element.clientHeight,
@@ -352,9 +358,10 @@ export async function runDataTableRoundedRegression({ page, baseURL }) {
       assert.ok(largestScrolling.scrollHeight > largestScrolling.clientHeight, `50-row option did not keep overflow inside the table at ${width}px`);
 
       await casePanel.getByRole("searchbox", { name: "搜索姓名或邮箱" }).fill("ning");
-      await casePanel.getByRole("button", { name: "查询", exact: true }).click();
-      await tableState("loading").waitFor();
-      const sparseLoading = await assertRounded(table, `sparse loading ${width}px`, { paginated: true });
+      const [sparseLoading] = await Promise.all([
+        assertRounded(tableState("loading"), `sparse loading ${width}px`, { paginated: true }),
+        casePanel.getByRole("button", { name: "查询", exact: true }).click(),
+      ]);
       assert.ok(Math.abs(ready.surface.height - sparseLoading.surface.height) <= 1, `query loading changed table height at ${width}px`);
       await tableState("ready").waitFor();
       const sparse = await assertRounded(table, `sparse ready ${width}px`, { paginated: true });
@@ -382,16 +389,19 @@ export async function runDataTableRoundedRegression({ page, baseURL }) {
       }
 
       await casePanel.getByRole("button", { name: "重置", exact: true }).click();
-      await casePanel.getByRole("button", { name: "查询", exact: true }).click();
-      await tableState("loading").waitFor();
+      await Promise.all([
+        tableState("loading").waitFor({ state: "visible" }),
+        casePanel.getByRole("button", { name: "查询", exact: true }).click(),
+      ]);
       await tableState("ready").waitFor();
       await table.getByText("1-23 / 23 条结果", { exact: true }).waitFor();
 
       await scenario.getByRole("button", { name: "空结果" }).click();
-      await casePanel.getByRole("button", { name: "查询", exact: true }).click();
-      await tableState("loading").waitFor();
-      await assertRounded(table, `loading ${width}px`, { paginated: true });
-      const loadingHeight = await surface.evaluate((element) => element.getBoundingClientRect().height);
+      const [emptyLoading] = await Promise.all([
+        assertRounded(tableState("loading"), `loading ${width}px`, { paginated: true }),
+        casePanel.getByRole("button", { name: "查询", exact: true }).click(),
+      ]);
+      const loadingHeight = emptyLoading.surface.height;
       assert.ok(Math.abs(readyHeight - loadingHeight) <= 1, `table resized while loading at ${width}px`);
       await tableState("empty").waitFor();
       const empty = await assertRounded(table, `empty ${width}px`, { paginated: true, empty: true });
