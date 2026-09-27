@@ -59,6 +59,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ env.PUI_SOURCE_COMMIT }}
+          fetch-depth: 0
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -429,6 +430,14 @@ jobs:
           path: test-results/hosted-ci/jobs/safari-quality.json
           if-no-files-found: error
           retention-days: 30
+
+      - name: Upload raw Safari smoke for M8 quality evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: m8-real-safari-smoke
+          path: assets/react-kit/test-results/real-safari-smoke.json
+          if-no-files-found: error
+          retention-days: 90
 
       - name: Upload Safari diagnostics
         if: failure()

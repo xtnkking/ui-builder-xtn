@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
-"""Prepare and verify deterministic Personal UI release candidates.
+"""Prepare, verify, and explicitly publish Personal UI release candidates.
 
-The CLI deliberately has no real remote publisher. The publish phase implements
-preflight and a resumable adapter contract, but the local command always stops
-before a Git commit, tag, remote release, installed-copy sync, or other external
-mutation. Those operations require a later, explicit user-authorized change.
+Publication defaults to a read-only preflight. Git, GitHub, and generated-copy
+mutations are reachable only through the explicit ``publish --execute`` path
+after the candidate, evidence, and exact plan-digest authorization pass.
 """
 
 from __future__ import annotations
@@ -259,8 +258,13 @@ class SourceSnapshot:
 
 
 class PublishAdapter(Protocol):
-    def execute(self, step: str, plan: Mapping[str, object], candidate: Path) -> None:
-        """Execute one idempotent publication step."""
+    def execute(
+        self,
+        step: str,
+        plan: Mapping[str, object],
+        candidate: Path,
+    ) -> Mapping[str, object] | None:
+        """Execute one idempotent publication step and return journal-safe facts."""
 
 
 CommandRunner = Callable[[Sequence[str], Path], int]
@@ -1099,7 +1103,7 @@ def build_release_plan(
         },
         "verificationCommands": [copy.deepcopy(dict(command)) for command in verification_commands],
         "publishSteps": list(PUBLISH_STEPS),
-        "remoteExecutionImplemented": False,
+        "remoteExecutionImplemented": True,
     }
     manifest_bytes = pretty_json_bytes(_release_manifest(plan, archive_bytes, release_notes))
     plan_artifacts = plan["artifacts"]
@@ -1625,7 +1629,11 @@ def _local_release_state_blockers(
         allowed_versions: set[str] = set()
         if isinstance(expected_version, str):
             allowed_versions.add(expected_version)
-        if isinstance(freeze_step, dict) and freeze_step.get("status") == "complete":
+        if isinstance(freeze_step, dict) and freeze_step.get("status") in {
+            "running",
+            "failed",
+            "complete",
+        }:
             candidate = plan.get("candidateVersion")
             if isinstance(candidate, str):
                 allowed_versions.add(candidate)
@@ -1636,8 +1644,10 @@ def _local_release_state_blockers(
         tag_exists = isinstance(candidate_version, str) and any(
             (tag[1:] if tag.startswith("v") else tag) == candidate_version for tag in tags
         )
+        resumable_tag_states = {"running", "failed", "complete"}
         if tag_exists and not (
-            isinstance(tag_step, dict) and tag_step.get("status") == "complete"
+            isinstance(tag_step, dict)
+            and tag_step.get("status") in resumable_tag_states
         ):
             blockers.append("local-tag-conflict")
         if (
@@ -1659,6 +1669,7 @@ def publish_preflight(
     ci_evidence: Path | None,
     remote_adapter_configured: bool,
     repository_root: Path = SKILL_ROOT,
+    adapter: PublishAdapter | None = None,
 ) -> list[str]:
     plan, journal = load_candidate(candidate)
     blockers = [str(value) for value in plan.get("publicationBlockers", [])]
@@ -1677,7 +1688,7 @@ def publish_preflight(
     )
     if ci_blocker:
         blockers.append(ci_blocker)
-    if not remote_adapter_configured:
+    if not remote_adapter_configured and adapter is None:
         blockers.append("remote-publisher-not-configured")
     blockers.extend(_local_release_state_blockers(repository_root, plan, journal))
     try:
@@ -1686,7 +1697,57 @@ def publish_preflight(
         verify_artifact_bundle(candidate, plan, files)
     except (OSError, ValueError, ReleaseError) as error:
         blockers.append(f"candidate-integrity-failed:{error}")
+    preflight = getattr(adapter, "preflight", None)
+    if callable(preflight):
+        try:
+            adapter_blockers = preflight(plan, candidate, journal)
+            if not isinstance(adapter_blockers, Sequence) or isinstance(
+                adapter_blockers, (str, bytes)
+            ):
+                blockers.append("publisher-preflight-returned-invalid-result")
+            else:
+                blockers.extend(str(blocker) for blocker in adapter_blockers)
+        except Exception as error:
+            blockers.append(f"publisher-preflight-failed:{type(error).__name__}")
     return sorted(set(blockers))
+
+
+_SENSITIVE_JOURNAL_KEYS = re.compile(
+    r"(?:authorization|credential|password|secret|token)", re.IGNORECASE
+)
+
+
+def _journal_step_result(value: Mapping[str, object] | None) -> dict[str, object]:
+    if value is None:
+        return {}
+    if not isinstance(value, Mapping):
+        raise ReleaseError("publication adapter returned a non-object step result")
+
+    def normalize(item: object, *, key: str | None = None) -> object:
+        if key is not None and _SENSITIVE_JOURNAL_KEYS.search(key):
+            raise ReleaseError(
+                f"publication adapter result contains a sensitive key: {key}"
+            )
+        if item is None or isinstance(item, (str, bool, int)):
+            return item
+        if isinstance(item, Mapping):
+            result: dict[str, object] = {}
+            for nested_key, nested_value in item.items():
+                if not isinstance(nested_key, str):
+                    raise ReleaseError(
+                        "publication adapter result keys must be strings"
+                    )
+                result[nested_key] = normalize(nested_value, key=nested_key)
+            return result
+        if isinstance(item, Sequence) and not isinstance(item, (str, bytes)):
+            return [normalize(nested) for nested in item]
+        raise ReleaseError(
+            "publication adapter result contains a non-JSON-safe value"
+        )
+
+    normalized = normalize(value)
+    assert isinstance(normalized, dict)
+    return normalized
 
 
 def publish_with_adapter(
@@ -1706,6 +1767,7 @@ def publish_with_adapter(
         ci_evidence=ci_evidence,
         remote_adapter_configured=True,
         repository_root=repository_root,
+        adapter=adapter,
     )
     if blockers:
         raise ReleaseError("publication blocked: " + ", ".join(blockers))
@@ -1716,20 +1778,33 @@ def publish_with_adapter(
         step_state = journal["steps"][step]  # type: ignore[index]
         if isinstance(step_state, dict) and step_state.get("status") == "complete":
             continue
-        journal["steps"][step] = {"status": "running"}  # type: ignore[index]
+        prior_attempt = (
+            step_state.get("attempt", 0) if isinstance(step_state, dict) else 0
+        )
+        attempt = prior_attempt + 1 if isinstance(prior_attempt, int) else 1
+        journal["steps"][step] = {  # type: ignore[index]
+            "status": "running",
+            "attempt": attempt,
+        }
         _atomic_write_json(candidate / JOURNAL_NAME, journal)
         try:
-            adapter.execute(step, plan, candidate)
+            result = _journal_step_result(adapter.execute(step, plan, candidate))
         except Exception as error:
             journal["status"] = "publish-interrupted"
             journal["steps"][step] = {  # type: ignore[index]
                 "status": "failed",
+                "attempt": attempt,
                 "error": str(error),
+                "errorType": type(error).__name__,
                 "recovery": "resume; never move or delete a public tag automatically",
             }
             _atomic_write_json(candidate / JOURNAL_NAME, journal)
             raise
-        journal["steps"][step] = {"status": "complete"}  # type: ignore[index]
+        journal["steps"][step] = {  # type: ignore[index]
+            "status": "complete",
+            "attempt": attempt,
+            "result": result,
+        }
         _atomic_write_json(candidate / JOURNAL_NAME, journal)
     journal["status"] = "published"
     _atomic_write_json(candidate / JOURNAL_NAME, journal)
@@ -1755,13 +1830,24 @@ def _parser() -> argparse.ArgumentParser:
 
     publish = subparsers.add_parser(
         "publish",
-        help="Evaluate publication gates; remote execution is intentionally unavailable",
+        help="Preflight publication or execute it with exact digest authorization",
     )
     publish.add_argument("--candidate", type=Path, required=True)
     publish.add_argument("--authorization")
     publish.add_argument("--m8-evidence", type=Path)
     publish.add_argument("--ci-evidence", type=Path)
-    publish.add_argument("--dry-run", action="store_true")
+    publication_mode = publish.add_mutually_exclusive_group()
+    publication_mode.add_argument("--execute", action="store_true")
+    publication_mode.add_argument("--dry-run", action="store_true")
+    publish.add_argument("--remote", default="origin")
+    publish.add_argument("--repository")
+    publish.add_argument(
+        "--generated-copy-target",
+        action="append",
+        type=Path,
+        default=[],
+        help="Explicit absolute generated-copy destination; may be repeated",
+    )
     return parser
 
 
@@ -1786,16 +1872,42 @@ def main(argv: Sequence[str] | None = None) -> int:
             print(json.dumps(journal, ensure_ascii=False, indent=2))
             return 0
 
+        try:
+            from .release_publish_adapter import GitHubPublishAdapter
+        except ImportError:
+            from release_publish_adapter import GitHubPublishAdapter
+
+        adapter = GitHubPublishAdapter(
+            repository_root=SKILL_ROOT,
+            remote=args.remote,
+            repository=args.repository,
+            generated_copy_targets=tuple(args.generated_copy_target),
+        )
         blockers = publish_preflight(
             args.candidate,
             authorization=args.authorization,
             m8_evidence=args.m8_evidence,
             ci_evidence=args.ci_evidence,
-            remote_adapter_configured=False,
+            remote_adapter_configured=True,
+            adapter=adapter,
         )
+        if args.execute and not blockers:
+            assert args.authorization is not None
+            assert args.m8_evidence is not None
+            assert args.ci_evidence is not None
+            journal = publish_with_adapter(
+                args.candidate,
+                authorization=args.authorization,
+                m8_evidence=args.m8_evidence,
+                ci_evidence=args.ci_evidence,
+                adapter=adapter,
+            )
+            print(json.dumps(journal, ensure_ascii=False, indent=2))
+            return 0
         result = {
             "phase": "publish",
-            "dryRun": args.dry_run,
+            "dryRun": True,
+            "executionRequested": args.execute,
             "allowed": not blockers,
             "blockers": blockers,
             "remoteActionsExecuted": False,

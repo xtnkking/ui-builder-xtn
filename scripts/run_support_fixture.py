@@ -8,6 +8,7 @@ import hashlib
 import json
 import os
 import platform
+import shutil
 import socket
 import subprocess
 import sys
@@ -410,6 +411,14 @@ def execute_fixture(fixture: dict[str, Any], workspace: Path) -> dict[str, Any]:
     run(plan["commands"]["typecheck"], cwd=package_root, environment=environment)
     if plan["framework"] == "vite":
         run(plan["commands"]["render"], cwd=package_root, environment=environment)
+        render_output = package_root / ".support-render"
+        if (
+            render_output.is_symlink()
+            or not render_output.is_dir()
+            or render_output.resolve().parent != package_root.resolve()
+        ):
+            raise RuntimeError("support render output is missing or unsafe to remove")
+        shutil.rmtree(render_output)
     run(plan["commands"]["build"], cwd=package_root, environment=environment)
     if "ssr" in plan["operations"]:
         run_ssr(plan, cwd=package_root, environment=environment)

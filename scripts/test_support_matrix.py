@@ -219,6 +219,18 @@ class SupportMatrixContractTests(unittest.TestCase):
         report = self.validate(workflow=workflow)
         self.assert_has_error(report, "workflow is missing required job: support-contract")
 
+    def test_static_quality_fetches_the_immutable_baseline_tag(self) -> None:
+        static_job = self.workflow.split("  static-quality:\n", 1)[1].split(
+            "  react-typescript-compatibility:\n", 1
+        )[0]
+        workflow = self.workflow.replace(
+            static_job,
+            static_job.replace("          fetch-depth: 0\n", "", 1),
+            1,
+        )
+        report = self.validate(workflow=workflow)
+        self.assert_has_error(report, "fetch-depth: 0")
+
     def test_real_safari_and_hosted_bundle_jobs_are_required(self) -> None:
         workflow = self.workflow.replace("  safari-quality:\n", "  removed-safari:\n", 1)
         report = self.validate(workflow=workflow)
@@ -227,6 +239,11 @@ class SupportMatrixContractTests(unittest.TestCase):
         workflow = self.workflow.replace("  hosted-evidence:\n", "  removed-hosted:\n", 1)
         report = self.validate(workflow=workflow)
         self.assert_has_error(report, "workflow is missing required job: hosted-evidence")
+
+    def test_real_safari_raw_record_is_retained_for_m8(self) -> None:
+        workflow = self.workflow.replace("          name: m8-real-safari-smoke\n", "", 1)
+        report = self.validate(workflow=workflow)
+        self.assert_has_error(report, "m8-real-safari-smoke")
 
     def test_integration_job_requires_current_corepack_and_validator_dependencies(self) -> None:
         workflow = self.workflow.replace("corepack@0.34.0", "corepack@0.29.4", 1)

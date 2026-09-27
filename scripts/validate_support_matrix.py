@@ -783,6 +783,7 @@ def validate_workflow(
         snippets=(
             "needs: support-contract",
             "matrix: ${{ fromJSON(needs.support-contract.outputs.static_matrix) }}",
+            "fetch-depth: 0",
             "node-version: ${{ matrix.node }}",
             "npm@${{ matrix.npm }}",
             "npm ci",
@@ -865,6 +866,8 @@ def validate_workflow(
             "#/components/button",
             "generate_hosted_ci_evidence.py record-safari",
             "hosted-ci-safari-quality",
+            "m8-real-safari-smoke",
+            "assets/react-kit/test-results/real-safari-smoke.json",
         ),
         errors=errors,
     )

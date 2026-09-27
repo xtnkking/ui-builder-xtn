@@ -1,6 +1,6 @@
 # Personal UI Release Process
 
-Status: local M7 release tooling plus M8 evaluation and evidence infrastructure, with one failed hosted run from initial commit `eb32c87`. The exposed issues are fixed in the current working tree, but the corrected head has not passed hosted CI. The repository version remains `0.2.19`. This document does not authorize a commit, tag, installed-copy synchronization, GitHub Release, or public distribution, and no formal release candidate exists yet.
+Status: local M7 release tooling plus M8 evaluation, evidence, review, and guarded publication infrastructure, with one failed hosted run from initial commit `eb32c87`. The exposed issues are fixed in the current working tree, but the corrected head has not passed hosted CI. The repository version remains `0.2.19`. This document does not authorize a commit, tag, installed-copy synchronization, GitHub Release, or public distribution, and no formal release candidate exists yet.
 
 ## One orchestrator
 
@@ -43,7 +43,7 @@ After the commands finish, verify inventories staging again and independently re
 
 ## Publish
 
-The current CLI implements publication preflight but intentionally has no real remote adapter. It cannot commit, tag, push, call GitHub, synchronize installed copies, or publish an npm package. The React starter is private, so `npm publish` is not part of this release model.
+The CLI defaults to a read-only publication preflight. Remote and generated-copy mutations are reachable only through `publish --execute`, after the exact reviewed `planDigest`, valid M8 and hosted-CI evidence, and a verified immutable candidate all pass preflight. The React starter is private, so `npm publish` is not part of this release model.
 
 Publication remains blocked unless all of the following are true:
 
@@ -53,11 +53,11 @@ Publication remains blocked unless all of the following are true:
 - M8 acceptance evidence and hosted CI evidence are valid structured records bound to the plan digest, source commit, archive SHA-256, evidence type, and a `passed` result;
 - explicit authorization equals the reviewed plan digest;
 - no existing version or tag would be reused;
-- a separately authorized remote adapter has been implemented.
+- the guarded Git/GitHub adapter passes its own safety preflight.
 
 `THIRD_PARTY_NOTICES.json` uses schema version `1`, kind `personal-ui-third-party-notices`, `generatedFrom: assets/react-kit/package-lock.json`, the exact integer `dependencyCount`, and a non-empty `items` array. Every item records non-empty `name`, `version`, `license`, `source`, `resolved`, and `dependencyType` strings plus a boolean `optional` value. `source` and `resolved` both identify the exact locked tarball; the release preflight derives the expected inventory from the lockfile and rejects duplicate, missing, extra, source, license, resolution, dependency-type, optional, count, or generator metadata mismatches. Refresh with `python scripts/generate_third_party_notices.py --write` and verify with `--check`. M8 and CI evidence are JSON objects with schema version `1`, kind `personal-ui-release-evidence`, their respective `type` (`m8-acceptance` or `hosted-ci`), the exact `planDigest`, `sourceCommit`, and `archiveSha256`, plus `result: passed`. M8 acceptance additionally requires all six unique consumer scenarios, immutable request/input/initial/final artifact hashes, fresh-context and forbidden-input assertions, a fixed attribution, and passed typecheck, build, verifier, behavior, accessibility, and responsive checks. `scripts/validate_m8_evidence.py` enforces that structure; a binding-only JSON record is rejected.
 
-The adapter contract is journaled as idempotent steps: freeze the release commit, create an immutable tag, push source and tag, create a draft GitHub Release, upload artifacts and checksums, verify downloaded identity, publish the Release, then synchronize only explicitly named generated copies. A local failure before remote work leaves no version or tag. After any remote side effect, recovery resumes from the journal; automation must never move or delete a public tag to simulate rollback.
+The adapter contract is journaled as idempotent steps: freeze the release commit in a temporary worktree, create an immutable annotated tag, atomically push source and tag without force/delete refspecs, create a draft GitHub Release, upload artifacts and checksums, download and verify their byte identity, publish the Release, then synchronize only explicitly named absolute generated-copy targets. Existing lightweight tags, different annotated tag objects, unmanaged destination collisions, or uncommitted destination changes block execution. Credentials are read through Git's credential helper into process memory and are never written to the journal or command arguments. A local failure before remote work leaves no version or tag. After any remote side effect, recovery resumes from the journal; automation must never move or delete a public tag to simulate rollback.
 
 ## Hosted CI evidence
 
@@ -83,9 +83,9 @@ Official evaluator workspaces require a clean immutable source commit, `publisha
 
 ## M8 quality and local review bundle
 
-M8 acceptance is separate from hosted CI. Its six scenario records prove independent consumer use; its migration record proves a real `v0.2.19` upgrade, conflict path, rollback, and final verification; and its quality matrix proves behavior, accessibility, and responsive results at 2560, 1440, 1024, 736, 360, and 320 CSS pixels across Chromium, Firefox, and WebKit. It also retains zero-critical/zero-serious axe evidence and a separate system-Safari 18+ smoke where `playwrightWebKit` is explicitly false.
+M8 acceptance is separate from hosted CI. Its six scenario records prove independent consumer use; its migration record proves a real `v0.2.19` upgrade, conflict path, rollback, and final verification; and its quality matrix proves behavior, accessibility, and responsive results at 2560, 1440, 1024, 736, 360, and 320 CSS pixels across Chromium, Firefox, and WebKit. It also retains zero-critical/zero-serious axe evidence and a system-Safari 18+ record produced by the successful hosted macOS job and bound to the same candidate source commit and release plan. Playwright WebKit or a standalone hand-authored Safari-shaped JSON record is not accepted.
 
-The local review bundle retains the candidate archive, checksums, migration guide, changelog, support matrix, independent-consumer report, known limitations, preview instructions, and release checklist. Each item is an actual bundle-relative file with byte length and SHA-256; the candidate archive entry must match the frozen candidate binding exactly. `scripts/validate_m8_evidence.py` rejects a missing or tampered file, incomplete scenario or width/engine set, candidate-changing repair under an old binding, fake Safari record, failed migration check, or incomplete review bundle. Passing this local gate makes the RC reviewable; it does not authorize public release.
+The local review bundle retains the candidate archive, checksums, migration guide, changelog, support matrix, independent-consumer report, known limitations, preview instructions, and release checklist. Assembly takes six explicit scenario root/fragment pairs rather than guessing an artifact root. It reopens the scenario source archives, the official migration producer inventory, and the quality raw-evidence inventory before copying anything. Organizer-supplied `review-inputs.json` provides the actual limitations and preview project metadata; generated preview instructions contain executable extract, install, and start commands bound to each final source archive. Each retained item is an actual bundle-relative file with byte length and SHA-256; the candidate archive entry must match the frozen candidate binding exactly. `scripts/validate_m8_evidence.py` rejects a missing or tampered file, incomplete scenario or width/engine set, candidate-changing repair under an old binding, fake Safari record, failed migration check, or incomplete review bundle. Passing this local gate makes the RC reviewable; it does not authorize public release.
 
 ## Version policy
 
