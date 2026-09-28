@@ -8,12 +8,13 @@ import {
   type FormEvent,
 } from "react";
 import { Ellipsis, Search, UserPlus } from "lucide-react";
-import { DataTable, type DataColumn, type DataSort, type DataTableState } from "../data-table";
-import { DescriptionList } from "../display";
-import { Field, SearchInput, Select } from "../forms";
-import type { PaginationPageTrigger } from "../navigation";
-import { Drawer, OverflowText } from "../overlays";
-import { Button, IconButton, Tag, type TagTone } from "../primitives";
+import { DataTable, type DataColumn, type DataSort, type DataTableState } from "../data/data-table";
+import { Avatar, DescriptionList } from "../display/display";
+import { SearchInput, Select } from "../input/forms";
+import { usePersonalUILocale, type PersonalUILocaleContext } from "../foundation/locale";
+import type { PaginationPageTrigger } from "../navigation/navigation";
+import { Drawer, OverflowText } from "../overlay/overlays";
+import { Button, IconButton, Tag, type TagTone } from "../foundation/primitives";
 
 export interface MemberRecord {
   id: string;
@@ -56,9 +57,12 @@ export interface MemberManagementPageProps {
 }
 
 type RequestAction = "initial" | "query" | "empty-reset" | "retry" | "page" | "sort" | "page-size";
+type UpdatedState = "initial" | "initial-complete" | "updated" | "retry";
 
 const emptyFilters: MemberFilters = { search: "", role: "", status: "" };
 const DEFAULT_PAGE_SIZE = 5;
+const DEFAULT_ROLES = ["admin", "editor", "viewer"];
+const DEFAULT_STATUSES = ["joined", "pending", "disabled"];
 
 function finiteInteger(value: unknown, fallback: number, minimum: number): number {
   if (typeof value !== "number" || !Number.isFinite(value)) return fallback;
@@ -133,11 +137,47 @@ function sameFilters(left: MemberFilters, right: MemberFilters): boolean {
   return left.search === right.search && left.role === right.role && left.status === right.status;
 }
 
+function roleLabel(role: string, message: PersonalUILocaleContext["message"]): string {
+  if (role === "admin") return message("member.roleAdmin");
+  if (role === "editor") return message("member.roleEditor");
+  if (role === "viewer") return message("member.roleViewer");
+  return role;
+}
+
+function statusLabel(status: string, message: PersonalUILocaleContext["message"]): string {
+  if (status === "joined") return message("member.statusJoined");
+  if (status === "pending") return message("member.statusPending");
+  if (status === "disabled") return message("member.statusDisabled");
+  if (status === "active") return message("member.statusNormal");
+  if (status === "expiring") return message("member.statusExpiring");
+  if (status === "expired") return message("member.statusExpired");
+  return status;
+}
+
 function statusTone(status: string): TagTone {
-  if (status === "已加入" || status === "正常") return "success";
-  if (status === "待确认" || status === "即将过期") return "warning";
-  if (status === "已停用" || status === "已过期") return "danger";
+  if (["joined", "active", "\u5df2\u52a0\u5165", "\u6b63\u5e38"].includes(status)) return "success";
+  if (["pending", "expiring", "\u5f85\u786e\u8ba4", "\u5373\u5c06\u8fc7\u671f"].includes(status)) return "warning";
+  if (["disabled", "expired", "\u5df2\u505c\u7528", "\u5df2\u8fc7\u671f"].includes(status)) return "danger";
   return "neutral";
+}
+
+function formatMemberDate(value: string, formatDate: PersonalUILocaleContext["formatDate"]): string {
+  const dateOnly = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  if (dateOnly) {
+    const [, year, month, day] = dateOnly;
+    const parsed = new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)));
+    if (
+      parsed.getUTCFullYear() === Number(year)
+      && parsed.getUTCMonth() === Number(month) - 1
+      && parsed.getUTCDate() === Number(day)
+    ) {
+      return formatDate(parsed, { year: "numeric", month: "2-digit", day: "2-digit", timeZone: "UTC" });
+    }
+  }
+  const parsed = new Date(value);
+  return Number.isNaN(parsed.getTime())
+    ? value
+    : formatDate(parsed, { year: "numeric", month: "short", day: "numeric" });
 }
 
 function uniqueFilterValues(values: unknown): string[] {
@@ -153,21 +193,19 @@ function uniqueFilterValues(values: unknown): string[] {
   }, []);
 }
 
-function memberInitial(name: string): string {
-  return Array.from(name.trim())[0] ?? "?";
-}
-
 export function MemberManagementPage({
   fetchMembers,
-  title = "成员",
-  roles = ["管理员", "编辑者", "查看者"],
-  statuses = ["已加入", "待确认", "已停用"],
+  title,
+  roles = DEFAULT_ROLES,
+  statuses = DEFAULT_STATUSES,
   initialPageSize = DEFAULT_PAGE_SIZE,
   pageSizeOptions = [5, 10, 20, 50],
   onInvite,
   onOpenMember,
   onEditMember,
 }: MemberManagementPageProps) {
+  const { formatDate, message, plural } = usePersonalUILocale();
+  const resolvedTitle = title ?? message("member.title");
   const titleId = useId();
   const initialPageSizeRef = useRef(finiteInteger(initialPageSize, DEFAULT_PAGE_SIZE, 1));
   const stableInitialPageSize = initialPageSizeRef.current;
@@ -184,7 +222,7 @@ export function MemberManagementPage({
   const [requesting, setRequesting] = useState(true);
   const [requestAction, setRequestAction] = useState<RequestAction>("initial");
   const [failedQuery, setFailedQuery] = useState<MemberQuery | null>(null);
-  const [updatedLabel, setUpdatedLabel] = useState("首次加载");
+  const [updatedState, setUpdatedState] = useState<UpdatedState>("initial");
   const [selectedMember, setSelectedMember] = useState<MemberRecord | null>(null);
   const [loadingPage, setLoadingPage] = useState<number | undefined>();
   const [loadingPageTarget, setLoadingPageTarget] = useState<PaginationPageTrigger | undefined>();
@@ -266,12 +304,12 @@ export function MemberManagementPage({
       });
       setFailedQuery(null);
       setTableState(nextResult.total === 0 && nextResult.items.length === 0 ? "empty" : "ready");
-      setUpdatedLabel(action === "initial" ? "首次加载完成" : "刚刚更新");
+      setUpdatedState(action === "initial" ? "initial-complete" : "updated");
     } catch (error) {
       if (controller.signal.aborted || version !== requestVersion.current) return;
       setFailedQuery(requestQuery);
       setTableState("error");
-      setUpdatedLabel("等待重试");
+      setUpdatedState("retry");
     } finally {
       if (version === requestVersion.current) {
         requestingRef.current = false;
@@ -311,13 +349,13 @@ export function MemberManagementPage({
     [pageSizeOptions, queryMeta.pageSize],
   );
   const roleOptions = useMemo(() => [
-    { value: "", label: "全部角色" },
-    ...uniqueFilterValues(roles).map((role) => ({ value: role, label: role })),
-  ], [roles]);
+    { value: "", label: message("member.allRoles") },
+    ...uniqueFilterValues(roles).map((role) => ({ value: role, label: roleLabel(role, message) })),
+  ], [message, roles]);
   const statusOptions = useMemo(() => [
-    { value: "", label: "全部状态" },
-    ...uniqueFilterValues(statuses).map((status) => ({ value: status, label: status })),
-  ], [statuses]);
+    { value: "", label: message("member.allStatuses") },
+    ...uniqueFilterValues(statuses).map((status) => ({ value: status, label: statusLabel(status, message) })),
+  ], [message, statuses]);
   const sort: DataSort = { columnId: queryMeta.sortBy, direction: queryMeta.sortDirection };
 
   const openMember = (member: MemberRecord) => {
@@ -328,13 +366,13 @@ export function MemberManagementPage({
   const columns = useMemo<DataColumn<MemberRecord>[]>(() => [
     {
       id: "name",
-      header: "成员",
+      header: message("member.columnMember"),
       minWidth: 224,
       sortable: true,
       pin: "start",
       cell: (member) => (
         <div className="pui-member-cell">
-          <span className="pui-avatar" aria-hidden="true">{memberInitial(member.name)}</span>
+          <Avatar name={member.name} decorative />
           <span>
             <strong>{member.name}</strong>
             <OverflowText>{member.email}</OverflowText>
@@ -342,37 +380,45 @@ export function MemberManagementPage({
         </div>
       ),
     },
-    { id: "team", header: "团队", minWidth: 108, cell: (member) => member.team },
-    { id: "role", header: "角色", width: 132, cell: (member) => member.role },
+    { id: "team", header: message("member.columnTeam"), minWidth: 108, cell: (member) => member.team },
+    { id: "role", header: message("member.columnRole"), width: 132, cell: (member) => roleLabel(member.role, message) },
     {
       id: "status",
-      header: "状态",
+      header: message("member.columnStatus"),
       width: 132,
-      cell: (member) => <Tag tone={statusTone(member.status)}>{member.status}</Tag>,
+      cell: (member) => <Tag tone={statusTone(member.status)}>{statusLabel(member.status, message)}</Tag>,
     },
-    { id: "joinedAt", header: "加入时间", width: 160, sortable: true, cell: (member) => member.joinedAt },
+    { id: "joinedAt", header: message("member.columnJoined"), width: 160, sortable: true, cell: (member) => formatMemberDate(member.joinedAt, formatDate) },
     {
       id: "actions",
-      header: <span className="pui-sr-only">行操作</span>,
+      header: <span className="pui-sr-only">{message("member.rowActions")}</span>,
       width: 72,
       pin: "end",
       align: "center",
       cell: (member) => (
         <IconButton
-          aria-label={`${member.name}的更多操作`}
+          aria-label={message("member.moreActions", { name: member.name })}
           icon={<Ellipsis aria-hidden="true" />}
           disabled={requesting}
           onClick={() => openMember(member)}
         />
       ),
     },
-  ], [onOpenMember, requesting]);
+  ], [formatDate, message, onOpenMember, requesting]);
 
   const appliedTags = [
-    applied.search ? `搜索：${applied.search}` : "",
-    applied.role ? `角色：${applied.role}` : "",
-    applied.status ? `状态：${applied.status}` : "",
+    applied.search ? message("member.appliedSearch", { value: applied.search }) : "",
+    applied.role ? message("member.appliedRole", { value: roleLabel(applied.role, message) }) : "",
+    applied.status ? message("member.appliedStatus", { value: statusLabel(applied.status, message) }) : "",
   ].filter(Boolean);
+
+  const updatedLabel = updatedState === "initial"
+    ? message("member.firstLoad")
+    : updatedState === "initial-complete"
+      ? message("member.firstLoadComplete")
+      : updatedState === "updated"
+        ? message("member.updatedNow")
+        : message("member.waitingRetry");
 
   const handleFormSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -389,18 +435,20 @@ export function MemberManagementPage({
     >
       <header className="pui-page-header">
         <div>
-          <h1 id={titleId} title={title}>{title}</h1>
-          <span>{tableState === "loading" && requestAction === "initial" ? "正在加载" : `${result.total} 位成员`}</span>
+          <h1 id={titleId} title={resolvedTitle}>{resolvedTitle}</h1>
+          <span>{tableState === "loading" && requestAction === "initial"
+            ? message("member.loading")
+            : plural("member.count", result.total)}</span>
         </div>
         {onInvite ? (
-          <Button variant="primary" icon={<UserPlus aria-hidden="true" />} onClick={onInvite}>邀请成员</Button>
+          <Button variant="primary" icon={<UserPlus aria-hidden="true" />} onClick={onInvite}>{message("member.invite")}</Button>
         ) : null}
       </header>
 
       <form className="pui-query-toolbar" onSubmit={handleFormSubmit}>
         <SearchInput
-          aria-label="搜索姓名或邮箱"
-          placeholder="搜索姓名或邮箱"
+          aria-label={message("member.search")}
+          placeholder={message("member.search")}
           value={draft.search}
           readOnly={requesting}
           aria-disabled={requesting || undefined}
@@ -408,14 +456,14 @@ export function MemberManagementPage({
           onClear={() => setDraft((current) => ({ ...current, search: "" }))}
         />
         <Select
-          ariaLabel="按角色筛选"
+          ariaLabel={message("member.filterRole")}
           value={draft.role}
           aria-disabled={requesting || undefined}
           options={roleOptions}
           onValueChange={(role) => setDraft((current) => ({ ...current, role }))}
         />
         <Select
-          ariaLabel="按状态筛选"
+          ariaLabel={message("member.filterStatus")}
           value={draft.status}
           aria-disabled={requesting || undefined}
           options={statusOptions}
@@ -428,7 +476,7 @@ export function MemberManagementPage({
             aria-disabled={requesting || undefined}
             onClick={() => setDraft(emptyFilters)}
           >
-            重置
+            {message("member.reset")}
           </Button>
           <Button
             size="field"
@@ -436,30 +484,30 @@ export function MemberManagementPage({
             variant="primary"
             icon={<Search aria-hidden="true" />}
             loading={requesting && requestAction === "query"}
-            loadingLabel="查询中"
+            loadingLabel={message("member.querying")}
             aria-disabled={requesting || undefined}
             data-pending={pending || undefined}
           >
-            查询
+            {message("member.query")}
           </Button>
         </div>
       </form>
 
       <div className="pui-query-state" aria-live="polite">
         <span className={pending ? "is-pending" : undefined}>
-          {pending ? "条件已修改，点击查询后更新数据" : "当前条件已应用"}
+          {pending ? message("member.filtersPending") : message("member.filtersApplied")}
         </span>
         {appliedTags.length ? (
-          <div className="pui-applied-tags"><span>已应用</span>{appliedTags.map((tag) => <Tag key={tag} tone="blue">{tag}</Tag>)}</div>
+          <div className="pui-applied-tags"><span>{message("member.applied")}</span>{appliedTags.map((tag) => <Tag key={tag} tone="blue">{tag}</Tag>)}</div>
         ) : null}
       </div>
 
       <div className="pui-result-summary" aria-live="polite">
         <span>{tableState === "loading"
-          ? "正在加载成员数据"
+          ? message("member.loadingData")
           : tableState === "error"
-            ? result.items.length ? "查询失败，仍显示上一次结果" : "查询失败，暂无可显示结果"
-            : `已加载，共 ${result.total} 条成员数据`}</span>
+            ? result.items.length ? message("member.queryFailedCached") : message("member.queryFailedEmpty")
+            : plural("member.dataRows", result.total)}</span>
         <span>{updatedLabel}</span>
       </div>
 
@@ -471,20 +519,20 @@ export function MemberManagementPage({
         sort={sort}
         loadingRows={loadingRowCount}
         loadingSortColumnId={loadingSortColumnId}
-        ariaLabel="成员数据"
-        errorTitle="查询失败"
-        errorDescription={result.items.length ? "仍显示上一次查询结果，筛选条件没有丢失。" : "服务器暂时无法响应，请稍后重试。"}
+        ariaLabel={message("member.dataLabel")}
+        errorTitle={message("member.queryFailedTitle")}
+        errorDescription={result.items.length ? message("member.errorCached") : message("member.errorEmpty")}
         retrying={requesting && requestAction === "retry"}
         onRetry={failedQuery ? () => {
           if (!requestingRef.current) void execute(failedQuery, "retry");
         } : undefined}
-        emptyTitle="没有匹配成员"
-        emptyDescription="没有找到符合当前条件的成员。"
+        emptyTitle={message("member.emptyTitle")}
+        emptyDescription={message("member.emptyDescription")}
         emptyAction={(
           <Button
             variant="primary"
             loading={requesting && requestAction === "empty-reset"}
-            loadingLabel="查询中"
+            loadingLabel={message("member.querying")}
             aria-disabled={requesting || undefined}
             onClick={() => {
               if (requestingRef.current) return;
@@ -492,7 +540,7 @@ export function MemberManagementPage({
               void execute({ ...emptyFilters, ...queryMeta, page: 1 }, "empty-reset");
             }}
           >
-            查看全部成员
+            {message("member.showAll")}
           </Button>
         )}
         onSort={(nextSort) => {
@@ -501,13 +549,13 @@ export function MemberManagementPage({
         }}
         mobileRow={(member) => (
           <div className="pui-member-mobile-row">
-            <span className="pui-avatar" aria-hidden="true">{memberInitial(member.name)}</span>
+            <Avatar name={member.name} decorative />
             <span className="pui-member-mobile-row__copy">
               <strong>{member.name}</strong>
               <OverflowText>{member.email}</OverflowText>
-              <span>{member.role} · {member.status}</span>
+              <span>{roleLabel(member.role, message)} · {statusLabel(member.status, message)}</span>
             </span>
-            <IconButton aria-label={`${member.name}的更多操作`} icon={<Ellipsis aria-hidden="true" />} aria-disabled={requesting || undefined} onClick={() => openMember(member)} />
+            <IconButton aria-label={message("member.moreActions", { name: member.name })} icon={<Ellipsis aria-hidden="true" />} aria-disabled={requesting || undefined} onClick={() => openMember(member)} />
           </div>
         )}
         pagination={{
@@ -534,14 +582,14 @@ export function MemberManagementPage({
 
       <Drawer
         open={Boolean(selectedMember)}
-        onClose={() => setSelectedMember(null)}
-        title={selectedMember?.name ?? "成员详情"}
+        onOpenChange={(nextOpen) => { if (!nextOpen) setSelectedMember(null); }}
+        title={selectedMember?.name ?? message("member.details")}
         description={selectedMember?.email}
         footer={(
           <>
-            <Button onClick={() => setSelectedMember(null)}>关闭</Button>
+            <Button onClick={() => setSelectedMember(null)}>{message("common.close")}</Button>
             {selectedMember && onEditMember ? (
-              <Button variant="primary" onClick={() => onEditMember(selectedMember)}>编辑成员</Button>
+              <Button variant="primary" onClick={() => onEditMember(selectedMember)}>{message("member.edit")}</Button>
             ) : null}
           </>
         )}
@@ -549,10 +597,10 @@ export function MemberManagementPage({
         {selectedMember ? (
           <DescriptionList
             items={[
-              { id: "team", term: "团队", description: selectedMember.team },
-              { id: "role", term: "角色", description: selectedMember.role },
-              { id: "status", term: "状态", description: <Tag tone={statusTone(selectedMember.status)}>{selectedMember.status}</Tag> },
-              { id: "joinedAt", term: "加入时间", description: selectedMember.joinedAt },
+              { id: "team", term: message("member.columnTeam"), description: selectedMember.team },
+              { id: "role", term: message("member.columnRole"), description: roleLabel(selectedMember.role, message) },
+              { id: "status", term: message("member.columnStatus"), description: <Tag tone={statusTone(selectedMember.status)}>{statusLabel(selectedMember.status, message)}</Tag> },
+              { id: "joinedAt", term: message("member.columnJoined"), description: formatMemberDate(selectedMember.joinedAt, formatDate) },
             ]}
           />
         ) : null}

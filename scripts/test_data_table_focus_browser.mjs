@@ -1,30 +1,14 @@
 import assert from "node:assert/strict";
-import { createRequire } from "node:module";
-import { fileURLToPath, pathToFileURL } from "node:url";
+import { isPersonalUiRegressionMain, runPersonalUiRegression } from "./browser-test-harness.mjs";
+import { legacyExplorerCaseTabs, selectExplorerCase } from "./browser-explorer-case.mjs";
 
-const kitRoot = fileURLToPath(new URL("../assets/react-kit/", import.meta.url));
-const kitRequire = createRequire(new URL("../assets/react-kit/package.json", import.meta.url));
-const { createServer } = await import(pathToFileURL(kitRequire.resolve("vite")).href);
-const { chromium } = createRequire(import.meta.url)(process.env.PERSONAL_UI_PLAYWRIGHT_MODULE || "playwright");
-const server = await createServer({ root: kitRoot, server: { host: "127.0.0.1", port: 0 } });
-let browser;
-
-try {
-  await server.listen();
-  const url = server.resolvedUrls?.local?.[0];
-  assert.ok(url, "Vite did not expose a local URL");
-  browser = await chromium.launch({
-    headless: true,
-    ...(process.env.PERSONAL_UI_CHROMIUM_EXECUTABLE
-      ? { executablePath: process.env.PERSONAL_UI_CHROMIUM_EXECUTABLE }
-      : {}),
-  });
-
+export async function runDataTableFocusRegression({ page, baseURL }) {
+  assert.ok(baseURL, "A baseURL is required");
   for (const width of [2560, 1440, 1024, 736]) {
-    const page = await browser.newPage({ viewport: { width, height: 900 } });
-    try {
-      await page.goto(url);
-      const action = page.locator(".pui-data-table tbody tr .pui-data-table__cell--pin-end .pui-icon-button").first();
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto(`${baseURL}/?regressionWidth=${width}#/components/data-table`);
+      const casePanel = await selectExplorerCase(page, legacyExplorerCaseTabs.dataTable);
+      const action = casePanel.locator(".pui-data-table tbody tr .pui-data-table__cell--pin-end .pui-icon-button").first();
       await action.waitFor();
       for (let index = 0; index < 80 && !await action.evaluate((button) => document.activeElement === button); index += 1) {
         await page.keyboard.press("Tab");
@@ -59,12 +43,10 @@ try {
       if (process.env.PERSONAL_UI_TABLE_FOCUS_SCREENSHOT_PREFIX) {
         await page.screenshot({ path: `${process.env.PERSONAL_UI_TABLE_FOCUS_SCREENSHOT_PREFIX}-${width}.png` });
       }
-    } finally {
-      await page.close();
-    }
   }
   console.log("DataTable action focus regression passed at 2560, 1440, 1024, and 736px.");
-} finally {
-  await browser?.close();
-  await server.close();
+}
+
+if (isPersonalUiRegressionMain(import.meta.url)) {
+  await runPersonalUiRegression(runDataTableFocusRegression);
 }

@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "kind": "personal-ui-m8-evidence-record-templates",
+  "actualEnvironment": {
+    "operatingSystem": "Windows 11 24H2",
+    "architecture": "x64",
+    "node": "22.12.0",
+    "packageManager": "npm 10.9.3",
+    "browser": "Chromium 140.0.0.0",
+    "python": "3.13.7",
+    "installerCommand": "python skill/ui-builder-xtn/scripts/install_personal_ui.py install --project-root consumer/project"
+  },
+  "commandRecord": {
+    "argv": [
+      "npm",
+      "run",
+      "build"
+    ],
+    "cwd": "consumer/project",
+    "exitCode": 0,
+    "startedAt": "2026-09-27T10:00:00Z",
+    "endedAt": "2026-09-27T10:01:00Z",
+    "stdout": "consumer/logs/build.stdout.log",
+    "stderr": "consumer/logs/build.stderr.log"
+  },
+  "checks": {
+    "typecheck": "passed",
+    "build": "passed",
+    "verifier": "passed",
+    "behavior": "passed",
+    "a11y": "passed",
+    "responsive": "passed"
+  },
+  "requiredWidths": [
+    2560,
+    1440,
+    1024,
+    736,
+    360,
+    320
+  ],
+  "requiredEngines": [
+    "chromium",
+    "firefox",
+    "webkit"
+  ],
+  "note": "These are coordinator input templates, not acceptance evidence. Replace values with measured facts and retain every referenced file before recording a run."
+}

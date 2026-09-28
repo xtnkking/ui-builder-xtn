@@ -1,0 +1,3776 @@
+{
+  "componentOwnership": [
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/foundation/color.case.tsx"
+          ],
+          "keyboard": [],
+          "name": "ThemeProvider"
+        }
+      ],
+      "id": "color",
+      "kind": "foundation",
+      "modules": [
+        "foundation"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/foundation/layout.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/foundation/locale.case.tsx"
+          ],
+          "keyboard": [],
+          "name": "LocaleProvider"
+        },
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/foundation/locale.case.tsx"
+          ],
+          "keyboard": [],
+          "name": "usePersonalUILocale"
+        }
+      ],
+      "id": "locale",
+      "kind": "foundation",
+      "modules": [
+        "foundation"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/foundation/locale.tsx"
+      ]
+    },
+    {
+      "exports": [],
+      "id": "typography",
+      "kind": "foundation",
+      "modules": [],
+      "sourceFiles": [
+        "src/personal-ui/styles.css"
+      ]
+    },
+    {
+      "exports": [],
+      "id": "spacing",
+      "kind": "foundation",
+      "modules": [],
+      "sourceFiles": [
+        "src/personal-ui/styles.css"
+      ]
+    },
+    {
+      "exports": [],
+      "id": "radius",
+      "kind": "foundation",
+      "modules": [],
+      "sourceFiles": [
+        "src/personal-ui/styles.css"
+      ]
+    },
+    {
+      "exports": [],
+      "id": "surface",
+      "kind": "foundation",
+      "modules": [],
+      "sourceFiles": [
+        "src/personal-ui/styles.css"
+      ]
+    },
+    {
+      "exports": [],
+      "id": "icons",
+      "kind": "foundation",
+      "modules": [
+        "foundation"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/foundation/primitives.tsx",
+        "src/personal-ui/styles.css"
+      ]
+    },
+    {
+      "exports": [],
+      "id": "motion",
+      "kind": "foundation",
+      "modules": [],
+      "sourceFiles": [
+        "src/personal-ui/styles.css"
+      ]
+    },
+    {
+      "exports": [],
+      "id": "z-index",
+      "kind": "foundation",
+      "modules": [],
+      "sourceFiles": [
+        "src/personal-ui/styles.css"
+      ]
+    },
+    {
+      "exports": [],
+      "id": "density",
+      "kind": "foundation",
+      "modules": [],
+      "sourceFiles": [
+        "src/personal-ui/styles.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/foundation/responsive.case.tsx"
+          ],
+          "keyboard": [],
+          "name": "Grid"
+        }
+      ],
+      "id": "responsive",
+      "kind": "component",
+      "modules": [
+        "foundation"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/foundation/layout.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/foundation/responsive-visibility.case.tsx"
+          ],
+          "keyboard": [],
+          "name": "ResponsiveVisibility"
+        }
+      ],
+      "id": "responsive-visibility",
+      "kind": "component",
+      "modules": [
+        "foundation"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/foundation/layout.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/foundation/layout.case.tsx"
+          ],
+          "keyboard": [],
+          "name": "Box"
+        },
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/foundation/layout.case.tsx"
+          ],
+          "keyboard": [],
+          "name": "Stack"
+        },
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/foundation/layout.case.tsx"
+          ],
+          "keyboard": [],
+          "name": "Inline"
+        }
+      ],
+      "id": "layout",
+      "kind": "component",
+      "modules": [
+        "foundation"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/foundation/layout.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/foundation/divider.case.tsx"
+          ],
+          "keyboard": [],
+          "name": "Divider"
+        }
+      ],
+      "id": "divider",
+      "kind": "component",
+      "modules": [
+        "foundation"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/foundation/layout.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/foundation/scroll.case.tsx"
+          ],
+          "keyboard": [],
+          "name": "ScrollArea"
+        }
+      ],
+      "id": "scroll",
+      "kind": "component",
+      "modules": [
+        "foundation"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/foundation/layout.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/foundation/resizable.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "ResizablePanels"
+        }
+      ],
+      "id": "resizable",
+      "kind": "component",
+      "modules": [
+        "data"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/data/data-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/foundation/sticky.case.tsx"
+          ],
+          "keyboard": [],
+          "name": "StickyHeaderActionBar"
+        }
+      ],
+      "id": "sticky",
+      "kind": "component",
+      "modules": [
+        "foundation"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/foundation/layout.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/data/collapse.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "Collapse"
+        }
+      ],
+      "id": "collapse",
+      "kind": "component",
+      "modules": [
+        "foundation",
+        "internal"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/internal/collapse.tsx",
+        "src/personal-ui/foundation/layout.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/foundation/aspect.case.tsx"
+          ],
+          "keyboard": [],
+          "name": "AspectRatio"
+        }
+      ],
+      "id": "aspect",
+      "kind": "component",
+      "modules": [
+        "foundation"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/foundation/layout.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ]
+    },
+    {
+      "exports": [],
+      "id": "focus",
+      "kind": "foundation",
+      "modules": [],
+      "sourceFiles": [
+        "src/personal-ui/styles/layout-actions-display.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/foundation/focus-trap.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "FocusTrap"
+        }
+      ],
+      "id": "focus-trap",
+      "kind": "component",
+      "modules": [
+        "foundation"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/foundation/layout.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/foundation/visually-hidden.case.tsx"
+          ],
+          "keyboard": [],
+          "name": "VisuallyHidden"
+        }
+      ],
+      "id": "visually-hidden",
+      "kind": "component",
+      "modules": [
+        "foundation"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/foundation/layout.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/actions/drag.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "DragDrop"
+        }
+      ],
+      "id": "drag",
+      "kind": "component",
+      "modules": [
+        "data"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/data/data-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/actions/sortable.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "SortableList"
+        }
+      ],
+      "id": "sortable",
+      "kind": "component",
+      "modules": [
+        "data"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/data/data-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/foundation/keyboard.case.tsx"
+          ],
+          "keyboard": [],
+          "name": "KeyboardShortcut"
+        }
+      ],
+      "id": "keyboard",
+      "kind": "component",
+      "modules": [
+        "foundation"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/foundation/layout.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/actions/clipboard.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "ClipboardButton"
+        }
+      ],
+      "id": "clipboard",
+      "kind": "component",
+      "modules": [
+        "action"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/action/actions.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/data/overflow.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "OverflowText"
+        },
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/data/overflow.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "ExpandableText"
+        }
+      ],
+      "id": "overflow",
+      "kind": "component",
+      "modules": [
+        "data",
+        "internal",
+        "overlay"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/overlay/overlays.tsx",
+        "src/personal-ui/internal/overlay-slots.tsx",
+        "src/personal-ui/styles.css",
+        "src/personal-ui/data/data-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/foundation/portal.case.tsx"
+          ],
+          "keyboard": [],
+          "name": "Portal"
+        }
+      ],
+      "id": "portal",
+      "kind": "component",
+      "modules": [
+        "foundation"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/foundation/layout.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/actions/button.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "Button"
+        }
+      ],
+      "id": "button",
+      "kind": "component",
+      "modules": [
+        "foundation",
+        "internal"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/foundation/primitives.tsx",
+        "src/personal-ui/internal/button-slots.tsx",
+        "src/personal-ui/styles.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/actions/link.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "Link"
+        }
+      ],
+      "id": "link",
+      "kind": "component",
+      "modules": [
+        "action"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/action/actions.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/actions/icon-button.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "IconButton"
+        }
+      ],
+      "id": "icon-button",
+      "kind": "component",
+      "modules": [
+        "foundation",
+        "internal"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/foundation/primitives.tsx",
+        "src/personal-ui/internal/button-slots.tsx",
+        "src/personal-ui/styles.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/actions/button-group.case.tsx"
+          ],
+          "keyboard": [],
+          "name": "ButtonGroup"
+        }
+      ],
+      "id": "button-group",
+      "kind": "component",
+      "modules": [
+        "action"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/action/actions.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/actions/split-button.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "SplitButton"
+        }
+      ],
+      "id": "split-button",
+      "kind": "component",
+      "modules": [
+        "action",
+        "foundation",
+        "internal",
+        "overlay"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/action/actions.tsx",
+        "src/personal-ui/internal/button-slots.tsx",
+        "src/personal-ui/internal/overlay-slots.tsx",
+        "src/personal-ui/overlay/overlays.tsx",
+        "src/personal-ui/foundation/primitives.tsx",
+        "src/personal-ui/styles.css",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/actions/toggle-button.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "ToggleButton"
+        }
+      ],
+      "id": "toggle-button",
+      "kind": "component",
+      "modules": [
+        "action",
+        "foundation",
+        "internal"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/action/actions.tsx",
+        "src/personal-ui/internal/button-slots.tsx",
+        "src/personal-ui/foundation/primitives.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/actions/toolbar.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "Toolbar"
+        }
+      ],
+      "id": "toolbar",
+      "kind": "component",
+      "modules": [
+        "action"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/action/actions.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/actions/filter-bar.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "FilterBar"
+        }
+      ],
+      "id": "filter-bar",
+      "kind": "component",
+      "modules": [
+        "action"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/action/actions.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/input/form.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "Form"
+        }
+      ],
+      "id": "form",
+      "kind": "component",
+      "modules": [
+        "input"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/input/inputs-extra.tsx",
+        "src/personal-ui/styles/inputs-extra.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/input/field.case.tsx"
+          ],
+          "keyboard": [],
+          "name": "Field"
+        }
+      ],
+      "id": "field",
+      "kind": "component",
+      "modules": [
+        "input"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/input/forms.tsx",
+        "src/personal-ui/styles.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/input/text-input.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "Input"
+        },
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/input/text-input.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "PasswordInput"
+        }
+      ],
+      "id": "text-input",
+      "kind": "component",
+      "modules": [
+        "input",
+        "internal"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/input/forms.tsx",
+        "src/personal-ui/internal/input-slots.tsx",
+        "src/personal-ui/styles.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/input/search-input.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "SearchInput"
+        }
+      ],
+      "id": "search-input",
+      "kind": "component",
+      "modules": [
+        "input",
+        "internal"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/input/forms.tsx",
+        "src/personal-ui/internal/input-slots.tsx",
+        "src/personal-ui/styles.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/input/textarea.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "Textarea"
+        }
+      ],
+      "id": "textarea",
+      "kind": "component",
+      "modules": [
+        "input",
+        "internal"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/input/forms.tsx",
+        "src/personal-ui/internal/input-slots.tsx",
+        "src/personal-ui/styles.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/input/number.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "NumberInput"
+        }
+      ],
+      "id": "number",
+      "kind": "component",
+      "modules": [
+        "input",
+        "internal"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/internal/field-context.ts",
+        "src/personal-ui/input/forms.tsx",
+        "src/personal-ui/input/inputs-extra.tsx",
+        "src/personal-ui/internal/input-slots.tsx",
+        "src/personal-ui/styles.css",
+        "src/personal-ui/styles/inputs-extra.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/input/otp.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "OtpInput"
+        }
+      ],
+      "id": "otp",
+      "kind": "component",
+      "modules": [
+        "input"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/input/inputs-extra.tsx",
+        "src/personal-ui/styles/inputs-extra.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/input/upload.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "FileUpload"
+        }
+      ],
+      "id": "upload",
+      "kind": "component",
+      "modules": [
+        "input"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/input/inputs-extra.tsx",
+        "src/personal-ui/styles/inputs-extra.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/input/markdown-editor.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "MarkdownEditor"
+        },
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/input/markdown-editor.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "RichTextEditor"
+        }
+      ],
+      "id": "markdown-editor",
+      "kind": "component",
+      "modules": [
+        "input",
+        "internal"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/input/forms.tsx",
+        "src/personal-ui/input/inputs-extra.tsx",
+        "src/personal-ui/internal/input-slots.tsx",
+        "src/personal-ui/styles.css",
+        "src/personal-ui/styles/inputs-extra.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/input/code-editor.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "CodeEditor"
+        }
+      ],
+      "id": "code-editor",
+      "kind": "component",
+      "modules": [
+        "input",
+        "internal"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/input/forms.tsx",
+        "src/personal-ui/input/inputs-extra.tsx",
+        "src/personal-ui/internal/input-slots.tsx",
+        "src/personal-ui/styles.css",
+        "src/personal-ui/styles/inputs-extra.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/input/inline-edit.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "InlineEdit"
+        }
+      ],
+      "id": "inline-edit",
+      "kind": "component",
+      "modules": [
+        "input"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/input/inputs-extra.tsx",
+        "src/personal-ui/styles/inputs-extra.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/input/checkbox.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "Checkbox"
+        }
+      ],
+      "id": "checkbox",
+      "kind": "component",
+      "modules": [
+        "input"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/input/forms.tsx",
+        "src/personal-ui/styles.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/input/radio.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "Radio"
+        }
+      ],
+      "id": "radio",
+      "kind": "component",
+      "modules": [
+        "input"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/input/forms.tsx",
+        "src/personal-ui/styles.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/input/switch.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "Switch"
+        }
+      ],
+      "id": "switch",
+      "kind": "component",
+      "modules": [
+        "input"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/input/forms.tsx",
+        "src/personal-ui/styles.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/input/segmented.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "SegmentedControl"
+        }
+      ],
+      "id": "segmented",
+      "kind": "component",
+      "modules": [
+        "input"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/input/forms.tsx",
+        "src/personal-ui/styles.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/input/select.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "Select"
+        },
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/input/select.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "SearchableSelect"
+        },
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/input/select.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "AsyncSelect"
+        }
+      ],
+      "id": "select",
+      "kind": "component",
+      "modules": [
+        "input",
+        "internal"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/input/forms.tsx",
+        "src/personal-ui/internal/floating-position.ts",
+        "src/personal-ui/styles.css",
+        "src/personal-ui/input/inputs-extra.tsx",
+        "src/personal-ui/styles/inputs-extra.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/input/combobox.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "Combobox"
+        },
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/input/combobox.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "Autocomplete"
+        }
+      ],
+      "id": "combobox",
+      "kind": "component",
+      "modules": [
+        "input",
+        "internal"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/input/forms.tsx",
+        "src/personal-ui/internal/floating-position.ts",
+        "src/personal-ui/styles.css",
+        "src/personal-ui/input/inputs-extra.tsx",
+        "src/personal-ui/styles/inputs-extra.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/input/multi-select.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "MultiSelect"
+        }
+      ],
+      "id": "multi-select",
+      "kind": "component",
+      "modules": [
+        "input",
+        "internal"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/input/inputs-extra.tsx",
+        "src/personal-ui/internal/floating-position.ts",
+        "src/personal-ui/styles/inputs-extra.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/input/tag-input.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "TagInput"
+        }
+      ],
+      "id": "tag-input",
+      "kind": "component",
+      "modules": [
+        "input",
+        "internal"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/input/inputs-extra.tsx",
+        "src/personal-ui/internal/floating-position.ts",
+        "src/personal-ui/styles/inputs-extra.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/input/cascader.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "Cascader"
+        }
+      ],
+      "id": "cascader",
+      "kind": "component",
+      "modules": [
+        "input"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/input/inputs-extra.tsx",
+        "src/personal-ui/styles/inputs-extra.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/input/tree-select.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "TreeSelect"
+        }
+      ],
+      "id": "tree-select",
+      "kind": "component",
+      "modules": [
+        "input",
+        "internal"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/input/inputs-extra.tsx",
+        "src/personal-ui/internal/floating-position.ts",
+        "src/personal-ui/styles/inputs-extra.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/input/transfer.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "Transfer"
+        }
+      ],
+      "id": "transfer",
+      "kind": "component",
+      "modules": [
+        "input"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/input/inputs-extra.tsx",
+        "src/personal-ui/styles/inputs-extra.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/input/slider.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "Slider"
+        }
+      ],
+      "id": "slider",
+      "kind": "component",
+      "modules": [
+        "input"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/input/value-controls.tsx",
+        "src/personal-ui/styles/inputs-extra.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/input/rating.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "Rating"
+        }
+      ],
+      "id": "rating",
+      "kind": "component",
+      "modules": [
+        "input"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/input/value-controls.tsx",
+        "src/personal-ui/styles/inputs-extra.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/input/color-picker.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "ColorPicker"
+        }
+      ],
+      "id": "color-picker",
+      "kind": "component",
+      "modules": [
+        "input"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/input/value-controls.tsx",
+        "src/personal-ui/styles/inputs-extra.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/input/date-time.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "DateField"
+        },
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/input/date-time.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "DateRangeField"
+        },
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/input/date-time.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "TimezoneSelect"
+        },
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/input/date-time.case.tsx"
+          ],
+          "keyboard": [],
+          "name": "DEFAULT_TIMEZONE_OPTIONS"
+        }
+      ],
+      "id": "date-time",
+      "kind": "component",
+      "modules": [
+        "input",
+        "internal"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/input/date-field.tsx",
+        "src/personal-ui/input/forms.tsx",
+        "src/personal-ui/internal/input-slots.tsx",
+        "src/personal-ui/styles.css",
+        "src/personal-ui/input/value-controls.tsx",
+        "src/personal-ui/styles/inputs-extra.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/navigation/app-navigation.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "AppNavigation"
+        },
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/navigation/app-navigation.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "TopNavigation"
+        },
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/navigation/app-navigation.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "SideNavigation"
+        },
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/navigation/app-navigation.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "BottomNavigation"
+        }
+      ],
+      "id": "app-navigation",
+      "kind": "component",
+      "modules": [
+        "navigation"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/navigation/navigation-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/navigation/breadcrumb.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "Breadcrumbs"
+        }
+      ],
+      "id": "breadcrumb",
+      "kind": "component",
+      "modules": [
+        "navigation"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/navigation/navigation.tsx",
+        "src/personal-ui/styles.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/navigation/tabs.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "Tabs"
+        }
+      ],
+      "id": "tabs",
+      "kind": "component",
+      "modules": [
+        "navigation"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/navigation/navigation.tsx",
+        "src/personal-ui/styles.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/navigation/menu.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "Menu"
+        },
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/navigation/menu.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "DropdownMenu"
+        },
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/navigation/menu.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "ContextMenu"
+        }
+      ],
+      "id": "menu",
+      "kind": "component",
+      "modules": [
+        "foundation",
+        "internal",
+        "navigation",
+        "overlay"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/navigation/navigation-extra.tsx",
+        "src/personal-ui/styles/extended.css",
+        "src/personal-ui/overlay/overlays.tsx",
+        "src/personal-ui/internal/floating-position.ts",
+        "src/personal-ui/internal/button-slots.tsx",
+        "src/personal-ui/internal/overlay-slots.tsx",
+        "src/personal-ui/foundation/primitives.tsx",
+        "src/personal-ui/styles.css",
+        "src/personal-ui/overlay/overlays-extra.tsx"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/navigation/pagination.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "Pagination"
+        }
+      ],
+      "id": "pagination",
+      "kind": "component",
+      "modules": [
+        "navigation"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/navigation/navigation.tsx",
+        "src/personal-ui/styles.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/navigation/load-more.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "LoadMore"
+        }
+      ],
+      "id": "load-more",
+      "kind": "component",
+      "modules": [
+        "navigation"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/navigation/navigation-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/navigation/infinite-scroll.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "InfiniteScroll"
+        }
+      ],
+      "id": "infinite-scroll",
+      "kind": "component",
+      "modules": [
+        "navigation"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/navigation/navigation-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/navigation/stepper.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "Stepper"
+        }
+      ],
+      "id": "stepper",
+      "kind": "component",
+      "modules": [
+        "navigation"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/navigation/navigation-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/navigation/command.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "CommandPalette"
+        },
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/navigation/command.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "useCommandPaletteShortcut"
+        }
+      ],
+      "id": "command",
+      "kind": "component",
+      "modules": [
+        "navigation"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/navigation/navigation-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/navigation/anchor.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "AnchorNavigation"
+        }
+      ],
+      "id": "anchor",
+      "kind": "component",
+      "modules": [
+        "navigation"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/navigation/navigation-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/data/list.case.tsx"
+          ],
+          "keyboard": [],
+          "name": "List"
+        },
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/data/list.case.tsx"
+          ],
+          "keyboard": [],
+          "name": "VirtualList"
+        }
+      ],
+      "id": "list",
+      "kind": "component",
+      "modules": [
+        "data",
+        "display"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/display/display.tsx",
+        "src/personal-ui/styles/layout-actions-display.css",
+        "src/personal-ui/data/data-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/data/description.case.tsx"
+          ],
+          "keyboard": [],
+          "name": "DescriptionList"
+        }
+      ],
+      "id": "description",
+      "kind": "component",
+      "modules": [
+        "display"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/display/display.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/data/card.case.tsx"
+          ],
+          "keyboard": [],
+          "name": "Card"
+        }
+      ],
+      "id": "card",
+      "kind": "component",
+      "modules": [
+        "display"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/display/display.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/data/tree.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "Tree"
+        }
+      ],
+      "id": "tree",
+      "kind": "component",
+      "modules": [
+        "data"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/data/data-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/data/accordion.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "Accordion"
+        }
+      ],
+      "id": "accordion",
+      "kind": "component",
+      "modules": [
+        "display",
+        "internal"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/display/display.tsx",
+        "src/personal-ui/internal/collapse.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/data/timeline.case.tsx"
+          ],
+          "keyboard": [],
+          "name": "Timeline"
+        }
+      ],
+      "id": "timeline",
+      "kind": "component",
+      "modules": [
+        "display"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/display/display.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/data/calendar.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "Calendar"
+        }
+      ],
+      "id": "calendar",
+      "kind": "component",
+      "modules": [
+        "data"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/data/data-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/data/scheduler.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "Scheduler"
+        }
+      ],
+      "id": "scheduler",
+      "kind": "component",
+      "modules": [
+        "data"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/data/data-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/data/statistic.case.tsx"
+          ],
+          "keyboard": [],
+          "name": "Statistic"
+        }
+      ],
+      "id": "statistic",
+      "kind": "component",
+      "modules": [
+        "display"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/display/display.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/data/chart.case.tsx"
+          ],
+          "keyboard": [],
+          "name": "BarChart"
+        }
+      ],
+      "id": "chart",
+      "kind": "component",
+      "modules": [
+        "data"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/data/data-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/data/code-block.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "CodeBlock"
+        }
+      ],
+      "id": "code-block",
+      "kind": "component",
+      "modules": [
+        "display"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/display/display.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/data/meter.case.tsx"
+          ],
+          "keyboard": [],
+          "name": "Meter"
+        }
+      ],
+      "id": "meter",
+      "kind": "component",
+      "modules": [
+        "display"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/display/display.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/data/avatar.case.tsx"
+          ],
+          "keyboard": [],
+          "name": "Avatar"
+        },
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/data/avatar.case.tsx"
+          ],
+          "keyboard": [],
+          "name": "AvatarGroup"
+        }
+      ],
+      "id": "avatar",
+      "kind": "component",
+      "modules": [
+        "display"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/display/display.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/data/tag.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "Tag"
+        }
+      ],
+      "id": "tag",
+      "kind": "component",
+      "modules": [
+        "foundation"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/foundation/primitives.tsx",
+        "src/personal-ui/styles.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/data/badge.case.tsx"
+          ],
+          "keyboard": [],
+          "name": "Badge"
+        }
+      ],
+      "id": "badge",
+      "kind": "component",
+      "modules": [
+        "display"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/display/display.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/data/status.case.tsx"
+          ],
+          "keyboard": [],
+          "name": "StatusIndicator"
+        }
+      ],
+      "id": "status",
+      "kind": "component",
+      "modules": [
+        "display"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/display/display.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/data/media.case.tsx"
+          ],
+          "keyboard": [],
+          "name": "Media"
+        }
+      ],
+      "id": "media",
+      "kind": "component",
+      "modules": [
+        "display"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/display/display.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/data/attachment.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "Attachment"
+        }
+      ],
+      "id": "attachment",
+      "kind": "component",
+      "modules": [
+        "display"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/display/display.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/data/gallery.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "Gallery"
+        }
+      ],
+      "id": "gallery",
+      "kind": "component",
+      "modules": [
+        "display"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/display/display.tsx",
+        "src/personal-ui/styles/layout-actions-display.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/data/carousel.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "Carousel"
+        }
+      ],
+      "id": "carousel",
+      "kind": "component",
+      "modules": [
+        "data"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/data/data-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/data/data-table.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "DataTable"
+        },
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/data/data-table.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "TreeTable"
+        }
+      ],
+      "id": "data-table",
+      "kind": "component",
+      "modules": [
+        "data"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/data/data-table.tsx",
+        "src/personal-ui/styles.css",
+        "src/personal-ui/data/data-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/feedback/inline-message.case.tsx"
+          ],
+          "keyboard": [],
+          "name": "InlineMessage"
+        }
+      ],
+      "id": "inline-message",
+      "kind": "component",
+      "modules": [
+        "feedback"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/feedback/feedback-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/feedback/alert.case.tsx"
+          ],
+          "keyboard": [],
+          "name": "Alert"
+        }
+      ],
+      "id": "alert",
+      "kind": "component",
+      "modules": [
+        "feedback"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/feedback/feedback.tsx",
+        "src/personal-ui/styles.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/feedback/banner.case.tsx"
+          ],
+          "keyboard": [],
+          "name": "Banner"
+        }
+      ],
+      "id": "banner",
+      "kind": "component",
+      "modules": [
+        "feedback"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/feedback/feedback-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/feedback/toast.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "ToastProvider"
+        },
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/feedback/toast.case.tsx"
+          ],
+          "keyboard": [],
+          "name": "useToast"
+        }
+      ],
+      "id": "toast",
+      "kind": "component",
+      "modules": [
+        "feedback"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/feedback/feedback.tsx",
+        "src/personal-ui/styles.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/feedback/spinner.case.tsx"
+          ],
+          "keyboard": [],
+          "name": "Spinner"
+        }
+      ],
+      "id": "spinner",
+      "kind": "component",
+      "modules": [
+        "foundation"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/foundation/primitives.tsx",
+        "src/personal-ui/styles.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/feedback/progress.case.tsx"
+          ],
+          "keyboard": [],
+          "name": "Progress"
+        },
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/feedback/progress.case.tsx"
+          ],
+          "keyboard": [],
+          "name": "ProgressRing"
+        }
+      ],
+      "id": "progress",
+      "kind": "component",
+      "modules": [
+        "feedback"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/feedback/feedback.tsx",
+        "src/personal-ui/styles.css",
+        "src/personal-ui/feedback/feedback-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/feedback/skeleton.case.tsx"
+          ],
+          "keyboard": [],
+          "name": "Skeleton"
+        }
+      ],
+      "id": "skeleton",
+      "kind": "component",
+      "modules": [
+        "foundation"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/foundation/primitives.tsx",
+        "src/personal-ui/styles.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/feedback/result.case.tsx"
+          ],
+          "keyboard": [],
+          "name": "EmptyState"
+        },
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/feedback/result.case.tsx"
+          ],
+          "keyboard": [],
+          "name": "ErrorState"
+        },
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/feedback/result.case.tsx"
+          ],
+          "keyboard": [],
+          "name": "NoResults"
+        },
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/feedback/result.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "RetryButton"
+        },
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/feedback/result.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "AsyncAction"
+        }
+      ],
+      "id": "result",
+      "kind": "component",
+      "modules": [
+        "feedback",
+        "foundation",
+        "internal"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/feedback/feedback.tsx",
+        "src/personal-ui/styles.css",
+        "src/personal-ui/feedback/feedback-extra.tsx",
+        "src/personal-ui/internal/button-slots.tsx",
+        "src/personal-ui/foundation/primitives.tsx",
+        "src/personal-ui/styles/extended.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/feedback/validation-summary.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "ValidationSummary"
+        }
+      ],
+      "id": "validation-summary",
+      "kind": "component",
+      "modules": [
+        "feedback"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/feedback/feedback-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/overlay/tooltip.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "Tooltip"
+        }
+      ],
+      "id": "tooltip",
+      "kind": "component",
+      "modules": [
+        "internal",
+        "overlay"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/overlay/overlays.tsx",
+        "src/personal-ui/internal/overlay-slots.tsx",
+        "src/personal-ui/styles.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/overlay/popover.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "Popover"
+        }
+      ],
+      "id": "popover",
+      "kind": "component",
+      "modules": [
+        "internal",
+        "overlay"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/overlay/overlays-extra.tsx",
+        "src/personal-ui/internal/floating-position.ts",
+        "src/personal-ui/internal/overlay-slots.tsx",
+        "src/personal-ui/styles/extended.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/overlay/hover-card.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "HoverCard"
+        }
+      ],
+      "id": "hover-card",
+      "kind": "component",
+      "modules": [
+        "internal",
+        "overlay"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/overlay/overlays-extra.tsx",
+        "src/personal-ui/internal/floating-position.ts",
+        "src/personal-ui/internal/overlay-slots.tsx",
+        "src/personal-ui/styles/extended.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/overlay/dialog.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "Dialog"
+        },
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/overlay/dialog.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "ConfirmDialog"
+        }
+      ],
+      "id": "dialog",
+      "kind": "component",
+      "modules": [
+        "overlay"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/overlay/overlays.tsx",
+        "src/personal-ui/styles.css",
+        "src/personal-ui/overlay/overlays-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/overlay/popconfirm.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "Popconfirm"
+        }
+      ],
+      "id": "popconfirm",
+      "kind": "component",
+      "modules": [
+        "internal",
+        "overlay"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/overlay/overlays-extra.tsx",
+        "src/personal-ui/internal/floating-position.ts",
+        "src/personal-ui/styles/extended.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/overlay/drawer.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "Drawer"
+        }
+      ],
+      "id": "drawer",
+      "kind": "component",
+      "modules": [
+        "overlay"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/overlay/overlays.tsx",
+        "src/personal-ui/styles.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/overlay/lightbox.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "Lightbox"
+        }
+      ],
+      "id": "lightbox",
+      "kind": "component",
+      "modules": [
+        "foundation",
+        "internal",
+        "overlay"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/overlay/overlays-extra.tsx",
+        "src/personal-ui/internal/button-slots.tsx",
+        "src/personal-ui/foundation/primitives.tsx",
+        "src/personal-ui/styles/extended.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/overlay/tour.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "GuidedTour"
+        }
+      ],
+      "id": "tour",
+      "kind": "component",
+      "modules": [
+        "overlay"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/overlay/overlays-extra.tsx",
+        "src/personal-ui/styles/extended.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/pattern/authentication.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "AuthenticationPage"
+        },
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/pattern/authentication.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "FamilyLoginPage"
+        }
+      ],
+      "id": "authentication",
+      "kind": "pattern",
+      "modules": [
+        "pattern"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/patterns/standard-pages.tsx",
+        "src/personal-ui/styles/extended.css",
+        "src/personal-ui/patterns/family-login-page.tsx",
+        "src/personal-ui/styles.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/pattern/list-filter.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "PageHeading"
+        },
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/pattern/list-filter.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "ListManagementPage"
+        },
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/pattern/list-filter.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "SearchFilterPage"
+        },
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/pattern/list-filter.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "MemberManagementPage"
+        }
+      ],
+      "id": "list-filter",
+      "kind": "pattern",
+      "modules": [
+        "pattern"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/patterns/standard-pages.tsx",
+        "src/personal-ui/styles/extended.css",
+        "src/personal-ui/patterns/member-management-page.tsx",
+        "src/personal-ui/styles.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/pattern/create-edit.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "CreateEditPage"
+        }
+      ],
+      "id": "create-edit",
+      "kind": "pattern",
+      "modules": [
+        "pattern"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/patterns/standard-pages.tsx",
+        "src/personal-ui/styles/extended.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/pattern/detail.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "DetailPage"
+        }
+      ],
+      "id": "detail",
+      "kind": "pattern",
+      "modules": [
+        "pattern"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/patterns/standard-pages.tsx",
+        "src/personal-ui/styles/extended.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/pattern/settings.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "SettingsPage"
+        }
+      ],
+      "id": "settings",
+      "kind": "pattern",
+      "modules": [
+        "pattern"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/patterns/standard-pages.tsx",
+        "src/personal-ui/styles/extended.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/pattern/wizard.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "WizardFlow"
+        }
+      ],
+      "id": "wizard",
+      "kind": "pattern",
+      "modules": [
+        "pattern"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/patterns/standard-pages.tsx",
+        "src/personal-ui/styles/extended.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/pattern/master-detail.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "MasterDetail"
+        }
+      ],
+      "id": "master-detail",
+      "kind": "pattern",
+      "modules": [
+        "pattern"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/patterns/standard-pages.tsx",
+        "src/personal-ui/styles/extended.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/pattern/import-export.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "ImportExportPage"
+        }
+      ],
+      "id": "import-export",
+      "kind": "pattern",
+      "modules": [
+        "pattern"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/patterns/standard-pages.tsx",
+        "src/personal-ui/styles/extended.css"
+      ]
+    },
+    {
+      "exports": [
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [
+            "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
+          ],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/pattern/status-page.case.tsx"
+          ],
+          "keyboard": [
+            "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
+          ],
+          "name": "StatusPage"
+        }
+      ],
+      "id": "status-page",
+      "kind": "pattern",
+      "modules": [
+        "pattern"
+      ],
+      "sourceFiles": [
+        "src/personal-ui/patterns/standard-pages.tsx",
+        "src/personal-ui/styles/extended.css"
+      ]
+    }
+  ],
+  "kitVersion": "0.2.19",
+  "modules": [
+    {
+      "dependencies": [
+        "internal"
+      ],
+      "files": [
+        "src/personal-ui/foundation/contracts.ts",
+        "src/personal-ui/foundation/layout.tsx",
+        "src/personal-ui/foundation/locale.tsx",
+        "src/personal-ui/foundation/primitives.tsx"
+      ],
+      "id": "foundation",
+      "root": "src/personal-ui/foundation"
+    },
+    {
+      "dependencies": [
+        "foundation",
+        "internal",
+        "overlay"
+      ],
+      "files": [
+        "src/personal-ui/action/actions.tsx"
+      ],
+      "id": "action",
+      "root": "src/personal-ui/action"
+    },
+    {
+      "dependencies": [
+        "foundation",
+        "internal"
+      ],
+      "files": [
+        "src/personal-ui/input/date-field.tsx",
+        "src/personal-ui/input/forms.tsx",
+        "src/personal-ui/input/inputs-extra.tsx",
+        "src/personal-ui/input/value-controls.tsx"
+      ],
+      "id": "input",
+      "root": "src/personal-ui/input"
+    },
+    {
+      "dependencies": [
+        "foundation",
+        "input",
+        "internal",
+        "overlay"
+      ],
+      "files": [
+        "src/personal-ui/navigation/navigation-extra.tsx",
+        "src/personal-ui/navigation/navigation.tsx"
+      ],
+      "id": "navigation",
+      "root": "src/personal-ui/navigation"
+    },
+    {
+      "dependencies": [
+        "feedback",
+        "foundation",
+        "internal",
+        "navigation"
+      ],
+      "files": [
+        "src/personal-ui/data/data-extra.tsx",
+        "src/personal-ui/data/data-table.tsx"
+      ],
+      "id": "data",
+      "root": "src/personal-ui/data"
+    },
+    {
+      "dependencies": [
+        "action",
+        "foundation",
+        "internal",
+        "overlay"
+      ],
+      "files": [
+        "src/personal-ui/display/display.tsx"
+      ],
+      "id": "display",
+      "root": "src/personal-ui/display"
+    },
+    {
+      "dependencies": [
+        "foundation",
+        "internal"
+      ],
+      "files": [
+        "src/personal-ui/feedback/feedback-extra.tsx",
+        "src/personal-ui/feedback/feedback.tsx"
+      ],
+      "id": "feedback",
+      "root": "src/personal-ui/feedback"
+    },
+    {
+      "dependencies": [
+        "feedback",
+        "foundation",
+        "internal"
+      ],
+      "files": [
+        "src/personal-ui/overlay/overlays-extra.tsx",
+        "src/personal-ui/overlay/overlays.tsx"
+      ],
+      "id": "overlay",
+      "root": "src/personal-ui/overlay"
+    },
+    {
+      "dependencies": [
+        "data",
+        "display",
+        "feedback",
+        "foundation",
+        "input",
+        "internal",
+        "navigation",
+        "overlay"
+      ],
+      "files": [
+        "src/personal-ui/patterns/family-login-page.tsx",
+        "src/personal-ui/patterns/member-management-page.tsx",
+        "src/personal-ui/patterns/standard-pages.tsx"
+      ],
+      "id": "pattern",
+      "root": "src/personal-ui/patterns"
+    },
+    {
+      "dependencies": [],
+      "files": [
+        "src/personal-ui/internal/button-slots.tsx",
+        "src/personal-ui/internal/collapse.tsx",
+        "src/personal-ui/internal/composite-form-control.tsx",
+        "src/personal-ui/internal/control-handles.ts",
+        "src/personal-ui/internal/controllable-state.ts",
+        "src/personal-ui/internal/field-context.ts",
+        "src/personal-ui/internal/fixed-control-props.ts",
+        "src/personal-ui/internal/floating-position.ts",
+        "src/personal-ui/internal/input-slots.tsx",
+        "src/personal-ui/internal/layer-kernel.tsx",
+        "src/personal-ui/internal/overlay-slots.tsx",
+        "src/personal-ui/internal/portal-tokens.ts",
+        "src/personal-ui/internal/theme-contract.ts",
+        "src/personal-ui/internal/tree-navigation.ts",
+        "src/personal-ui/internal/utils.ts"
+      ],
+      "id": "internal",
+      "root": "src/personal-ui/internal"
+    }
+  ],
+  "publicBarrel": "src/personal-ui/index.ts",
+  "schemaVersion": 1
+}

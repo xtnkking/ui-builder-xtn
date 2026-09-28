@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "kind": "personal-ui-m8-migration-template",
+  "baselineVersion": "0.2.19",
+  "requiredExports": [
+    "Alert",
+    "Button",
+    "Checkbox",
+    "DataTable",
+    "Drawer",
+    "Field",
+    "Form",
+    "Input",
+    "PasswordInput",
+    "Popover",
+    "Select"
+  ],
+  "preservePaths": [
+    "consumer.settings.json",
+    "data/consumer-records.json",
+    "index.html",
+    "migration.playwright.config.ts",
+    "src/App.tsx",
+    "src/demo.css",
+    "src/main.tsx",
+    "tests/migration.spec.ts",
+    "tsconfig.json",
+    "vite.config.ts"
+  ],
+  "migrationPaths": [
+    "src/App.tsx"
+  ]
+}

@@ -1,0 +1,7 @@
+@import "../../src/personal-ui/styles.css";
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--pui-bg); color: var(--pui-text); font-family: var(--pui-font); }
+.fixture { display: grid; gap: 24px; width: min(920px, calc(100% - 48px)); margin: 48px auto; }
+.fixture__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.fixture__target { display: grid; place-items: center; width: 240px; min-height: 88px; border: 1px solid var(--pui-border-strong); border-radius: var(--pui-radius-surface); background: var(--pui-surface); }

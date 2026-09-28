@@ -12,9 +12,9 @@
 - 安装器会把完整、带版本的源码复制到目标项目 `src/personal-ui/`。
 - 业务代码只能从 `src/personal-ui/index.ts` 的公开 barrel 导入运行时组件和页面模式。
 - 目标项目不得临时仿写控件、深层导入实现文件、修改已安装组件、添加本地扩展，或用第三方 JSX 组件绕开 Personal UI。
-- `component-manifest.json` 将 118 个基础、组件和页面模式家族以及 130 个目录别名绑定到真实源文件，并把 139 个 runtime export 明确分类为 136 个可视组件/模式和 3 个非可视 Hook/常量。
-- `component-manifest.json` 还保存全部 28 个 managed source 文件的 SHA-256，任何缺失、修改或额外文件都会失败。
-- 安装器会把固定的 `verify:personal-ui` 自动接入 npm `prebuild`；常规 `npm run build` 必须先通过源码完整性和组件来源门禁。
+- `component-manifest.json` 将 119 个基础、组件和页面模式家族以及 130 个目录别名绑定到真实源文件，并覆盖 142 个 runtime export。
+- `component-manifest.json` 还保存全部 41 个 managed source 文件的 SHA-256，任何缺失、修改或额外文件都会失败。
+- 安装器会把固定的 `verify:personal-ui` 直接前置到现有 `build` 命令，同时保留调用方自己的 `prebuild`；npm、pnpm 或 Yarn 的常规 build 都必须先通过源码完整性和组件来源门禁。
 - 校验器扫描项目中的脚本、JSX/TSX、MDX、HTML、CSS、PostCSS、SCSS、Sass 和 Less，并识别实际使用的公开导出；不需要靠人工列出组件，也没有允许源码漂移的绕过开关。
 - 业务样式可以负责非交互布局和文档允许的主题 token，但不能用通用控件选择器、私有 `.pui-*` / `data-pui-*` 选择器、CSS-in-JS 包装、预处理器注入、动态 `<style>`、外部全局样式、DOM/CSSOM 修改，或受保护组件的 `className`、`style`、`css`、`sx`、`tw`、`ref`、spread props / `cloneElement` 改写组件皮肤和几何。
 
@@ -38,11 +38,15 @@
 
 在仓库中运行 `npm --prefix assets/react-kit run dev` 查看最新实例。检查视觉问题时请同时查看真实业务场景、对应的公开组件源码和浏览器中的 React 实例，不要仅从旧设计稿截图推断当前 Skill 的行为。
 
+## v0.3.0 优化路线图
+
+当前 hardening 源码已完成 M0–M6 的本地阶段验收，以及 M7 的模块边界、CSS 门禁、安装/升级事务和 release orchestrator 工程；MIT License 与 lockfile 中 226 个依赖的第三方清单也已收口。8 个支持 fixture、三引擎版本和 system Safari 18+ 的 artifact-backed hosted evidence 已接入 workflow。M7 是否完成不由本文预先声明，而由与候选同一 source commit 绑定的有效 hosted evidence 决定。M8 已具备六类原始需求、候选隔离投影、真实场景质量 producer、append-only 证据和严格 acceptance assembler；是否完成同样以冻结 RC 的六场景、迁移、质量和发布记录为准。完整范围、阶段依赖、验收标准及进度证据记录在 [v0.3.0 Hardening Roadmap](references/v0.3.0-roadmap.md)；评估隔离规则见 [M8 独立评估协议](references/m8-evaluation-protocol.md)，执行顺序和测试边界见 [M4–M8 完整实施与交接计划](references/v0.3.0-m4-m8-execution-plan.md)。当前 142 个 runtime export 的入口见生成的 [组件目录](references/component-catalog.md) 与 [组件 API](references/component-api.md)。唯一可编辑源码、生成副本的同步方向和当前/目标兼容范围见 [源码权威与支持政策](references/source-authority.md)，机器可读事实见 [支持矩阵](references/support-matrix.json)。canonical checkout 仍保持 `0.2.19`；候选版本只在隔离 staging 中生成，公开发布必须等待精确 stable `planDigest` 授权。
+
 ## 环境要求
 
 - Codex
 - Python 3.10+
-- Node.js 18.18+
+- Node.js 22.12 至 24.x
 
 ## 安装为 Codex Skill
 
@@ -132,7 +136,7 @@ python scripts/verify_personal_ui.py --target <project-root>
 - installed 与 bundled 版本、registry 和支持文件一致
 - `component-manifest.json` 有效，且所有公开导出都由真实源码覆盖
 - `src/personal-ui/` 没有 missing、changed 或 extra 文件
-- `package.json` 保留 installer 管理的 `verify:personal-ui` 与 `prebuild` 门禁
+- `package.json` 保留 installer 管理的固定 `verify:personal-ui`，且现有 `build` 仍以前置来源校验开头；调用方自己的 `prebuild` 不被接管
 - 业务源码仅从公开 barrel 使用 Personal UI
 - 没有原生受保护控件、交互 role、深层导入、私有导出、伪造 `.pui-*` / `data-pui-*`、危险通用/预处理器控件 CSS、CSS-in-JS 包装、动态或外部全局样式、DOM/CSSOM 改写、组件克隆、受保护组件外观覆盖或未允许的外部 JSX 控件
 - 样式入口只引入一次，依赖版本兼容
@@ -142,10 +146,21 @@ python scripts/verify_personal_ui.py --target <project-root>
 验证仓库自带源码：
 
 ```powershell
-python scripts/validate_component_manifest.py
-python scripts/test_strict_enforcement.py
 npm --prefix assets/react-kit ci
+npm --prefix assets/react-kit run validate:skill
+npm --prefix assets/react-kit run docs:check
+npm --prefix assets/react-kit run test:contracts
+npm --prefix assets/react-kit run test:components
 npm --prefix assets/react-kit run build
+```
+
+`component-coverage.json` 的 API 单元来自生成的公开 API report。测试覆盖只接受位于对应 runner 收集目录内的结构化 `@personal-ui-coverage` 元数据；普通 import、注释、测试名称或组件名称文本不会被计为 unit、browser 或 a11y 证据。页面级 axe 扫描在明确绑定到具体公开 export 前不会虚报为组件级无障碍覆盖。
+
+完整发布候选门禁还会在 Chromium、Firefox 和 WebKit 中运行行为与 axe 检查；首次运行前需安装仓库锁定版本对应的浏览器：
+
+```powershell
+npm --prefix assets/react-kit exec -- playwright install chromium firefox webkit
+npm --prefix assets/react-kit run release:check
 ```
 
 ## 命名说明
@@ -154,4 +169,4 @@ Codex Skill 的调用名是 `ui-builder-xtn`。组件目录、CSS 命名空间�
 
 ## License
 
-本仓库当前未附加开源许可证。公开可见不代表自动授予复制、修改或再分发权利。
+本仓库采用 [MIT License](LICENSE)，版权归 2026 xtnkking。第三方依赖继续遵循各自的许可条款；完整的锁定版本、许可和来源清单见 [THIRD_PARTY_NOTICES.json](THIRD_PARTY_NOTICES.json)。

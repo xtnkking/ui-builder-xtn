@@ -1,3 +1,4 @@
+@layer pui.components {
 .pui-form {
   display: grid;
   gap: 18px;
@@ -61,7 +62,7 @@
 }
 
 .pui-number-input__steps > button:focus-visible {
-  outline: 2px solid var(--pui-primary);
+  outline: 2px solid var(--pui-focus-ring);
   outline-offset: -2px;
   background: var(--pui-primary-soft);
 }
@@ -631,34 +632,44 @@
   min-height: 40px;
 }
 
-.pui-tree-select__row > button[role="treeitem"] {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) 18px;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
-  min-height: 36px;
-  padding: 0 8px;
-  border: 0;
+.pui-tree-select__tree [role="treeitem"]:focus-visible > .pui-tree-select__row {
+  outline: 2px solid var(--pui-focus-ring);
+  outline-offset: -2px;
   border-radius: 6px;
-  background: transparent;
-  color: var(--pui-text);
-  cursor: pointer;
-  text-align: left;
 }
 
-.pui-tree-select__row > button[role="treeitem"]:hover:not(:disabled),
-.pui-tree-select__row > button[role="treeitem"][aria-selected="true"] {
+.pui-tree-select__row {
+  min-width: 0;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.pui-tree-select__label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  min-height: 36px;
+  padding: 0 8px;
+  color: var(--pui-text);
+}
+
+.pui-tree-select__tree :where([role="treeitem"]:hover:not([aria-disabled="true"])) > .pui-tree-select__row,
+.pui-tree-select__tree :where([role="treeitem"][aria-selected="true"]) > .pui-tree-select__row {
   background: var(--pui-primary-soft);
   color: var(--pui-primary-ink);
 }
 
-.pui-tree-select__row > button[role="treeitem"] > span {
+.pui-tree-select__tree [role="treeitem"][aria-disabled="true"] > .pui-tree-select__row { opacity: .5; cursor: not-allowed; }
+
+.pui-tree-select__label > span:last-of-type {
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+.pui-tree-select__label > svg:last-child { flex: 0 0 18px; margin-inline-start: auto; }
 
 .pui-tree-select__row svg {
   width: 15px;
@@ -668,6 +679,8 @@
 .pui-tree-select__spacer {
   width: 32px;
 }
+
+.pui-tree-select__expander { display: grid; place-items: center; width: 32px; height: 36px; }
 
 .pui-transfer {
   display: grid;
@@ -782,7 +795,7 @@
   border-radius: 999px;
   outline: 0;
   background: transparent;
-  color: #c58a12;
+  color: var(--_pui-rating);
   cursor: pointer;
 }
 
@@ -867,7 +880,7 @@
   padding: 0;
   border: 2px solid var(--pui-surface);
   border-radius: 50%;
-  color: #ffffff;
+  color: var(--_pui-color-swatch-text);
   cursor: pointer;
   box-shadow: 0 0 0 1px var(--pui-border-strong);
 }
@@ -879,7 +892,7 @@
 .pui-color-picker__swatch svg {
   width: 14px;
   height: 14px;
-  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.38));
+  filter: drop-shadow(0 1px 1px var(--_pui-color-swatch-shadow));
 }
 
 .pui-color-picker > .pui-input,
@@ -976,4 +989,5 @@
   .pui-file-upload__progress > span {
     transition: none;
   }
+}
 }

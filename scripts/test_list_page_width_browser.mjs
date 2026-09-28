@@ -1,31 +1,38 @@
 import assert from "node:assert/strict";
-import { createRequire } from "node:module";
-import { fileURLToPath, pathToFileURL } from "node:url";
+import { isPersonalUiRegressionMain, runPersonalUiRegression } from "./browser-test-harness.mjs";
+import { legacyExplorerCaseTabs, selectExplorerCase } from "./browser-explorer-case.mjs";
 
-const kitRoot = fileURLToPath(new URL("../assets/react-kit/", import.meta.url));
-const kitRequire = createRequire(new URL("../assets/react-kit/package.json", import.meta.url));
-const { createServer } = await import(pathToFileURL(kitRequire.resolve("vite")).href);
-const { chromium } = createRequire(import.meta.url)(process.env.PERSONAL_UI_PLAYWRIGHT_MODULE || "playwright");
-const server = await createServer({ root: kitRoot, server: { host: "127.0.0.1", port: 0 } });
-let browser;
+async function focusWithKeyboard(page, target, label) {
+  await target.focus();
+  await page.keyboard.press("Shift+Tab");
+  await page.keyboard.press("Tab");
+  const handle = await target.elementHandle();
+  assert.ok(handle, `${label}: focus target is missing`);
+  try {
+    await page.waitForFunction(
+      (element) => document.activeElement === element && element.matches(":focus-visible"),
+      handle,
+      { polling: "raf", timeout: 2000 },
+    );
+  } catch {
+    const state = await target.evaluate((element) => ({
+      active: document.activeElement === element,
+      focusVisible: element.matches(":focus-visible"),
+      activeElement: document.activeElement?.outerHTML,
+    }));
+    assert.fail(`${label}: keyboard focus did not settle on the target (${JSON.stringify(state)})`);
+  } finally {
+    await handle.dispose();
+  }
+}
 
-try {
-  await server.listen();
-  const url = server.resolvedUrls?.local?.[0];
-  assert.ok(url, "Vite did not expose a local URL");
-  browser = await chromium.launch({
-    headless: true,
-    ...(process.env.PERSONAL_UI_CHROMIUM_EXECUTABLE
-      ? { executablePath: process.env.PERSONAL_UI_CHROMIUM_EXECUTABLE }
-      : {}),
-  });
-
+export async function runListPageWidthRegression({ page, baseURL }) {
+  assert.ok(baseURL, "A baseURL is required");
   for (const width of [2560, 1440, 1024, 736, 360, 320]) {
-    const page = await browser.newPage({ viewport: { width, height: 900 } });
-    try {
-      await page.goto(url);
-      await page.getByRole("tab", { name: "用户权限" }).click();
-      const root = page.locator(".demo-list-frame .pui-list-page");
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto(`${baseURL}/?legacy=list-width-${width}#/components/data-table`);
+      const dataTableCase = await selectExplorerCase(page, legacyExplorerCaseTabs.dataTable);
+      const root = dataTableCase.locator(".demo-list-frame .pui-list-page");
       await root.waitFor();
       const measure = () => root.evaluate((element) => {
         const container = element.getBoundingClientRect();
@@ -123,21 +130,27 @@ try {
       const focusTarget = root.locator(width <= 640
         ? ".pui-data-table__mobile .pui-mobile-data-row:first-child .pui-icon-button"
         : ".pui-data-table__scroller tbody tr:first-child td:last-child .pui-icon-button");
-      await focusTarget.focus();
+      await focusWithKeyboard(page, focusTarget, `first row action at ${width}px`);
       const focusClearance = await focusTarget.evaluate((button) => {
         const frame = button.closest(".pui-data-table__frame").getBoundingClientRect();
         const box = button.getBoundingClientRect();
         const style = getComputedStyle(button);
-        const ring = parseFloat(style.outlineWidth) + parseFloat(style.outlineOffset);
+        const outlineWidth = parseFloat(style.outlineWidth);
+        const outlineOffset = parseFloat(style.outlineOffset);
         return {
           active: document.activeElement === button,
-          ring,
+          focusVisible: button.matches(":focus-visible"),
+          outlineStyle: style.outlineStyle,
+          outlineWidth,
+          outwardRing: Math.max(0, outlineWidth + outlineOffset),
           clearances: [box.left - frame.left, frame.right - box.right, box.top - frame.top, frame.bottom - box.bottom],
         };
       });
       assert.equal(focusClearance.active, true, `first row action cannot receive keyboard focus at ${width}px`);
-      assert.ok(focusClearance.ring > 0, `first row action lost focus outline at ${width}px`);
-      assert.ok(focusClearance.clearances.every((clearance) => clearance >= focusClearance.ring), `first row action focus outline clipped by table at ${width}px: ${JSON.stringify(focusClearance)}`);
+      assert.equal(focusClearance.focusVisible, true, `first row action is missing its keyboard focus state at ${width}px`);
+      assert.equal(focusClearance.outlineStyle, "solid", `first row action lost focus outline at ${width}px`);
+      assert.ok(focusClearance.outlineWidth >= 2, `first row action focus outline is too thin at ${width}px`);
+      assert.ok(focusClearance.clearances.every((clearance) => clearance >= focusClearance.outwardRing), `first row action focus outline clipped by table at ${width}px: ${JSON.stringify(focusClearance)}`);
       if (process.env.PERSONAL_UI_LIST_SCREENSHOT_PREFIX && [2560, 736, 320].includes(width)) {
         await page.screenshot({
           path: `${process.env.PERSONAL_UI_LIST_SCREENSHOT_PREFIX}-${width === 320 ? "320-paged-full" : width}.png`,
@@ -201,7 +214,7 @@ try {
       }) : null;
       if (beforePageChange) assert.ok(beforePageChange.scrollTop > 0, `could not prepare the equal-height page reset case at ${width}px`);
       await page.getByRole("button", { name: "下一页" }).click();
-      await page.getByText("6-10 / 共 23 条").waitFor({ state: "attached" });
+      await page.getByText("6-10 / 23 条结果").waitFor({ state: "attached" });
       const nextPage = await measure();
       assert.ok(Math.abs(nextPage.surfaceRight - nextPage.pager.right) <= 1, `pagination shifted after page change at ${width}px`);
       if (beforePageChange) {
@@ -270,12 +283,10 @@ try {
       await view.getByRole("button", { name: "分页" }).click();
       assert.equal(await root.locator(".pui-data-table__pagination").count(), 1, `paged mode did not restore pagination at ${width}px`);
       assert.equal(await root.locator(width <= 640 ? ".pui-mobile-data-row" : "tbody tr").count(), 5, `paged mode did not reset to five rows at ${width}px`);
-    } finally {
-      await page.close();
-    }
   }
   console.log("List/table page width browser regression passed at 2560, 1440, 1024, 736, 360, and 320px.");
-} finally {
-  await browser?.close();
-  await server.close();
+}
+
+if (isPersonalUiRegressionMain(import.meta.url)) {
+  await runPersonalUiRegression(runListPageWidthRegression);
 }

@@ -23,13 +23,15 @@ SCANNER = (
     / "verify-provenance.mjs"
 )
 MANIFEST = SKILL_ROOT / "assets" / "react-kit" / "component-manifest.json"
+REGISTRY = SKILL_ROOT / "assets" / "react-kit" / "registry.json"
 MANAGED_SOURCE = SKILL_ROOT / "assets" / "react-kit" / "src" / "personal-ui"
 MANAGED_STYLES = MANAGED_SOURCE / "styles.css"
+MANAGED_FORM_SOURCE = "src/personal-ui/input/forms.tsx"
 INSTALLER = SKILL_ROOT / "scripts" / "install_personal_ui.py"
 FULL_VERIFIER = SKILL_ROOT / "scripts" / "verify_personal_ui.py"
 VERIFY_SCRIPT = (
     "node tools/personal-ui/verify-provenance.mjs --target . "
-    "--source-root src/personal-ui --manifest tools/personal-ui/component-manifest.json"
+    "--manifest tools/personal-ui/component-manifest.json"
 )
 
 
@@ -37,6 +39,7 @@ def run_scan(
     files: dict[str, str],
     *,
     remove: tuple[str, ...] = (),
+    registry: dict[str, object] | None = None,
 ) -> tuple[subprocess.CompletedProcess[str], dict[str, object]]:
     node = shutil.which("node")
     if node is None:
@@ -44,6 +47,15 @@ def run_scan(
     with tempfile.TemporaryDirectory(prefix="personal-ui-enforcement-") as temporary:
         target = Path(temporary)
         shutil.copytree(MANAGED_SOURCE, target / "src" / "personal-ui")
+        installed_registry = (
+            registry
+            if registry is not None
+            else json.loads(REGISTRY.read_text(encoding="utf-8"))
+        )
+        (target / "src" / "personal-ui" / "registry.json").write_text(
+            json.dumps(installed_registry, indent=2) + "\n",
+            encoding="utf-8",
+        )
         for relative, source in files.items():
             destination = target / relative
             destination.parent.mkdir(parents=True, exist_ok=True)
@@ -77,8 +89,14 @@ def run_scan(
         return result, report
 
 
-def expect_valid(name: str, files: dict[str, str], used: set[str]) -> None:
-    result, report = run_scan(files)
+def expect_valid(
+    name: str,
+    files: dict[str, str],
+    used: set[str],
+    *,
+    registry: dict[str, object] | None = None,
+) -> None:
+    result, report = run_scan(files, registry=registry)
     if result.returncode != 0 or report.get("valid") is not True:
         raise AssertionError(f"{name}: expected valid scan, got {report}")
     actual = set(report.get("usedPublicExports", []))
@@ -92,8 +110,9 @@ def expect_issue(
     expected_codes: set[str],
     *,
     remove: tuple[str, ...] = (),
+    registry: dict[str, object] | None = None,
 ) -> None:
-    result, report = run_scan(files, remove=remove)
+    result, report = run_scan(files, remove=remove, registry=registry)
     if result.returncode == 0 or report.get("valid") is not False:
         raise AssertionError(f"{name}: expected scan failure, got {report}")
     issues = report.get("issues", [])
@@ -107,6 +126,148 @@ def expect_issue(
         raise AssertionError(
             f"{name}: missing issue code(s) {sorted(missing)}; got {sorted(actual_codes)}"
         )
+
+
+def test_registry_driven_component_protection() -> None:
+    expect_issue(
+        "fixed-control classification protects Collapse",
+        {
+            "src/App.tsx": (
+                "import {Collapse} from './personal-ui'; "
+                "export const App=()=> <Collapse className='foreign-collapse' />;"
+            )
+        },
+        {"PUI_COMPONENT_STYLE_OVERRIDE"},
+    )
+
+    layout_exports = (
+        "Box",
+        "Stack",
+        "Inline",
+        "Grid",
+        "FocusTrap",
+        "ResizablePanels",
+    )
+    layout_markup = "".join(
+        f"<{name} className='page-{name.lower()}' />" for name in layout_exports
+    )
+    expect_valid(
+        "layout classifications allow layout composition props",
+        {
+            "src/App.tsx": (
+                "import {"
+                + ",".join(layout_exports)
+                + "} from './personal-ui'; "
+                + f"export const App=()=> <>{layout_markup}</>;"
+            )
+        },
+        set(layout_exports),
+    )
+
+    registry = json.loads(REGISTRY.read_text(encoding="utf-8"))
+    classifications = registry["exportClassifications"]
+    classifications["fixed-control"].remove("Collapse")
+    classifications["fixed-control"].append("Box")
+    classifications["layout"].remove("Box")
+    classifications["layout"].append("Collapse")
+    expect_issue(
+        "registry reclassification protects a former layout export",
+        {
+            "src/App.tsx": (
+                "import {Box} from './personal-ui'; "
+                "export const App=()=> <Box className='foreign-box' />;"
+            )
+        },
+        {"PUI_COMPONENT_STYLE_OVERRIDE"},
+        registry=registry,
+    )
+    expect_valid(
+        "registry reclassification exempts a former fixed control",
+        {
+            "src/App.tsx": (
+                "import {Collapse} from './personal-ui'; "
+                "export const App=()=> <Collapse className='page-collapse' />;"
+            )
+        },
+        {"Collapse"},
+        registry=registry,
+    )
+
+
+def test_test_directory_exclusions() -> None:
+    safe_application = (
+        "import {Button} from './personal-ui'; "
+        "export const App=()=> <Button>Run</Button>;"
+    )
+    intentionally_invalid_fixture = "export const Fixture=()=> <button>Bypass</button>;"
+    expect_valid(
+        "test-only fixture directories are excluded",
+        {
+            "src/App.tsx": safe_application,
+            ".next/static/css/app.css": "input { border-radius: 0; }",
+            "tests/root-fixture.tsx": intentionally_invalid_fixture,
+            "src/__tests__/source-fixture.tsx": intentionally_invalid_fixture,
+            "src/features/tests/nested-fixture.tsx": intentionally_invalid_fixture,
+        },
+        {"Button"},
+    )
+    expect_issue(
+        "application source remains scanned when test directories are excluded",
+        {"src/App.tsx": intentionally_invalid_fixture},
+        {"PUI_RAW_CONTROL"},
+    )
+
+    verifier = runpy.run_path(str(FULL_VERIFIER))
+    inspect_application_usage = verifier["inspect_application_usage"]
+    with tempfile.TemporaryDirectory(
+        prefix="personal-ui-python-test-exclusions-"
+    ) as temporary:
+        target = Path(temporary)
+        (target / "src").mkdir(parents=True)
+        for relative in (
+            ".next/static/css/app.css",
+            "tests/root-fixture.css",
+            "src/__tests__/source-fixture.css",
+            "src/features/tests/nested-fixture.css",
+        ):
+            destination = target / relative
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            destination.write_text("input { border-radius: 0; }", encoding="utf-8")
+
+        ignored_errors: list[str] = []
+        inspect_application_usage(
+            target,
+            target / "src" / "personal-ui",
+            "src/personal-ui/styles.css",
+            set(),
+            set(),
+            ignored_errors,
+        )
+        if ignored_errors:
+            raise AssertionError(
+                "Python verifier scanned test-only fixtures: "
+                + "; ".join(ignored_errors)
+            )
+
+        (target / "src" / "app.css").write_text(
+            "input { border-radius: 0; }", encoding="utf-8"
+        )
+        application_errors: list[str] = []
+        inspect_application_usage(
+            target,
+            target / "src" / "personal-ui",
+            "src/personal-ui/styles.css",
+            set(),
+            set(),
+            application_errors,
+        )
+        if not any(
+            "src/app.css" in error and "[PUI_GENERIC_STYLE_OVERRIDE]" in error
+            for error in application_errors
+        ):
+            raise AssertionError(
+                "Python verifier stopped enforcing production application source"
+            )
 
 
 def test_autofill_contract() -> None:
@@ -135,6 +296,28 @@ def test_autofill_contract() -> None:
 
 def test_python_style_gate_contract() -> None:
     verifier = runpy.run_path(str(FULL_VERIFIER))
+    classified_runtime_exports = verifier["classified_runtime_exports"]
+    protected_exports = classified_runtime_exports(
+        json.loads(REGISTRY.read_text(encoding="utf-8")), "fixed-control"
+    )
+    if "Collapse" not in protected_exports:
+        raise AssertionError("Python verifier did not protect fixed-control Collapse")
+    misclassified_layout = sorted(
+        {
+            "Box",
+            "Stack",
+            "Inline",
+            "Grid",
+            "FocusTrap",
+            "ResizablePanels",
+        }
+        & protected_exports
+    )
+    if misclassified_layout:
+        raise AssertionError(
+            "Python verifier treated layout exports as fixed controls: "
+            + ", ".join(misclassified_layout)
+        )
     style_findings = verifier["application_style_findings"]
 
     unsafe_codes = {
@@ -201,7 +384,29 @@ def test_python_style_gate_contract() -> None:
             ("sx", "export const App=()=> <Input sx={{background:'red'}} />;"),
             ("tw", "export const App=()=> <Input tw='rounded-none' />;"),
             ("ref", "export const App=()=> <Input ref={(node:any)=>node?.style.setProperty('border-radius','0')} />;"),
+            ("dangerouslySetInnerHTML", "export const App=()=> <Input dangerouslySetInnerHTML={{__html:'unsafe'}} />;"),
+            ("data-pui-owner", "export const App=()=> <Input data-pui-owner='Consumer' />;"),
+            ("data-pui-slot", "export const App=()=> <Input data-pui-slot='field' />;"),
+            ("createElement data-pui marker", "React.createElement(Input,{'data-pui-owner':'Consumer'});"),
+            ("createElement custom data-pui marker", "React.createElement(Input,{'data-pui-consumer-state':true});"),
+            ("createElement dangerouslySetInnerHTML", "React.createElement(Input,{dangerouslySetInnerHTML:{__html:'unsafe'}});"),
             ("spread", "export const App=(props:any)=> <Input {...props} />;"),
+            (
+                "form register spread",
+                "export const App=({register}:any)=> <Input {...register('email')} />;",
+            ),
+            (
+                "dynamic data-pui marker",
+                "export const App=({owner}:any)=> <Input data-pui-owner={owner} />;",
+            ),
+            (
+                "nonzero void data-pui marker",
+                "export const App=()=> <Input data-pui-owner={void 1} />;",
+            ),
+            (
+                "duplicate dynamic data-pui marker",
+                "export const App=({owner}:any)=> <Input data-pui-owner={undefined} data-pui-owner={owner} />;",
+            ),
         ):
             errors: list[str] = []
             inspect_overrides(
@@ -216,6 +421,36 @@ def test_python_style_gate_contract() -> None:
             )
             if not any("[PUI_COMPONENT_STYLE_OVERRIDE]" in error for error in errors):
                 raise AssertionError(f"Python verifier accepted component {label} override")
+
+        for label, source in (
+            (
+                "custom data-pui markers on fixed-control JSX",
+                "export const App=()=> <><Input data-pui-consumer-state /><Input data-pui-consumer-state='draft' /></>;",
+            ),
+            (
+                "JSX static undefined data-pui markers",
+                "export const App=()=> <Input data-pui-owner={undefined} data-pui-slot={void 0} />;",
+            ),
+            (
+                "factory static undefined data-pui markers",
+                "React.createElement(Input,{'data-pui-owner':undefined,'data-pui-slot':void 0});",
+            ),
+        ):
+            errors = []
+            inspect_overrides(
+                target,
+                path,
+                source,
+                masked_code(source, code_mask(source)),
+                {"Input": "Input"},
+                set(),
+                {"Input"},
+                errors,
+            )
+            if errors:
+                raise AssertionError(
+                    f"Python verifier rejected {label}: {errors}"
+                )
 
         layout_source = "export const App=()=> <Box className='page-shell' />;"
         layout_errors: list[str] = []
@@ -309,13 +544,22 @@ def run_checked_json(command: list[str], *, cwd: Path | None = None) -> dict[str
     return report
 
 
-def assert_gate(package_path: Path, expected_prebuild: str) -> None:
+def assert_gate(
+    package_path: Path,
+    *,
+    expected_build: str,
+    expected_prebuild: str | None,
+) -> None:
     package = json.loads(package_path.read_text(encoding="utf-8"))
     scripts = package.get("scripts")
     if not isinstance(scripts, dict):
         raise AssertionError("installed package.json has no scripts object")
     if scripts.get("verify:personal-ui") != VERIFY_SCRIPT:
         raise AssertionError("installer did not install the canonical provenance command")
+    if scripts.get("build") != expected_build:
+        raise AssertionError(
+            f"installer wrote unexpected build: {scripts.get('build')!r}"
+        )
     if scripts.get("prebuild") != expected_prebuild:
         raise AssertionError(
             f"installer wrote unexpected prebuild: {scripts.get('prebuild')!r}"
@@ -368,8 +612,16 @@ def test_installer_build_gate() -> None:
             raise AssertionError("integrated install did not report its package gate update")
         assert_gate(
             integrated / "package.json",
-            "node existing.mjs && npm run verify:personal-ui",
+            expected_build=f"{VERIFY_SCRIPT} && vite build",
+            expected_prebuild="node existing.mjs",
         )
+        installed_scanner = (
+            integrated / "tools" / "personal-ui" / "verify-provenance.mjs"
+        )
+        if installed_scanner.read_bytes() != SCANNER.read_bytes():
+            raise AssertionError(
+                "installer did not copy the canonical Node provenance verifier"
+            )
         verification = run_checked_json(
             [sys.executable, str(FULL_VERIFIER), "--target", str(integrated)]
         )
@@ -401,7 +653,7 @@ def test_installer_build_gate() -> None:
         dead_path.unlink()
         main_path.write_text(valid_main, encoding="utf-8")
 
-        managed_file = integrated / "src" / "personal-ui" / "forms.tsx"
+        managed_file = integrated / "src" / "personal-ui" / "index.ts"
         managed_bytes = managed_file.read_bytes()
         managed_file.write_bytes(managed_bytes + b"\n")
         drift_rejected = subprocess.run(
@@ -442,7 +694,11 @@ def test_installer_build_gate() -> None:
                 str(starter),
             ]
         )
-        assert_gate(starter / "package.json", "npm run verify:personal-ui")
+        assert_gate(
+            starter / "package.json",
+            expected_build=f"{VERIFY_SCRIPT} && tsc --noEmit && vite build",
+            expected_prebuild=None,
+        )
         starter_gate = subprocess.run(
             [npm, "run", "verify:personal-ui"],
             cwd=starter,
@@ -538,6 +794,35 @@ def main() -> int:
             "src/utilities.pcss": ".page-actions { @apply flex gap-4; }",
         },
         set(),
+    )
+    expect_valid(
+        "custom data-pui markers on fixed-control JSX",
+        {
+            "src/App.tsx": """
+                import {Input} from './personal-ui';
+                export const App=()=> <>
+                  <Input data-pui-consumer-state />
+                  <Input data-pui-consumer-state="draft" />
+                </>;
+            """,
+        },
+        {"Input"},
+    )
+    expect_valid(
+        "static undefined reserved props on fixed controls",
+        {
+            "src/App.tsx": """
+                import React from 'react';
+                import {jsx as _jsx} from 'react/jsx-runtime';
+                import {Input} from './personal-ui';
+                export const App=()=> <>
+                  <Input data-pui-owner={undefined} data-pui-slot={void 0} />
+                  {React.createElement(Input, {'data-pui-owner': undefined})}
+                  {_jsx(Input, {'data-pui-slot': void 0})}
+                </>;
+            """,
+        },
+        {"Input"},
     )
 
     cases: list[tuple[str, dict[str, str], set[str]]] = [
@@ -822,6 +1107,11 @@ def main() -> int:
             {"PUI_COMPONENT_STYLE_OVERRIDE"},
         ),
         (
+            "form library register spread bypass",
+            {"src/App.tsx": "import {Input} from './personal-ui'; export const App=({register}:any)=> <Input {...register('email')} />;"},
+            {"PUI_COMPONENT_STYLE_OVERRIDE"},
+        ),
+        (
             "component transformed style props",
             {"src/App.tsx": "import {Input} from './personal-ui'; export const App=()=> <><Input css={{borderRadius:0}} /><Input sx={{background:'red'}} /><Input tw='rounded-none' /></>;"},
             {"PUI_COMPONENT_STYLE_OVERRIDE"},
@@ -830,6 +1120,46 @@ def main() -> int:
             "component imperative ref escape hatch",
             {"src/App.tsx": "import {Input} from './personal-ui'; export const App=()=> <Input ref={(node:any)=>node?.style.setProperty('border-radius','0')} />;"},
             {"PUI_COMPONENT_STYLE_OVERRIDE"},
+        ),
+        (
+            "component dangerouslySetInnerHTML escape hatch",
+            {"src/App.tsx": "import {Input} from './personal-ui'; export const App=()=> <Input dangerouslySetInnerHTML={{__html:'unsafe'}} />;"},
+            {"PUI_COMPONENT_STYLE_OVERRIDE", "PUI_UNINSPECTABLE_MARKUP"},
+        ),
+        (
+            "component reserved data-pui-owner attribute",
+            {"src/App.tsx": "import {Input} from './personal-ui'; export const App=()=> <Input data-pui-owner='Consumer' />;"},
+            {"PUI_COMPONENT_STYLE_OVERRIDE", "PUI_RESERVED_MARKER"},
+        ),
+        (
+            "component reserved data-pui-slot attribute",
+            {"src/App.tsx": "import {Input} from './personal-ui'; export const App=()=> <Input data-pui-slot='field' />;"},
+            {"PUI_COMPONENT_STYLE_OVERRIDE", "PUI_RESERVED_MARKER"},
+        ),
+        (
+            "custom data-pui marker on raw DOM",
+            {"src/App.tsx": "export const App=()=> <div data-pui-consumer-state />;"},
+            {"PUI_RESERVED_MARKER"},
+        ),
+        (
+            "component dynamic reserved data-pui attribute",
+            {"src/App.tsx": "import {Input} from './personal-ui'; export const App=({owner}:any)=> <Input data-pui-owner={owner} />;"},
+            {"PUI_COMPONENT_STYLE_OVERRIDE", "PUI_RESERVED_MARKER"},
+        ),
+        (
+            "component duplicate dynamic reserved data-pui attribute",
+            {"src/App.tsx": "import {Input} from './personal-ui'; export const App=({owner}:any)=> <Input data-pui-owner={undefined} data-pui-owner={owner} />;"},
+            {"PUI_COMPONENT_STYLE_OVERRIDE", "PUI_RESERVED_MARKER"},
+        ),
+        (
+            "component nonzero void reserved data-pui attribute",
+            {"src/App.tsx": "import {Input} from './personal-ui'; export const App=()=> <Input data-pui-owner={void 1} />;"},
+            {"PUI_COMPONENT_STYLE_OVERRIDE", "PUI_RESERVED_MARKER"},
+        ),
+        (
+            "static undefined marker on a non-fixed element",
+            {"src/App.tsx": "export const App=()=> <div data-pui-owner={undefined} />;"},
+            {"PUI_RESERVED_MARKER"},
         ),
         (
             "aliased component style override",
@@ -855,6 +1185,21 @@ def main() -> int:
             "createElement transformed style prop",
             {"src/App.tsx": "import React from 'react'; import {Input} from './personal-ui'; export const App=()=> React.createElement(Input,{css:{borderRadius:0}});"},
             {"PUI_COMPONENT_STYLE_OVERRIDE"},
+        ),
+        (
+            "createElement reserved data-pui prop",
+            {"src/App.tsx": "import React from 'react'; import {Input} from './personal-ui'; export const App=()=> React.createElement(Input,{'data-pui-owner':'Consumer'});"},
+            {"PUI_COMPONENT_STYLE_OVERRIDE", "PUI_RESERVED_MARKER"},
+        ),
+        (
+            "createElement custom data-pui prop",
+            {"src/App.tsx": "import React from 'react'; import {Input} from './personal-ui'; export const App=()=> React.createElement(Input,{'data-pui-consumer-state':true});"},
+            {"PUI_COMPONENT_STYLE_OVERRIDE", "PUI_RESERVED_MARKER"},
+        ),
+        (
+            "createElement dangerouslySetInnerHTML prop",
+            {"src/App.tsx": "import React from 'react'; import {Input} from './personal-ui'; export const App=()=> React.createElement(Input,{dangerouslySetInnerHTML:{__html:'unsafe'}});"},
+            {"PUI_COMPONENT_STYLE_OVERRIDE", "PUI_UNINSPECTABLE_MARKUP"},
         ),
         (
             "aliased createElement component class override",
@@ -1033,7 +1378,7 @@ def main() -> int:
 
     expect_issue(
         "changed managed source",
-        {"src/personal-ui/forms.tsx": "export const tampered = true;"},
+        {MANAGED_FORM_SOURCE: "export const tampered = true;"},
         {"PUI_MANAGED_CHANGED"},
     )
     expect_issue(
@@ -1045,10 +1390,12 @@ def main() -> int:
         "missing managed source",
         {},
         {"PUI_MANAGED_MISSING"},
-        remove=("src/personal-ui/forms.tsx",),
+        remove=(MANAGED_FORM_SOURCE,),
     )
 
     test_autofill_contract()
+    test_registry_driven_component_protection()
+    test_test_directory_exclusions()
     test_python_style_gate_contract()
     test_installer_build_gate()
 
@@ -1056,7 +1403,7 @@ def main() -> int:
         json.dumps(
             {
                 "valid": True,
-                "scannerCases": len(cases) + 9,
+                "scannerCases": len(cases) + 17,
                 "installerGate": True,
                 "autofillContract": True,
                 "pythonStyleGate": True,

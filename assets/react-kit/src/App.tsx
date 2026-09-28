@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { FileText, Grid2X2, Hash, Pencil, RefreshCw, ShieldCheck, Table2, Users } from "lucide-react";
+import { Grid2X2, Pencil, RefreshCw } from "lucide-react";
 import {
   Autocomplete,
   AsyncSelect,
@@ -23,7 +23,6 @@ import {
   Select,
   Tag,
   TagInput,
-  Tabs,
   ToastProvider,
   TreeSelect,
   VisuallyHidden,
@@ -34,6 +33,7 @@ import {
   type MemberRecord,
   type MemberResult,
 } from "./personal-ui";
+import { ComponentExplorer, type ExplorerCases } from "./explorer/ComponentExplorer";
 
 type Scenario = "success" | "empty" | "error";
 
@@ -203,7 +203,6 @@ function CountryChoiceDemo({ id, label, initialValue = "", selectedOption, exter
 }
 
 function DemoContent() {
-  const [tab, setTab] = useState("data");
   const [scenario, setScenario] = useState<Scenario>("success");
   const [numberValue, setNumberValue] = useState<number | "">(120);
   const [emptyNumberValue, setEmptyNumberValue] = useState<number | "">("");
@@ -275,6 +274,8 @@ function DemoContent() {
       </div>
       <MemberManagementPage
         fetchMembers={fetchMembers}
+        roles={["管理员", "编辑者", "查看者"]}
+        statuses={["已加入", "待确认", "已停用"]}
         onInvite={() => toast({
           tone: "success",
           title: "邀请已创建",
@@ -472,7 +473,7 @@ function DemoContent() {
       </ListManagementPage>
       <Drawer
         open={Boolean(editingMember)}
-        onClose={() => { if (!savingMember) setEditingMember(null); }}
+        onOpenChange={(nextOpen) => { if (!nextOpen && !savingMember) setEditingMember(null); }}
         closable={!savingMember}
         closeOnBackdropClick={false}
         title={`编辑${editingMember?.name ?? "用户"}的权限`}
@@ -508,7 +509,7 @@ function DemoContent() {
       </div>
       <Dialog
         open={roleDialogOpen}
-        onClose={() => { if (!savingRoles) setRoleDialogOpen(false); }}
+        onOpenChange={(nextOpen) => { if (!savingRoles) setRoleDialogOpen(nextOpen); }}
         closable={!savingRoles}
         closeOnBackdropClick={false}
         title="分配角色 · xtn"
@@ -540,7 +541,7 @@ function DemoContent() {
       />
       <Dialog
         open={floatingDialogOpen}
-        onClose={() => setFloatingDialogOpen(false)}
+        onOpenChange={setFloatingDialogOpen}
         closeOnBackdropClick={false}
         title="更多选择器"
         description="团队、标签和组织节点。"
@@ -576,33 +577,50 @@ function DemoContent() {
     </section>
   );
 
-  return (
-    <div className="demo-shell pui-root">
-      <header className="demo-topbar">
-        <div className="demo-brand"><span><Grid2X2 className="demo-brand__icon" aria-hidden="true" /></span><strong>Personal UI</strong></div>
-        <span>React source kit</span>
-      </header>
-      <main className="demo-main">
-        <div className="demo-titlebar">
-          <div><h1>页面实例</h1><p>相同控件源码，按产品和业务组合。</p></div>
-        </div>
-        <div className="demo-tabs-scope">
-          <Tabs
-            value={tab}
-            onValueChange={setTab}
-            ariaLabel="页面实例"
-            items={[
-              { id: "data", label: <><Users aria-hidden="true" />成员管理</>, content: dataPage },
-              { id: "login", label: <><FileText aria-hidden="true" />品牌家族登录</>, content: loginPage },
-              { id: "number", label: <><Hash aria-hidden="true" />数字输入</>, content: numberCase },
-              { id: "list", label: <><Table2 aria-hidden="true" />用户权限</>, content: listPageCase },
-              { id: "dialog", label: <><ShieldCheck aria-hidden="true" />弹窗</>, content: dialogCase },
-            ]}
-          />
-        </div>
-      </main>
-    </div>
-  );
+  const explorerCases: ExplorerCases = {
+    "list-filter": [{
+      id: "member-management",
+      label: "成员管理",
+      summary: "带草稿筛选、显式查询、加载、空结果、失败和重试状态的 CRUD 列表页面。",
+      states: ["default", "loading", "empty", "error", "validation", "longContent", "keyboard", "mobile", "overlay"],
+      content: dataPage,
+      code: `import { MemberManagementPage } from "./personal-ui";\n\n<MemberManagementPage\n  fetchMembers={fetchMembers}\n  roles={["管理员", "编辑者", "查看者"]}\n  statuses={["已加入", "待确认", "已停用"]}\n  onInvite={handleInvite}\n/>`,
+    }],
+    authentication: [{
+      id: "family-login",
+      label: "品牌家族登录",
+      summary: "公司身份与登录控件保持一致，产品只通过名称、强调色、文案和视觉插槽表达差异。",
+      states: ["default", "loading", "error", "validation", "longContent", "keyboard", "mobile"],
+      content: loginPage,
+      code: `import { FamilyLoginPage } from "./personal-ui";\n\n<FamilyLoginPage\n  companyName="Northstar"\n  companyMark={<CompanyMark />}\n  products={products}\n  onSubmit={handleLogin}\n/>`,
+    }],
+    number: [{
+      id: "number-input-states",
+      label: "数字输入状态",
+      summary: "同时展示受控值、空值、只读和禁用状态，并保持步进按钮几何稳定。",
+      states: ["default", "disabled", "readOnly", "controlled", "validation", "keyboard"],
+      content: numberCase,
+      code: `import { Field, NumberInput } from "./personal-ui";\n\n<Field label="自检周期（分钟）" htmlFor="period">\n  <NumberInput\n    id="period"\n    value={value}\n    onValueChange={setValue}\n    min={0}\n    max={180}\n    step={10}\n  />\n</Field>`,
+    }],
+    "data-table": [{
+      id: "permission-table",
+      label: "用户权限表格",
+      summary: "分页与非分页、固定与内容高度、选择列和操作列冻结，以及稳定加载状态。",
+      states: ["default", "controlled", "loading", "empty", "longContent", "keyboard", "mobile"],
+      content: listPageCase,
+      code: `import { DataTable, ListManagementPage } from "./personal-ui";\n\n<ListManagementPage title="用户权限">\n  <DataTable\n    ariaLabel="用户权限表"\n    columns={columns}\n    rows={rows}\n    rowKey={(row) => row.id}\n    viewportRows={4}\n    pagination={pagination}\n  />\n</ListManagementPage>`,
+    }],
+    dialog: [{
+      id: "nested-dialog-workflow",
+      label: "复杂弹窗工作流",
+      summary: "覆盖不可点击遮罩关闭、嵌套确认、异步保存和弹窗内复杂选择器。",
+      states: ["default", "controlled", "loading", "error", "validation", "keyboard", "overlay"],
+      content: dialogCase,
+      code: `import { Button, ConfirmDialog, Dialog } from "./personal-ui";\n\n<Button onClick={() => setOpen(true)}>分配角色</Button>\n<Dialog\n  open={open}\n  onOpenChange={setOpen}\n  closeOnBackdropClick={false}\n  title="分配角色"\n>\n  {form}\n</Dialog>`,
+    }],
+  };
+
+  return <ComponentExplorer cases={explorerCases} />;
 }
 
 export function App() {

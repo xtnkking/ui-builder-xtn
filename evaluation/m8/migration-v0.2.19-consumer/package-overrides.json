@@ -1,0 +1,11 @@
+{
+  "name": "@personal-ui/m8-v0219-migration-consumer",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "test:migration": "playwright test --config migration.playwright.config.ts"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.55.1"
+  }
+}

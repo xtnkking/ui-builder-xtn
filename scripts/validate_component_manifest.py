@@ -11,11 +11,17 @@ import re
 from pathlib import Path
 from typing import Any
 
+from generate_component_coverage import (
+    build_coverage_matrix,
+    validate_export_metadata,
+)
+
 
 SKILL_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_KIT_ROOT = SKILL_ROOT / "assets" / "react-kit"
 DEFAULT_MANIFEST = DEFAULT_KIT_ROOT / "component-manifest.json"
 DEFAULT_REGISTRY = DEFAULT_KIT_ROOT / "registry.json"
+DEFAULT_COVERAGE = DEFAULT_KIT_ROOT / "component-coverage.json"
 SEMVER = re.compile(
     r"^(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)"
     r"(?:-[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?"
@@ -26,6 +32,7 @@ RUNTIME_EXPORT = re.compile(r"^[A-Za-z_$][\w$]*$")
 OWNER_MARKER = re.compile(r"^[A-Za-z0-9]+(?:[._:-][A-Za-z0-9]+)*$")
 NON_VISUAL_HOOK = re.compile(r"^use[A-Z][A-Za-z0-9_$]*$")
 NON_VISUAL_CONSTANT = re.compile(r"^[A-Z][A-Z0-9_]*$")
+NON_VISUAL_PROVIDER = re.compile(r"^[A-Z][A-Za-z0-9_$]*Provider$")
 RUNTIME_DECLARATION = re.compile(
     r"^\s*export\s+(?:default\s+)?(?:async\s+)?"
     r"(?:function|class|const|let|var)\s+([A-Za-z_$][\w$]*)",
@@ -286,12 +293,27 @@ def owner_marker_is_bound(text: str, marker: str) -> bool:
         variable = re.escape(match.group(1))
         literal = rf"(?:\"{escaped}\"|'{escaped}')"
         bindings = (
-            rf"\b{variable}\s*=\s*{literal}",
+            rf"\b{variable}\s*=\s*[^;\n]*{literal}",
             rf"[\"']data-pui-owner[\"']\s*:\s*{variable}\s*=\s*{literal}",
             rf"\b{variable}\s*:\s*[^;=\n]*{literal}",
         )
         if any(re.search(pattern, code) for pattern in bindings):
             return True
+        assignment = re.search(
+            rf"\b(?:const|let|var)\s+{variable}\s*=\s*([^;\n]+)", code
+        )
+        if assignment:
+            for mapping_name in re.findall(
+                r"\b([A-Za-z_$][\w$]*)\s*\[", assignment.group(1)
+            ):
+                mapping = re.search(
+                    rf"\b(?:const|let|var)\s+{re.escape(mapping_name)}\s*=\s*"
+                    rf"\{{(?P<body>.*?)\}}\s*(?:as\s+const)?",
+                    code,
+                    re.DOTALL,
+                )
+                if mapping and re.search(literal, mapping.group("body")):
+                    return True
     return False
 
 
@@ -300,12 +322,14 @@ def validate_component_manifest(
     *,
     kit_root: Path = DEFAULT_KIT_ROOT,
     registry_path: Path = DEFAULT_REGISTRY,
+    coverage_path: Path = DEFAULT_COVERAGE,
 ) -> dict[str, Any]:
     errors: list[str] = []
     entries_report: list[dict[str, Any]] = []
     manifest_path = Path(os.path.abspath(manifest_path))
     kit_root = Path(os.path.abspath(kit_root))
     registry_path = Path(os.path.abspath(registry_path))
+    coverage_path = Path(os.path.abspath(coverage_path))
 
     try:
         if is_link_like(manifest_path):
@@ -317,6 +341,7 @@ def validate_component_manifest(
             "manifest": str(manifest_path),
             "kitRoot": str(kit_root),
             "registry": str(registry_path),
+            "coverage": str(coverage_path),
             "entries": [],
             "publicExports": [],
             "nonVisualExports": [],
@@ -343,12 +368,14 @@ def validate_component_manifest(
             f"{kit_version!r} versus {registry_version!r}"
         )
 
-    registry_exports_value = registry.get("exports", [])
-    registry_exports = {
-        item for item in registry_exports_value if isinstance(item, str)
-    } if isinstance(registry_exports_value, list) else set()
-    if not registry_exports:
-        errors.append("Personal UI registry must contain runtime exports")
+    (
+        registry_export_list,
+        export_classifications,
+        export_stability,
+        export_metadata_errors,
+    ) = validate_export_metadata(registry)
+    errors.extend(export_metadata_errors)
+    registry_exports = set(registry_export_list)
 
     source_integrity_report = validate_source_integrity(manifest, kit_root, errors)
 
@@ -459,9 +486,10 @@ def validate_component_manifest(
             if not (
                 NON_VISUAL_HOOK.fullmatch(export_name)
                 or NON_VISUAL_CONSTANT.fullmatch(export_name)
+                or NON_VISUAL_PROVIDER.fullmatch(export_name)
             ):
                 errors.append(
-                    f"entry {entry_id!r} non-visual export {export_name!r} must be a use* hook or uppercase constant"
+                    f"entry {entry_id!r} non-visual export {export_name!r} must be a use* hook, uppercase constant, or non-rendering *Provider"
                 )
             declared_non_visual.add(export_name)
         for alias in aliases:
@@ -557,6 +585,52 @@ def validate_component_manifest(
             + ", ".join(extra_exports)
         )
 
+    classified_non_visual = {
+        export_name
+        for export_name, classification in export_classifications.items()
+        if classification == "non-visual"
+    }
+    missing_non_visual_classifications = sorted(
+        declared_non_visual - classified_non_visual
+    )
+    extra_non_visual_classifications = sorted(
+        classified_non_visual - declared_non_visual
+    )
+    if missing_non_visual_classifications:
+        errors.append(
+            "manifest non-visual export(s) are not classified as non-visual in the registry: "
+            + ", ".join(missing_non_visual_classifications)
+        )
+    if extra_non_visual_classifications:
+        errors.append(
+            "registry non-visual classification lacks matching manifest ownership: "
+            + ", ".join(extra_non_visual_classifications)
+        )
+
+    manifest_patterns = {
+        export_name
+        for entry in entries_report
+        if entry.get("kind") == "pattern"
+        for export_name in entry.get("publicExports", [])
+    }
+    classified_patterns = {
+        export_name
+        for export_name, classification in export_classifications.items()
+        if classification == "pattern"
+    }
+    missing_pattern_classifications = sorted(manifest_patterns - classified_patterns)
+    extra_pattern_classifications = sorted(classified_patterns - manifest_patterns)
+    if missing_pattern_classifications:
+        errors.append(
+            "manifest pattern export(s) are not classified as patterns in the registry: "
+            + ", ".join(missing_pattern_classifications)
+        )
+    if extra_pattern_classifications:
+        errors.append(
+            "registry pattern classification lacks a matching manifest pattern entry: "
+            + ", ".join(extra_pattern_classifications)
+        )
+
     policy = manifest.get("policy")
     policy_report: dict[str, list[str]] = {}
     if not isinstance(policy, dict):
@@ -592,15 +666,46 @@ def validate_component_manifest(
             + ", ".join(missing_roles)
         )
 
+    coverage_report: dict[str, Any] = {
+        "path": str(coverage_path),
+        "valid": False,
+        "exportCount": 0,
+    }
+    try:
+        if is_link_like(coverage_path):
+            raise ValueError("coverage matrix must not be a symbolic link or junction")
+        coverage = read_json_object(coverage_path, label="component coverage matrix")
+        expected_coverage = build_coverage_matrix(
+            skill_root=SKILL_ROOT,
+            kit_root=kit_root,
+            manifest=manifest,
+            registry=registry,
+        )
+        coverage_rows = coverage.get("exports")
+        coverage_report["exportCount"] = (
+            len(coverage_rows) if isinstance(coverage_rows, list) else 0
+        )
+        coverage_report["valid"] = coverage == expected_coverage
+        if coverage != expected_coverage:
+            errors.append(
+                "component coverage matrix is stale; run "
+                "python scripts/generate_component_coverage.py"
+            )
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError, ValueError) as error:
+        errors.append(f"invalid component coverage matrix: {error}")
+
     return {
         "valid": not errors,
         "manifest": str(manifest_path),
         "kitRoot": str(kit_root),
         "registry": str(registry_path),
+        "coverage": coverage_report,
         "kitVersion": kit_version,
         "entries": entries_report,
         "entryCount": len(entries_report),
         "publicExports": sorted(declared_exports),
+        "exportClassifications": export_classifications,
+        "exportStability": export_stability,
         "nonVisualExports": sorted(declared_non_visual),
         "ownerMarkers": sorted(owner_to_entry),
         "aliases": sorted(alias_to_entry),
@@ -616,6 +721,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--manifest", type=Path, default=DEFAULT_MANIFEST)
     parser.add_argument("--kit-root", type=Path, default=DEFAULT_KIT_ROOT)
     parser.add_argument("--registry", type=Path, default=DEFAULT_REGISTRY)
+    parser.add_argument("--coverage", type=Path, default=DEFAULT_COVERAGE)
     return parser.parse_args()
 
 
@@ -625,6 +731,7 @@ def main() -> int:
         args.manifest,
         kit_root=args.kit_root,
         registry_path=args.registry,
+        coverage_path=args.coverage,
     )
     print(json.dumps(report, ensure_ascii=False, indent=2))
     return 0 if report["valid"] else 1
