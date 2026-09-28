@@ -71,10 +71,30 @@ async function captureLoadingGeometry(casePanel, surfaceSelector, rowSelector) {
       const surface = table?.querySelector(selectors.surface);
       const row = surface?.querySelector(selectors.row);
       if (frame && surface && row) {
+        const frameStyle = getComputedStyle(frame);
+        const surfaceStyle = getComputedStyle(surface);
         const frameRect = frame.getBoundingClientRect();
         const surfaceRect = surface.getBoundingClientRect();
         const rowRect = row.getBoundingClientRect();
+        const pager = frame.querySelector('.pui-data-table__pagination');
+        const pagination = pager?.querySelector('.pui-pagination');
         resolve({
+          width: frameRect.width,
+          frameRadii: [frameStyle.borderTopLeftRadius, frameStyle.borderTopRightRadius, frameStyle.borderBottomRightRadius, frameStyle.borderBottomLeftRadius],
+          frameBorders: [frameStyle.borderTopWidth, frameStyle.borderRightWidth, frameStyle.borderBottomWidth, frameStyle.borderLeftWidth],
+          frameOverflow: [frameStyle.overflowX, frameStyle.overflowY],
+          surfaceRadii: [surfaceStyle.borderTopLeftRadius, surfaceStyle.borderTopRightRadius, surfaceStyle.borderBottomRightRadius, surfaceStyle.borderBottomLeftRadius],
+          marker: frame.classList.contains('pui-data-table__frame--paginated'),
+          fixedViewport: frame.classList.contains('pui-data-table__frame--fixed-viewport'),
+          pager: pager ? {
+            left: pager.getBoundingClientRect().left,
+            right: pager.getBoundingClientRect().right,
+            top: pager.getBoundingClientRect().top,
+            bottom: pager.getBoundingClientRect().bottom,
+            topBorder: getComputedStyle(pager).borderTopWidth,
+            bottomRadii: [getComputedStyle(pager).borderBottomRightRadius, getComputedStyle(pager).borderBottomLeftRadius],
+            paginationTopBorder: getComputedStyle(pagination).borderTopWidth,
+          } : null,
           frame: {
             left: frameRect.left,
             right: frameRect.right,
@@ -88,7 +108,11 @@ async function captureLoadingGeometry(casePanel, surfaceSelector, rowSelector) {
             top: surfaceRect.top,
             bottom: surfaceRect.bottom,
             height: surfaceRect.height,
+            scrollbarGutter: surfaceStyle.scrollbarGutter,
+            role: surface.getAttribute('role'),
+            tabIndex: surface.tabIndex,
           },
+          tableHeaders: [...frame.querySelectorAll('table thead th')].map((header) => header.getBoundingClientRect().width),
           rowHeight: rowRect.height,
         });
         return;
@@ -194,6 +218,30 @@ function assertDesktopColumnLayout(baseline, current, label) {
   }
 }
 
+function assertRoundedGeometry(geometry, label, { paginated }) {
+  assert.ok(geometry.width > 0, `${label}: surface collapsed`);
+  assert.deepEqual(geometry.frameRadii, ["12px", "12px", "12px", "12px"], `${label}: four frame corners differ`);
+  assert.deepEqual(geometry.frameBorders, ["1px", "1px", "1px", "1px"], `${label}: frame outline incomplete`);
+  assert.deepEqual(geometry.frameOverflow, ["hidden", "hidden"], `${label}: frame does not clip scrollbars and row surfaces to its rounded corners`);
+  assert.equal(geometry.marker, paginated, `${label}: pagination mode marker differs`);
+  assert.deepEqual(geometry.surfaceRadii, paginated ? ["11px", "11px", "0px", "0px"] : ["11px", "11px", "11px", "11px"], `${label}: inner corners differ`);
+  assert.ok(Math.abs(geometry.surface.left - (geometry.frame.left + 1)) <= 1, `${label}: surface left edge detached`);
+  assert.ok(Math.abs(geometry.surface.right - (geometry.frame.right - 1)) <= 1, `${label}: surface right edge detached`);
+  if (geometry.fixedViewport) assert.match(geometry.surface.scrollbarGutter, /stable/, `${label}: fixed viewport does not reserve a stable scrollbar gutter`);
+  if (paginated) {
+    assert.ok(geometry.pager, `${label}: pagination not attached to table`);
+    assert.equal(geometry.pager.topBorder, "1px", `${label}: divider missing`);
+    assert.equal(geometry.pager.paginationTopBorder, "0px", `${label}: divider duplicated`);
+    assert.deepEqual(geometry.pager.bottomRadii, ["11px", "11px"], `${label}: pagination bottom corners differ`);
+    assert.ok(Math.abs(geometry.surface.bottom - geometry.pager.top) <= 1, `${label}: pagination has a gap below rows`);
+    assert.ok(Math.abs(geometry.pager.bottom - (geometry.frame.bottom - 1)) <= 1, `${label}: pagination escaped frame`);
+    assert.ok(Math.abs(geometry.pager.left - geometry.surface.left) <= 1 && Math.abs(geometry.pager.right - geometry.surface.right) <= 1, `${label}: pagination width differs from table`);
+  } else {
+    assert.equal(geometry.pager, null, `${label}: unpaginated table has pagination`);
+    assert.ok(Math.abs(geometry.surface.bottom - (geometry.frame.bottom - 1)) <= 1, `${label}: surface bottom edge detached`);
+  }
+}
+
 async function assertRounded(table, label, { paginated, empty = false }) {
   const geometry = await table.evaluate((element) => {
     const frame = element.querySelector(".pui-data-table__frame");
@@ -238,27 +286,7 @@ async function assertRounded(table, label, { paginated, empty = false }) {
       tableHeaders,
     };
   });
-  assert.ok(geometry.width > 0, `${label}: surface collapsed`);
-  assert.deepEqual(geometry.frameRadii, ["12px", "12px", "12px", "12px"], `${label}: four frame corners differ`);
-  assert.deepEqual(geometry.frameBorders, ["1px", "1px", "1px", "1px"], `${label}: frame outline incomplete`);
-  assert.deepEqual(geometry.frameOverflow, ["hidden", "hidden"], `${label}: frame does not clip scrollbars and row surfaces to its rounded corners`);
-  assert.equal(geometry.marker, paginated, `${label}: pagination mode marker differs`);
-  assert.deepEqual(geometry.surfaceRadii, paginated ? ["11px", "11px", "0px", "0px"] : ["11px", "11px", "11px", "11px"], `${label}: inner corners differ`);
-  assert.ok(Math.abs(geometry.surface.left - (geometry.frame.left + 1)) <= 1, `${label}: surface left edge detached`);
-  assert.ok(Math.abs(geometry.surface.right - (geometry.frame.right - 1)) <= 1, `${label}: surface right edge detached`);
-  if (geometry.fixedViewport) assert.match(geometry.surface.scrollbarGutter, /stable/, `${label}: fixed viewport does not reserve a stable scrollbar gutter`);
-  if (paginated) {
-    assert.ok(geometry.pager, `${label}: pagination not attached to table`);
-    assert.equal(geometry.pager.topBorder, "1px", `${label}: divider missing`);
-    assert.equal(geometry.pager.paginationTopBorder, "0px", `${label}: divider duplicated`);
-    assert.deepEqual(geometry.pager.bottomRadii, ["11px", "11px"], `${label}: pagination bottom corners differ`);
-    assert.ok(Math.abs(geometry.surface.bottom - geometry.pager.top) <= 1, `${label}: pagination has a gap below rows`);
-    assert.ok(Math.abs(geometry.pager.bottom - (geometry.frame.bottom - 1)) <= 1, `${label}: pagination escaped frame`);
-    assert.ok(Math.abs(geometry.pager.left - geometry.surface.left) <= 1 && Math.abs(geometry.pager.right - geometry.surface.right) <= 1, `${label}: pagination width differs from table`);
-  } else {
-    assert.equal(geometry.pager, null, `${label}: unpaginated table has pagination`);
-    assert.ok(Math.abs(geometry.surface.bottom - (geometry.frame.bottom - 1)) <= 1, `${label}: surface bottom edge detached`);
-  }
+  assertRoundedGeometry(geometry, label, { paginated });
   if (empty) {
     assert.equal(await table.locator(".pui-empty").count(), 1, `${label}: empty state missing`);
     assert.equal(geometry.surface.role, "region", `${label}: fixed empty state has no scroll-region semantics`);
@@ -304,6 +332,7 @@ export async function runDataTableRoundedRegression({ page, baseURL }) {
         ),
         casePanel.getByRole("button", { name: "查询", exact: true }).click(),
       ]);
+      assertRoundedGeometry(explicitLoading, `explicit loading ${width}px`, { paginated: true });
       const loadingRowHeight = explicitLoading.rowHeight;
       assert.ok(Math.abs(explicitLoading.surface.height - ready.surface.height) <= 1, `loading changed the fixed viewport at ${width}px`);
       assert.ok(Math.abs(explicitLoading.frame.height - ready.frame.height) <= 1, `loading changed the table frame at ${width}px`);
