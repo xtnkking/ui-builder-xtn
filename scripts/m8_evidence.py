@@ -208,6 +208,21 @@ def _validate_timestamp(value: object, *, label: str) -> str:
     return value
 
 
+def _timestamp(value: object, *, label: str) -> dt.datetime:
+    validated = _validate_timestamp(value, label=label)
+    return dt.datetime.fromisoformat(validated.replace("Z", "+00:00"))
+
+
+def _json_record(path: Path, *, label: str) -> dict[str, object]:
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise M8EvidenceError(f"{label} must be valid UTF-8 JSON") from error
+    if not isinstance(value, dict):
+        raise M8EvidenceError(f"{label} must be an object")
+    return value
+
+
 def _validate_environment(value: object) -> dict[str, str]:
     if not isinstance(value, dict):
         raise M8EvidenceError("actual environment must be an object")
@@ -278,6 +293,17 @@ def record_command(
         raise M8EvidenceError(
             "command records cannot change after quality verification is frozen"
         )
+    initial_path = root / "evidence" / "initial" / "result.json"
+    if initial_path.is_file():
+        initial = _json_record(initial_path, label="initial result")
+        if initial.get("result") == "passed":
+            raise M8EvidenceError(
+                "command records cannot change after a passed initial result"
+            )
+        if not (root / "evidence" / "review" / "review.json").is_file():
+            raise M8EvidenceError(
+                "organizer review must be frozen before post-initial command records"
+            )
     if not argv or any(not isinstance(value, str) or not value for value in argv):
         raise M8EvidenceError("command argv must contain non-empty strings")
     if not isinstance(exit_code, int):
@@ -291,6 +317,20 @@ def record_command(
     if existing and existing[-1].stem != f"{sequence - 1:04d}":
         raise M8EvidenceError("command records are not a contiguous append-only sequence")
     run = manifest["run"]
+    command_started = _timestamp(started_at, label="command startedAt")
+    command_ended = _timestamp(ended_at, label="command endedAt")
+    if command_ended < command_started:
+        raise M8EvidenceError("command endedAt must not precede startedAt")
+    run_start = _json_record(start_path, label="run-start")
+    if command_started < _timestamp(run_start.get("startedAt"), label="run startedAt"):
+        raise M8EvidenceError("command startedAt must not precede the evaluator run")
+    review_path = root / "evidence" / "review" / "review.json"
+    if initial_path.is_file() and review_path.is_file():
+        review = _json_record(review_path, label="organizer review")
+        if command_started < _timestamp(review.get("reviewedAt"), label="reviewedAt"):
+            raise M8EvidenceError(
+                "post-initial command startedAt must not precede organizer review"
+            )
     record: dict[str, object] = {
         "schemaVersion": SCHEMA_VERSION,
         "kind": "personal-ui-m8-command",
@@ -299,8 +339,8 @@ def record_command(
         "argv": list(argv),
         "cwd": relative_cwd.as_posix(),
         "exitCode": exit_code,
-        "startedAt": _validate_timestamp(started_at, label="command startedAt"),
-        "endedAt": _validate_timestamp(ended_at, label="command endedAt"),
+        "startedAt": started_at,
+        "endedAt": ended_at,
         "stdout": descriptor(root, stdout),
         "stderr": descriptor(root, stderr),
     }
@@ -357,21 +397,11 @@ def _recorded_command_materials(
     return records, descriptors
 
 
-def build_quality_verification(
-    workspace: Path,
-    *,
+def _validated_quality_report(
+    root: Path,
+    manifest: Mapping[str, object],
     scenario_report: Path,
-) -> dict[str, object]:
-    """Bind a passed producer report to the append-only evaluator commands."""
-
-    root, manifest = _workspace(workspace)
-    if not (root / "evidence" / "run-start.json").is_file():
-        raise M8EvidenceError("run-start must be frozen before quality verification")
-    if not (root / "evidence" / "review" / "review.json").is_file():
-        raise M8EvidenceError("organizer review must be frozen before quality verification")
-    if (root / "evidence" / "final" / "result.json").exists():
-        raise M8EvidenceError("final result is already frozen")
-
+) -> tuple[Path, dict[str, object], list[dict[str, object]], list[dict[str, object]]]:
     report_input = (
         scenario_report
         if scenario_report.is_absolute()
@@ -382,17 +412,13 @@ def build_quality_verification(
         root,
         label="scenario quality report",
     )
-    try:
-        report = json.loads(report_path.read_text(encoding="utf-8"))
-    except (UnicodeDecodeError, json.JSONDecodeError) as error:
-        raise M8EvidenceError("scenario quality report must be valid UTF-8 JSON") from error
+    report = _json_record(report_path, label="scenario quality report")
     run = manifest.get("run")
     scenario = manifest.get("scenario")
     run_id = run.get("id") if isinstance(run, dict) else None
     scenario_id = scenario.get("id") if isinstance(scenario, dict) else None
     if (
-        not isinstance(report, dict)
-        or report.get("schemaVersion") != SCHEMA_VERSION
+        report.get("schemaVersion") != SCHEMA_VERSION
         or report.get("kind") != QUALITY_REPORT_KIND
         or report.get("result") != "passed"
         or report.get("runId") != run_id
@@ -417,7 +443,6 @@ def build_quality_verification(
         )
 
     command_records, command_descriptors = _recorded_command_materials(root, run_id)
-
     matched_sequences: set[int] = set()
     for report_command in report_commands:
         assert isinstance(report_command, dict)
@@ -434,6 +459,46 @@ def build_quality_verification(
                 "each producer command must match one distinct recorded command"
             )
         matched_sequences.add(matches[0])
+    return report_path, report, command_records, command_descriptors
+
+
+def build_quality_verification(
+    workspace: Path,
+    *,
+    scenario_report: Path,
+) -> dict[str, object]:
+    """Bind a passed producer report to the append-only evaluator commands."""
+
+    root, manifest = _workspace(workspace)
+    if not (root / "evidence" / "run-start.json").is_file():
+        raise M8EvidenceError("run-start must be frozen before quality verification")
+    if not (root / "evidence" / "review" / "review.json").is_file():
+        raise M8EvidenceError("organizer review must be frozen before quality verification")
+    if (root / "evidence" / "final" / "result.json").exists():
+        raise M8EvidenceError("final result is already frozen")
+
+    report_path, _, _, command_descriptors = _validated_quality_report(
+        root,
+        manifest,
+        scenario_report,
+    )
+    run = manifest.get("run")
+    run_id = run.get("id") if isinstance(run, dict) else None
+    initial = _json_record(
+        root / "evidence" / "initial" / "result.json",
+        label="initial result",
+    )
+    if initial.get("result") == "passed":
+        initial_verification = initial.get("verification")
+        report_descriptor = descriptor(root, report_path)
+        if (
+            not isinstance(initial_verification, dict)
+            or initial_verification.get("size") != report_descriptor["size"]
+            or initial_verification.get("sha256") != report_descriptor["sha256"]
+        ):
+            raise M8EvidenceError(
+                "a passed first result must reuse its original scenario quality report"
+            )
 
     verification: dict[str, object] = {
         "schemaVersion": SCHEMA_VERSION,
@@ -580,6 +645,13 @@ def freeze_result(
     root, manifest = _workspace(workspace)
     normalized_checks = _checks(checks, result=result)
     frozen_timestamp = _validate_timestamp(frozen_at or utc_now(), label="frozenAt")
+    frozen_time = _timestamp(frozen_timestamp, label="frozenAt")
+    start_path = root / "evidence" / "run-start.json"
+    if not start_path.is_file():
+        raise M8EvidenceError("run-start must be frozen before results")
+    run_start = _json_record(start_path, label="run-start")
+    if frozen_time < _timestamp(run_start.get("startedAt"), label="run startedAt"):
+        raise M8EvidenceError("result frozenAt must not precede the evaluator run")
     verification_path = _safe_existing(
         verification, root, label=f"{stage} verification"
     )
@@ -589,6 +661,8 @@ def freeze_result(
         raise M8EvidenceError(f"{stage} verification must be valid UTF-8 JSON") from error
     if not isinstance(verification_record, dict) or verification_record.get("result") != result:
         raise M8EvidenceError(f"{stage} verification result does not match {result}")
+    if stage == "initial" and result == "passed":
+        _validated_quality_report(root, manifest, verification_path)
     if stage == "final" and result == "passed":
         _validate_quality_verification_record(
             root,
@@ -596,10 +670,19 @@ def freeze_result(
             verification_path,
             verification_record,
         )
-    if not (root / "evidence" / "run-start.json").is_file():
-        raise M8EvidenceError("run-start must be frozen before results")
-    if stage == "final" and not (root / "evidence" / "review" / "review.json").is_file():
-        raise M8EvidenceError("organizer review must be frozen before the final result")
+    command_records, _ = _recorded_command_materials(root, manifest["run"]["id"])
+    if any(
+        _timestamp(record.get("endedAt"), label="command endedAt") > frozen_time
+        for record in command_records
+    ):
+        raise M8EvidenceError("result frozenAt must not precede recorded commands")
+    review_path = root / "evidence" / "review" / "review.json"
+    if stage == "final":
+        if not review_path.is_file():
+            raise M8EvidenceError("organizer review must be frozen before the final result")
+        review = _json_record(review_path, label="organizer review")
+        if frozen_time < _timestamp(review.get("reviewedAt"), label="reviewedAt"):
+            raise M8EvidenceError("final frozenAt must not precede organizer review")
     target = root / "evidence" / stage
     candidate = manifest.get("candidate")
     epoch = candidate.get("sourceDateEpoch") if isinstance(candidate, dict) else None
@@ -666,6 +749,15 @@ def record_review(
         or frozen_rules.get("sha256") != release.sha256_bytes(rules_content)
     ):
         raise M8EvidenceError("acceptance rules differ from the frozen candidate")
+    reviewed_timestamp = _validate_timestamp(reviewed_at or utc_now(), label="reviewedAt")
+    initial = _json_record(
+        root / "evidence" / "initial" / "result.json",
+        label="initial result",
+    )
+    if _timestamp(reviewed_timestamp, label="reviewedAt") < _timestamp(
+        initial.get("frozenAt"), label="initial frozenAt"
+    ):
+        raise M8EvidenceError("reviewedAt must not precede the initial result")
     review_root = root / "evidence" / "review"
     _write_once(review_root / "acceptance-rules.json", rules_content, root)
     run = manifest["run"]
@@ -675,7 +767,7 @@ def record_review(
         "runId": run["id"],
         "result": result,
         "attribution": attribution,
-        "reviewedAt": _validate_timestamp(reviewed_at or utc_now(), label="reviewedAt"),
+        "reviewedAt": reviewed_timestamp,
         "observations": list(observations),
         "acceptanceRules": descriptor(root, review_root / "acceptance-rules.json"),
         "initialResult": descriptor(root, root / "evidence" / "initial" / "result.json"),
@@ -709,6 +801,15 @@ def record_repair(
     sequence = len(existing) + 1
     if existing and existing[-1].name != f"{sequence - 1:04d}":
         raise M8EvidenceError("repair records are not a contiguous append-only sequence")
+    recorded_timestamp = _validate_timestamp(recorded_at or utc_now(), label="recordedAt")
+    review = _json_record(
+        root / "evidence" / "review" / "review.json",
+        label="organizer review",
+    )
+    if _timestamp(recorded_timestamp, label="recordedAt") < _timestamp(
+        review.get("reviewedAt"), label="reviewedAt"
+    ):
+        raise M8EvidenceError("repair recordedAt must not precede organizer review")
     target = repairs_root / f"{sequence:04d}"
     diff_copy = _copy_once(diff, target / "changes.diff", root)
     verification_copy = _copy_once(verification, target / "verification.json", root)
@@ -718,7 +819,7 @@ def record_repair(
         "kind": "personal-ui-m8-repair",
         "runId": run["id"],
         "sequence": sequence,
-        "recordedAt": _validate_timestamp(recorded_at or utc_now(), label="recordedAt"),
+        "recordedAt": recorded_timestamp,
         "attribution": attribution,
         "reason": reason,
         "changedFiles": list(changed_files),

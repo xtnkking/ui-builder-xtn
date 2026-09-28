@@ -795,6 +795,22 @@ class M8EvidenceContracts(unittest.TestCase):
             self.assertEqual(result.category, "invalid")
             self.assertTrue(any("first-result checks" in error for error in result.errors))
 
+    def test_passed_first_result_rejects_commands_recorded_later(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="pui-m8-evidence-") as temporary:
+            root = Path(temporary)
+            evidence = valid_evidence(root)
+            evidence["scenarios"][0]["run"]["firstResult"]["frozenAt"] = (
+                "2026-09-27T09:59:59Z"
+            )
+            result = validator.validate_m8_evidence(evidence, bundle_root=root)
+            self.assertEqual(result.category, "invalid")
+            self.assertTrue(
+                any(
+                    "passed first result cannot contain commands recorded later" in error
+                    for error in result.errors
+                )
+            )
+
     def test_scenarios_must_be_unique_and_complete(self) -> None:
         with tempfile.TemporaryDirectory(prefix="pui-m8-evidence-") as temporary:
             root = Path(temporary)

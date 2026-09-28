@@ -187,6 +187,13 @@ def _is_timestamp(value: object) -> bool:
     return parsed.tzinfo is not None
 
 
+def _timestamp(value: object) -> dt.datetime | None:
+    if not _is_timestamp(value):
+        return None
+    assert isinstance(value, str)
+    return dt.datetime.fromisoformat(value.replace("Z", "+00:00"))
+
+
 def _nonempty_strings(value: object) -> bool:
     return isinstance(value, list) and bool(value) and all(
         isinstance(item, str) and bool(item.strip()) for item in value
@@ -508,10 +515,10 @@ def _validate_command_record(
     sequence: int,
     errors: list[str],
     bundle_root: Path | None,
-) -> None:
+) -> dict[str, Any] | None:
     record = _json_artifact(value, label, errors, bundle_root)
     if record is None:
-        return
+        return None
     if record.get("kind") != "personal-ui-m8-command" or record.get("runId") != run_id:
         errors.append(f"{label} is not a command for this run")
     if record.get("sequence") != sequence:
@@ -527,6 +534,7 @@ def _validate_command_record(
             errors.append(f"{label}.{field} must be timezone-aware")
     _artifact_file(record.get("stdout"), f"{label}.stdout", errors, bundle_root)
     _artifact_file(record.get("stderr"), f"{label}.stderr", errors, bundle_root)
+    return record
 
 
 def _validate_repair_record(
@@ -537,10 +545,10 @@ def _validate_repair_record(
     sequence: int,
     errors: list[str],
     bundle_root: Path | None,
-) -> None:
+) -> dict[str, Any] | None:
     record = _json_artifact(value, label, errors, bundle_root)
     if record is None:
-        return
+        return None
     if record.get("kind") != "personal-ui-m8-repair" or record.get("runId") != run_id:
         errors.append(f"{label} is not a repair for this run")
     if record.get("sequence") != sequence:
@@ -557,6 +565,7 @@ def _validate_repair_record(
         errors.append(f"{label}.recordedAt must be timezone-aware")
     _artifact_file(record.get("diff"), f"{label}.diff", errors, bundle_root)
     _artifact_file(record.get("verification"), f"{label}.verification", errors, bundle_root)
+    return record
 
 
 def _validate_result_record(
@@ -956,11 +965,12 @@ def _validate_scenarios(
             )
 
         commands = run.get("commands")
+        command_records: list[dict[str, Any]] = []
         if not isinstance(commands, list) or not commands:
             errors.append(f"{label}.run.commands must contain retained command records")
         else:
             for command_index, command in enumerate(commands, start=1):
-                _validate_command_record(
+                command_record = _validate_command_record(
                     command,
                     label=f"{label}.run.commands[{command_index - 1}]",
                     run_id=run_id,
@@ -968,6 +978,8 @@ def _validate_scenarios(
                     errors=errors,
                     bundle_root=bundle_root,
                 )
+                if command_record is not None:
+                    command_records.append(command_record)
         command_index_document = documents.get("command-index")
         if command_index_document is not None and (
             command_index_document.get("schemaVersion") != SCHEMA_VERSION
@@ -980,8 +992,9 @@ def _validate_scenarios(
         if not isinstance(repairs, list):
             errors.append(f"{label}.run.repairs must be an array")
             repairs = []
+        repair_records: list[dict[str, Any]] = []
         for repair_index, repair in enumerate(repairs, start=1):
-            _validate_repair_record(
+            repair_record = _validate_repair_record(
                 repair,
                 label=f"{label}.run.repairs[{repair_index - 1}]",
                 run_id=run_id,
@@ -989,6 +1002,8 @@ def _validate_scenarios(
                 errors=errors,
                 bundle_root=bundle_root,
             )
+            if repair_record is not None:
+                repair_records.append(repair_record)
         repair_trace_document = documents.get("repair-trace")
         if repair_trace_document is not None:
             if (
@@ -1007,6 +1022,83 @@ def _validate_scenarios(
             errors.append(f"{label}.run.repairs must retain remediation after a failed first pass or review")
         if (repairs or needs_repair) and attribution == "none":
             errors.append(f"{label}.run.attribution must identify the first-pass failure")
+        run_started_at = _timestamp(run.get("startedAt"))
+        first_frozen_at = _timestamp(first.get("frozenAt")) if isinstance(first, dict) else None
+        reviewed_at = _timestamp(review.get("reviewedAt")) if isinstance(review, dict) else None
+        final_frozen_at = _timestamp(final.get("frozenAt")) if isinstance(final, dict) else None
+        if (
+            run_started_at is not None
+            and first_frozen_at is not None
+            and reviewed_at is not None
+            and final_frozen_at is not None
+            and not run_started_at <= first_frozen_at <= reviewed_at <= final_frozen_at
+        ):
+            errors.append(
+                f"{label}.run timestamps must follow start, first result, review, final result order"
+            )
+        for command_index, command_record in enumerate(command_records):
+            command_started_at = _timestamp(command_record.get("startedAt"))
+            command_ended_at = _timestamp(command_record.get("endedAt"))
+            if (
+                command_started_at is not None
+                and command_ended_at is not None
+                and command_ended_at < command_started_at
+            ):
+                errors.append(
+                    f"{label}.run.commands[{command_index}].endedAt must not precede startedAt"
+                )
+            if (
+                run_started_at is not None
+                and command_started_at is not None
+                and command_started_at < run_started_at
+            ):
+                errors.append(
+                    f"{label}.run.commands[{command_index}] predates the evaluator run"
+                )
+            if (
+                final_frozen_at is not None
+                and command_ended_at is not None
+                and command_ended_at > final_frozen_at
+            ):
+                errors.append(
+                    f"{label}.run.commands[{command_index}] postdates the final result"
+                )
+            if (
+                isinstance(first, dict)
+                and first.get("status") == "passed"
+                and first_frozen_at is not None
+                and command_ended_at is not None
+                and command_ended_at > first_frozen_at
+            ):
+                errors.append(
+                    f"{label}.run passed first result cannot contain commands recorded later"
+                )
+        for repair_index, repair_record in enumerate(repair_records):
+            repair_recorded_at = _timestamp(repair_record.get("recordedAt"))
+            if (
+                reviewed_at is not None
+                and repair_recorded_at is not None
+                and repair_recorded_at < reviewed_at
+            ):
+                errors.append(
+                    f"{label}.run.repairs[{repair_index}] predates organizer review"
+                )
+            if (
+                final_frozen_at is not None
+                and repair_recorded_at is not None
+                and repair_recorded_at > final_frozen_at
+            ):
+                errors.append(
+                    f"{label}.run.repairs[{repair_index}] postdates the final result"
+                )
+        if (
+            isinstance(first, dict)
+            and first.get("status") == "passed"
+            and isinstance(review, dict)
+            and review.get("status") == "passed"
+            and repairs
+        ):
+            errors.append(f"{label}.run must not repair an already-passed first result")
         checks = run.get("checks")
         if not isinstance(checks, dict):
             errors.append(f"{label}.run.checks must be an object")

@@ -17,6 +17,7 @@
 - 收紧公共 Props、受控/非受控状态和有限 ref 契约，统一 semantic theme、Portal、复合表单、modal layer、高级控件键盘模型、源码模块所有权和 CSS 门禁。
 - 安装与升级继续以 Git checkout 为单一权威来源；安装状态仅能声明受管理源码和固定 support 文件，旧清单、符号链接/联接点、伪造 ownership 和并发写入均在落盘前阻断。
 - 安装器支持显式 project/package/source root、工作区发现、自定义 source root 恢复、确定性 dry-run、包级排他锁与进程内事务回滚；候选版本只写入隔离 staging，不改当前 `0.2.19` 工作树或已安装副本。
+- M8 首轮通过必须直接绑定同一次场景质量 producer 的四条命令和报告；通过后的命令追加、倒序时间戳或审阅后补造首轮证据会被记录器与最终 validator 同时拒绝。
 
 ### Breaking
 
