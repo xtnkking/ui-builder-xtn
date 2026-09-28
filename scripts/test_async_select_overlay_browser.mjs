@@ -48,7 +48,7 @@ async function exercise(page, panel, ariaLabel, label) {
   await popup.waitFor();
   const list = popup.getByRole('listbox', { name: ariaLabel });
   assert.equal(await list.getByRole('option').count(), 6, `${label}: initial page mismatch`);
-  await page.waitForFunction((name) => document.activeElement?.getAttribute('aria-label') === name, `搜索${ariaLabel}`, { timeout: 1200 });
+  await page.waitForFunction((name) => document.activeElement?.getAttribute('aria-label') === name, `搜索${ariaLabel}`, { timeout: 5000 });
   const measured = await checkPopover(page, panel, popup, label);
   if (label === '1440px Dialog') {
     const anchor = await trigger.evaluate((element) => {

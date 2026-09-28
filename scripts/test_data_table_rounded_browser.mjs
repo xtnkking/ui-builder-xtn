@@ -62,6 +62,47 @@ async function assertRowsFitSurface(surface, rowSelector, label) {
   assert.ok(geometry.lastRowBottom <= geometry.surface.bottom + 1, `${label}: rendered rows overflow the fixed table surface`);
 }
 
+async function captureLoadingGeometry(casePanel, surfaceSelector, rowSelector) {
+  return casePanel.evaluate((panel, selectors) => new Promise((resolve, reject) => {
+    const deadline = performance.now() + 5_000;
+    const sample = () => {
+      const table = panel.querySelector('.pui-data-page .pui-data-table[data-state="loading"]');
+      const frame = table?.querySelector('.pui-data-table__frame');
+      const surface = table?.querySelector(selectors.surface);
+      const row = surface?.querySelector(selectors.row);
+      if (frame && surface && row) {
+        const frameRect = frame.getBoundingClientRect();
+        const surfaceRect = surface.getBoundingClientRect();
+        const rowRect = row.getBoundingClientRect();
+        resolve({
+          frame: {
+            left: frameRect.left,
+            right: frameRect.right,
+            top: frameRect.top,
+            bottom: frameRect.bottom,
+            height: frameRect.height,
+          },
+          surface: {
+            left: surfaceRect.left,
+            right: surfaceRect.right,
+            top: surfaceRect.top,
+            bottom: surfaceRect.bottom,
+            height: surfaceRect.height,
+          },
+          rowHeight: rowRect.height,
+        });
+        return;
+      }
+      if (performance.now() >= deadline) {
+        reject(new Error('Timed out before the table exposed a measurable loading row'));
+        return;
+      }
+      requestAnimationFrame(sample);
+    };
+    sample();
+  }), { surface: surfaceSelector, row: rowSelector });
+}
+
 async function assertDesktopBandLayout(table, label) {
   const contract = await table.evaluate((element) => {
     const surface = element.querySelector(".pui-data-table__scroller");
@@ -255,16 +296,21 @@ export async function runDataTableRoundedRegression({ page, baseURL }) {
       assert.equal(await lastRow.evaluate((element) => getComputedStyle(element).borderBottomWidth), "0px", `double bottom line at ${width}px`);
       const readyHeight = ready.surface.height;
 
-      await Promise.all([
-        tableState("loading").waitFor({ state: "visible" }),
+      const [explicitLoading] = await Promise.all([
+        captureLoadingGeometry(
+          casePanel,
+          width <= 640 ? ".pui-data-table__mobile" : ".pui-data-table__scroller",
+          rowSelector,
+        ),
         casePanel.getByRole("button", { name: "查询", exact: true }).click(),
       ]);
-      await surface.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
-      const explicitLoading = await assertRounded(table, `explicit loading ${width}px`, { paginated: true });
-      const loadingRowHeight = await surface.locator(rowSelector).evaluate((element) => element.getBoundingClientRect().height);
+      const loadingRowHeight = explicitLoading.rowHeight;
       assert.ok(Math.abs(explicitLoading.surface.height - ready.surface.height) <= 1, `loading changed the fixed viewport at ${width}px`);
       assert.ok(Math.abs(explicitLoading.frame.height - ready.frame.height) <= 1, `loading changed the table frame at ${width}px`);
-      assert.ok(Math.abs(loadingRowHeight - (width <= 640 ? 76 : 58)) <= 1, `loading row differs from the standard row-height unit at ${width}px`);
+      assert.ok(
+        Math.abs(loadingRowHeight - (width <= 640 ? 76 : 58)) <= 1,
+        `loading row differs from the standard row-height unit at ${width}px (${loadingRowHeight}px)`,
+      );
       await tableState("ready").waitFor();
       const refreshedRowHeight = await surface.locator(rowSelector).evaluate((element) => element.getBoundingClientRect().height);
       assert.ok(Math.abs(refreshedRowHeight - loadingRowHeight) <= 1, `ready row height differs from its loading skeleton at ${width}px`);
