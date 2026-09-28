@@ -40,9 +40,16 @@ class M8AcceptanceAssemblerContracts(unittest.TestCase):
         temporary = Path(cls.candidate_temporary.name)
         cls.candidate_root = temporary / "candidate"
         fixture_files = release_fixture.fixture_files(licensed=True)
-        fixture_files["assets/react-kit/component-coverage.json"] = (
-            SKILL_ROOT / "assets/react-kit/component-coverage.json"
-        ).read_bytes()
+        coverage = json.loads(
+            (SKILL_ROOT / "assets/react-kit/component-coverage.json").read_text("utf-8")
+        )
+        fixture_package = json.loads(
+            fixture_files["assets/react-kit/package.json"].decode("utf-8")
+        )
+        coverage["kitVersion"] = fixture_package["version"]
+        fixture_files["assets/react-kit/component-coverage.json"] = release.pretty_json_bytes(
+            coverage
+        )
         for relative in (
             "scripts/install_personal_ui.py",
             "scripts/verify_personal_ui.py",

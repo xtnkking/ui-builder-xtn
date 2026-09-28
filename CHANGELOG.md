@@ -19,6 +19,7 @@
 - 安装器支持显式 project/package/source root、工作区发现、自定义 source root 恢复、确定性 dry-run、包级排他锁与进程内事务回滚；候选版本只写入隔离 staging，不改当前 `0.2.19` 工作树或已安装副本。
 - M8 首轮通过必须直接绑定同一次场景质量 producer 的四条命令和报告；通过后的命令追加、倒序时间戳或审阅后补造首轮证据会被记录器与最终 validator 同时拒绝。
 - 发布候选内的 M8 合同不再依赖外层 `.git`；合成候选显式声明版本集合，baseline 算法使用自包含 annotated-tag fixture，并禁止对已成功或失败的候选重复执行正式 verify。
+- M8 acceptance assembler 的合成候选从自身 fixture package 派生 coverage 版本，不再把已转换的 RC staging 版本混入 `0.2.19` 基线 fixture。
 
 ### Breaking
 
