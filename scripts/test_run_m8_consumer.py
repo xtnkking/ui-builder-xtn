@@ -255,6 +255,7 @@ def make_candidate(
         verification_commands=(
             {"cwd": ".", "argv": ["python", "focused-check.py"]},
         ),
+        existing_versions=(),
     )
     mark_verified(candidate, plan)
     return candidate, plan
@@ -496,6 +497,7 @@ class M8ConsumerWorkspaceContracts(unittest.TestCase):
                 verification_commands=(
                     {"cwd": ".", "argv": ["python", "focused-check.py"]},
                 ),
+                existing_versions=(),
             )
             catalog_root, _ = make_catalog(root, "Evaluate the candidate.\n")
             with self.assertRaisesRegex(m8.M8ConsumerError, "verification gate"):

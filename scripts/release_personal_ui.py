@@ -2147,6 +2147,16 @@ def verify_release(
 ) -> dict[str, object]:
     candidate = candidate.resolve()
     plan, journal = load_candidate(candidate)
+    steps = journal.get("steps")
+    verify_step = steps.get("verify") if isinstance(steps, Mapping) else None
+    if (
+        journal.get("status") != "prepared"
+        or not isinstance(verify_step, Mapping)
+        or verify_step.get("status") != "pending"
+    ):
+        raise ReleaseError(
+            "release candidate verification may run only once from the prepared state"
+        )
     files = collect_staged_files(candidate)
     verify_candidate_files(plan, files)
     verify_artifact_bundle(candidate, plan, files)

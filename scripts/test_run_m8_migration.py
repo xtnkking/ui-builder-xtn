@@ -9,11 +9,21 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 import run_m8_migration as migration
 
 
 SKILL_ROOT = Path(__file__).resolve().parents[1]
+
+
+def is_git_repository(path: Path) -> bool:
+    return subprocess.run(
+        ["git", "rev-parse", "--git-dir"],
+        cwd=path,
+        capture_output=True,
+        check=False,
+    ).returncode == 0
 
 
 def run(command: list[str], *, cwd: Path) -> str:
@@ -99,7 +109,7 @@ class TemplateContracts(unittest.TestCase):
 
 
 class BaselineContracts(unittest.TestCase):
-    def make_repository(self, root: Path) -> tuple[Path, str]:
+    def make_repository(self, root: Path) -> tuple[Path, str, str]:
         repository = root / "repository"
         repository.mkdir()
         run(["git", "init", "--quiet"], cwd=repository)
@@ -118,7 +128,8 @@ class BaselineContracts(unittest.TestCase):
         run(["git", "commit", "--quiet", "-m", "baseline"], cwd=repository)
         commit = run(["git", "rev-parse", "HEAD"], cwd=repository)
         run(["git", "tag", "-a", "v0.2.19", "-m", "baseline"], cwd=repository)
-        return repository, commit
+        tag_object = run(["git", "rev-parse", "refs/tags/v0.2.19"], cwd=repository)
+        return repository, commit, tag_object
 
     def candidate_files(self, commit: str) -> dict[str, bytes]:
         return {
@@ -136,18 +147,21 @@ class BaselineContracts(unittest.TestCase):
     def test_canonical_annotated_tag_is_bound_and_exported_by_exact_commit(self) -> None:
         with tempfile.TemporaryDirectory(prefix="pui-m8-baseline-") as temporary:
             root = Path(temporary)
-            baseline = migration.resolve_baseline(
-                SKILL_ROOT,
-                self.candidate_files(migration.CANONICAL_BASELINE_COMMIT),
-            )
+            repository, commit, tag_object = self.make_repository(root)
+            with (
+                mock.patch.object(migration, "CANONICAL_BASELINE_COMMIT", commit),
+                mock.patch.object(migration, "CANONICAL_BASELINE_TAG_OBJECT", tag_object),
+            ):
+                baseline = migration.resolve_baseline(
+                    repository,
+                    self.candidate_files(commit),
+                )
             destination = root / "export"
             archive = root / "artifacts/baseline.tar"
-            report = migration.export_baseline(SKILL_ROOT, baseline, destination, archive)
+            report = migration.export_baseline(repository, baseline, destination, archive)
 
-            self.assertEqual(baseline["commit"], migration.CANONICAL_BASELINE_COMMIT)
-            self.assertEqual(
-                baseline["tagObject"], migration.CANONICAL_BASELINE_TAG_OBJECT
-            )
+            self.assertEqual(baseline["commit"], commit)
+            self.assertEqual(baseline["tagObject"], tag_object)
             package = json.loads(
                 (destination / "assets/react-kit/package.json").read_text("utf-8")
             )
@@ -155,11 +169,36 @@ class BaselineContracts(unittest.TestCase):
             self.assertEqual(report["archiveSha256"], migration.sha256_file(archive))
             self.assertGreater(report["fileCount"], 2)
 
+    @unittest.skipUnless(
+        is_git_repository(SKILL_ROOT),
+        "requires the canonical Git checkout rather than a release staging tree",
+    )
+    def test_checked_out_repository_matches_the_frozen_baseline_identity(self) -> None:
+        baseline = migration.resolve_baseline(
+            SKILL_ROOT,
+            self.candidate_files(migration.CANONICAL_BASELINE_COMMIT),
+        )
+        self.assertEqual(baseline["commit"], migration.CANONICAL_BASELINE_COMMIT)
+        self.assertEqual(baseline["tagObject"], migration.CANONICAL_BASELINE_TAG_OBJECT)
+
     def test_lookalike_annotated_tag_is_not_accepted_as_the_baseline(self) -> None:
         with tempfile.TemporaryDirectory(prefix="pui-m8-baseline-mismatch-") as temporary:
-            repository, commit = self.make_repository(Path(temporary))
+            repository, commit, _ = self.make_repository(Path(temporary))
             with self.assertRaisesRegex(
                 migration.MigrationError, "canonical annotated baseline"
+            ):
+                migration.resolve_baseline(repository, self.candidate_files(commit))
+
+    def test_lightweight_tag_is_rejected_even_when_the_commit_matches(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="pui-m8-baseline-lightweight-") as temporary:
+            repository, commit, _ = self.make_repository(Path(temporary))
+            run(["git", "tag", "--delete", "v0.2.19"], cwd=repository)
+            run(["git", "tag", "v0.2.19", commit], cwd=repository)
+            with (
+                mock.patch.object(migration, "CANONICAL_BASELINE_COMMIT", commit),
+                self.assertRaisesRegex(
+                    migration.MigrationError, "annotated immutable tag"
+                ),
             ):
                 migration.resolve_baseline(repository, self.candidate_files(commit))
 

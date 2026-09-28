@@ -17,6 +17,7 @@ import release_personal_ui as release
 import run_m8_migration as migration_runner
 import run_m8_quality as quality_runner
 import run_m8_scenario_quality as scenario_producer
+import test_release_personal_ui as release_fixture
 import test_run_m8_quality as quality_fixture
 import test_run_m8_scenario_quality as producer_fixture
 import test_validate_m8_evidence as evidence_fixture
@@ -38,12 +39,25 @@ class M8AcceptanceAssemblerContracts(unittest.TestCase):
         cls.candidate_temporary = tempfile.TemporaryDirectory(prefix="pui-m8-assemble-candidate-")
         temporary = Path(cls.candidate_temporary.name)
         cls.candidate_root = temporary / "candidate"
+        fixture_files = release_fixture.fixture_files(licensed=True)
+        fixture_files["assets/react-kit/component-coverage.json"] = (
+            SKILL_ROOT / "assets/react-kit/component-coverage.json"
+        ).read_bytes()
+        for relative in (
+            "scripts/install_personal_ui.py",
+            "scripts/verify_personal_ui.py",
+            "scripts/run_m8_migration_failure_case.py",
+            "evaluation/m8/migration-v0.2.19-consumer/template.json",
+        ):
+            fixture_files[relative] = SKILL_ROOT.joinpath(*Path(relative).parts).read_bytes()
         release.prepare_release(
             SKILL_ROOT,
             cls.candidate_root,
             candidate_version="0.3.0-rc.1",
-            source_mode="commit",
-            source_ref="HEAD",
+            source_snapshot=release_fixture.snapshot(
+                fixture_files,
+                publishable_source=True,
+            ),
             existing_versions=(),
         )
         release.verify_release(cls.candidate_root, command_runner=lambda argv, cwd: 0)

@@ -930,6 +930,37 @@ class PrepareVerifyContracts(unittest.TestCase):
                     for step in release.PUBLISH_STEPS
                 )
             )
+            retry_calls: list[list[str]] = []
+            with self.assertRaisesRegex(release.ReleaseError, "may run only once"):
+                release.verify_release(
+                    output,
+                    command_runner=lambda argv, _cwd: retry_calls.append(list(argv)) or 0,
+                )
+            self.assertEqual(retry_calls, [])
+
+    def test_successful_verification_cannot_be_replayed(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary) / "repo"
+            root.mkdir()
+            output = Path(temporary) / "candidate"
+            release.prepare_release(
+                root,
+                output,
+                candidate_version="0.3.0-rc.1",
+                source_snapshot=snapshot(
+                    fixture_files(licensed=False), publishable_source=False
+                ),
+                existing_versions=[],
+                verification_commands=({"cwd": ".", "argv": ["focused-check"]},),
+            )
+            release.verify_release(output, command_runner=lambda _argv, _cwd: 0)
+            retry_calls: list[list[str]] = []
+            with self.assertRaisesRegex(release.ReleaseError, "may run only once"):
+                release.verify_release(
+                    output,
+                    command_runner=lambda argv, _cwd: retry_calls.append(list(argv)) or 0,
+                )
+            self.assertEqual(retry_calls, [])
 
 
 class PromotionContracts(unittest.TestCase):
