@@ -271,6 +271,8 @@ async function runMatrix(config) {
           const axeResults = await new AxeBuilder({ page })
             .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
             .analyze();
+          const stem = path.join(rawRoot, `${engine}-${width}`);
+          await writeJsonExclusive(`${stem}-axe.json`, axeResults);
           assert.ok(Array.isArray(axeResults.passes) && axeResults.passes.length > 0, "axe scan has no passes");
           const blocking = [...severeRules(axeResults.violations), ...severeRules(axeResults.incomplete)];
           assert.equal(
@@ -285,7 +287,6 @@ async function runMatrix(config) {
             documentFacts.bodyClientWidth > width ||
             documentFacts.bodyScrollWidth > width;
           assert.equal(overflow, false, `page has horizontal overflow at ${engine}/${width}`);
-          const stem = path.join(rawRoot, `${engine}-${width}`);
           await page.screenshot({
             path: `${stem}.png`,
             animations: "disabled",
@@ -307,7 +308,6 @@ async function runMatrix(config) {
             deviceScaleFactor: 1,
             assertions,
           });
-          await writeJsonExclusive(`${stem}-axe.json`, axeResults);
           await writeJsonExclusive(`${stem}-responsive.json`, {
             schemaVersion: 1,
             kind: RESPONSIVE_KIND,

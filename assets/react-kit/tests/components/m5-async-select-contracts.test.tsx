@@ -1,7 +1,7 @@
 // @personal-ui-coverage {"kind":"unit","runner":"components","exports":["AsyncSelect"]}
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { AsyncSelect, type AsyncSelectOption } from "../../src/personal-ui";
+import { AsyncSelect, Field, type AsyncSelectOption } from "../../src/personal-ui";
 
 const unitedStates: AsyncSelectOption = { value: "us", label: "United States" };
 const unitedKingdom: AsyncSelectOption = { value: "gb", label: "United Kingdom" };
@@ -29,7 +29,8 @@ describe("AsyncSelect result identity and composition", () => {
     expect(search).toHaveAttribute("aria-activedescendant", kingdomId);
 
     rerender(renderSelect("fast", "slow", [unitedStates, unitedKingdom]));
-    expect(within(screen.getByRole("listbox", { name: "Country" })).queryAllByRole("option")).toHaveLength(0);
+    expect(screen.getByRole("listbox", { name: "Country" })).toContainElement(screen.getByRole("option", { name: "没有匹配选项" }));
+    expect(screen.getByRole("option", { name: "没有匹配选项" })).toHaveAttribute("aria-disabled", "true");
     expect(screen.getByRole("button", { name: "Country", exact: true })).toHaveTextContent("United States");
 
     rerender(renderSelect("fast", "fast", [unitedKingdom, unitedStates]));
@@ -51,5 +52,24 @@ describe("AsyncSelect result identity and composition", () => {
     fireEvent.compositionEnd(search);
     fireEvent.keyDown(search, { key: "Enter" });
     expect(onChange).toHaveBeenCalledWith("us");
+  });
+
+  it("keeps the required Field on the trigger and a valid listbox for an empty search", () => {
+    render(
+      <Field label="Country" htmlFor="country" required>
+        <AsyncSelect id="country" ariaLabel="Country" options={[]} defaultQuery="" />
+      </Field>,
+    );
+    fireEvent.click(screen.getByRole("combobox", { name: "Country", exact: true }));
+    const trigger = screen.getByRole("button", { name: "Country", exact: true });
+    const search = screen.getByRole("combobox", { name: "搜索Country" });
+    const listbox = screen.getByRole("listbox", { name: "Country" });
+    expect(document.querySelectorAll("#country")).toHaveLength(1);
+    expect(trigger).not.toHaveAttribute("aria-required");
+    expect(trigger).not.toHaveAttribute("aria-haspopup");
+    expect(trigger).toHaveAttribute("aria-controls", listbox.id);
+    expect(search).not.toHaveAttribute("required");
+    expect(search).toHaveAttribute("aria-controls", listbox.id);
+    expect(within(listbox).getByRole("option", { name: "没有匹配选项" })).toHaveAttribute("aria-disabled", "true");
   });
 });

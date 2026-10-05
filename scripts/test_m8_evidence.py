@@ -53,6 +53,19 @@ def acceptance_rules(root: Path) -> Path:
 
 
 class M8AppendOnlyEvidenceContracts(unittest.TestCase):
+    def test_source_snapshot_excludes_next_build_cache(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="pui-m8-next-source-") as temporary:
+            project = Path(temporary)
+            (project / "app").mkdir()
+            (project / "app" / "page.tsx").write_bytes(b"export default function Page() {}\n")
+            (project / ".next" / "cache").mkdir(parents=True)
+            (project / ".next" / "cache" / "output.bin").write_bytes(b"generated")
+
+            self.assertEqual(
+                evidence._source_files(project),
+                {"app/page.tsx": b"export default function Page() {}\n"},
+            )
+
     def test_full_first_pass_lifecycle_produces_scenario_fragment(self) -> None:
         with tempfile.TemporaryDirectory(prefix="pui-m8-record-") as temporary:
             root = Path(temporary)

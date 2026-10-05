@@ -52,7 +52,7 @@ function AsyncSelectFixture() {
     <main style={{ maxWidth: 480, margin: "48px auto" }}>
       <Button onClick={() => undefined}>前置操作</Button>
       <Form id="country-form">
-        <Field label="国家" htmlFor="country">
+        <Field label="国家" htmlFor="country" required>
           <AsyncSelect
             id="country"
             name="country"

@@ -10,6 +10,7 @@ test("AsyncSelect keeps stable active options and rejects stale remote results",
   const listbox = page.getByRole("listbox", { name: "国家" });
   await expect(input).toBeFocused();
   await expect(input).toHaveAttribute("aria-controls", await listbox.getAttribute("id") ?? "");
+  await expect(listbox.getByRole("option", { name: "没有匹配选项" })).toHaveAttribute("aria-disabled", "true");
 
   await input.fill("slow");
   await expect.poll(() => page.evaluate(() => (window as any).asyncSelectFixture.pending("slow"))).toBe(true);
@@ -39,8 +40,33 @@ test("AsyncSelect keeps stable active options and rejects stale remote results",
 test("AsyncSelect combobox and listbox have no serious accessibility violations", async ({ page }) => {
   await page.goto("/tests/fixtures/m5-async-select.html");
   await page.getByRole("combobox", { name: "国家", exact: true }).click();
-  const results = await new AxeBuilder({ page }).analyze();
-  expect(results.violations.filter((violation) => ["critical", "serious"].includes(violation.impact ?? ""))).toEqual([]);
+  const input = page.getByRole("combobox", { name: "搜索国家" });
+  const listbox = page.getByRole("listbox", { name: "国家" });
+  await expect(page.locator("[id=country]")).toHaveCount(1);
+  await expect(page.getByRole("button", { name: "国家", exact: true })).not.toHaveAttribute("aria-required");
+  await expect(input).not.toHaveAttribute("required");
+  await expect(input).toHaveAttribute("aria-controls", await listbox.getAttribute("id") ?? "");
+  await expect(listbox.getByRole("option", { name: "没有匹配选项" })).toHaveAttribute("aria-disabled", "true");
+  await expect(page.locator('[role="status"]').filter({ hasText: "没有匹配选项" })).toBeVisible();
+  const checkAccessibility = async () => {
+    const results = await new AxeBuilder({ page }).analyze();
+    expect([...results.violations, ...results.incomplete].filter((finding) => ["critical", "serious"].includes(finding.impact ?? ""))).toEqual([]);
+  };
+  await checkAccessibility();
+
+  await input.fill("fast");
+  await expect.poll(() => page.evaluate(() => (window as any).asyncSelectFixture.pending("fast"))).toBe(true);
+  await checkAccessibility();
+  await page.evaluate(() => (window as any).asyncSelectFixture.resolve("fast"));
+  await expect(listbox.getByRole("option")).toHaveCount(2);
+  await checkAccessibility();
+
+  await input.fill("slow");
+  await expect.poll(() => page.evaluate(() => (window as any).asyncSelectFixture.pending("slow"))).toBe(true);
+  await page.evaluate(() => (window as any).asyncSelectFixture.reject("slow"));
+  await expect(page.getByRole("alert")).toContainText("加载失败");
+  await expect(listbox.getByRole("option", { name: "加载失败" })).toHaveAttribute("aria-disabled", "true");
+  await checkAccessibility();
 });
 
 test("AsyncSelect keeps error and retry out of selectable options, then clears and reopens", async ({ page }) => {
@@ -52,7 +78,7 @@ test("AsyncSelect keeps error and retry out of selectable options, then clears a
   await expect.poll(() => page.evaluate(() => (window as any).asyncSelectFixture.pending("fast"))).toBe(true);
   await page.evaluate(() => (window as any).asyncSelectFixture.reject("fast"));
   await expect(page.getByRole("alert")).toContainText("加载失败");
-  await expect(page.getByRole("listbox", { name: "国家" }).getByRole("option")).toHaveCount(0);
+  await expect(page.getByRole("listbox", { name: "国家" }).getByRole("option", { name: "加载失败" })).toHaveAttribute("aria-disabled", "true");
   await page.getByRole("button", { name: "重试" }).focus();
   await page.keyboard.press("Enter");
   await expect(input).toBeFocused();

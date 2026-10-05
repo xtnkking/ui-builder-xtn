@@ -49,6 +49,7 @@ ACTUAL_ENVIRONMENT_FIELDS = (
 FROZEN_SOURCE_EXCLUDES = frozenset(
     {
         ".git",
+        ".next",
         ".vite",
         "coverage",
         "dist",

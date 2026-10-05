@@ -1350,13 +1350,14 @@ export function AsyncSelect(rawProps: AsyncSelectProps) {
   };
   return (
     <div ref={rootRef} data-pui-owner="AsyncSelect" className={cx("pui-async-select", fieldInvalid && "is-invalid")} data-open={open || undefined}>
-      <button ref={triggerRef} id={controlId} type="button" className="pui-combobox__trigger" role={open ? "button" : "combobox"} aria-label={ariaLabel} aria-haspopup="listbox" aria-expanded={open} aria-controls={open ? `${controlId}-listbox` : undefined} aria-describedby={fieldState.describedBy} aria-invalid={fieldState.invalid} aria-required={fieldState.required} disabled={disabled} onClick={() => setOpen((current) => !current)} onKeyDown={(event) => { if (open && event.key === "Escape") { event.preventDefault(); event.stopPropagation(); setOpen(false); } }}>
+      <button ref={triggerRef} id={controlId} type="button" className="pui-combobox__trigger" role={open ? "button" : "combobox"} aria-label={ariaLabel} aria-haspopup={open ? undefined : "listbox"} aria-expanded={open} aria-controls={open ? `${controlId}-listbox` : undefined} aria-describedby={fieldState.describedBy} aria-invalid={fieldState.invalid} aria-required={open ? undefined : fieldState.required} disabled={disabled} onClick={() => setOpen((current) => !current)} onKeyDown={(event) => { if (open && event.key === "Escape") { event.preventDefault(); event.stopPropagation(); setOpen(false); } }}>
         <span className="pui-combobox__value">{selected?.leading != null ? <span className="pui-option__leading" aria-hidden="true">{selected.leading}</span> : null}<span>{selected?.label ?? placeholder}</span></span>
         {effectiveLoading && !open ? <LoaderCircle className="pui-spinner" aria-hidden="true" /> : <ChevronDown aria-hidden="true" />}
       </button>
       {open ? (
         portalTarget ? createPortal(<div ref={popoverRef} className="pui-extra-popover pui-async-select__popover pui-portal" data-pui-floating-root="true" onKeyDown={handlePopoverKeyDown}>
-          <SearchInput controlRef={searchRef} value={search} placeholder={searchPlaceholder} role="combobox" aria-autocomplete="list" aria-expanded="true" aria-controls={`${controlId}-listbox`} aria-activedescendant={currentActiveValue ? `${controlId}-option-${encodeURIComponent(currentActiveValue)}` : undefined} aria-label={message("select.searchAria", { label: ariaLabel })} onCompositionStart={() => setComposing(true)} onCompositionEnd={() => setComposing(false)} onChange={(event) => { setActionError(undefined); setFailedAction(undefined); setSearch(event.target.value); setActiveValue(null); }} onClear={() => { setActionError(undefined); setFailedAction(undefined); setSearch(""); setActiveValue(null); }} onKeyDown={(event) => {
+          <CompositeFieldBoundary>
+            <SearchInput controlRef={searchRef} value={search} placeholder={searchPlaceholder} role="combobox" aria-autocomplete="list" aria-expanded="true" aria-controls={`${controlId}-listbox`} aria-activedescendant={currentActiveValue ? `${controlId}-option-${encodeURIComponent(currentActiveValue)}` : undefined} aria-label={message("select.searchAria", { label: ariaLabel })} onCompositionStart={() => setComposing(true)} onCompositionEnd={() => setComposing(false)} onChange={(event) => { setActionError(undefined); setFailedAction(undefined); setSearch(event.target.value); setActiveValue(null); }} onClear={() => { setActionError(undefined); setFailedAction(undefined); setSearch(""); setActiveValue(null); }} onKeyDown={(event) => {
             if (composing || event.nativeEvent.isComposing || event.key === "Process" || event.keyCode === 229) return;
             if ((event.key === "ArrowDown" || event.key === "ArrowUp") && enabledOptions.length) {
               event.preventDefault();
@@ -1369,6 +1370,7 @@ export function AsyncSelect(rawProps: AsyncSelectProps) {
             else if (event.key === "Enter" && currentActiveValue) { event.preventDefault(); const option = enabledOptions.find((candidate) => candidate.value === currentActiveValue); if (option) choose(option); }
             else if (event.key === "Escape") { event.preventDefault(); setOpen(false); triggerRef.current?.focus(); }
           }} />
+          </CompositeFieldBoundary>
           {effectiveLoading && !visibleOptions.length ? <div className="pui-extra-state" role="status"><Spinner label={message("common.loading")} /></div> : null}
           {effectiveError != null ? <div className="pui-extra-error" role="alert"><span>{effectiveError}</span>{loadOptions || onRetry || (failedAction === "load-more" && onLoadMore) ? <Button size="small" disabled={disabled} loading={failedAction === "load-more" ? loadingMoreInternally : retrying} onClick={(event) => {
             if (document.activeElement === event.currentTarget) searchRef.current?.focus();
@@ -1382,6 +1384,7 @@ export function AsyncSelect(rawProps: AsyncSelectProps) {
                 <Check aria-hidden="true" />
               </button>
             )) : null}
+            {effectiveError != null || !visibleOptions.length ? <div role="option" aria-disabled="true" aria-selected="false" className="pui-sr-only">{effectiveError != null ? optionText(effectiveError, message("async.loadFailed")) : effectiveLoading ? message("common.loading") : optionText(emptyText, message("select.empty"))}</div> : null}
           </div>
           {!effectiveLoading && effectiveError == null && !visibleOptions.length ? <div className="pui-extra-state" role="status">{emptyText}</div> : null}
           {effectiveError == null && hasMore && onLoadMore ? <div className="pui-async-select__footer"><Button size="small" disabled={disabled} loading={Boolean(loadingMore || loadingMoreInternally)} onClick={() => void loadMore()}>{message("loadMore.label")}</Button></div> : null}
