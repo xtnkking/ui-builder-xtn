@@ -164,6 +164,7 @@ export async function runAsyncSelectOverlayRegression({ page, baseURL, widths = 
       const roleListbox = page.getByRole('listbox', { name: '角色', exact: true });
       await roleListbox.waitFor({ state: 'visible' });
       await dropdown.waitFor({ state: 'detached' });
+      assert.equal(await page.locator('.pui-multi-select__popover input').evaluate((input) => document.activeElement === input), true, `${width}px: MultiSelect did not focus its search before Escape`);
       await page.keyboard.press('Escape');
       await roleListbox.waitFor({ state: 'detached' });
       const priorFocus = dialog.getByRole('button', { name: '角色操作菜单' });

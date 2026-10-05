@@ -23,6 +23,7 @@
 - AppNavigation 链接显式进入 WebKit 的 Tab 顺序并显示键盘焦点；Autocomplete 在 Portal 挂载后重新定位列表，避免已展开但列表隐藏；MarkdownEditor 键盘回归等待控件挂载后才发送首次 Tab。
 - M8 迁移运行器在 Windows 上显式调用 `npm.cmd` 并记录真实执行 argv；发行候选的安装器/验证器核对已打包覆盖率与 Manifest 的一致性，不再要求在 Skill 目录预装 TypeScript，仓库质量门禁仍执行完整 AST 覆盖率重算。
 - `FamilyLoginPage` 在 760px 以下不再降低整个产品视觉槽的透明度，避免自定义视觉内容中的文字和背景同时被淡化而损失对比度；736px 登录示例新增不透明与 axe 回归。
+- `MultiSelect` 打开后的搜索框在布局阶段获得焦点，避免 WebKit 中紧接着按 Esc 时由父 Dialog 误处理；浮层回归新增打开后的实际焦点断言。
 
 ### Breaking
 
@@ -30,7 +31,7 @@
 
 ### Release status
 
-- 本节是未发布工作记录，不代表可发布的 `v0.3.0`、RC、Git tag 或 GitHub Release 已存在。此前的本地 RC 在独立消费者验证中暴露窄屏视觉槽对比度问题，保留为诊断证据，不用于新源码的验收。
+- 本节是未发布工作记录，不代表可发布的 `v0.3.0`、RC、Git tag 或 GitHub Release 已存在。此前本地 RC 的窄屏视觉槽对比度问题和当前 RC 的 WebKit 聚焦失败均保留为诊断证据，不用于新源码验收。
 - 发布状态只由与候选同一 source commit 和 RC plan 绑定的有效 hosted CI 与 M8 acceptance bundle 决定；失败、取消或旧提交的 workflow 不能作为证据。获得精确 stable `planDigest` 的公开发布授权前，不得打 tag、同步或创建 GitHub Release。
 
 ## 0.2.19 - 2026-09-17

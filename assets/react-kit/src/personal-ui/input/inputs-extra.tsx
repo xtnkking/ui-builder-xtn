@@ -3,6 +3,7 @@ import {
   useId,
   useContext,
   useImperativeHandle,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -72,6 +73,8 @@ import { adjacentTreeKey, resolvedTreeKey, visibleTreeItems } from "../internal/
 import { InternalInputSlot, InternalTextareaSlot } from "../internal/input-slots";
 import { usePersonalUILocale } from "../foundation/locale";
 import { assertUniqueIdentities, cx, getTabStops, matchesFileAccept } from "../internal/utils";
+
+const useClientLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
 function useControlledOnlyValueMode(componentName: string, rawProps: object): void {
   useControllableMode({
@@ -1491,11 +1494,9 @@ export function MultiSelect(rawProps: MultiSelectProps) {
   useOutsideDismiss(open, rootRef, () => setOpen(false), popoverRef);
   useEffect(() => { setPortalTarget(floatingPortalTarget(rootRef.current)); }, []);
   useEffect(() => { if (disabled) setOpen(false); }, [disabled]);
-  useEffect(() => {
-    if (!open || disabled) return;
-    const frame = requestAnimationFrame(() => searchRef.current?.focus());
-    return () => cancelAnimationFrame(frame);
-  }, [disabled, open]);
+  useClientLayoutEffect(() => {
+    if (open && !disabled && portalTarget) searchRef.current?.focus();
+  }, [disabled, open, portalTarget]);
   const toggle = (option: MultiSelectOption) => {
     if (disabled || option.disabled) return;
     setSelectedValues(selectedValues.includes(option.value) ? selectedValues.filter((item) => item !== option.value) : [...selectedValues, option.value]);
