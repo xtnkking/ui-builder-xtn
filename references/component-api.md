@@ -2767,7 +2767,7 @@ export function PersonalUiExample() {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled-uncontrolled` |
 | Parameter type | `CascaderProps` |
-| Implementation | [assets/react-kit/src/personal-ui/input/inputs-extra.tsx:1709](../assets/react-kit/src/personal-ui/input/inputs-extra.tsx#L1709) |
+| Implementation | [assets/react-kit/src/personal-ui/input/inputs-extra.tsx:1712](../assets/react-kit/src/personal-ui/input/inputs-extra.tsx#L1712) |
 | Explorer / example | [#/components/cascader](../assets/react-kit/index.html#/components/cascader); [compiled family example](#family-cascader-compiled-example) (case `cascader/overview`, source [assets/react-kit/src/explorer/cases/input/cascader.case.tsx](../assets/react-kit/src/explorer/cases/input/cascader.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -2812,9 +2812,9 @@ type ControllableListValueProps = {
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `levelLabels` | `[]` | [assets/react-kit/src/personal-ui/input/inputs-extra.tsx:1712](../assets/react-kit/src/personal-ui/input/inputs-extra.tsx#L1712) |
-| `placeholder` | `message("select.placeholder")` | [assets/react-kit/src/personal-ui/input/inputs-extra.tsx:1712](../assets/react-kit/src/personal-ui/input/inputs-extra.tsx#L1712) |
-| `submitValue` | `"leaf"` | [assets/react-kit/src/personal-ui/input/inputs-extra.tsx:1712](../assets/react-kit/src/personal-ui/input/inputs-extra.tsx#L1712) |
+| `levelLabels` | `[]` | [assets/react-kit/src/personal-ui/input/inputs-extra.tsx:1715](../assets/react-kit/src/personal-ui/input/inputs-extra.tsx#L1715) |
+| `placeholder` | `message("select.placeholder")` | [assets/react-kit/src/personal-ui/input/inputs-extra.tsx:1715](../assets/react-kit/src/personal-ui/input/inputs-extra.tsx#L1715) |
+| `submitValue` | `"leaf"` | [assets/react-kit/src/personal-ui/input/inputs-extra.tsx:1715](../assets/react-kit/src/personal-ui/input/inputs-extra.tsx#L1715) |
 
 #### Semantic Tokens
 
@@ -4117,7 +4117,7 @@ export function PersonalUiExample() {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled-uncontrolled` |
 | Parameter type | `MultiSelectProps` |
-| Implementation | [assets/react-kit/src/personal-ui/input/inputs-extra.tsx:1424](../assets/react-kit/src/personal-ui/input/inputs-extra.tsx#L1424) |
+| Implementation | [assets/react-kit/src/personal-ui/input/inputs-extra.tsx:1427](../assets/react-kit/src/personal-ui/input/inputs-extra.tsx#L1427) |
 | Explorer / example | [#/components/multi-select](../assets/react-kit/index.html#/components/multi-select); [compiled family example](#family-multi-select-compiled-example) (case `multi-select/overview`, source [assets/react-kit/src/explorer/cases/input/multi-select.case.tsx](../assets/react-kit/src/explorer/cases/input/multi-select.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -4167,9 +4167,9 @@ export type MultiSelectProps = PublicControlProps<{
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `emptyText` | `message("select.empty")` | [assets/react-kit/src/personal-ui/input/inputs-extra.tsx:1438](../assets/react-kit/src/personal-ui/input/inputs-extra.tsx#L1438) |
-| `placeholder` | `message("select.placeholder")` | [assets/react-kit/src/personal-ui/input/inputs-extra.tsx:1436](../assets/react-kit/src/personal-ui/input/inputs-extra.tsx#L1436) |
-| `searchPlaceholder` | `message("select.searchPlaceholder")` | [assets/react-kit/src/personal-ui/input/inputs-extra.tsx:1437](../assets/react-kit/src/personal-ui/input/inputs-extra.tsx#L1437) |
+| `emptyText` | `message("select.empty")` | [assets/react-kit/src/personal-ui/input/inputs-extra.tsx:1441](../assets/react-kit/src/personal-ui/input/inputs-extra.tsx#L1441) |
+| `placeholder` | `message("select.placeholder")` | [assets/react-kit/src/personal-ui/input/inputs-extra.tsx:1439](../assets/react-kit/src/personal-ui/input/inputs-extra.tsx#L1439) |
+| `searchPlaceholder` | `message("select.searchPlaceholder")` | [assets/react-kit/src/personal-ui/input/inputs-extra.tsx:1440](../assets/react-kit/src/personal-ui/input/inputs-extra.tsx#L1440) |
 
 #### Semantic Tokens
 
@@ -5326,7 +5326,7 @@ export function PersonalUiExample() {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled-uncontrolled` |
 | Parameter type | `TagInputProps` |
-| Implementation | [assets/react-kit/src/personal-ui/input/inputs-extra.tsx:1576](../assets/react-kit/src/personal-ui/input/inputs-extra.tsx#L1576) |
+| Implementation | [assets/react-kit/src/personal-ui/input/inputs-extra.tsx:1579](../assets/react-kit/src/personal-ui/input/inputs-extra.tsx#L1579) |
 | Explorer / example | [#/components/tag-input](../assets/react-kit/index.html#/components/tag-input); [compiled family example](#family-tag-input-compiled-example) (case `tag-input/overview`, source [assets/react-kit/src/explorer/cases/input/tag-input.case.tsx](../assets/react-kit/src/explorer/cases/input/tag-input.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -5382,11 +5382,11 @@ export type TagInputProps = PublicControlProps<{
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `allowDuplicates` | `false` | [assets/react-kit/src/personal-ui/input/inputs-extra.tsx:1591](../assets/react-kit/src/personal-ui/input/inputs-extra.tsx#L1591) |
-| `ariaLabel` | `message("tagInput.label")` | [assets/react-kit/src/personal-ui/input/inputs-extra.tsx:1597](../assets/react-kit/src/personal-ui/input/inputs-extra.tsx#L1597) |
-| `normalizeValue` | `(candidate) => candidate.trim()` | [assets/react-kit/src/personal-ui/input/inputs-extra.tsx:1588](../assets/react-kit/src/personal-ui/input/inputs-extra.tsx#L1588) |
-| `placeholder` | `message("tagInput.placeholder")` | [assets/react-kit/src/personal-ui/input/inputs-extra.tsx:1592](../assets/react-kit/src/personal-ui/input/inputs-extra.tsx#L1592) |
-| `suggestions` | `[]` | [assets/react-kit/src/personal-ui/input/inputs-extra.tsx:1587](../assets/react-kit/src/personal-ui/input/inputs-extra.tsx#L1587) |
+| `allowDuplicates` | `false` | [assets/react-kit/src/personal-ui/input/inputs-extra.tsx:1594](../assets/react-kit/src/personal-ui/input/inputs-extra.tsx#L1594) |
+| `ariaLabel` | `message("tagInput.label")` | [assets/react-kit/src/personal-ui/input/inputs-extra.tsx:1600](../assets/react-kit/src/personal-ui/input/inputs-extra.tsx#L1600) |
+| `normalizeValue` | `(candidate) => candidate.trim()` | [assets/react-kit/src/personal-ui/input/inputs-extra.tsx:1591](../assets/react-kit/src/personal-ui/input/inputs-extra.tsx#L1591) |
+| `placeholder` | `message("tagInput.placeholder")` | [assets/react-kit/src/personal-ui/input/inputs-extra.tsx:1595](../assets/react-kit/src/personal-ui/input/inputs-extra.tsx#L1595) |
+| `suggestions` | `[]` | [assets/react-kit/src/personal-ui/input/inputs-extra.tsx:1590](../assets/react-kit/src/personal-ui/input/inputs-extra.tsx#L1590) |
 
 #### Semantic Tokens
 
@@ -5770,7 +5770,7 @@ export function PersonalUiExample() {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled` |
 | Parameter type | `TransferProps` |
-| Implementation | [assets/react-kit/src/personal-ui/input/inputs-extra.tsx:2006](../assets/react-kit/src/personal-ui/input/inputs-extra.tsx#L2006) |
+| Implementation | [assets/react-kit/src/personal-ui/input/inputs-extra.tsx:2009](../assets/react-kit/src/personal-ui/input/inputs-extra.tsx#L2009) |
 | Explorer / example | [#/components/transfer](../assets/react-kit/index.html#/components/transfer); [compiled family example](#family-transfer-compiled-example) (case `transfer/overview`, source [assets/react-kit/src/explorer/cases/input/transfer.case.tsx](../assets/react-kit/src/explorer/cases/input/transfer.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -5813,9 +5813,9 @@ export type TransferProps = PublicControlProps<{
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `ariaLabel` | `message("transfer.label")` | [assets/react-kit/src/personal-ui/input/inputs-extra.tsx:2009](../assets/react-kit/src/personal-ui/input/inputs-extra.tsx#L2009) |
-| `sourceTitle` | `message("transfer.source")` | [assets/react-kit/src/personal-ui/input/inputs-extra.tsx:2009](../assets/react-kit/src/personal-ui/input/inputs-extra.tsx#L2009) |
-| `targetTitle` | `message("transfer.target")` | [assets/react-kit/src/personal-ui/input/inputs-extra.tsx:2009](../assets/react-kit/src/personal-ui/input/inputs-extra.tsx#L2009) |
+| `ariaLabel` | `message("transfer.label")` | [assets/react-kit/src/personal-ui/input/inputs-extra.tsx:2012](../assets/react-kit/src/personal-ui/input/inputs-extra.tsx#L2012) |
+| `sourceTitle` | `message("transfer.source")` | [assets/react-kit/src/personal-ui/input/inputs-extra.tsx:2012](../assets/react-kit/src/personal-ui/input/inputs-extra.tsx#L2012) |
+| `targetTitle` | `message("transfer.target")` | [assets/react-kit/src/personal-ui/input/inputs-extra.tsx:2012](../assets/react-kit/src/personal-ui/input/inputs-extra.tsx#L2012) |
 
 #### Semantic Tokens
 
@@ -5885,7 +5885,7 @@ export function PersonalUiExample() {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled-uncontrolled` |
 | Parameter type | `TreeSelectProps` |
-| Implementation | [assets/react-kit/src/personal-ui/input/inputs-extra.tsx:1793](../assets/react-kit/src/personal-ui/input/inputs-extra.tsx#L1793) |
+| Implementation | [assets/react-kit/src/personal-ui/input/inputs-extra.tsx:1796](../assets/react-kit/src/personal-ui/input/inputs-extra.tsx#L1796) |
 | Explorer / example | [#/components/tree-select](../assets/react-kit/index.html#/components/tree-select); [compiled family example](#family-tree-select-compiled-example) (case `tree-select/overview`, source [assets/react-kit/src/explorer/cases/input/tree-select.case.tsx](../assets/react-kit/src/explorer/cases/input/tree-select.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -5921,7 +5921,7 @@ export type TreeSelectProps = PublicControlProps<{
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `placeholder` | `message("select.placeholder")` | [assets/react-kit/src/personal-ui/input/inputs-extra.tsx:1796](../assets/react-kit/src/personal-ui/input/inputs-extra.tsx#L1796) |
+| `placeholder` | `message("select.placeholder")` | [assets/react-kit/src/personal-ui/input/inputs-extra.tsx:1799](../assets/react-kit/src/personal-ui/input/inputs-extra.tsx#L1799) |
 
 #### Semantic Tokens
 
