@@ -77,7 +77,7 @@ async function exercise(page, panel, ariaLabel, label) {
 
   const search = popup.getByRole('combobox', { name: `搜索${ariaLabel}` });
   await search.fill('日本');
-  await popup.getByText('正在加载').waitFor();
+  await popup.locator('.pui-extra-state[role="status"]').waitFor();
   try {
     await list.getByRole('option', { name: /日本/ }).waitFor({ timeout: 2500 });
   } catch (cause) {
