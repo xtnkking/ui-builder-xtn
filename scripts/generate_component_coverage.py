@@ -130,7 +130,7 @@ EXPECTED_RUNNER_COMMANDS = {
     "test:browser": (
         "playwright test --config playwright.config.ts tests/browser --workers=1"
     ),
-    "test:a11y": "playwright test --config playwright.config.ts tests/a11y",
+    "test:a11y": "playwright test --config playwright.config.ts tests/a11y --workers=1",
     "test:visual": (
         "playwright test --config playwright.config.ts tests/visual --project=chromium"
     ),
