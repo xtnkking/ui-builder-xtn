@@ -32,6 +32,7 @@ test("Markdown toolbar is reachable by Tab and returns focus after keyboard acti
   await page.goto("/tests/fixtures/m5-markdown-editor.html");
   const editor = page.getByRole("textbox", { name: "Markdown source" });
   const bold = page.locator('[data-pui-owner="MarkdownEditor"]').getByRole("button", { name: "粗体" });
+  await expect(bold).toBeVisible();
   await page.keyboard.press("Tab");
   await expect(bold).toBeFocused();
   await page.keyboard.press("Enter");

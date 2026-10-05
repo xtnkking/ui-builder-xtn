@@ -6140,7 +6140,7 @@ export function PersonalUiExample() {
 | Kind / stability | `component` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `AnchorNavigationProps` |
-| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:540](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L540) |
+| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:541](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L541) |
 | Explorer / example | [#/components/anchor](../assets/react-kit/index.html#/components/anchor); [compiled family example](#family-anchor-compiled-example) (case `anchor/overview`, source [assets/react-kit/src/explorer/cases/navigation/anchor.case.tsx](../assets/react-kit/src/explorer/cases/navigation/anchor.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -6168,7 +6168,7 @@ export type AnchorNavigationProps = PublicControlProps<Omit<HTMLAttributes<HTMLE
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `ariaLabel` | `message("anchor.label")` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:543](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L543) |
+| `ariaLabel` | `message("anchor.label")` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:544](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L544) |
 
 #### Semantic Tokens
 
@@ -6242,7 +6242,7 @@ export function PersonalUiExample() {
 | Kind / stability | `component` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `AppNavigationProps` |
-| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:110](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L110) |
+| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:111](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L111) |
 | Explorer / example | [#/components/app-navigation](../assets/react-kit/index.html#/components/app-navigation); [compiled family example](#family-app-navigation-compiled-example) (case `app-navigation/overview`, source [assets/react-kit/src/explorer/cases/navigation/app-navigation.case.tsx](../assets/react-kit/src/explorer/cases/navigation/app-navigation.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -6312,7 +6312,7 @@ No migration is required for the current public export.
 | Kind / stability | `component` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `NavigationVariantProps` |
-| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:127](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L127) |
+| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:128](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L128) |
 | Explorer / example | [#/components/app-navigation](../assets/react-kit/index.html#/components/app-navigation); [compiled family example](#family-app-navigation-compiled-example) (case `app-navigation/overview`, source [assets/react-kit/src/explorer/cases/navigation/app-navigation.case.tsx](../assets/react-kit/src/explorer/cases/navigation/app-navigation.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -6380,7 +6380,7 @@ No migration is required for the current public export.
 | Kind / stability | `component` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `NavigationVariantProps` |
-| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:122](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L122) |
+| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:123](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L123) |
 | Explorer / example | [#/components/app-navigation](../assets/react-kit/index.html#/components/app-navigation); [compiled family example](#family-app-navigation-compiled-example) (case `app-navigation/overview`, source [assets/react-kit/src/explorer/cases/navigation/app-navigation.case.tsx](../assets/react-kit/src/explorer/cases/navigation/app-navigation.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -6448,7 +6448,7 @@ No migration is required for the current public export.
 | Kind / stability | `component` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `NavigationVariantProps` |
-| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:117](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L117) |
+| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:118](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L118) |
 | Explorer / example | [#/components/app-navigation](../assets/react-kit/index.html#/components/app-navigation); [compiled family example](#family-app-navigation-compiled-example) (case `app-navigation/overview`, source [assets/react-kit/src/explorer/cases/navigation/app-navigation.case.tsx](../assets/react-kit/src/explorer/cases/navigation/app-navigation.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -6640,7 +6640,7 @@ export function PersonalUiExample() {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled-uncontrolled` |
 | Parameter type | `CommandPaletteProps` |
-| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:347](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L347) |
+| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:348](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L348) |
 | Explorer / example | [#/components/command](../assets/react-kit/index.html#/components/command); [compiled family example](#family-command-compiled-example) (case `command/overview`, source [assets/react-kit/src/explorer/cases/navigation/command.case.tsx](../assets/react-kit/src/explorer/cases/navigation/command.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -6686,10 +6686,10 @@ type CommandPaletteQueryProps = {
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `emptyText` | `message("command.empty")` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:365](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L365) |
-| `loading` | `false` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:363](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L363) |
-| `placeholder` | `message("command.search")` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:366](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L366) |
-| `title` | `message("command.title")` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:359](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L359) |
+| `emptyText` | `message("command.empty")` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:366](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L366) |
+| `loading` | `false` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:364](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L364) |
+| `placeholder` | `message("command.search")` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:367](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L367) |
+| `title` | `message("command.title")` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:360](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L360) |
 
 #### Semantic Tokens
 
@@ -6724,7 +6724,7 @@ No migration is required for the current public export.
 | Kind / stability | `non-visual` / `stable` |
 | State mode | `hook` |
 | Parameter type | `CommandPaletteShortcutOptions` |
-| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:510](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L510) |
+| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:511](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L511) |
 | Explorer / example | [#/components/command](../assets/react-kit/index.html#/components/command); [compiled family example](#family-command-compiled-example) (case `command/overview`, source [assets/react-kit/src/explorer/cases/navigation/command.case.tsx](../assets/react-kit/src/explorer/cases/navigation/command.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | none: This non-visual hook renders no ARIA semantics. |
@@ -6748,10 +6748,10 @@ export interface CommandPaletteShortcutOptions {
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `ctrlKey` | `true` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:510](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L510) |
-| `enabled` | `true` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:510](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L510) |
-| `key` | `"k"` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:510](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L510) |
-| `metaKey` | `true` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:510](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L510) |
+| `ctrlKey` | `true` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:511](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L511) |
+| `enabled` | `true` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:511](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L511) |
+| `key` | `"k"` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:511](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L511) |
+| `metaKey` | `true` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:511](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L511) |
 
 #### Semantic Tokens
 
@@ -6809,7 +6809,7 @@ export function PersonalUiExample() {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled-uncontrolled` |
 | Parameter type | `InfiniteScrollProps` |
-| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:197](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L197) |
+| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:198](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L198) |
 | Explorer / example | [#/components/infinite-scroll](../assets/react-kit/index.html#/components/infinite-scroll); [compiled family example](#family-infinite-scroll-compiled-example) (case `infinite-scroll/overview`, source [assets/react-kit/src/explorer/cases/navigation/infinite-scroll.case.tsx](../assets/react-kit/src/explorer/cases/navigation/infinite-scroll.case.tsx)) |
 | Keyboard | delegated: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -6838,11 +6838,11 @@ export type InfiniteScrollProps = PublicControlProps<Omit<HTMLAttributes<HTMLDiv
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `disabled` | `false` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:207](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L207) |
-| `endLabel` | `message("infiniteScroll.end")` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:210](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L210) |
-| `loading` | `false` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:206](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L206) |
-| `loadingLabel` | `message("loadMore.loadingContent")` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:209](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L209) |
-| `rootMargin` | `"160px"` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:208](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L208) |
+| `disabled` | `false` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:208](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L208) |
+| `endLabel` | `message("infiniteScroll.end")` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:211](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L211) |
+| `loading` | `false` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:207](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L207) |
+| `loadingLabel` | `message("loadMore.loadingContent")` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:210](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L210) |
+| `rootMargin` | `"160px"` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:209](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L209) |
 
 #### Semantic Tokens
 
@@ -6929,7 +6929,7 @@ export function PersonalUiExample() {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled-uncontrolled` |
 | Parameter type | `LoadMoreProps` |
-| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:161](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L161) |
+| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:162](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L162) |
 | Explorer / example | [#/components/load-more](../assets/react-kit/index.html#/components/load-more); [compiled family example](#family-load-more-compiled-example) (case `load-more/overview`, source [assets/react-kit/src/explorer/cases/navigation/load-more.case.tsx](../assets/react-kit/src/explorer/cases/navigation/load-more.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -6954,9 +6954,9 @@ export type LoadMoreProps = PublicControlProps<Omit<HTMLAttributes<HTMLElement>,
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `hasMore` | `true` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:168](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L168) |
-| `label` | `message("loadMore.label")` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:169](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L169) |
-| `loadingLabel` | `message("loadMore.loading")` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:170](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L170) |
+| `hasMore` | `true` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:169](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L169) |
+| `label` | `message("loadMore.label")` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:170](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L170) |
+| `loadingLabel` | `message("loadMore.loading")` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:171](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L171) |
 
 #### Semantic Tokens
 
@@ -7145,7 +7145,7 @@ No migration is required for the current public export.
 | Kind / stability | `component` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `MenuProps` |
-| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:136](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L136) |
+| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:137](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L137) |
 | Explorer / example | [#/components/menu](../assets/react-kit/index.html#/components/menu); [compiled family example](#family-menu-compiled-example) (case `menu/overview`, source [assets/react-kit/src/explorer/cases/navigation/menu.case.tsx](../assets/react-kit/src/explorer/cases/navigation/menu.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -7181,7 +7181,7 @@ export type MenuProps = PublicControlProps<Omit<AppNavigationSharedProps, "brand
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `orientation` | `"vertical"` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:138](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L138) |
+| `orientation` | `"vertical"` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:139](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L139) |
 
 #### Semantic Tokens
 
@@ -7350,7 +7350,7 @@ export function PersonalUiExample() {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled` |
 | Parameter type | `StepperProps` |
-| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:273](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L273) |
+| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:274](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L274) |
 | Explorer / example | [#/components/stepper](../assets/react-kit/index.html#/components/stepper); [compiled family example](#family-stepper-compiled-example) (case `stepper/overview`, source [assets/react-kit/src/explorer/cases/navigation/stepper.case.tsx](../assets/react-kit/src/explorer/cases/navigation/stepper.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -7383,8 +7383,8 @@ export type StepperProps = PublicControlProps<Omit<HTMLAttributes<HTMLElement>, 
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `linear` | `true` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:280](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L280) |
-| `orientation` | `"responsive"` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:279](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L279) |
+| `linear` | `true` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:281](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L281) |
+| `orientation` | `"responsive"` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:280](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L280) |
 
 #### Semantic Tokens
 

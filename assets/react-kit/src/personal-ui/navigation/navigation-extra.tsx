@@ -81,6 +81,7 @@ function AppNavigationRoot({
             <a
               key={item.id}
               href={item.href}
+              tabIndex={0}
               className="pui-app-nav__item"
               aria-current={item.active ? "page" : undefined}
               onClick={() => item.onSelect?.()}

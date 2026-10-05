@@ -995,7 +995,7 @@ export function Autocomplete(rawProps: AutocompleteProps) {
     const needle = search.trim().toLocaleLowerCase();
     return options.filter((option) => `${option.label} ${option.description ?? ""} ${option.searchText ?? ""}`.toLocaleLowerCase().includes(needle));
   }, [filterOptions, options, search]);
-  usePopoverPosition(open, "bottom", rootRef, popoverRef);
+  usePopoverPosition(open && portalTarget !== null, "bottom", rootRef, popoverRef);
   useOutsideDismiss(open, rootRef, () => setOpen(false), popoverRef);
   useEffect(() => { setPortalTarget(floatingPortalTarget(rootRef.current)); }, []);
   useEffect(() => { if (disabled) setOpen(false); }, [disabled]);

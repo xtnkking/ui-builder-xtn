@@ -3481,7 +3481,7 @@
         {
           "file": "src/personal-ui/styles/extended.css",
           "layer": "pui.components",
-          "line": 207
+          "line": 208
         }
       ]
     },
@@ -3834,5 +3834,5 @@
       ]
     }
   ],
-  "selectorCount": 1115
+  "selectorCount": 1116
 }

@@ -80,6 +80,7 @@
 }
 
 .pui-app-nav__item:hover:not(:disabled) { background: var(--pui-primary-soft); color: var(--pui-primary-ink); }
+.pui-app-nav__item:focus-visible { outline: 2px solid var(--pui-focus-ring); outline-offset: 2px; }
 .pui-app-nav__item[aria-current="page"], .pui-app-nav__item[aria-pressed="true"] { background: var(--pui-primary-soft); color: var(--pui-primary-ink); font-weight: 650; }
 .pui-app-nav__item:disabled { color: var(--_pui-disabled-text); cursor: not-allowed; }
 .pui-app-nav__icon { display: grid; place-items: center; flex: 0 0 18px; }
