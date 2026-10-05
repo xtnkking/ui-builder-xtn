@@ -323,7 +323,10 @@ def validate_component_manifest(
     kit_root: Path = DEFAULT_KIT_ROOT,
     registry_path: Path = DEFAULT_REGISTRY,
     coverage_path: Path = DEFAULT_COVERAGE,
+    coverage_validation: str = "full",
 ) -> dict[str, Any]:
+    if coverage_validation not in {"full", "packaged"}:
+        raise ValueError(f"unknown coverage validation mode: {coverage_validation}")
     errors: list[str] = []
     entries_report: list[dict[str, Any]] = []
     manifest_path = Path(os.path.abspath(manifest_path))
@@ -670,27 +673,67 @@ def validate_component_manifest(
         "path": str(coverage_path),
         "valid": False,
         "exportCount": 0,
+        "mode": coverage_validation,
     }
     try:
         if is_link_like(coverage_path):
             raise ValueError("coverage matrix must not be a symbolic link or junction")
         coverage = read_json_object(coverage_path, label="component coverage matrix")
-        expected_coverage = build_coverage_matrix(
-            skill_root=SKILL_ROOT,
-            kit_root=kit_root,
-            manifest=manifest,
-            registry=registry,
-        )
         coverage_rows = coverage.get("exports")
         coverage_report["exportCount"] = (
             len(coverage_rows) if isinstance(coverage_rows, list) else 0
         )
-        coverage_report["valid"] = coverage == expected_coverage
-        if coverage != expected_coverage:
-            errors.append(
-                "component coverage matrix is stale; run "
-                "python scripts/generate_component_coverage.py"
+        if coverage_validation == "full":
+            expected_coverage = build_coverage_matrix(
+                skill_root=SKILL_ROOT,
+                kit_root=kit_root,
+                manifest=manifest,
+                registry=registry,
             )
+            coverage_report["valid"] = coverage == expected_coverage
+            if coverage != expected_coverage:
+                errors.append(
+                    "component coverage matrix is stale; run "
+                    "python scripts/generate_component_coverage.py"
+                )
+        else:
+            owners = {
+                name: entry
+                for entry in entries_value
+                if isinstance(entry, dict)
+                for name in (
+                    entry.get("publicExports")
+                    if isinstance(entry.get("publicExports"), list)
+                    else []
+                )
+                if isinstance(name, str)
+            }
+            rows = {
+                row.get("name"): row
+                for row in (coverage_rows if isinstance(coverage_rows, list) else [])
+                if isinstance(row, dict) and isinstance(row.get("name"), str)
+            }
+            coverage_report["valid"] = (
+                coverage.get("schemaVersion") == 3
+                and coverage.get("kitVersion") == registry_version
+                and isinstance(coverage_rows, list)
+                and len(rows) == len(coverage_rows) == len(registry_export_list)
+                and set(rows) == registry_exports
+                and all(
+                    isinstance(owners.get(name), dict)
+                    and row.get("classification") == export_classifications.get(name)
+                    and row.get("stability") == export_stability.get(name)
+                    and isinstance(row.get("owner"), dict)
+                    and row["owner"].get("manifestEntry") == owners[name].get("id")
+                    and isinstance(owners[name].get("sourceFiles"), list)
+                    and row.get("source") == sorted(owners[name].get("sourceFiles", []))
+                    for name, row in rows.items()
+                )
+            )
+            if not coverage_report["valid"]:
+                errors.append(
+                    "packaged component coverage matrix disagrees with the registry or manifest"
+                )
     except (OSError, UnicodeDecodeError, json.JSONDecodeError, ValueError) as error:
         errors.append(f"invalid component coverage matrix: {error}")
 

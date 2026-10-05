@@ -21,6 +21,7 @@
 - 发布候选内的 M8 合同不再依赖外层 `.git`；合成候选显式声明版本集合，baseline 算法使用自包含 annotated-tag fixture，并禁止对已成功或失败的候选重复执行正式 verify。
 - M8 acceptance assembler 的合成候选从自身 fixture package 派生 coverage 版本，不再把已转换的 RC staging 版本混入 `0.2.19` 基线 fixture。
 - AppNavigation 链接显式进入 WebKit 的 Tab 顺序并显示键盘焦点；Autocomplete 在 Portal 挂载后重新定位列表，避免已展开但列表隐藏；MarkdownEditor 键盘回归等待控件挂载后才发送首次 Tab。
+- M8 迁移运行器在 Windows 上显式调用 `npm.cmd` 并记录真实执行 argv；发行候选的安装器/验证器核对已打包覆盖率与 Manifest 的一致性，不再要求在 Skill 目录预装 TypeScript，仓库质量门禁仍执行完整 AST 覆盖率重算。
 
 ### Breaking
 

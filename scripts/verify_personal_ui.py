@@ -3007,6 +3007,7 @@ def main() -> int:
         COMPONENT_MANIFEST_PATH,
         kit_root=ASSET_ROOT,
         registry_path=REGISTRY_PATH,
+        coverage_validation="packaged",
     )
     manifest_errors = component_manifest_report.get("errors", [])
     if isinstance(manifest_errors, list):

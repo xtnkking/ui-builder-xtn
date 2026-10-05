@@ -461,6 +461,12 @@ class RecordedCommand:
     record_path: str
 
 
+def executable_argv(argv: Sequence[str], *, platform: str = os.name) -> list[str]:
+    if platform == "nt" and argv and argv[0] == "npm":
+        return ["npm.cmd", *argv[1:]]
+    return list(argv)
+
+
 class CommandRecorder:
     def __init__(self, artifact_root: Path, replacements: Sequence[tuple[Path, str]]):
         self.root = artifact_root / "commands"
@@ -482,8 +488,9 @@ class CommandRecorder:
         safe_label = SAFE_LABEL.sub("-", label.lower()).strip("-")
         stem = f"{self.sequence:02d}-{safe_label}"
         started = time.monotonic()
+        executed_argv = executable_argv(argv)
         process = subprocess.run(
-            list(argv),
+            executed_argv,
             cwd=cwd,
             env=dict(environment) if environment is not None else None,
             capture_output=True,
@@ -506,7 +513,7 @@ class CommandRecorder:
             "schemaVersion": SCHEMA_VERSION,
             "kind": "personal-ui-m8-migration-command",
             "label": label,
-            "argv": [scrub_text(str(value), self.replacements) for value in argv],
+            "argv": [scrub_text(str(value), self.replacements) for value in executed_argv],
             "cwd": scrub_text(str(cwd.resolve()), self.replacements),
             "returnCode": process.returncode,
             "durationSeconds": duration,

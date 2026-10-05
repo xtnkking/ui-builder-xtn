@@ -378,6 +378,7 @@ def load_registry() -> dict[str, object]:
         COMPONENT_MANIFEST_PATH,
         kit_root=ASSET_ROOT,
         registry_path=REGISTRY_PATH,
+        coverage_validation="packaged",
     )
     manifest_errors = manifest_report.get("errors", [])
     if manifest_errors:

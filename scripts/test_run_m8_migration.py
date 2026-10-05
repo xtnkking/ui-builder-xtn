@@ -12,6 +12,7 @@ from pathlib import Path
 from unittest import mock
 
 import run_m8_migration as migration
+import validate_component_manifest as manifest_validator
 
 
 SKILL_ROOT = Path(__file__).resolve().parents[1]
@@ -48,6 +49,37 @@ def write_json(path: Path, value: object) -> None:
 
 
 class TemplateContracts(unittest.TestCase):
+    def test_packaged_manifest_validation_does_not_need_build_dependencies(self) -> None:
+        with mock.patch.object(
+            manifest_validator,
+            "build_coverage_matrix",
+            side_effect=AssertionError("AST tooling must not run during consumer installation"),
+        ):
+            report = manifest_validator.validate_component_manifest(
+                coverage_validation="packaged"
+            )
+        self.assertEqual(report["errors"], [])
+        self.assertEqual(report["coverage"]["mode"], "packaged")
+        self.assertTrue(report["coverage"]["valid"])
+
+    def test_packaged_manifest_rejects_a_coverage_owner_mismatch(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="pui-m8-coverage-tamper-") as temporary:
+            coverage_path = Path(temporary) / "coverage.json"
+            coverage = json.loads(
+                (SKILL_ROOT / "assets/react-kit/component-coverage.json").read_text("utf-8")
+            )
+            coverage["exports"][0]["owner"]["manifestEntry"] = "wrong-owner"
+            write_json(coverage_path, coverage)
+            report = manifest_validator.validate_component_manifest(
+                coverage_path=coverage_path,
+                coverage_validation="packaged",
+            )
+        self.assertFalse(report["coverage"]["valid"])
+        self.assertIn(
+            "packaged component coverage matrix disagrees with the registry or manifest",
+            report["errors"],
+        )
+
     def test_template_exercises_one_documented_break_and_all_required_workflows(self) -> None:
         root, template = migration.load_template(SKILL_ROOT)
         before = (root / "before/src/App.tsx").read_text(encoding="utf-8")
@@ -204,6 +236,36 @@ class BaselineContracts(unittest.TestCase):
 
 
 class EvidenceContracts(unittest.TestCase):
+    def test_npm_shim_resolution_records_the_executed_argv(self) -> None:
+        self.assertEqual(
+            migration.executable_argv(["npm", "ci"], platform="nt"),
+            ["npm.cmd", "ci"],
+        )
+        self.assertEqual(
+            migration.executable_argv(["npm", "ci"], platform="posix"),
+            ["npm", "ci"],
+        )
+        self.assertEqual(
+            migration.executable_argv(["node", "--version"], platform="nt"),
+            ["node", "--version"],
+        )
+        with tempfile.TemporaryDirectory(prefix="pui-m8-npm-argv-") as temporary:
+            root = Path(temporary)
+            artifacts = root / "artifacts"
+            artifacts.mkdir()
+            recorder = migration.CommandRecorder(artifacts, ())
+            with (
+                mock.patch.object(migration, "executable_argv", return_value=["npm.cmd", "--version"]),
+                mock.patch.object(migration.subprocess, "run") as run_process,
+            ):
+                run_process.return_value = subprocess.CompletedProcess(
+                    ["npm.cmd", "--version"], 0, stdout="10.9.3\n", stderr=""
+                )
+                command = recorder.run("npm version", ["npm", "--version"], cwd=root)
+            self.assertEqual(run_process.call_args.args[0], ["npm.cmd", "--version"])
+            record = json.loads((root / command.record_path).read_text("utf-8"))
+            self.assertEqual(record["argv"], ["npm.cmd", "--version"])
+
     def bindings(self) -> tuple[dict[str, str], dict[str, str]]:
         candidate = {
             "version": "0.3.0-rc.1",
