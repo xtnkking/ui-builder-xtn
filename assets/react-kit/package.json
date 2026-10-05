@@ -42,7 +42,7 @@
     "test:types": "tsc --noEmit -p tsconfig.contracts.json",
     "test:components": "vitest run --config vitest.config.ts",
     "test:browser": "playwright test --config playwright.config.ts tests/browser --workers=1",
-    "test:a11y": "playwright test --config playwright.config.ts tests/a11y",
+    "test:a11y": "playwright test --config playwright.config.ts tests/a11y --workers=1",
     "test:visual": "playwright test --config playwright.config.ts tests/visual --project=chromium",
     "release:check": "npm run validate:skill && npm run docs:check && npm run api:compat:check && npm run test:api-compat && npm run test:types && npm run test:contracts && npm run test:components && npm run build && npm run css:dist:check && npm run test:browser && npm run test:a11y && npm run test:visual",
     "release": "python ../../scripts/release_personal_ui.py",
