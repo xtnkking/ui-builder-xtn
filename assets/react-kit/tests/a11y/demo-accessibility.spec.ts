@@ -38,6 +38,13 @@ test.describe("Personal UI example accessibility", () => {
     await expectNoBlockingViolations(page, "family login");
   });
 
+  test("family login visual slot keeps contrast at tablet width", async ({ page }) => {
+    await page.setViewportSize({ width: 736, height: 900 });
+    await openExample(page, "/#/patterns/authentication");
+    await expect(page.locator(".pui-auth__scene").first()).toHaveCSS("opacity", "1");
+    await expectNoBlockingViolations(page, "family login at 736px");
+  });
+
   test("number inputs have no blocking automated violations", async ({ page }) => {
     await openExample(page, "/#/components/number");
     await expect(page.getByRole("heading", { name: "数字步进输入", exact: true })).toBeVisible();
