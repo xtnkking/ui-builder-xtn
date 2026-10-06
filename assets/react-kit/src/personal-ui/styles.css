@@ -2981,6 +2981,7 @@ input[type="password"]::-ms-reveal {
   width: 100%;
   min-width: 0;
   max-width: 560px;
+  background: var(--_pui-auth-visual-bg);
 }
 
 .pui-auth__product-copy > span,

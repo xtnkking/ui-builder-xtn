@@ -1,4 +1,6 @@
 // @personal-ui-coverage {"kind":"a11y","runner":"a11y","exports":["Accordion","Alert","AnchorNavigation","AppNavigation","AsyncAction","AsyncSelect","Attachment","AuthenticationPage","Autocomplete","Avatar","AvatarGroup","Badge","Banner","BarChart","BottomNavigation","Breadcrumbs","Button","ButtonGroup","Calendar","Carousel","Cascader","Checkbox","ClipboardButton","CodeBlock","CodeEditor","Collapse","ColorPicker","Combobox","CommandPalette","ConfirmDialog","ContextMenu","CreateEditPage","DataTable","DateField","DateRangeField","DescriptionList","DetailPage","Dialog","DragDrop","Drawer","DropdownMenu","EmptyState","ErrorState","ExpandableText","FamilyLoginPage","Field","FileUpload","FilterBar","FocusTrap","Form","Gallery","GuidedTour","HoverCard","IconButton","ImportExportPage","InfiniteScroll","InlineEdit","InlineMessage","Input","Lightbox","Link","ListManagementPage","LoadMore","MarkdownEditor","MasterDetail","Media","MemberManagementPage","Menu","Meter","MultiSelect","NoResults","NumberInput","OtpInput","OverflowText","PageHeading","Pagination","PasswordInput","Popconfirm","Popover","Progress","ProgressRing","Radio","Rating","ResizablePanels","RetryButton","RichTextEditor","Scheduler","SearchableSelect","SearchFilterPage","SearchInput","SegmentedControl","Select","SettingsPage","SideNavigation","Slider","SortableList","Spinner","SplitButton","Statistic","StatusIndicator","StatusPage","Stepper","Switch","Tabs","Tag","TagInput","Textarea","Timeline","TimezoneSelect","ToastProvider","ToggleButton","Toolbar","Tooltip","TopNavigation","Transfer","Tree","TreeSelect","TreeTable","ValidationSummary","WizardFlow"]}
+import AxeBuilder from "@axe-core/playwright";
+import { expect, test } from "@playwright/test";
 import { registerAriaEvidence, type AriaEvidenceCase } from "../support/m6-evidence";
 
 const ariaEvidenceCases = [
@@ -125,3 +127,24 @@ const ariaEvidenceCases = [
 ] as const satisfies readonly AriaEvidenceCase[];
 
 registerAriaEvidence(ariaEvidenceCases);
+
+test("FamilyLoginPage product copy has determinate contrast at the stacked breakpoint", async ({ page }) => {
+  await page.setViewportSize({ width: 736, height: 900 });
+  await page.goto("/#/patterns/authentication");
+  await page.getByRole("tab", { name: "品牌家族登录预览" }).click();
+  const copy = page.locator(".demo-explorer-preview .pui-auth__product-copy").last();
+  await expect(copy.getByText("Workspace Docs")).toBeVisible();
+  const backgrounds = await copy.evaluate((element) => ({
+    copy: getComputedStyle(element).backgroundColor,
+    visual: getComputedStyle(element.parentElement).backgroundColor,
+  }));
+  expect(backgrounds.copy).toBe(backgrounds.visual);
+  const result = await new AxeBuilder({ page })
+    .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
+    .analyze();
+  const blockingCopyNodes = [...result.violations, ...result.incomplete]
+    .filter((rule) => rule.impact === "critical" || rule.impact === "serious")
+    .flatMap((rule) => rule.nodes)
+    .filter((node) => node.target.some((target) => target.includes("pui-auth__product-copy")));
+  expect(blockingCopyNodes).toEqual([]);
+});
