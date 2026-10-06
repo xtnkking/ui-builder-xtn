@@ -45,6 +45,21 @@ test.describe("Personal UI example accessibility", () => {
     await expectNoBlockingViolations(page, "family login at 736px");
   });
 
+  test("required field markers have determinate contrast at tablet width", async ({ page }) => {
+    await page.setViewportSize({ width: 736, height: 900 });
+    await openExample(page, "/#/components/field");
+    await page.addStyleTag({ content: "#root { background: #f4f7f6; }" });
+    const markers = page.locator(".pui-label__required");
+    await expect(markers.first()).toHaveCSS("background-color", "rgb(247, 248, 250)");
+    const results = await new axeBuilder({ page }).analyze();
+    const blocking = [...results.violations, ...results.incomplete]
+      .filter((rule) => rule.impact != null && blockingImpacts.has(rule.impact))
+      .flatMap((rule) => rule.nodes
+        .filter((node) => node.target.some((target) => target.includes(".pui-label__required")))
+        .map((node) => ({ id: rule.id, target: node.target })));
+    expect(blocking).toEqual([]);
+  });
+
   test("number inputs have no blocking automated violations", async ({ page }) => {
     await openExample(page, "/#/components/number");
     await expect(page.getByRole("heading", { name: "数字步进输入", exact: true })).toBeVisible();

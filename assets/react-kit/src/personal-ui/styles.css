@@ -619,6 +619,10 @@ fieldset.pui-field > legend {
   font-weight: 400;
 }
 
+.pui-label__required {
+  background: var(--pui-bg);
+}
+
 .pui-field__hint,
 .pui-field__error {
   min-width: 0;
