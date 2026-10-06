@@ -34,7 +34,18 @@ export async function runListPageWidthRegression({ page, baseURL }) {
       const dataTableCase = await selectExplorerCase(page, legacyExplorerCaseTabs.dataTable);
       const root = dataTableCase.locator(".demo-list-frame .pui-list-page");
       await root.waitFor();
-      const measure = () => root.evaluate((element) => {
+      const measure = (expectedState) => root.evaluate(async (element, state) => {
+        if (state) {
+          await new Promise((resolve, reject) => {
+            const deadline = performance.now() + 5_000;
+            const sample = () => {
+              if (element.querySelector(`.pui-data-table[data-state="${state}"]`)) return resolve();
+              if (performance.now() >= deadline) return reject(new Error(`Table did not enter ${state} state`));
+              requestAnimationFrame(sample);
+            };
+            sample();
+          });
+        }
         const container = element.getBoundingClientRect();
         const frame = element.querySelector(".pui-data-table__frame");
         const frameRect = frame.getBoundingClientRect();
@@ -80,7 +91,7 @@ export async function runListPageWidthRegression({ page, baseURL }) {
           documentWidth: document.documentElement.scrollWidth,
           viewportWidth: window.innerWidth,
         };
-      });
+      }, expectedState);
       const ready = await measure();
       if (ready.documentWidth > ready.viewportWidth) {
         const offenders = await page.evaluate(() => [...document.querySelectorAll("*")]
@@ -196,9 +207,10 @@ export async function runListPageWidthRegression({ page, baseURL }) {
         assert.match(await firstRow.innerText(), /已停用/);
       }
 
-      await page.getByRole("button", { name: "刷新", exact: true }).click();
-      await page.locator('.demo-list-frame .pui-data-table[data-state="loading"]').waitFor();
-      const loading = await measure();
+      const [loading] = await Promise.all([
+        measure("loading"),
+        page.getByRole("button", { name: "刷新", exact: true }).click(),
+      ]);
       assert.deepEqual(loading.frameRadii, ready.frameRadii, `loading table changed outer corners at ${width}px`);
       assert.deepEqual(loading.surfaceRadii, ready.surfaceRadii, `loading table changed surface corners at ${width}px`);
       assert.ok(Math.abs(loading.tableWidth - ready.tableWidth) <= 1, `table width shifted while loading at ${width}px`);
@@ -273,9 +285,10 @@ export async function runListPageWidthRegression({ page, baseURL }) {
         await page.locator(".pui-toast").first().waitFor({ state: "detached" });
         await page.screenshot({ path: `${process.env.PERSONAL_UI_LIST_SCREENSHOT_PREFIX}-320-all-full.png`, fullPage: true });
       }
-      await page.getByRole("button", { name: "刷新", exact: true }).click();
-      await page.locator('.demo-list-frame .pui-data-table[data-state="loading"]').waitFor();
-      const allLoading = await measure();
+      const [allLoading] = await Promise.all([
+        measure("loading"),
+        page.getByRole("button", { name: "刷新", exact: true }).click(),
+      ]);
       assert.equal(allLoading.pager, null, `unpaginated loading gained a pager at ${width}px`);
       assert.ok(Math.abs(allLoading.frame.bottom - all.frame.bottom) <= 1, `unpaginated loading changed table height at ${width}px`);
       await page.locator('.demo-list-frame .pui-data-table[data-state="ready"]').waitFor();

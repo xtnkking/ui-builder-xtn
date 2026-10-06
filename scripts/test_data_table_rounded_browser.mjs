@@ -108,6 +108,9 @@ async function captureLoadingGeometry(casePanel, surfaceSelector, rowSelector) {
             top: surfaceRect.top,
             bottom: surfaceRect.bottom,
             height: surfaceRect.height,
+            scrollTop: surface.scrollTop,
+            clientHeight: surface.clientHeight,
+            scrollHeight: surface.scrollHeight,
             scrollbarGutter: surfaceStyle.scrollbarGutter,
             role: surface.getAttribute('role'),
             tabIndex: surface.tabIndex,
@@ -347,7 +350,7 @@ export async function runDataTableRoundedRegression({ page, baseURL }) {
 
       await table.getByRole("combobox", { name: "每页数量" }).click();
       await Promise.all([
-        tableState("loading").waitFor({ state: "visible" }),
+        captureLoadingGeometry(casePanel, width <= 640 ? ".pui-data-table__mobile" : ".pui-data-table__scroller", rowSelector),
         page.getByRole("option", { name: "20 条" }).click(),
       ]);
       await tableState("ready").waitFor();
@@ -411,19 +414,15 @@ export async function runDataTableRoundedRegression({ page, baseURL }) {
       });
       assert.ok(beforePageSizeReset.scrollTop > 0, `could not prepare the table scroll reset case at ${width}px`);
       await table.getByRole("combobox", { name: "每页数量" }).click();
-      await Promise.all([
-        tableState("loading").waitFor({ state: "visible" }),
+      const [pageSizeLoading] = await Promise.all([
+        captureLoadingGeometry(casePanel, width <= 640 ? ".pui-data-table__mobile" : ".pui-data-table__scroller", rowSelector),
         page.getByRole("option", { name: "50 条" }).click(),
       ]);
-      const loadingScroll = await surface.evaluate((element) => ({
-        scrollTop: element.scrollTop,
-        clientHeight: element.clientHeight,
-        scrollHeight: element.scrollHeight,
-      }));
+      const loadingScroll = pageSizeLoading.surface;
       assert.ok(loadingScroll.scrollHeight - loadingScroll.clientHeight >= beforePageSizeReset.scrollTop - 1, `loading content shrank and could mask scroll reset at ${width}px`);
       assert.ok(loadingScroll.scrollTop <= 1, `table did not reset to the top when the page-size request started at ${width}px`);
-      const largestPageLoading = await assertRounded(table, `50-row loading ${width}px`, { paginated: true });
-      assert.ok(Math.abs(ready.surface.height - largestPageLoading.surface.height) <= 1, `50-row loading changed the fixed viewport at ${width}px`);
+      assertRoundedGeometry(pageSizeLoading, `50-row loading ${width}px`, { paginated: true });
+      assert.ok(Math.abs(ready.surface.height - pageSizeLoading.surface.height) <= 1, `50-row loading changed the fixed viewport at ${width}px`);
       await tableState("ready").waitFor();
       await table.getByText("1-23 / 23 条结果", { exact: true }).waitFor();
       const largestPage = await assertRounded(table, `50-row ready ${width}px`, { paginated: true });
@@ -434,9 +433,10 @@ export async function runDataTableRoundedRegression({ page, baseURL }) {
 
       await casePanel.getByRole("searchbox", { name: "搜索姓名或邮箱" }).fill("ning");
       const [sparseLoading] = await Promise.all([
-        assertRounded(tableState("loading"), `sparse loading ${width}px`, { paginated: true }),
+        captureLoadingGeometry(casePanel, width <= 640 ? ".pui-data-table__mobile" : ".pui-data-table__scroller", rowSelector),
         casePanel.getByRole("button", { name: "查询", exact: true }).click(),
       ]);
+      assertRoundedGeometry(sparseLoading, `sparse loading ${width}px`, { paginated: true });
       assert.ok(Math.abs(ready.surface.height - sparseLoading.surface.height) <= 1, `query loading changed table height at ${width}px`);
       await tableState("ready").waitFor();
       const sparse = await assertRounded(table, `sparse ready ${width}px`, { paginated: true });
@@ -465,7 +465,7 @@ export async function runDataTableRoundedRegression({ page, baseURL }) {
 
       await casePanel.getByRole("button", { name: "重置", exact: true }).click();
       await Promise.all([
-        tableState("loading").waitFor({ state: "visible" }),
+        captureLoadingGeometry(casePanel, width <= 640 ? ".pui-data-table__mobile" : ".pui-data-table__scroller", rowSelector),
         casePanel.getByRole("button", { name: "查询", exact: true }).click(),
       ]);
       await tableState("ready").waitFor();
@@ -473,9 +473,10 @@ export async function runDataTableRoundedRegression({ page, baseURL }) {
 
       await scenario.getByRole("button", { name: "空结果" }).click();
       const [emptyLoading] = await Promise.all([
-        assertRounded(tableState("loading"), `loading ${width}px`, { paginated: true }),
+        captureLoadingGeometry(casePanel, width <= 640 ? ".pui-data-table__mobile" : ".pui-data-table__scroller", rowSelector),
         casePanel.getByRole("button", { name: "查询", exact: true }).click(),
       ]);
+      assertRoundedGeometry(emptyLoading, `loading ${width}px`, { paginated: true });
       const loadingHeight = emptyLoading.surface.height;
       assert.ok(Math.abs(readyHeight - loadingHeight) <= 1, `table resized while loading at ${width}px`);
       await tableState("empty").waitFor();
