@@ -1082,6 +1082,7 @@ class PromotionContracts(unittest.TestCase):
             )
             notes = (stable / "artifacts" / release.NOTES_NAME).read_text("utf-8")
             self.assertIn("Stable release prepared from verified `0.3.0-rc.1`", notes)
+            self.assertNotIn("Publication still requires authorization", notes)
             self.assertNotIn("Local release candidate", notes)
             self.assertIn(str(rc_plan["planDigest"]), notes)
             journal = release.verify_release(

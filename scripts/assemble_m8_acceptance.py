@@ -1269,7 +1269,7 @@ def _definition_of_done(candidate_files: Mapping[str, bytes]) -> list[dict[str, 
         {"id": "typescript-verifier-policy", "status": "passed", "evidence": ["frozen candidate formal release:check", "six final consumer verifier results"]},
         {"id": "forms-modals-widgets-themes-portals", "status": "passed", "evidence": ["frozen candidate formal release:check", "quality scenario behavior evidence"]},
         {"id": "three-engines-six-widths", "status": "passed", "evidence": ["quality/matrix.json", "quality/browserVersions.json", "quality/responsiveReview.json"]},
-        {"id": "clean-clone-and-release-reproduction", "status": "pending-hosted-ci-evidence", "evidence": ["local formal verification passed; exact hosted clean-clone evidence remains required"]},
+        {"id": "clean-clone-and-release-reproduction", "status": "separate-release-evidence", "evidence": ["local formal verification passed; exact hosted clean-clone evidence is validated separately by the publication gate"]},
         {"id": "source-license-release-identity", "status": "pending-publication", "evidence": ["candidate changelog, MIT license, archive and SHA256SUMS retained; immutable tag and GitHub Release are M8-06 actions"]},
         {"id": "user-review-and-authorization", "status": "pending-explicit-authorization", "evidence": ["local RC bundle is review material and does not itself grant publication authorization"]},
     ]

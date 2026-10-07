@@ -1,6 +1,6 @@
 # Personal UI Release Process
 
-Status: local M7 release tooling plus M8 evaluation, evidence, review, guarded RC-to-stable promotion, and publication infrastructure. The canonical development checkout may remain at the immutable `0.2.19` baseline while candidates are prepared in isolation. A release exists only when its journal, immutable tag, GitHub Release, checksums, and generated copies all record the same completed plan. This document by itself does not authorize a commit, tag, synchronization, GitHub Release, or public distribution.
+This document describes the M7/M8 release contracts as recorded in the frozen source snapshot. The development checkout can retain `0.2.19` metadata while candidates are prepared in isolation. A public release exists only when its completed journal, immutable tag, GitHub Release, checksums, and generated copies identify the same plan. Exact-source hosted and M8 results are produced after source freeze and retained outside the candidate source; this document cannot attest to their outcome.
 
 ## One orchestrator
 
@@ -80,9 +80,11 @@ Hosted CI is a file-backed release bundle, not a workflow badge or a binding-onl
 
 The fixture records include the exact Node, Python, package-manager, React, React DOM, TypeScript, and framework versions observed by `run_support_fixture.py`, plus the complete install/render/typecheck/build/verify/upgrade/rollback operation list declared by the frozen fixture catalog. The browser record retains the actual Chromium, Firefox, and WebKit versions and the successful behavior, accessibility, visual, and version-inventory operations. The Safari record must come from system Safari 18 or newer driven by Apple's `safaridriver`; its capabilities, user agent, driver version, rendered root, and public-component interaction are retained. Playwright WebKit is useful engine coverage but is never accepted as real Safari evidence.
 
-The first hosted run, [36315585577](https://github.com/xtnkking/ui-builder-xtn/actions/runs/36315585577) from commit `eb32c87`, failed and is not release evidence. It exposed a stale locale path, raw inline Explorer SVG, Corepack signature incompatibility, missing repository dependencies in integration jobs, React 19 nullable-ref typing, and a platform-incomplete Rollup lockfile. Candidate fixes exist locally, but only a successful rerun from the corrected immutable head and a subsequently validated ten-record bundle can close this gate.
+Earlier failed or cancelled hosted runs are diagnostic history. The hosted record accepted for an RC must come from its exact immutable source commit and pass ten-record bundle validation. The run URL, attempt, artifact SHA-256, and validation result belong in the retained post-freeze release ledger, not in the source commit whose hash that run must match.
 
 The aggregator calculates `planDigest`, `sourceCommit`, and `archiveSha256` from the same deterministic release-plan logic used by `prepare`, then validates the completed bundle before upload. `scripts/validate_hosted_ci_evidence.py` independently reopens every referenced file and checks its bytes, release bindings, GitHub run identity, environments, operations, browser coverage, and Safari identity. A configured workflow, a triggered run, and a downloaded passing bundle are three different states; support entries may move from `target` to `verified` only after the last state is retained with its run URL and artifact SHA-256.
+
+The post-freeze ledger consists of the candidate `release-plan.json` and `release-journal.json`, the validated hosted evidence bundle, the M8 `m8-acceptance.json` with its retained review files, and, after publication, the immutable tag and GitHub Release. Compare their source commit, RC plan digest, archive SHA-256, stable promotion binding, and publication steps before declaring M7/M8 complete. These records are retained outside the source commit so recording a new run cannot invalidate its exact-source binding.
 
 ## Reproducibility
 
@@ -109,7 +111,7 @@ The immutable compatibility baseline is `0.2.19`; the current hardening release 
 - Before `1.0.0`, a breaking public API change requires the next minor line and an additive public API change requires at least a patch. At or after `1.0.0`, breaking changes require a major and additive changes require a minor.
 - This cycle prepares `0.3.0-rc.N`, where `N` is a positive integer without leading zeroes, and permits stable `0.3.0` only through the verified promotion contract below. Beta, arbitrary prerelease labels, build metadata, downgrades, other release lines, and reused versions fail.
 - RC numbers increase monotonically. Stable `0.3.0` is allowed only when `--promotion-from` resolves to a real verified RC candidate on the same release line. The stable plan must prove the same immutable source, retain the RC evidence bindings, and show that only the fixed version/changelog metadata set changed. A tag name, version string, or digest alone is not promotion evidence.
-- Package metadata may stay at `0.2.19` during development. Candidate version changes happen in isolated staging. The canonical checkout changes version only in a separately authorized release operation.
+- Package metadata may stay at `0.2.19` in the development source snapshot. Candidate version changes happen in isolated staging; the promoted stable metadata is frozen into the release tag by the authorized publication operation.
 
 These rules are enforced by the release orchestrator and by the API compatibility gate; prose alone is not release evidence.
 
@@ -134,10 +136,10 @@ The early repository used package-version commits but did not create a tag for e
 | `0.2.18` | `2f28312` | 2026-09-17 | Source-version commit; no tag found. |
 | `0.2.19` | `0587d4b` | 2026-09-17 | Local annotated baseline tag `v0.2.19`; remote tag was absent at the M7 audit. |
 
-Commit subjects and diffs may support changelog reconstruction, but they are not proof that a public GitHub Release existed. The current `v0.3.0` work stays under `[Unreleased]` until an authorized release operation converts it.
+Commit subjects and diffs may support changelog reconstruction, but they are not proof that a public GitHub Release existed. The source-cut changelog keeps the work under `[Unreleased]`; an authorized stable promotion converts that section in its isolated release candidate.
 
 ## License decision
 
 The user selected the MIT License for this repository. The root `LICENSE`, package metadata, and Skill frontmatter record `MIT` consistently, with copyright attributed to 2026 xtnkking.
 
-`THIRD_PARTY_NOTICES.json` now inventories all 226 unique dependency versions in the lockfile, including the MPL-2.0 development tools and CC-BY-4.0 metadata package. Preflight validates that inventory against the lockfile. Explorer media is a project-authored repository SVG asset rather than remote runtime media; bundled documentation and generated test screenshots are project-generated repository assets covered by the repository MIT License. License and notice blockers are therefore closed, while successful hosted CI for the corrected immutable head, candidate verification, and M8 evidence remain outstanding.
+`THIRD_PARTY_NOTICES.json` inventories all 226 unique dependency versions in the lockfile, including the MPL-2.0 development tools and CC-BY-4.0 metadata package. Preflight validates that inventory against the lockfile. Explorer media is a project-authored repository SVG asset rather than remote runtime media; bundled documentation and generated test screenshots are project-generated repository assets covered by the repository MIT License. The exact-source hosted, candidate, M8, and publication outcomes must be read from the post-freeze ledger described above.

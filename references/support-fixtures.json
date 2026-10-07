@@ -67,7 +67,7 @@
     ]
   },
   "ci": {
-    "configurationStatus": "configured-not-executed",
+    "configurationStatus": "configured-unrecorded",
     "workflow": ".github/workflows/quality.yml",
     "staticFixtureIds": [
       "npm10-vite-node22-react18-ts59-single",
@@ -84,7 +84,7 @@
       "yarn4-next-node24-react19-ts59-workspace-custom-root"
     ],
     "evidence": [],
-    "note": "These IDs configure repeatable jobs. They remain targets until a successful hosted run is recorded as structured evidence."
+    "note": "These IDs configure repeatable jobs. This frozen source snapshot does not embed hosted results; assess a release against its exact-bound external evidence bundle."
   },
   "fixtures": [
     {

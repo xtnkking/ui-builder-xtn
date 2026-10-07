@@ -538,6 +538,10 @@ class M8AcceptanceAssemblerContracts(unittest.TestCase):
                 ],
             )
             self.assertEqual(report["definitionOfDone"][-1]["status"], "pending-explicit-authorization")
+            self.assertEqual(
+                report["definitionOfDone"][-3]["status"],
+                "separate-release-evidence",
+            )
             limitations = (output / "review/known-limitations.md").read_text("utf-8")
             self.assertIn("The local RC is not an immutable public release.", limitations)
             preview = (output / "review/preview-instructions.md").read_text("utf-8")

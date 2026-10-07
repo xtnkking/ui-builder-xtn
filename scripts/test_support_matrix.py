@@ -63,6 +63,7 @@ class SupportMatrixContractTests(unittest.TestCase):
     def test_repository_support_contract_is_valid(self) -> None:
         report = self.validate()
         self.assertTrue(report["valid"], report["errors"])
+        self.assertEqual(self.fixtures["ci"]["configurationStatus"], "configured-unrecorded")
         self.assertEqual(report["fixtureCount"], 8)
         self.assertEqual(report["configuredFixtureCount"], 8)
         self.assertEqual(

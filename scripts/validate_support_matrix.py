@@ -602,14 +602,14 @@ def validate_fixture_catalog(
 
     ci = require_object(fixtures_document.get("ci"), label="ci", errors=errors)
     configuration_status = ci.get("configurationStatus")
-    if configuration_status not in {"configured-not-executed", "verified"}:
-        errors.append("ci.configurationStatus must be 'configured-not-executed' or 'verified'")
+    if configuration_status not in {"configured-unrecorded", "verified"}:
+        errors.append("ci.configurationStatus must be 'configured-unrecorded' or 'verified'")
     expect_equal(errors, "ci.workflow", ci.get("workflow"), ".github/workflows/quality.yml")
     ci_evidence = ci.get("evidence")
     if not isinstance(ci_evidence, list):
         errors.append("ci.evidence must be an array")
-    elif configuration_status == "configured-not-executed" and ci_evidence:
-        errors.append("ci.evidence must be empty while CI is configured-not-executed")
+    elif configuration_status == "configured-unrecorded" and ci_evidence:
+        errors.append("ci.evidence must be empty while CI is configured-unrecorded")
     elif configuration_status == "verified":
         if not ci_evidence:
             errors.append("verified CI requires structured hosted evidence")

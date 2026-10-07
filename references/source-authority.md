@@ -8,7 +8,7 @@
 - 该 checkout 内，`assets/react-kit/src/personal-ui/` 是组件实现的 canonical 路径。
 - `$CODEX_HOME/skills/ui-builder-xtn` 下的已安装 Skill、工作区中的备份、导出包和其他 mirror 都是生成副本，禁止直接修复或继续开发。
 - 同步只能从 Git checkout 单向流向生成副本。若生成副本出现差异，应丢弃差异并从 Git checkout 重新生成，不能反向覆盖源码。
-- 每次同步必须记录源 Git commit，并验证 managed source、Manifest、registry、版本和文件哈希一致。M7 的确定性发布命令完成前，这仍是人工触发但必须单向执行的过渡规则。
+- 每次同步必须记录源 Git commit，并验证 managed source、Manifest、registry、版本和文件哈希一致。发布后的生成副本还必须与同一发行计划和校验和绑定；具体流程见 [release-process.md](release-process.md)。
 - `personal-ui-library-preview.html` 仅是历史视觉参考，不属于源码权威，也不能作为同步输入。
 
 ## 不可变基线
@@ -20,8 +20,8 @@
 支持矩阵使用三个阶段，不能混写：
 
 - `declared`：配置文件声明了范围，但不代表完整测试覆盖。
-- `verified`：仓库拥有可重复执行的自动化证据。
-- `target`：`v0.3.0` 的验收目标；在对应测试矩阵通过前不得对外声称已支持。
+- `target`：`v0.3.0` 的验收目标；冻结源码快照中尚未嵌入完整结构化证据，不表示外部 hosted 运行从未发生。
+- `verified`：对应的干净安装或发布 smoke 已通过，结构化证据记录准确版本、环境和来源绑定。矩阵条目只有在证据嵌入并通过契约校验后才改为此状态。
 
 ## v0.2.19 基线事实
 
@@ -34,24 +34,17 @@
 | 浏览器 | Chromium 的聚焦检查 | 基线 tag 的 10 个脚本依赖调用方提供 Playwright 模块路径；没有仓库自带 runner、Firefox/WebKit 矩阵或 CI。 |
 | 响应式范围 | 320 至 2560 CSS px 的人工/聚焦检查约定 | 宽度约定不是浏览器兼容性证明。 |
 
-## 当前 hardening 工作树
+## Hardening 源码与发行证据
 
-以下是 M1 工作树中已经落地并通过本地 clean-install 验收的可重复门禁，不代表 `v0.3.0` 已发布，也不代表尚未覆盖的目标支持范围已经转为 `verified`：
+仓库配置了 Node 22/24、八条安装和兼容 fixture、Chromium/Firefox/WebKit 浏览器门禁，以及 macOS 系统 Safari 18+ smoke。`npm run release:check` 是本地质量门禁；工作流配置和本地通过记录都不能代替 hosted 结果。M1 的历史本地验收记录见 [路线图](v0.3.0-roadmap.md)，实际发布流程和证据结构见 [release-process.md](release-process.md)。
 
-- `assets/react-kit/package.json` 已将 Node.js 引擎约束设为 `>=22.12 <25`；GitHub Actions 在 Node 22 和 24 上执行 clean `npm ci`、文档、静态契约、组件测试和构建。
-- Playwright 由仓库依赖和 lockfile 固定，统一配置包含 Chromium、Firefox 和 WebKit；10 个行为回归直接使用 Playwright Test 的 `page` 与 `baseURL` fixtures，不再在测试内部启动脚本、浏览器、Vite 服务或页面。本地及 CI 不再需要机器特定的模块路径。
-- `npm run docs:check` 验证生成的 API 报告和组件覆盖矩阵均为最新；覆盖矩阵的 API 单元必须能回查生成报告，unit/browser/a11y 证据只接受对应 runner 会收集的测试文件内显式 `@personal-ui-coverage` 元数据。普通文本命中不算覆盖，尚未明确归属到公开 export 的页面级 axe 扫描也不会虚报为组件级 a11y ownership。
-- `npm run test:contracts` 包含 Manifest、来源完整性、覆盖矩阵契约、仓库自带 Skill 校验器契约、严格扫描以及 starter/integrate 安装器 fixture。`npm run validate:skill` 不依赖用户机器上的系统 Skill 路径或第三方 Python 包。
-- `npm run release:check` 串联 Skill 校验、文档、静态契约、组件测试、类型/构建、三浏览器行为测试、三浏览器 axe 检查和 Chromium 视觉基线。CI 中相同门禁按静态与浏览器 job 拆分，任何步骤失败都会令工作流失败。
-- 当前 Git 工作树已从 clean `npm ci` 完整执行该 `release:check`：13 个覆盖契约、6 个 Skill 校验器契约、105 个严格扫描/安装器用例、8 个组件测试、30 个三浏览器行为测试、15 个 axe 页面扫描和 1 个 Chromium 视觉基线全部通过；TypeScript/Vite 构建、来源校验以及 28/28 managed source 完整性同时通过。
+冻结源码快照可以先于对应的 hosted 运行，因此本文件和支持矩阵不写入该快照自己的 run URL 或产物哈希。矩阵中的空证据数组只表示源码未嵌入验证结果。判断某个 RC 或 stable 发行物是否通过，须查看外部保留的 hosted-CI 和 M8 证据包，并校验其中的源 commit、`planDigest`、归档 SHA-256、运行身份、实际版本和结果均与该发行物一致。旧提交、失败或取消的运行不能证明当前发行物；Playwright WebKit 也不能证明真实 Safari。源码快照的 `target` 状态与发行物的外部验收结果分别读取，不回写冻结源码来制造循环哈希。
 
-以上本地 clean-install 证据完成 M1 的本地验收。托管 GitHub Actions 仍需在未来明确授权 push 后运行并记录，不能把“工作流已配置”表述为“托管 CI 已通过”。React 19、最低/当前 TypeScript、npm 11、pnpm、Yarn 和真实 Safari 的 fixture 仍属于后续里程碑，也不能由本次本地三引擎结果推断支持。
+## v0.3.0 支持范围与验证条件
 
-## v0.3.0 目标支持范围
+下表定义 `v0.3.0` 的声明范围及逐项验证条件。是否达到这些条件，以同一发行物绑定的结构化证据为准。
 
-以下是发布门槛，不是当前承诺：
-
-| 维度 | 目标范围 | 成为 `verified` 的条件 |
+| 维度 | 声明范围 | 验证条件 |
 | --- | --- | --- |
 | Node.js | `>=22.12 <25`，覆盖 Node 22 和 24 LTS | 两条 LTS 线均完成 clean install、build、验证器与测试。 |
 | React / React DOM | `>=18.3.1 <20` | React 18.3 与 React 19 fixture 均通过类型、行为和安装验证。 |
@@ -69,6 +62,6 @@
 ## 维护规则
 
 1. 任何支持范围变更必须先更新 `support-matrix.json`，再更新本文摘要。
-2. `target` 只有在对应自动化证据可从 clean checkout 重现后才能改为 `verified`。
+2. `target` 只有在对应结构化证据嵌入矩阵并通过契约校验后才能改为 `verified`；发行物的外部验收由与其精确绑定的证据包独立证明。
 3. 暂未支持的环境必须明确失败或报告，不允许静默降级后仍宣称验证成功。
 4. README 只链接本政策，不重复维护版本范围。

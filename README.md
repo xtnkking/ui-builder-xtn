@@ -2,7 +2,7 @@
 
 `ui-builder-xtn` 是一个带完整 React + TypeScript 源码的 Codex Skill，用于构建风格一致、交互稳定的产品界面。
 
-它不是一份只靠提示词约束的视觉规范。v0.2.19 将 Personal UI 源码、公开导出、组件清单、安装器和来源校验器组成同一个闭环：使用者提出功能后，页面中的控件必须直接使用本仓库提供的组件代码。
+它不是一份只靠提示词约束的视觉规范。Personal UI 源码、公开导出、组件清单、安装器和来源校验器组成同一个闭环：使用者提出功能后，页面中的控件必须直接使用本仓库提供的组件代码。
 
 当前版本的改动见 [CHANGELOG.md](CHANGELOG.md)。
 
@@ -40,7 +40,7 @@
 
 ## v0.3.0 优化路线图
 
-当前 hardening 源码已完成 M0–M6 的本地阶段验收，以及 M7 的模块边界、CSS 门禁、安装/升级事务和 release orchestrator 工程；MIT License 与 lockfile 中 226 个依赖的第三方清单也已收口。8 个支持 fixture、三引擎版本和 system Safari 18+ 的 artifact-backed hosted evidence 已接入 workflow。M7 是否完成不由本文预先声明，而由与候选同一 source commit 绑定的有效 hosted evidence 决定。M8 已具备六类原始需求、候选隔离投影、真实场景质量 producer、append-only 证据和严格 acceptance assembler；是否完成同样以冻结 RC 的六场景、迁移、质量和发布记录为准。完整范围、阶段依赖、验收标准及进度证据记录在 [v0.3.0 Hardening Roadmap](references/v0.3.0-roadmap.md)；评估隔离规则见 [M8 独立评估协议](references/m8-evaluation-protocol.md)，执行顺序和测试边界见 [M4–M8 完整实施与交接计划](references/v0.3.0-m4-m8-execution-plan.md)。当前 142 个 runtime export 的入口见生成的 [组件目录](references/component-catalog.md) 与 [组件 API](references/component-api.md)。唯一可编辑源码、生成副本的同步方向和当前/目标兼容范围见 [源码权威与支持政策](references/source-authority.md)，机器可读事实见 [支持矩阵](references/support-matrix.json)。canonical checkout 仍保持 `0.2.19`；候选版本只在隔离 staging 中生成，公开发布必须等待精确 stable `planDigest` 授权。
+本仓库包含 M0–M6 的本地验收成果，以及 M7 的模块边界、CSS 门禁、安装/升级事务和发布编排器；MIT License 与 lockfile 中 226 个依赖的第三方清单也已收口。hosted workflow 收集 8 个支持 fixture、三引擎版本和 system Safari 18+ 的原始证据。M8 提供六类独立消费需求、候选隔离投影、真实场景质量记录、追加式证据和严格的验收聚合器。完整范围与验收条件见 [v0.3.0 Hardening Roadmap](references/v0.3.0-roadmap.md)，评估隔离规则见 [M8 独立评估协议](references/m8-evaluation-protocol.md)，执行顺序见 [M4–M8 完整实施与交接计划](references/v0.3.0-m4-m8-execution-plan.md)。这些源码文档是候选冻结时的计划快照；M7/M8 的正式完成与公开发布状态，应核对同一冻结 RC 绑定的 hosted bundle、M8 acceptance bundle、发布 journal、不可变 tag 和 GitHub Release，不能由本文或旧候选结果推断。当前 142 个 runtime export 的入口见生成的 [组件目录](references/component-catalog.md) 与 [组件 API](references/component-api.md)。源码权威与兼容范围见 [源码权威与支持政策](references/source-authority.md) 和 [支持矩阵](references/support-matrix.json)。`v0.2.19` 是不可变迁移基线；候选版本在隔离 staging 中生成，公开发布须由精确 stable `planDigest` 授权。
 
 ## 环境要求
 

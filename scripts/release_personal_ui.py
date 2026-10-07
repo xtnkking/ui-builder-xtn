@@ -1075,8 +1075,7 @@ def extract_release_notes(
         if not isinstance(from_version, str) or not isinstance(plan_digest, str):
             raise ReleaseError("stable release notes promotion binding is incomplete")
         status = (
-            f"Stable release prepared from verified `{from_version}`. Publication still "
-            f"requires authorization for this stable plan.\n\n"
+            f"Stable release prepared from verified `{from_version}`.\n\n"
             f"Reviewed RC plan digest: `{plan_digest}`."
         )
     return (

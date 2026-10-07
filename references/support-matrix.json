@@ -4,15 +4,16 @@
   "fixtureCatalog": "references/support-fixtures.json",
   "statusDefinitions": {
     "declared": "The repository states a range, policy, or capability. This does not prove that a clean environment passed.",
-    "target": "The combination is in the v0.3.0 support goal and has a repeatable fixture plan, but complete evidence has not been recorded.",
-    "verified": "A clean run or release smoke passed and is linked through structured evidence that records exact versions and environment details."
+    "target": "The combination is in the v0.3.0 support goal and has a repeatable fixture plan, but this source snapshot does not embed complete verification evidence.",
+    "verified": "A clean run or release smoke passed and is linked through structured evidence that records exact versions, environment details, and the source and release binding."
   },
   "evidencePolicy": {
     "verifiedRequiresStructuredEvidence": true,
     "ciConfigurationIsEvidence": false,
     "localRunIsHostedCiEvidence": false,
     "playwrightWebKitIsSafariEvidence": false,
-    "browserEvidenceMustRecordActualVersion": true
+    "browserEvidenceMustRecordActualVersion": true,
+    "releaseEvidenceRule": "A frozen source snapshot may precede its hosted run. Consult the external hosted-CI and M8 evidence bundles bound to the exact source commit, release plan digest, and archive SHA-256 for release results; empty source-embedded evidence does not establish that no run occurred."
   },
   "sourceAuthority": {
     "editableSource": "git-checkout",
@@ -96,7 +97,7 @@
     },
     "hardening-worktree": {
       "status": "declared",
-      "observation": "local-hardening-gates-observed-unreleased",
+      "observation": "repository-configured-hardening-gates",
       "runtime": {
         "node": {
           "declared": ">=22.12 <25",
@@ -104,7 +105,7 @@
             "22",
             "24"
           ],
-          "verificationStatus": "Local clean-install and release-gate results were reported; hosted CI remains pending."
+          "verificationStatus": "The repository configures Node 22 and 24 CI lanes; results are assessed from exact-release-bound hosted evidence."
         }
       },
       "packageManagers": {
@@ -128,7 +129,7 @@
         "webkit": {
           "status": "repository-owned-playwright-project"
         },
-        "verificationStatus": "A local three-engine release gate was reported; this is not hosted evidence and is not real Safari evidence."
+        "verificationStatus": "Repository-owned browser projects do not themselves establish a passing hosted run or real Safari result; consult exact-release-bound evidence."
       },
       "qualityGate": {
         "skill": "npm run validate:skill",
@@ -308,14 +309,14 @@
           "yarn4-vite-node22-react19-ts59-workspace",
           "yarn4-next-node24-react19-ts59-workspace-custom-root"
         ],
-        "note": "Workflow configuration is reviewable intent, not a successful hosted run."
+        "note": "Workflow configuration is reviewable intent; a successful hosted run is established by exact-release-bound evidence."
       },
       "knownGaps": [
-        "Hosted CI evidence has not been recorded for the configured npm, pnpm, Yarn 4, Vite, Next.js, workspace, custom-root, upgrade, and rollback lanes.",
-        "Current and previous stable Chromium and Firefox versions still need exact-version evidence.",
-        "Real Safari 18+ release smoke remains pending; Playwright WebKit cannot close it."
+        "This source snapshot does not embed hosted results for the configured npm, pnpm, Yarn 4, Vite, Next.js, workspace, custom-root, upgrade, and rollback lanes; inspect the release-bound bundle.",
+        "This source snapshot does not embed actual Chromium and Firefox versions; inspect the release-bound browser record.",
+        "This source snapshot does not embed a real Safari 18+ result; inspect the release-bound Safari record. Playwright WebKit cannot substitute for it."
       ],
-      "promotionRule": "A target becomes verified only after its complete clean-checkout or release-smoke evidence is recorded with exact versions and all required operations pass."
+      "promotionRule": "A matrix target becomes verified only when complete structured evidence is embedded and passes the support contract. A release is assessed separately through its exact-bound hosted-CI and M8 evidence bundles without rewriting the frozen source snapshot."
     }
   }
 }
