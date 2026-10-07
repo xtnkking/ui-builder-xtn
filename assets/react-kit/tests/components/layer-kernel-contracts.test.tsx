@@ -1,16 +1,102 @@
 // @personal-ui-coverage {"kind":"unit","runner":"components","exports":["ConfirmDialog","Dialog","Drawer","GuidedTour","Lightbox","ToastProvider","useToast"]}
 import { StrictMode, useState } from "react";
+import { flushSync } from "react-dom";
 import { renderToString } from "react-dom/server";
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { Button, ConfirmDialog, Dialog, Drawer, GuidedTour, Input, Lightbox, ToastProvider, useToast } from "../../src/personal-ui";
+import { consumeLayerActivation, LAYER_ACTIVATION_WINDOW_MS, recordLayerActivation } from "../../src/personal-ui/internal/layer-activation";
 
 afterEach(() => {
   document.querySelectorAll("[data-layer-test-background]").forEach((element) => element.remove());
 });
 
 describe("modal layer kernel contracts", () => {
+  it("releases pending activation listeners after consumption, interaction, and expiry", () => {
+    const ownerDocument = document.implementation.createHTMLDocument();
+    const opener = ownerDocument.createElement("button");
+    const other = ownerDocument.createElement("input");
+    ownerDocument.body.append(opener, other);
+    const add = vi.spyOn(ownerDocument, "addEventListener");
+    const remove = vi.spyOn(ownerDocument, "removeEventListener");
+    vi.useFakeTimers();
+
+    try {
+      recordLayerActivation(ownerDocument, opener);
+      expect(consumeLayerActivation(ownerDocument)?.target).toBe(opener);
+
+      recordLayerActivation(ownerDocument, opener);
+      opener.dispatchEvent(new KeyboardEvent("keydown", { key: "F2", bubbles: true }));
+      expect(consumeLayerActivation(ownerDocument)).toBeNull();
+
+      recordLayerActivation(ownerDocument, opener);
+      other.dispatchEvent(new Event("pointerdown", { bubbles: true }));
+      expect(consumeLayerActivation(ownerDocument)).toBeNull();
+
+      recordLayerActivation(ownerDocument, opener);
+      other.dispatchEvent(new FocusEvent("focusin", { bubbles: true }));
+      expect(consumeLayerActivation(ownerDocument)).toBeNull();
+
+      const existingDialog = ownerDocument.createElement("section");
+      existingDialog.setAttribute("role", "dialog");
+      existingDialog.setAttribute("aria-modal", "true");
+      const nestedOpener = ownerDocument.createElement("button");
+      const existingField = ownerDocument.createElement("input");
+      existingDialog.append(nestedOpener, existingField);
+      ownerDocument.body.append(existingDialog);
+      recordLayerActivation(ownerDocument, nestedOpener);
+      existingField.dispatchEvent(new FocusEvent("focusin", { bubbles: true }));
+      expect(consumeLayerActivation(ownerDocument)).toBeNull();
+
+      recordLayerActivation(ownerDocument, opener);
+      const newDialog = ownerDocument.createElement("section");
+      newDialog.setAttribute("role", "dialog");
+      newDialog.setAttribute("aria-modal", "true");
+      const modalField = ownerDocument.createElement("input");
+      newDialog.append(modalField);
+      ownerDocument.body.append(newDialog);
+      modalField.dispatchEvent(new FocusEvent("focusin", { bubbles: true }));
+      expect(consumeLayerActivation(ownerDocument)?.target).toBe(opener);
+
+      recordLayerActivation(ownerDocument, opener);
+      vi.advanceTimersByTime(LAYER_ACTIVATION_WINDOW_MS);
+      expect(consumeLayerActivation(ownerDocument)).toBeNull();
+
+      const openingClick = new MouseEvent("click", { bubbles: true });
+      recordLayerActivation(ownerDocument, opener, openingClick);
+      expect(consumeLayerActivation(ownerDocument)?.target).toBe(opener);
+      recordLayerActivation(ownerDocument, opener, openingClick);
+      expect(consumeLayerActivation(ownerDocument)).toBeNull();
+
+      for (const eventName of ["keydown", "pointerdown", "focusin"]) {
+        expect(add.mock.calls.filter(([name]) => name === eventName)).toHaveLength(8);
+        expect(remove.mock.calls.filter(([name]) => name === eventName)).toHaveLength(8);
+      }
+    } finally {
+      vi.useRealTimers();
+      add.mockRestore();
+      remove.mockRestore();
+    }
+  });
+
+  it("does not re-record a click after capture-phase mounting consumes its opener", async () => {
+    function Harness() {
+      const [open, setOpen] = useState(false);
+      return (
+        <>
+          <Button onClickCapture={() => flushSync(() => setOpen(true))}>同步打开</Button>
+          {open ? <Drawer open onOpenChange={setOpen} title="同步抽屉">内容</Drawer> : null}
+        </>
+      );
+    }
+
+    render(<Harness />);
+    fireEvent.click(screen.getByRole("button", { name: "同步打开" }));
+    await screen.findByRole("dialog", { name: "同步抽屉" });
+    expect(consumeLayerActivation(document)).toBeNull();
+  });
+
   it("keeps the background inert and body locked until the final nested modal closes", async () => {
     const user = userEvent.setup();
     const originalOverflow = document.body.style.overflow;

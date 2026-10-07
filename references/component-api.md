@@ -1865,7 +1865,7 @@ export function PersonalUiExample() {
 | Kind / stability | `component` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `ButtonProps` |
-| Implementation | [assets/react-kit/src/personal-ui/foundation/primitives.tsx:63](../assets/react-kit/src/personal-ui/foundation/primitives.tsx#L63) |
+| Implementation | [assets/react-kit/src/personal-ui/foundation/primitives.tsx:64](../assets/react-kit/src/personal-ui/foundation/primitives.tsx#L64) |
 | Explorer / example | [#/components/button](../assets/react-kit/index.html#/components/button); [compiled family example](#family-button-compiled-example) (case `button/overview`, source [assets/react-kit/src/explorer/cases/actions/button.case.tsx](../assets/react-kit/src/explorer/cases/actions/button.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -1893,11 +1893,11 @@ export type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `loading` | `false` | [assets/react-kit/src/personal-ui/foundation/primitives.tsx:71](../assets/react-kit/src/personal-ui/foundation/primitives.tsx#L71) |
-| `loadingLabel` | `message("common.processing")` | [assets/react-kit/src/personal-ui/foundation/primitives.tsx:72](../assets/react-kit/src/personal-ui/foundation/primitives.tsx#L72) |
-| `size` | `"medium"` | [assets/react-kit/src/personal-ui/foundation/primitives.tsx:68](../assets/react-kit/src/personal-ui/foundation/primitives.tsx#L68) |
-| `type` | `"button"` | [assets/react-kit/src/personal-ui/foundation/primitives.tsx:77](../assets/react-kit/src/personal-ui/foundation/primitives.tsx#L77) |
-| `variant` | `"secondary"` | [assets/react-kit/src/personal-ui/foundation/primitives.tsx:67](../assets/react-kit/src/personal-ui/foundation/primitives.tsx#L67) |
+| `loading` | `false` | [assets/react-kit/src/personal-ui/foundation/primitives.tsx:72](../assets/react-kit/src/personal-ui/foundation/primitives.tsx#L72) |
+| `loadingLabel` | `message("common.processing")` | [assets/react-kit/src/personal-ui/foundation/primitives.tsx:73](../assets/react-kit/src/personal-ui/foundation/primitives.tsx#L73) |
+| `size` | `"medium"` | [assets/react-kit/src/personal-ui/foundation/primitives.tsx:69](../assets/react-kit/src/personal-ui/foundation/primitives.tsx#L69) |
+| `type` | `"button"` | [assets/react-kit/src/personal-ui/foundation/primitives.tsx:80](../assets/react-kit/src/personal-ui/foundation/primitives.tsx#L80) |
+| `variant` | `"secondary"` | [assets/react-kit/src/personal-ui/foundation/primitives.tsx:68](../assets/react-kit/src/personal-ui/foundation/primitives.tsx#L68) |
 
 #### Semantic Tokens
 
@@ -2278,7 +2278,7 @@ export function PersonalUiExample() {
 | Kind / stability | `component` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `IconButtonProps` |
-| Implementation | [assets/react-kit/src/personal-ui/foundation/primitives.tsx:140](../assets/react-kit/src/personal-ui/foundation/primitives.tsx#L140) |
+| Implementation | [assets/react-kit/src/personal-ui/foundation/primitives.tsx:152](../assets/react-kit/src/personal-ui/foundation/primitives.tsx#L152) |
 | Explorer / example | [#/components/icon-button](../assets/react-kit/index.html#/components/icon-button); [compiled family example](#family-icon-button-compiled-example) (case `icon-button/overview`, source [assets/react-kit/src/explorer/cases/actions/icon-button.case.tsx](../assets/react-kit/src/explorer/cases/actions/icon-button.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -2302,9 +2302,9 @@ export type IconButtonProps = PublicControlProps<Omit<ButtonHTMLAttributes<HTMLB
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `loading` | `false` | [assets/react-kit/src/personal-ui/foundation/primitives.tsx:144](../assets/react-kit/src/personal-ui/foundation/primitives.tsx#L144) |
-| `type` | `"button"` | [assets/react-kit/src/personal-ui/foundation/primitives.tsx:147](../assets/react-kit/src/personal-ui/foundation/primitives.tsx#L147) |
-| `variant` | `"ghost"` | [assets/react-kit/src/personal-ui/foundation/primitives.tsx:145](../assets/react-kit/src/personal-ui/foundation/primitives.tsx#L145) |
+| `loading` | `false` | [assets/react-kit/src/personal-ui/foundation/primitives.tsx:156](../assets/react-kit/src/personal-ui/foundation/primitives.tsx#L156) |
+| `type` | `"button"` | [assets/react-kit/src/personal-ui/foundation/primitives.tsx:159](../assets/react-kit/src/personal-ui/foundation/primitives.tsx#L159) |
+| `variant` | `"ghost"` | [assets/react-kit/src/personal-ui/foundation/primitives.tsx:157](../assets/react-kit/src/personal-ui/foundation/primitives.tsx#L157) |
 
 #### Semantic Tokens
 
@@ -9852,7 +9852,7 @@ export function PersonalUiExample() {
 | Kind / stability | `component` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `TagProps` |
-| Implementation | [assets/react-kit/src/personal-ui/foundation/primitives.tsx:274](../assets/react-kit/src/personal-ui/foundation/primitives.tsx#L274) |
+| Implementation | [assets/react-kit/src/personal-ui/foundation/primitives.tsx:297](../assets/react-kit/src/personal-ui/foundation/primitives.tsx#L297) |
 | Explorer / example | [#/components/tag](../assets/react-kit/index.html#/components/tag); [compiled family example](#family-tag-compiled-example) (case `tag/overview`, source [assets/react-kit/src/explorer/cases/data/tag.case.tsx](../assets/react-kit/src/explorer/cases/data/tag.case.tsx)) |
 | Keyboard | delegated: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | delegated: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -9877,8 +9877,8 @@ export type TagTone = "neutral" | "blue" | "success" | "warning" | "danger";
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `selected` | `false` | [assets/react-kit/src/personal-ui/foundation/primitives.tsx:277](../assets/react-kit/src/personal-ui/foundation/primitives.tsx#L277) |
-| `tone` | `"neutral"` | [assets/react-kit/src/personal-ui/foundation/primitives.tsx:275](../assets/react-kit/src/personal-ui/foundation/primitives.tsx#L275) |
+| `selected` | `false` | [assets/react-kit/src/personal-ui/foundation/primitives.tsx:300](../assets/react-kit/src/personal-ui/foundation/primitives.tsx#L300) |
+| `tone` | `"neutral"` | [assets/react-kit/src/personal-ui/foundation/primitives.tsx:298](../assets/react-kit/src/personal-ui/foundation/primitives.tsx#L298) |
 
 #### Semantic Tokens
 
@@ -10843,7 +10843,7 @@ export function PersonalUiExample() {
 | Kind / stability | `component` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `SkeletonProps` |
-| Implementation | [assets/react-kit/src/personal-ui/foundation/primitives.tsx:215](../assets/react-kit/src/personal-ui/foundation/primitives.tsx#L215) |
+| Implementation | [assets/react-kit/src/personal-ui/foundation/primitives.tsx:238](../assets/react-kit/src/personal-ui/foundation/primitives.tsx#L238) |
 | Explorer / example | [#/components/skeleton](../assets/react-kit/index.html#/components/skeleton); [compiled family example](#family-skeleton-compiled-example) (case `skeleton/overview`, source [assets/react-kit/src/explorer/cases/feedback/skeleton.case.tsx](../assets/react-kit/src/explorer/cases/feedback/skeleton.case.tsx)) |
 | Keyboard | none: This export has no independent keyboard interaction. |
 | ARIA | none: This export introduces no independent interactive ARIA contract. |
@@ -10913,7 +10913,7 @@ export function PersonalUiExample() {
 | Kind / stability | `component` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `SpinnerProps` |
-| Implementation | [assets/react-kit/src/personal-ui/foundation/primitives.tsx:198](../assets/react-kit/src/personal-ui/foundation/primitives.tsx#L198) |
+| Implementation | [assets/react-kit/src/personal-ui/foundation/primitives.tsx:221](../assets/react-kit/src/personal-ui/foundation/primitives.tsx#L221) |
 | Explorer / example | [#/components/spinner](../assets/react-kit/index.html#/components/spinner); [compiled family example](#family-spinner-compiled-example) (case `spinner/overview`, source [assets/react-kit/src/explorer/cases/feedback/spinner.case.tsx](../assets/react-kit/src/explorer/cases/feedback/spinner.case.tsx)) |
 | Keyboard | none: This export has no independent keyboard interaction. |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |

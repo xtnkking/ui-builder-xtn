@@ -3760,6 +3760,7 @@
         "src/personal-ui/internal/fixed-control-props.ts",
         "src/personal-ui/internal/floating-position.ts",
         "src/personal-ui/internal/input-slots.tsx",
+        "src/personal-ui/internal/layer-activation.ts",
         "src/personal-ui/internal/layer-kernel.tsx",
         "src/personal-ui/internal/overlay-slots.tsx",
         "src/personal-ui/internal/portal-tokens.ts",

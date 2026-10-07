@@ -14,6 +14,7 @@
 
 ### Changed
 
+- `Button` 和 `IconButton` 在首次条件挂载浮层时传递真实触发源，`Drawer` 在 WebKit 指针打开并关闭后也能把焦点还给原按钮；新增独立的三引擎焦点回归，且后续键盘或焦点操作会使过期触发记录失效。
 - 收紧公共 Props、受控/非受控状态和有限 ref 契约，统一 semantic theme、Portal、复合表单、modal layer、高级控件键盘模型、源码模块所有权和 CSS 门禁。
 - 安装与升级继续以 Git checkout 为单一权威来源；安装状态仅能声明受管理源码和固定 support 文件，旧清单、符号链接/联接点、伪造 ownership 和并发写入均在落盘前阻断。
 - 安装器支持显式 project/package/source root、工作区发现、自定义 source root 恢复、确定性 dry-run、包级排他锁与进程内事务回滚；候选版本只写入隔离 staging，不改当前 `0.2.19` 工作树或已安装副本。

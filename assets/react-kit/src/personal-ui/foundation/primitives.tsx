@@ -17,6 +17,7 @@ import {
 } from "../internal/button-slots";
 import { assignElementRef } from "../internal/control-handles";
 import { sanitizeFixedControlProps } from "../internal/fixed-control-props";
+import { recordLayerActivation } from "../internal/layer-activation";
 import { usePersonalUILocale } from "./locale";
 import { cx, getTabStops, isVisibleElement } from "../internal/utils";
 
@@ -73,6 +74,8 @@ export function Button(rawProps: ButtonProps) {
     disabled,
     "aria-disabled": ariaDisabled,
     onClick,
+    onClickCapture,
+    onPointerDownCapture,
     children,
     type = "button",
     controlRef,
@@ -105,12 +108,21 @@ export function Button(rawProps: ButtonProps) {
       aria-busy={loading || undefined}
       data-loading={loading || undefined}
       data-pui-owner={owner}
+      onPointerDownCapture={(event) => {
+        if (!interactionDisabled) recordLayerActivation(event.currentTarget.ownerDocument, event.currentTarget, event.nativeEvent);
+        onPointerDownCapture?.(event);
+      }}
+      onClickCapture={(event) => {
+        if (!interactionDisabled) recordLayerActivation(event.currentTarget.ownerDocument, event.currentTarget, event.nativeEvent);
+        onClickCapture?.(event);
+      }}
       onClick={(event) => {
         if (interactionDisabled) {
           event.preventDefault();
           event.stopPropagation();
           return;
         }
+        recordLayerActivation(event.currentTarget.ownerDocument, event.currentTarget, event.nativeEvent);
         onClick?.(event);
       }}
     >
@@ -147,6 +159,8 @@ export function IconButton(rawProps: IconButtonProps) {
     type = "button",
     "aria-disabled": ariaDisabled,
     onClick,
+    onClickCapture,
+    onPointerDownCapture,
     controlRef,
     ...props
   } = safeProps;
@@ -171,12 +185,21 @@ export function IconButton(rawProps: IconButtonProps) {
       aria-busy={loading || undefined}
       data-loading={loading || undefined}
       data-pui-owner="IconButton"
+      onPointerDownCapture={(event) => {
+        if (!interactionDisabled) recordLayerActivation(event.currentTarget.ownerDocument, event.currentTarget, event.nativeEvent);
+        onPointerDownCapture?.(event);
+      }}
+      onClickCapture={(event) => {
+        if (!interactionDisabled) recordLayerActivation(event.currentTarget.ownerDocument, event.currentTarget, event.nativeEvent);
+        onClickCapture?.(event);
+      }}
       onClick={(event) => {
         if (interactionDisabled) {
           event.preventDefault();
           event.stopPropagation();
           return;
         }
+        recordLayerActivation(event.currentTarget.ownerDocument, event.currentTarget, event.nativeEvent);
         onClick?.(event);
       }}
     >

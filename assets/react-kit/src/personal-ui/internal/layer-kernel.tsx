@@ -11,6 +11,7 @@ import {
   type RefObject,
 } from "react";
 import { usePersonalUiPortalTokens } from "./portal-tokens";
+import { consumeLayerActivation, recordLayerActivation } from "./layer-activation";
 import { getTabStops, isVisibleElement } from "./utils";
 
 const useClientLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
@@ -49,11 +50,6 @@ interface BodyLockSnapshot {
   paddingRight: string;
 }
 
-interface LayerActivation {
-  target: HTMLElement;
-  capturedAt: number;
-}
-
 interface LayerDocumentState {
   document: Document;
   entries: LayerEntry[];
@@ -61,7 +57,6 @@ interface LayerDocumentState {
   bodyLockCount: number;
   bodyLockSnapshot: BodyLockSnapshot | null;
   mutationObserver: MutationObserver | null;
-  latestActivation: LayerActivation | null;
   activationSubscribers: number;
   captureActivation: (event: Event) => void;
 }
@@ -96,7 +91,6 @@ function createDocumentState(ownerDocument: Document): LayerDocumentState {
     bodyLockCount: 0,
     bodyLockSnapshot: null,
     mutationObserver: null,
-    latestActivation: null,
     activationSubscribers: 0,
     captureActivation: () => undefined,
   };
@@ -106,9 +100,7 @@ function createDocumentState(ownerDocument: Document): LayerDocumentState {
       && candidate.matches(activationTargetSelector)
       && !candidate.closest("[inert], [aria-hidden='true']")
     ));
-    state.latestActivation = target && isOwnerElement(ownerDocument, target)
-      ? { target, capturedAt: Date.now() }
-      : null;
+    recordLayerActivation(ownerDocument, target && isOwnerElement(ownerDocument, target) ? target : null, event);
   };
   return state;
 }
@@ -133,7 +125,7 @@ function subscribeToActivation(ownerDocument: Document): () => void {
     if (state.activationSubscribers > 0) return;
     ownerDocument.removeEventListener("pointerdown", state.captureActivation, true);
     ownerDocument.removeEventListener("click", state.captureActivation, true);
-    state.latestActivation = null;
+    recordLayerActivation(ownerDocument, null);
   };
 }
 
@@ -497,10 +489,8 @@ export function useLayerKernel({
     const state = documentState(ownerDocument);
     ownerDocumentRef.current = ownerDocument;
     const activeElement = isOwnerElement(ownerDocument, ownerDocument.activeElement) ? ownerDocument.activeElement : null;
-    const activation = state.latestActivation;
-    state.latestActivation = null;
+    const activation = consumeLayerActivation(ownerDocument);
     const activationTarget = activation
-      && Date.now() - activation.capturedAt < 1_000
       && activation.target.isConnected
       && !panel.contains(activation.target)
       ? activation.target
