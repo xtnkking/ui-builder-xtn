@@ -49,6 +49,18 @@ describe("modal layer kernel contracts", () => {
       existingField.dispatchEvent(new FocusEvent("focusin", { bubbles: true }));
       expect(consumeLayerActivation(ownerDocument)).toBeNull();
 
+      recordLayerActivation(ownerDocument, nestedOpener);
+      const nestedDialog = ownerDocument.createElement("section");
+      nestedDialog.setAttribute("role", "dialog");
+      nestedDialog.setAttribute("aria-modal", "true");
+      const nestedField = ownerDocument.createElement("input");
+      nestedDialog.append(nestedField);
+      ownerDocument.body.append(nestedDialog);
+      nestedField.dispatchEvent(new FocusEvent("focusin", { bubbles: true }));
+      existingDialog.dispatchEvent(new FocusEvent("focusin", { bubbles: true }));
+      expect(consumeLayerActivation(ownerDocument)?.target).toBe(nestedOpener);
+      nestedDialog.remove();
+
       recordLayerActivation(ownerDocument, opener);
       const newDialog = ownerDocument.createElement("section");
       newDialog.setAttribute("role", "dialog");
@@ -70,8 +82,8 @@ describe("modal layer kernel contracts", () => {
       expect(consumeLayerActivation(ownerDocument)).toBeNull();
 
       for (const eventName of ["keydown", "pointerdown", "focusin"]) {
-        expect(add.mock.calls.filter(([name]) => name === eventName)).toHaveLength(8);
-        expect(remove.mock.calls.filter(([name]) => name === eventName)).toHaveLength(8);
+        expect(add.mock.calls.filter(([name]) => name === eventName)).toHaveLength(9);
+        expect(remove.mock.calls.filter(([name]) => name === eventName)).toHaveLength(9);
       }
     } finally {
       vi.useRealTimers();

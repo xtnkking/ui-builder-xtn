@@ -2205,7 +2205,7 @@
     "internal/fixed-control-props.ts": "1487adeb9c4f9a18da5deaaf0319f38f2776555ede29b473fba70c5c8178d843",
     "internal/floating-position.ts": "08baa35413386ee231491fc7cd307f131645899544efe1da96942b395e961bd1",
     "internal/input-slots.tsx": "b93846a135a0cb62968f247ea3076836fd6f8e704b1a951df8738f990434997c",
-    "internal/layer-activation.ts": "bdccb496dc63f7600f67ad35a0537d2e3de590afff6ea98cb27a10be748ddd83",
+    "internal/layer-activation.ts": "bea931faf4529cff0511c0da65063b4cf42035b78c227370b8ca9f63c9b001af",
     "internal/layer-kernel.tsx": "46674897d5554328ac9cd936fec4075e01d1831a44e19809e181bcbd44b80a88",
     "internal/overlay-slots.tsx": "8d75012cdaa42a805fd03bee92356f8a7627ea2e3aed62545873697efc2b0965",
     "internal/portal-tokens.ts": "9ee750406165ba5971dbd2671871de468d6b7514462c034e5fb9579a63bd6f8b",

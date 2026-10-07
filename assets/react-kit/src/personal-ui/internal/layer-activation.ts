@@ -42,6 +42,10 @@ export function recordLayerActivation(ownerDocument: Document, target: HTMLEleme
     const focusedElement = next.nodeType === 1 ? next as Element : next.parentElement;
     const focusedDialog = focusedElement?.closest("[role='dialog'][aria-modal='true']");
     if (focusedDialog && !existingDialogs.has(focusedDialog)) return;
+    // A new child modal can autofocus before registration briefly redirects focus into its opener's dialog.
+    if (focusedDialog && existingDialogs.has(focusedDialog) && focusedDialog.contains(target)
+      && Array.from(ownerDocument.querySelectorAll("[role='dialog'][aria-modal='true']"))
+        .some((dialog) => !existingDialogs.has(dialog))) return;
     clearLayerActivation(ownerDocument);
   };
   ownerDocument.addEventListener("keydown", invalidateOnKeyDown, true);
