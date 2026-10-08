@@ -666,6 +666,8 @@ fieldset.pui-field > legend {
 .pui-textarea {
   min-height: 104px;
   padding: 10px 12px;
+  overflow-x: hidden;
+  overflow-y: auto;
   resize: vertical;
 }
 

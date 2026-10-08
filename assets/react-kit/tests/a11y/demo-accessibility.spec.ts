@@ -66,6 +66,21 @@ test.describe("Personal UI example accessibility", () => {
     await expectNoBlockingViolations(page, "number inputs");
   });
 
+  test("empty Textarea has determinate contrast and no horizontal overflow at 2560px", async ({ page }) => {
+    await page.setViewportSize({ width: 2560, height: 900 });
+    await openExample(page, "/#/components/textarea");
+    const textarea = page.locator("#explorer-textarea");
+    await expect(textarea).toHaveAttribute("data-pui-owner", "Textarea");
+    await textarea.fill("");
+    await expect(textarea).toHaveValue("");
+    await expect(textarea).toHaveCSS("overflow-x", "hidden");
+    await expect(textarea).toHaveCSS("overflow-y", "auto");
+
+    const results = await new axeBuilder({ page }).include("#explorer-textarea").analyze();
+    expect(results.incomplete.filter((rule) => rule.id === "color-contrast")).toEqual([]);
+    expect(results.violations.filter((rule) => rule.impact === "critical" || rule.impact === "serious")).toEqual([]);
+  });
+
   test("paginated data table has no blocking automated violations", async ({ page }) => {
     await openExample(page, "/#/components/data-table");
     await expect(page.getByRole("table", { name: "账户列表" })).toBeVisible();
