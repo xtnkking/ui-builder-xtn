@@ -38,7 +38,7 @@ EVALUATOR_COMMAND_ROLES = frozenset(
     }
 )
 PLACEHOLDER_PATTERN = re.compile(
-    r"(?:\b(?:todo|tbd|fixme|placeholder)\b|<\s*(?:fill|replace)[^>]*>|replace\s+me)",
+    r"(?:\b(?:todo|tbd|fixme)\b|^\s*placeholder\s*$|\[\s*placeholder\s*\]|<\s*(?:fill|replace)[^>]*>|replace\s+me)",
     re.IGNORECASE,
 )
 SHA256_PATTERN = re.compile(r"^[0-9a-f]{64}$")
@@ -389,7 +389,11 @@ class _ScenarioRebaser:
             document = json.loads(content.decode("utf-8")) if relative.suffix.lower() == ".json" else None
         except (UnicodeDecodeError, json.JSONDecodeError) as error:
             raise AssemblyError(f"scenario JSON artifact is invalid: {key}: {error}") from error
-        if document is not None:
+        if isinstance(document, dict) and document.get("kind") == "personal-ui-m8-source-inventory":
+            # Entries address ZIP members, not workspace files. Source ZIPs and
+            # their inventories are validated together before rebasing.
+            pass
+        elif document is not None:
             content = _json_bytes(self.transform(document))
         target_relative = self.prefix / relative
         target = self.bundle_root.joinpath(*target_relative.parts)

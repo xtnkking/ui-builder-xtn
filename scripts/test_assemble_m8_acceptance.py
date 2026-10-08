@@ -731,6 +731,7 @@ class M8AcceptanceAssemblerContracts(unittest.TestCase):
     def test_placeholder_or_failed_scenario_is_rejected_atomically(self) -> None:
         for mutation, message in (
             (lambda value: value["run"].update(summary="TODO"), "placeholder"),
+            (lambda value: value["run"].update(summary="[placeholder]"), "placeholder"),
             (lambda value: value.update(result="failed"), "not passed"),
         ):
             with self.subTest(message=message), tempfile.TemporaryDirectory(
@@ -752,6 +753,48 @@ class M8AcceptanceAssemblerContracts(unittest.TestCase):
                         output=output,
                     )
                 self.assertFalse(output.exists())
+
+    def test_historical_placeholder_term_is_not_rejected(self) -> None:
+        self.assertIsNone(
+            assembler._reject_placeholders(
+                {
+                    "summary": "The reserved-placeholder-label check failed initially.",
+                    "review": {"observations": ["A reserved evidence placeholder token was found in a test label."]},
+                },
+                label="historical review",
+            )
+        )
+
+    def test_unfinished_template_markers_remain_rejected(self) -> None:
+        for value in (
+            "placeholder", "  PLACEHOLDER  ", "[ placeholder ]", "TODO", "TBD",
+            "FIXME", "<fill summary>", "<replace summary>", "replace me",
+        ):
+            with self.subTest(value=value):
+                with self.assertRaisesRegex(assembler.AssemblyError, "placeholder"):
+                    assembler._reject_placeholders(value, label="unfinished review")
+
+    def test_source_inventory_paths_are_not_workspace_descriptors(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="pui-m8-inventory-") as temporary:
+            root = Path(temporary)
+            source = root / "source"
+            source.mkdir()
+            (source / "m8-quality-plan.json").write_text("{}", encoding="utf-8")
+            inventory = {
+                "kind": "personal-ui-m8-source-inventory",
+                "files": [
+                    {
+                        "path": "m8-quality-plan.json",
+                        "size": 999,
+                        "sha256": "0" * 64,
+                    }
+                ],
+            }
+            original_bytes = json.dumps(inventory, indent=1, sort_keys=True).encode("utf-8") + b"\n\n"
+            (source / "source-inventory.json").write_bytes(original_bytes)
+            rebaser = assembler._ScenarioRebaser(source, root / "bundle", assembler.PurePosixPath("scenario"))
+            rebaser.materialize(assembler.PurePosixPath("source-inventory.json"))
+            self.assertEqual((root / "bundle/scenario/source-inventory.json").read_bytes(), original_bytes)
 
     def test_quality_binding_mismatch_is_rejected_atomically(self) -> None:
         with tempfile.TemporaryDirectory(prefix="pui-m8-assemble-quality-") as temporary:
