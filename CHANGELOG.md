@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-08
+
 ### Added
 
 - 为 142 个 runtime export 建立可搜索 Explorer、逐 export API/示例文档、键盘与 ARIA 证据，以及 `zh-CN` / `en-US` Locale 契约。
@@ -37,8 +39,8 @@
 
 ### Release status
 
-- 本节是源码冻结前的变更记录，不代表任何候选或公开版本已经通过验收。失败、取消或旧提交的记录只保留为诊断证据，不能用于新源码验收。
-- 发行状态由与候选精确绑定的 hosted CI、M8 acceptance bundle、发布 journal、不可变 tag 和 GitHub Release 共同证明；这些后冻结结果不写回生成它们的源码提交。公开发布仍需精确 stable `planDigest` 授权。
+- Promoted from verified `0.3.0-rc.2` with reviewed RC plan `9231765176650250833dbff8cd31078f5ba7204de71353faeaa2bf9f1db4bcd3`.
+- Public availability is established only after exact stable-plan authorization, immutable tag verification, GitHub Release publication, and public reinstall checks.
 
 ## 0.2.19 - 2026-09-17
 

@@ -14,7 +14,7 @@
   },
   "current": {
     "packageName": "personal-ui",
-    "version": "0.2.19",
+    "version": "0.3.0",
     "apiDigest": "1ed719fdedb214ee512888ca95ff108382cb961e36ddc60c7f43a3149e39d129",
     "compatibilityDigest": "d2ea6cf8775ba754acd32f102c3d558204a4801a111cd19df16e3e83192bb6c4",
     "runtimeExports": 142,
@@ -24,7 +24,7 @@
   "classification": "breaking",
   "versionPolicy": {
     "releaseTarget": "0.3.0",
-    "packageVersion": "0.2.19",
+    "packageVersion": "0.3.0",
     "valid": true,
     "requiredBump": "minor",
     "minimumVersion": "0.3.0",
