@@ -693,6 +693,139 @@ def test_autofill_contract() -> None:
         raise AssertionError("embedded input must not paint an independent rounded rectangle")
 
 
+def test_js_static_import_boundaries() -> None:
+    styles = "import './personal-ui/styles.css';\nimport './app.css';\n"
+    local_app = (
+        "import { Button } from './personal-ui';\n"
+        "export const App = () => <Button>Run</Button>;\n"
+        "export default App;\n"
+    )
+    cases = (
+        (
+            "entrypoint CSS side effects preserve the following default App",
+            "import React from 'react';\n"
+            "import { LocaleProvider } from './personal-ui';\n"
+            + styles
+            + "import App from './App';\n"
+            "export const Root = () => <LocaleProvider locale='zh-CN'><App /></LocaleProvider>;\n",
+            {"Button", "LocaleProvider"},
+        ),
+        (
+            "CSS side effects preserve a named local component alias",
+            styles
+            + "import { App as View } from './App';\n"
+            "export const Root = () => <View />;\n",
+            {"Button"},
+        ),
+        (
+            "CSS side effects preserve public aliases and inline type members",
+            styles
+            + "import { type ButtonProps, Button as Action } from './personal-ui';\n"
+            "export const Root = () => <Action>Run</Action>;\n",
+            {"Button"},
+        ),
+        (
+            "CSS side effects preserve a public namespace",
+            styles
+            + "import * as UI from './personal-ui';\n"
+            "export const Root = () => <UI.Button>Run</UI.Button>;\n",
+            {"Button"},
+        ),
+        (
+            "semicolon-free multiline mixed imports retain all bindings",
+            "import './personal-ui/styles.css'\nimport './app.css'\n"
+            "import React, {\n  StrictMode as Mode\n} from\n 'react'\n"
+            "import App, {\n  App as NamedView\n} from\n './App'\n"
+            "import typeFoo from './App'\n"
+            "export const Root = () => <Mode><App /><NamedView />{React.createElement(typeFoo)}</Mode>;\n",
+            {"Button"},
+        ),
+        (
+            "comment trivia and multiline type-only imports keep runtime ownership",
+            "import  type { ButtonProps } from './personal-ui';\n"
+            "import /* from 'ignored.css'; */ type { InputProps } from './personal-ui';\n"
+            "import\n type { ButtonProps as OtherProps } from './personal-ui'\n"
+            "import /* from 'ignored.css'; */ './personal-ui/styles.css'\n"
+            "import './app.css'\n"
+            "import /* from 'ignored.css'; */\n App from\n './App'\n"
+            "export const Root = () => <App />;\n",
+            {"Button"},
+        ),
+    )
+    for name, source, used in cases:
+        expect_valid(
+            name,
+            {"src/main.tsx": source, "src/App.tsx": local_app, "src/app.css": ""},
+            used,
+        )
+
+
+def test_js_static_import_ownership_rejections() -> None:
+    styles = "import './personal-ui/styles.css';\nimport './app.css';\n"
+    cases = (
+        (
+            "CSS side effects do not hide an external default component",
+            "import Foreign from '@mui/material';\nexport const Root = () => <Foreign />;\n",
+            {"PUI_EXTERNAL_JSX"},
+        ),
+        (
+            "CSS side effects do not hide an external named component",
+            "import { Button as Foreign } from '@mui/material';\n"
+            "export const Root = () => <Foreign />;\n",
+            {"PUI_EXTERNAL_JSX"},
+        ),
+        (
+            "CSS side effects do not permit private public-barrel exports",
+            "import { InternalInput } from './personal-ui';\n"
+            "export const Root = () => <InternalInput />;\n",
+            {"PUI_PRIVATE_EXPORT"},
+        ),
+        (
+            "CSS side effects do not permit deep imports",
+            "import { Input } from './personal-ui/input/forms';\n"
+            "export const Root = () => <Input />;\n",
+            {"PUI_DEEP_IMPORT"},
+        ),
+        (
+            "CSS side effects preserve public className protection",
+            "import { Input as FieldInput } from './personal-ui';\n"
+            "export const Root = () => <FieldInput className='foreign-input' />;\n",
+            {"PUI_COMPONENT_STYLE_OVERRIDE"},
+        ),
+        (
+            "CSS side effects preserve public spread protection",
+            "import { Input } from './personal-ui';\n"
+            "export const Root = (props: any) => <Input {...props} />;\n",
+            {"PUI_COMPONENT_STYLE_OVERRIDE"},
+        ),
+        (
+            "CSS side effects preserve an aliased React factory raw-control rejection",
+            "import R from 'react';\nexport const Root = () => R.createElement('button');\n",
+            {"PUI_RAW_CONTROL"},
+        ),
+        (
+            "CSS side effects do not permit a later external stylesheet",
+            "import 'foreign-theme/style.css';\n"
+            "import { Button } from './personal-ui';\nexport const Root = () => <Button>Run</Button>;\n",
+            {"PUI_EXTERNAL_STYLE"},
+        ),
+        (
+            "template import text does not establish local component ownership",
+            "const copy = `\nimport Ghost from './Local';\n`;\n"
+            "export const Root = () => <Ghost />;\n",
+            {"PUI_UNINSPECTABLE_ELEMENT"},
+        ),
+        (
+            "regex import text does not establish local component ownership",
+            "const copy = /;import Ghost from '.\\/Local'/;\n"
+            "export const Root = () => <Ghost />;\n",
+            {"PUI_UNINSPECTABLE_ELEMENT"},
+        ),
+    )
+    for name, source, codes in cases:
+        expect_issue(name, {"src/App.tsx": styles + source, "src/app.css": ""}, codes)
+
+
 def test_python_static_import_boundaries() -> None:
     verifier = runpy.run_path(str(FULL_VERIFIER))
     code_mask = verifier["code_position_mask"]
@@ -1927,6 +2060,8 @@ def main() -> int:
     test_jsx_regex_expression_boundaries()
     test_jsx_regex_nested_component_protection()
     test_test_directory_exclusions()
+    test_js_static_import_boundaries()
+    test_js_static_import_ownership_rejections()
     test_python_static_import_boundaries()
     test_python_style_gate_contract()
     test_installer_build_gate()
@@ -1935,7 +2070,7 @@ def main() -> int:
         json.dumps(
             {
                 "valid": True,
-                "scannerCases": len(cases) + 52,
+                "scannerCases": len(cases) + 68,
                 "installerGate": True,
                 "autofillContract": True,
                 "pythonStyleGate": True,

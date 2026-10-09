@@ -763,8 +763,12 @@ function literalAttribute(openingTag, attribute, attributes = openingTagAttribut
 function importRecords(source) {
   const records = [];
   const clean = stripComments(source);
-  const pattern = /(?:^|[;\n])\s*import\s+(?!type\b)([\s\S]*?)\s+from\s+["']([^"']+)["']/gm;
+  const executable = jsxBoundaryCode(source);
+  // A binding clause cannot cross a side-effect module string or statement.
+  const pattern = /(?:^|[;\n])\s*import\s+(?!\s*type\b)([^;"'`]*?)\s+from\s+["']([^"']+)["']/gm;
   for (const match of clean.matchAll(pattern)) {
+    const importOffset = (match.index ?? 0) + match[0].indexOf("import");
+    if (executable.slice(importOffset, importOffset + 6) !== "import") continue;
     records.push({ clause: match[1].trim(), specifier: match[2], offset: match.index ?? 0 });
   }
   return records;
