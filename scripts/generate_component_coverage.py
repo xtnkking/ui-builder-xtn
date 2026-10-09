@@ -392,6 +392,7 @@ def collect_validated_explorer_evidence(
     kit_root: Path,
     exports: set[str],
     validator_path: Path | None = None,
+    state_coverage: dict[str, Any] | None = None,
 ) -> tuple[dict[str, list[str]], list[str]]:
     """Return example evidence only after the TypeScript AST validator succeeds."""
 
@@ -497,6 +498,45 @@ def collect_validated_explorer_evidence(
                     f"Explorer AST validator evidence does not exist: {reference!r}"
                 )
         evidence[export_name] = normalized
+    if state_coverage is not None:
+        state_coverage.clear()
+        coverage = payload.get("stateCoverage")
+        if (
+            not isinstance(coverage, dict)
+            or coverage.get("complete") is not True
+            or coverage.get("verificationKind") != "structural-source-fixtures"
+            or coverage.get("behavioralVerification") is not False
+            or not isinstance(coverage.get("evidence"), dict)
+            or set(coverage["evidence"]) != exports
+            or coverage.get("errors") != []
+            or coverage.get("gaps") != []
+        ):
+            errors.append("Explorer AST validator must supply complete source-state evidence, not browser certification")
+        else:
+            for export_name, fixtures in coverage["evidence"].items():
+                states: set[str] = set()
+                if not isinstance(fixtures, list) or not fixtures:
+                    errors.append(f"Explorer state fixtures for {export_name} must be a non-empty array")
+                    continue
+                for fixture in fixtures:
+                    if (
+                        not isinstance(fixture, dict)
+                        or fixture.get("state") not in APPLICABLE_STATES
+                        or fixture.get("state") in states
+                        or fixture.get("file") not in evidence[export_name]
+                        or type(fixture.get("exampleIndex")) is not int
+                        or fixture["exampleIndex"] < 0
+                        or fixture.get("verification") != (
+                            "manual-interaction-fixture"
+                            if fixture.get("state") == "keyboard"
+                            else "runnable-source-fixture"
+                        )
+                    ):
+                        errors.append(f"Explorer state fixture for {export_name} has invalid ownership or identity")
+                        continue
+                    states.add(fixture["state"])
+            if not errors:
+                state_coverage.update(coverage)
     return evidence, errors
 
 
@@ -1454,10 +1494,12 @@ def build_coverage_matrix(
     )
     if metadata_errors:
         raise ValueError("; ".join(metadata_errors))
+    explorer_state_coverage: dict[str, Any] = {}
     explorer_evidence, explorer_errors = collect_validated_explorer_evidence(
         skill_root=skill_root,
         kit_root=kit_root,
         exports=set(exports),
+        state_coverage=explorer_state_coverage,
     )
     if explorer_errors:
         raise ValueError("; ".join(explorer_errors))
@@ -1525,6 +1567,16 @@ def build_coverage_matrix(
                     if isinstance(source, str)
                 ),
                 "documentation": documentation_rows[export_name],
+                "stateCoverage": {
+                    "applicableStates": documentation_rows[export_name]["applicableStates"],
+                    "sourceDemonstratedStates": [
+                        fixture["state"]
+                        for fixture in explorer_state_coverage["evidence"][export_name]
+                    ],
+                    "fixtures": explorer_state_coverage["evidence"][export_name],
+                    "verificationKind": "structural-source-fixtures",
+                    "behavioralVerification": False,
+                },
                 "example": test_evidence["example"][export_name],
                 "unit": test_evidence["unit"][export_name],
                 "browser": test_evidence["browser"][export_name],

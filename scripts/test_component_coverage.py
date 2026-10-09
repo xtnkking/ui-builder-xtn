@@ -480,6 +480,56 @@ class ComponentCoverageContractTests(unittest.TestCase):
         self.assertEqual(evidence["Button"], [])
         self.assertEqual(errors, ["Button needs reachable JSX"])
 
+    def test_explorer_state_evidence_preserves_fixtures_and_rejects_false_claims(self) -> None:
+        case_ref = "assets/react-kit/src/explorer/cases/actions/button.case.tsx"
+        fixture = {"state": "default", "file": case_ref, "exampleIndex": 0,
+                   "verification": "runnable-source-fixture"}
+        keyboard_fixture = {"state": "keyboard", "file": case_ref, "exampleIndex": 1,
+                            "verification": "manual-interaction-fixture"}
+        payload = {"ok": True, "errors": [], "evidence": {"Button": [case_ref]},
+                   "stateCoverage": {"complete": True, "errors": [], "gaps": [],
+                                     "verificationKind": "structural-source-fixtures",
+                                     "behavioralVerification": False,
+                                     "evidence": {"Button": [fixture, keyboard_fixture]}}}
+        with tempfile.TemporaryDirectory(prefix="personal-ui-state-evidence-") as temporary:
+            root = Path(temporary)
+            kit_root = root / "assets" / "react-kit"
+            validator = kit_root / "tools" / "personal-ui" / "validate-explorer-cases.mjs"
+            validator.parent.mkdir(parents=True)
+            validator.write_text("// fixture", encoding="utf-8")
+            case_file = root / case_ref
+            case_file.parent.mkdir(parents=True)
+            case_file.write_text("// fixture", encoding="utf-8")
+            variants = [("valid", payload)]
+            for name, change in (
+                ("absent", lambda p: p.pop("stateCoverage")),
+                ("incomplete", lambda p: p["stateCoverage"].update(complete=False)),
+                ("browser-claim", lambda p: p["stateCoverage"].update(behavioralVerification=True)),
+                ("missing-export", lambda p: p["stateCoverage"].update(evidence={})),
+                ("borrowed-owner", lambda p: p["stateCoverage"]["evidence"]["Button"][0].update(file="other.tsx")),
+                ("false-keyboard-certificate", lambda p: p["stateCoverage"]["evidence"]["Button"][1].update(verification="runnable-source-fixture")),
+                ("duplicate", lambda p: p["stateCoverage"]["evidence"]["Button"].append(copy.deepcopy(fixture))),
+            ):
+                invalid = copy.deepcopy(payload)
+                change(invalid)
+                variants.append((name, invalid))
+            for name, variant in variants:
+                with self.subTest(name=name), patch("generate_component_coverage.subprocess.run") as run:
+                    run.return_value = subprocess.CompletedProcess([], 0, json.dumps(variant), "")
+                    states = {}
+                    evidence, errors = collect_validated_explorer_evidence(
+                        skill_root=root, kit_root=kit_root, exports={"Button"}, state_coverage=states,
+                    )
+                    run.assert_called_once()
+                    self.assertEqual(evidence, {"Button": [case_ref]})
+                    if name == "valid":
+                        self.assertEqual(errors, [])
+                        self.assertEqual(states["evidence"]["Button"], [fixture, keyboard_fixture])
+                        self.assertIs(states["behavioralVerification"], False)
+                    else:
+                        self.assertTrue(errors)
+                        self.assertEqual(states, {})
+
     def test_test_evidence_validator_returns_per_export_runner_refs(self) -> None:
         with tempfile.TemporaryDirectory(prefix="personal-ui-test-evidence-") as temporary:
             root = Path(temporary)

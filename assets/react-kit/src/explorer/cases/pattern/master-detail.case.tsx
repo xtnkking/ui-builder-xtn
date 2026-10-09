@@ -1,4 +1,5 @@
 // @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"master-detail/overview","exports":["MasterDetail"]}
+import { StatePreview } from "../state-preview";
 import { useState } from "react";
 import { Button, DescriptionList, MasterDetail, Stack } from "../../../personal-ui";
 import type { ExplorerCase } from "../types";
@@ -18,7 +19,17 @@ const explorerCase: ExplorerCase = {
   id: "master-detail/overview",
   label: "主从页面",
   summary: "列表选择与详情区采用稳定双栏，并在移动端保持可读顺序。",
-  states: ["default", "loading", "empty", "error", "validation", "longContent", "keyboard", "mobile", "overlay", "dark", "locale"],
+  states: ["default", "empty", "longContent", "keyboard", "mobile", "overlay", "dark", "locale"],
+  stateExamples: [
+    { state: "empty", exports: ["MasterDetail"], content: <MasterDetail title="选择项目" master={<p>项目列表</p>} detail={<p>项目详情</p>} detailOpen={false} emptyDetail={<p>请选择项目以查看详情。</p>} /> },
+    { state: "longContent", exports: ["MasterDetail"], content: <MasterDetail title="完整项目配置" description="此页面展示全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置，请确认所有关联配置均符合团队的实际使用要求。" master={<p>项目列表</p>} detail={<p>项目详情</p>} /> },
+    { state: "default", exports: ["MasterDetail"], content: <MasterDetailExample /> },
+    { state: "keyboard", exports: ["MasterDetail"], content: <MasterDetailExample />, instructions: "用 Tab 访问本例可用控件，使用 Enter、Space 和组件文档中的方向键操作。此项为人工操作案例，不是自动行为验收证书。" },
+    { state: "mobile", exports: ["MasterDetail"], content: <StatePreview state="mobile">{<MasterDetailExample />}</StatePreview> },
+    { state: "overlay", exports: ["MasterDetail"], content: <StatePreview state="overlay">{<MasterDetailExample />}</StatePreview> },
+    { state: "dark", exports: ["MasterDetail"], content: <StatePreview state="dark">{<MasterDetailExample />}</StatePreview> },
+    { state: "locale", exports: ["MasterDetail"], content: <StatePreview state="locale">{<MasterDetailExample />}</StatePreview> },
+  ],
   content: <MasterDetailExample />,
   code: `import { MasterDetail } from "./personal-ui";
 

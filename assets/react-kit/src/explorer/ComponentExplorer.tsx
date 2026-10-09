@@ -81,7 +81,22 @@ function FamilyCases({ family, cases }: { family: ExplorerFamily; cases?: readon
     );
   }
 
-  const items = cases.flatMap((example) => [
+  const items = cases.flatMap((example) => {
+    const stateItems = [{
+      id: "overview",
+      label: "总览",
+      content: <div className="demo-explorer-preview">{example.content}</div>,
+    }, ...(example.stateExamples ?? []).map((stateExample, index) => ({
+      id: `state-${index}`,
+      label: `${stateExample.state} · ${stateExample.exports.join(" / ")}`,
+      content: (
+        <section data-state-example={stateExample.state} data-state-exports={stateExample.exports.join(",")}>
+          {stateExample.instructions && <p>{stateExample.instructions}</p>}
+          <div className="demo-explorer-preview">{stateExample.content}</div>
+        </section>
+      ),
+    }))];
+    return [
     {
       id: `${example.id}-preview`,
       label: cases.length === 1 ? "预览" : `${example.label}预览`,
@@ -90,11 +105,22 @@ function FamilyCases({ family, cases }: { family: ExplorerFamily; cases?: readon
           <div className="demo-explorer-case__summary">
             <h2>{example.label}</h2>
             <p>{example.summary}</p>
-            <div className="demo-explorer-case__states" aria-label="案例覆盖状态">
+            <div className="demo-explorer-case__states" aria-label="适用状态，不表示已演示">
               {example.states.map((state) => <Tag key={state}>{state}</Tag>)}
             </div>
           </div>
-          <div className="demo-explorer-preview">{example.content}</div>
+          {example.stateExamples?.length ? (
+            <Tabs
+              ariaLabel={`${example.label}状态案例`}
+              defaultValue="overview"
+              items={stateItems}
+            />
+          ) : (
+            <>
+              <div className="demo-explorer-preview">{example.content}</div>
+              <p data-state-coverage="pending">状态案例尚未逐项绑定；以上标签仅表示适用范围。</p>
+            </>
+          )}
         </section>
       ),
     },
@@ -103,7 +129,8 @@ function FamilyCases({ family, cases }: { family: ExplorerFamily; cases?: readon
       label: cases.length === 1 ? "代码" : `${example.label}代码`,
       content: <CodeBlock code={example.code} language="tsx" copyable />,
     },
-  ]);
+    ];
+  });
 
   return (
     <div className="demo-explorer-cases" data-example-status="runnable">

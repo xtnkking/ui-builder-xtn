@@ -1,0 +1,516 @@
+{
+  "schemaVersion": 1,
+  "kind": "personal-ui-m6-state-applicability-audit",
+  "scope": "26 data/action families and 9 page-pattern families; 42 runtime exports",
+  "evidencePolicy": "Source/API applicability and runnable fixtures only; not browser or accessibility acceptance. Do not apply these narrowed scopes to deferred M2/M5 decisions.",
+  "exports": {
+    "DescriptionList": {
+      "applicableStates": [
+        "default",
+        "empty",
+        "longContent",
+        "dark",
+        "locale"
+      ],
+      "reason": "items=[] yields an empty semantic list. There is no owned error state or error prop; rendering errors in a description value does not become a list error."
+    },
+    "Timeline": {
+      "applicableStates": [
+        "default",
+        "empty",
+        "longContent",
+        "dark",
+        "locale"
+      ],
+      "reason": "items=[] is supported. Failed events are ordinary event data, not a separate timeline loading/error API."
+    },
+    "BarChart": {
+      "applicableStates": [
+        "default",
+        "empty",
+        "longContent",
+        "dark",
+        "locale"
+      ],
+      "reason": "data=[] produces no bars; labels support long content. No owned request error state or error prop exists."
+    },
+    "Statistic": {
+      "applicableStates": [
+        "default",
+        "longContent",
+        "dark",
+        "locale"
+      ],
+      "reason": "label and value are supplied presentation values. No empty/error lifecycle or state prop exists; negative trends do not imply a request error."
+    },
+    "Meter": {
+      "applicableStates": [
+        "default",
+        "longContent",
+        "dark",
+        "locale"
+      ],
+      "reason": "A numeric value and range are required. Threshold danger tone is a measurement variant, not an empty/error request state."
+    },
+    "Media": {
+      "applicableStates": [
+        "default",
+        "longContent",
+        "dark",
+        "locale"
+      ],
+      "reason": "src and alt are required. Native image/video errors do not produce an owned error fallback in this component; captions support long content."
+    },
+    "Attachment": {
+      "applicableStates": [
+        "default",
+        "disabled",
+        "loading",
+        "longContent",
+        "keyboard",
+        "dark",
+        "locale"
+      ],
+      "reason": "disabled suppresses actions and downloading owns the download indicator. name supports long text; the component has no empty/error state API."
+    },
+    "Avatar": {
+      "applicableStates": [
+        "default",
+        "error",
+        "dark",
+        "locale"
+      ],
+      "reason": "Invalid image data triggers the owned initials fallback. Missing src is the ordinary default, not an empty state; fixed-size initials do not render long names."
+    },
+    "AvatarGroup": {
+      "applicableStates": [
+        "default",
+        "empty",
+        "dark",
+        "locale"
+      ],
+      "reason": "No child avatars is a real empty group. Child Avatar image errors belong to Avatar; the group itself has no error or long-text presentation."
+    },
+    "Badge": {
+      "applicableStates": [
+        "default",
+        "empty",
+        "error",
+        "longContent",
+        "dark",
+        "locale"
+      ],
+      "reason": "count=0 and showZero=false hides the indicator. danger tone provides an explicit failure signal; content supports long visible text."
+    },
+    "StatusIndicator": {
+      "applicableStates": [
+        "default",
+        "error",
+        "longContent",
+        "dark",
+        "locale"
+      ],
+      "reason": "Required label plus danger tone expresses a failure signal; the component does not own an empty-state contract."
+    },
+    "Tag": {
+      "applicableStates": [
+        "default",
+        "error",
+        "longContent",
+        "keyboard",
+        "dark",
+        "locale"
+      ],
+      "reason": "danger tone represents a failure label, long children are supported, and onRemove creates a real keyboard action. No dedicated empty state exists."
+    },
+    "CodeBlock": {
+      "applicableStates": [
+        "default",
+        "longContent",
+        "dark",
+        "locale"
+      ],
+      "reason": "Existing code content already exercises long rendered source and real dark/locale hosts; there is no request lifecycle."
+    },
+    "Card": {
+      "applicableStates": [
+        "default",
+        "longContent",
+        "dark",
+        "locale"
+      ],
+      "reason": "Card composes heading/description/body/footer with long content. Slot contents do not establish an owned request state."
+    },
+    "OverflowText": {
+      "applicableStates": [
+        "default",
+        "longContent",
+        "keyboard",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "stateMode": "stateless",
+      "reason": "Overflow detection owns a keyboard-reachable tooltip. Public props expose only text and placement, with no disabled/readOnly/value/defaultValue/validation API."
+    },
+    "ExpandableText": {
+      "applicableStates": [
+        "default",
+        "longContent",
+        "keyboard",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "stateMode": "stateless",
+      "reason": "Expansion is privately maintained by its own action. There is no public controlled/default-value/readOnly/disabled/validation contract."
+    },
+    "List": {
+      "applicableStates": [
+        "default",
+        "empty",
+        "longContent",
+        "mobile",
+        "dark",
+        "locale"
+      ],
+      "reason": "items=[] and empty content are public. List itself introduces no keyboard action; keyboard controls in items belong to those controls."
+    },
+    "VirtualList": {
+      "applicableStates": [
+        "default",
+        "empty",
+        "longContent",
+        "keyboard",
+        "mobile",
+        "dark",
+        "locale"
+      ],
+      "reason": "items=[] has an empty region, long item values are rendered, and an overflowing fixed-height viewport exposes native keyboard scrolling. loadingMore gates end-reached calls without introducing a displayed loading state."
+    },
+    "Toolbar": {
+      "applicableStates": [
+        "default",
+        "longContent",
+        "keyboard",
+        "dark",
+        "locale"
+      ],
+      "reason": "The public toolbar groups start/main/end slots and preserves delegated keyboard actions. It has no disabled prop; child buttons own disable behavior."
+    },
+    "FilterBar": {
+      "applicableStates": [
+        "default",
+        "longContent",
+        "keyboard",
+        "mobile",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "reason": "This is a form with fields, actions, activeFilters and status slots. Explicit local draft/submit filtering is demonstrated; loading/error/validation belong to nested controls, not an owned FilterBar state."
+    },
+    "ClipboardButton": {
+      "applicableStates": [
+        "default",
+        "disabled",
+        "longContent",
+        "keyboard",
+        "dark",
+        "locale"
+      ],
+      "reason": "Public disabled and label props plus the actual copy action are demonstrated. Private clipboard lifecycle is exercised by the ordinary interactive scene without inventing loading/error props."
+    },
+    "SortableList": {
+      "applicableStates": [
+        "default",
+        "disabled",
+        "controlled",
+        "empty",
+        "longContent",
+        "keyboard",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "reason": "items/onReorder is a controlled ordering contract, disabled suppresses moves and drag, items=[] is empty. There is no readOnly or validation API."
+    },
+    "Tree": {
+      "applicableStates": [
+        "default",
+        "disabled",
+        "controlled",
+        "uncontrolled",
+        "empty",
+        "longContent",
+        "keyboard",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "stateMode": "controlled-uncontrolled",
+      "reason": "Selection and expansion each support controlled/default props; node.disabled is real. nodes=[] and long node labels are supported. No readOnly/validation API exists."
+    },
+    "Accordion": {
+      "applicableStates": [
+        "default",
+        "disabled",
+        "controlled",
+        "uncontrolled",
+        "empty",
+        "longContent",
+        "keyboard",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "reason": "value/defaultValue/onValueChange and item.disabled are public. items=[] and long item content are supported. No readOnly/validation API exists."
+    },
+    "Collapse": {
+      "applicableStates": [
+        "default",
+        "disabled",
+        "controlled",
+        "uncontrolled",
+        "longContent",
+        "keyboard",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "reason": "open/defaultOpen/onOpenChange and disabled are public. readOnly and validation are not supported."
+    },
+    "Calendar": {
+      "applicableStates": [
+        "default",
+        "disabled",
+        "controlled",
+        "uncontrolled",
+        "keyboard",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "stateMode": "controlled-uncontrolled",
+      "reason": "Date selection supports value/defaultValue/onValueChange. isDateDisabled owns per-date availability; this is not a global disabled prop. No readOnly/validation API exists."
+    },
+    "Scheduler": {
+      "applicableStates": [
+        "default",
+        "controlled",
+        "empty",
+        "longContent",
+        "keyboard",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "reason": "date/onDateChange and events are supplied externally; events=[] and long event titles are supported. No disabled/readOnly/default date/validation API exists."
+    },
+    "Gallery": {
+      "applicableStates": [
+        "default",
+        "controlled",
+        "empty",
+        "longContent",
+        "keyboard",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "reason": "selectedId/onSelect supports controlled selection; items=[] has a public empty slot. No disabled/readOnly/validation API exists."
+    },
+    "Carousel": {
+      "applicableStates": [
+        "default",
+        "controlled",
+        "uncontrolled",
+        "empty",
+        "longContent",
+        "keyboard",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "reason": "value/defaultValue/onValueChange, empty slides, and long slide content are public. There is no disabled/readOnly/validation API."
+    },
+    "AuthenticationPage": {
+      "applicableStates": [
+        "default",
+        "longContent",
+        "keyboard",
+        "mobile",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "reason": "AuthenticationPage is a layout with identity, description and content slots; fields and submitted request states belong to its children."
+    },
+    "FamilyLoginPage": {
+      "applicableStates": [
+        "default",
+        "loading",
+        "empty",
+        "error",
+        "validation",
+        "longContent",
+        "keyboard",
+        "mobile",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "reason": "Owns credential validation, submitting status, rejected onSubmit feedback and products=[] unavailable state. Delayed/rejecting callbacks and blank-submit instructions demonstrate those states."
+    },
+    "CreateEditPage": {
+      "applicableStates": [
+        "default",
+        "disabled",
+        "loading",
+        "longContent",
+        "keyboard",
+        "mobile",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "reason": "submitDisabled and submitting own action availability/loading. Field validation, request error and empty content belong to supplied children."
+    },
+    "DetailPage": {
+      "applicableStates": [
+        "default",
+        "empty",
+        "longContent",
+        "keyboard",
+        "mobile",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "reason": "sections=[] is a genuine empty detail region; heading and sections support long text. The page has no owned fetch/error/validation lifecycle."
+    },
+    "PageHeading": {
+      "applicableStates": [
+        "default",
+        "longContent",
+        "keyboard",
+        "mobile",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "reason": "Owns title/description and onBack action. Loading, validation and content emptiness are not heading states."
+    },
+    "ListManagementPage": {
+      "applicableStates": [
+        "default",
+        "longContent",
+        "keyboard",
+        "mobile",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "reason": "This is a heading, filters, bulkActions, children and footer composition. Data loading/empty/error states belong to supplied result components."
+    },
+    "SearchFilterPage": {
+      "applicableStates": [
+        "default",
+        "longContent",
+        "keyboard",
+        "mobile",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "reason": "Shares the list page composition; supplying an EmptyState or error child does not establish an owned page request state."
+    },
+    "MemberManagementPage": {
+      "applicableStates": [
+        "default",
+        "loading",
+        "empty",
+        "error",
+        "longContent",
+        "keyboard",
+        "mobile",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "reason": "The fetchMembers result lifecycle owns loading/empty/error, while filters, sorting, paging and row actions are internal. There is no independent field validation contract."
+    },
+    "SettingsPage": {
+      "applicableStates": [
+        "default",
+        "disabled",
+        "controlled",
+        "empty",
+        "longContent",
+        "keyboard",
+        "mobile",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "stateMode": "controlled",
+      "reason": "currentId/onCurrentChange controls section selection; section.disabled is public; sections=[] leaves no active section. Child form errors/loading are not owned page states."
+    },
+    "WizardFlow": {
+      "applicableStates": [
+        "default",
+        "disabled",
+        "controlled",
+        "loading",
+        "longContent",
+        "keyboard",
+        "mobile",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "stateMode": "controlled",
+      "reason": "currentId/onStepChange controls navigation; nextDisabled and nextLoading own action states. Step content owns its own field errors and validation."
+    },
+    "MasterDetail": {
+      "applicableStates": [
+        "default",
+        "empty",
+        "longContent",
+        "keyboard",
+        "mobile",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "reason": "detailOpen=false switches to the explicit emptyDetail slot. Request loading/error/validation are not owned by this composition."
+    },
+    "ImportExportPage": {
+      "applicableStates": [
+        "default",
+        "loading",
+        "longContent",
+        "keyboard",
+        "mobile",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "reason": "importing/exporting explicitly control the pattern's own action indicators. It does not automatically await callbacks or own file validation/error/empty state."
+    },
+    "StatusPage": {
+      "applicableStates": [
+        "default",
+        "empty",
+        "error",
+        "longContent",
+        "keyboard",
+        "mobile",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "reason": "kind selects owned empty/error/permission/offline presentations. onRetry is an action callback, but StatusPage does not expose retryLoading or maintain pending state; therefore no loading claim."
+    }
+  }
+}

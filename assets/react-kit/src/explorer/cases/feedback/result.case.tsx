@@ -1,26 +1,33 @@
 // @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"result/overview","exports":["EmptyState","ErrorState","NoResults","RetryButton","AsyncAction"]}
-import { AsyncAction, EmptyState, ErrorState, NoResults, RetryButton } from "../../../personal-ui";
+import { StatePreview } from "../state-preview";
+import { useState } from "react";
+import { AsyncAction, EmptyState, ErrorState, InlineMessage, NoResults, RetryButton, Stack } from "../../../personal-ui";
 import type { ExplorerCase } from "../types";
 
-const wait = () => new Promise<void>((resolve) => window.setTimeout(resolve, 450));
-
+async function wait() { await new Promise<void>((resolve) => setTimeout(resolve, 1200)); }
+function AsyncFailure() {
+  const [error, setError] = useState("");
+  return <Stack><AsyncAction onAction={async () => { throw new Error("保存失败，请检查网络。"); }} onActionError={(failure) => setError(failure instanceof Error ? failure.message : "保存失败")}>触发保存失败</AsyncAction>{error ? <InlineMessage tone="danger">{error}</InlineMessage> : null}</Stack>;
+}
 const explorerCase = {
   id: "result/overview",
-  label: "结果与重试状态",
-  summary: "空白、无搜索结果、错误、同步重试和异步操作都使用稳定尺寸与统一加载反馈。",
-  states: ["default", "disabled", "controlled", "uncontrolled", "loading", "empty", "error", "validation", "longContent", "keyboard", "overlay", "dark", "locale"],
-  content: (
-    <div style={{ display: "grid", gap: 20 }}>
-      <EmptyState compact title="还没有成员" description="邀请第一位成员后，权限和活动记录会显示在这里。" />
-      <NoResults compact title="没有匹配结果" description="调整关键词或清除筛选条件后重试。" />
-      <ErrorState compact kind="offline" title="暂时无法连接" description="现有数据会保留，恢复网络后可以重试。" onRetry={wait} />
-      <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-        <RetryButton onRetry={() => undefined} label="重新载入" />
-        <AsyncAction onAction={wait}>保存更改</AsyncAction>
-      </div>
-    </div>
-  ),
-  code: `<ErrorState kind="offline" onRetry={reload} />\n<RetryButton onRetry={reload} />\n<AsyncAction onAction={save}>保存更改</AsyncAction>`,
+  label: "结果与恢复操作",
+  summary: "空态、错误和请求状态各有真实实例；重试按钮的 loading 由请求所有者传入。",
+  states: ["default","empty","error","disabled","loading","longContent","keyboard","overlay","dark","locale"],
+  stateExamples: [
+    { state: "default", exports: ["EmptyState","ErrorState","NoResults","RetryButton","AsyncAction"], content: <Stack gap="large"><EmptyState compact title="还没有成员" /><NoResults compact /><ErrorState compact onRetry={wait} /><RetryButton onRetry={() => undefined} /><AsyncAction onAction={wait}>保存更改</AsyncAction></Stack> },
+    { state: "empty", exports: ["EmptyState","NoResults"], content: <Stack><EmptyState compact title="还没有成员" /><NoResults compact /></Stack> },
+    { state: "error", exports: ["ErrorState","AsyncAction"], content: <Stack><ErrorState compact kind="offline" /><AsyncFailure /></Stack>, instructions: "点击触发保存失败，观察请求失败后的错误消息。" },
+    { state: "disabled", exports: ["RetryButton","AsyncAction"], content: <Stack><RetryButton disabled onRetry={() => undefined} /><AsyncAction disabled onAction={wait}>保存更改</AsyncAction></Stack> },
+    { state: "loading", exports: ["ErrorState","RetryButton","AsyncAction"], content: <Stack><ErrorState compact retryLoading onRetry={wait} /><RetryButton loading onRetry={() => undefined} /><AsyncAction loading onAction={wait}>保存更改</AsyncAction></Stack> },
+    { state: "longContent", exports: ["EmptyState","ErrorState","NoResults","RetryButton","AsyncAction"], content: <Stack><EmptyState compact title="还没有成员" description="成员目录查询暂时无法完成，请检查工作区权限、组织网络代理及身份提供方配置。修正这些设置之后重试，已经成功载入的数据将保留，不会重复提交操作。" /><NoResults compact description="成员目录查询暂时无法完成，请检查工作区权限、组织网络代理及身份提供方配置。修正这些设置之后重试，已经成功载入的数据将保留，不会重复提交操作。" /><ErrorState compact description="成员目录查询暂时无法完成，请检查工作区权限、组织网络代理及身份提供方配置。修正这些设置之后重试，已经成功载入的数据将保留，不会重复提交操作。" /><RetryButton label="成员目录查询暂时无法完成，请检查工作区权限、组织网络代理及身份提供方配置。修正这些设置之后重试，已经成功载入的数据将保留，不会重复提交操作。" onRetry={() => undefined} /><AsyncAction onAction={wait}>成员目录查询暂时无法完成，请检查工作区权限、组织网络代理及身份提供方配置。修正这些设置之后重试，已经成功载入的数据将保留，不会重复提交操作。</AsyncAction></Stack> },
+    { state: "keyboard", exports: ["ErrorState","RetryButton","AsyncAction"], content: <Stack gap="large"><EmptyState compact title="还没有成员" /><NoResults compact /><ErrorState compact onRetry={wait} /><RetryButton onRetry={() => undefined} /><AsyncAction onAction={wait}>保存更改</AsyncAction></Stack>, instructions: "用 Tab 聚焦本例操作按钮，用 Enter 或 Space 执行；关闭浮层后核对焦点返回。此处是人工操作入口，不是自动验收证书。" },
+    { state: "overlay", exports: ["RetryButton","AsyncAction"], content: <StatePreview state="overlay"><Stack><RetryButton onRetry={() => undefined} /><AsyncAction onAction={wait}>保存更改</AsyncAction></Stack></StatePreview> },
+    { state: "dark", exports: ["EmptyState","ErrorState","NoResults","RetryButton","AsyncAction"], content: <StatePreview state="dark"><Stack gap="large"><EmptyState compact title="还没有成员" /><NoResults compact /><ErrorState compact onRetry={wait} /><RetryButton onRetry={() => undefined} /><AsyncAction onAction={wait}>保存更改</AsyncAction></Stack></StatePreview> },
+    { state: "locale", exports: ["EmptyState","ErrorState","NoResults","RetryButton","AsyncAction"], content: <StatePreview state="locale"><Stack gap="large"><EmptyState compact title="还没有成员" /><NoResults compact /><ErrorState compact onRetry={wait} /><RetryButton onRetry={() => undefined} /><AsyncAction onAction={wait}>保存更改</AsyncAction></Stack></StatePreview> },
+  ],
+  content: <Stack gap="large"><EmptyState compact title="还没有成员" /><NoResults compact /><ErrorState compact onRetry={wait} /><RetryButton onRetry={() => undefined} /><AsyncAction onAction={wait}>保存更改</AsyncAction></Stack>,
+  code: "<ErrorState kind=\"offline\" onRetry={reload} />\n<RetryButton loading={pending} onRetry={reload} />\n<AsyncAction onAction={save}>保存更改</AsyncAction>",
 } satisfies ExplorerCase;
 
 export default explorerCase;

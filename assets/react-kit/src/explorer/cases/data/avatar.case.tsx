@@ -1,4 +1,5 @@
 // @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"avatar/overview","exports":["Avatar","AvatarGroup"]}
+import { StatePreview } from "../state-preview";
 import { Avatar, AvatarGroup } from "../../../personal-ui";
 import type { ExplorerCase } from "../types";
 
@@ -6,7 +7,35 @@ const explorerCase = {
   id: "avatar/overview",
   label: "头像与头像组",
   summary: "无图片时使用稳定的姓名回退；头像组通过 max 汇总超出成员且保留整体名称。",
-  states: ["default", "empty", "error", "longContent", "dark", "locale"],
+  states: ["default", "empty", "error", "dark", "locale"],
+  stateExamples: [
+    { state: "empty", exports: ["AvatarGroup"], instructions: "没有成员时分组不生成占位头像，页面另行显示空态说明。", content: <><AvatarGroup ariaLabel="空成员组" /><p>目前没有成员。</p></> },
+    { state: "error", exports: ["Avatar"], instructions: "内联图片不能解码，头像回退为姓名首字母。", content: <Avatar name="Alex Taylor" src="data:image/png;base64,aW52YWxpZA==" /> },
+    { state: "default", exports: ["Avatar","AvatarGroup"], content: (
+    <AvatarGroup max={3} ariaLabel="项目成员：林晓、陈屿、王宁和赵舒">
+      <Avatar name="林晓" size="large" />
+      <Avatar name="陈屿" size="large" />
+      <Avatar name="王宁" size="large" />
+      <Avatar name="赵舒" size="large" />
+    </AvatarGroup>
+  ) },
+    { state: "dark", exports: ["Avatar","AvatarGroup"], content: <StatePreview state="dark">{(
+    <AvatarGroup max={3} ariaLabel="项目成员：林晓、陈屿、王宁和赵舒">
+      <Avatar name="林晓" size="large" />
+      <Avatar name="陈屿" size="large" />
+      <Avatar name="王宁" size="large" />
+      <Avatar name="赵舒" size="large" />
+    </AvatarGroup>
+  )}</StatePreview> },
+    { state: "locale", exports: ["Avatar","AvatarGroup"], content: <StatePreview state="locale">{(
+    <AvatarGroup max={3} ariaLabel="项目成员：林晓、陈屿、王宁和赵舒">
+      <Avatar name="林晓" size="large" />
+      <Avatar name="陈屿" size="large" />
+      <Avatar name="王宁" size="large" />
+      <Avatar name="赵舒" size="large" />
+    </AvatarGroup>
+  )}</StatePreview> },
+  ],
   content: (
     <AvatarGroup max={3} ariaLabel="项目成员：林晓、陈屿、王宁和赵舒">
       <Avatar name="林晓" size="large" />

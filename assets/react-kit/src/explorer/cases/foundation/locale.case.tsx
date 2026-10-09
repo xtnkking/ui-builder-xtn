@@ -1,5 +1,6 @@
 // @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"locale/overview","exports":["LocaleProvider","usePersonalUILocale"]}
-import { Inline, LocaleProvider, Pagination, Stack, Tag, usePersonalUILocale } from "../../../personal-ui";
+import { StatePreview } from "../state-preview";
+import { Field, Inline, LocaleProvider, Pagination, Stack, Tag, usePersonalUILocale } from "../../../personal-ui";
 import type { ExplorerCase } from "../types";
 
 function LocaleSummary({ label }: { label: string }) {
@@ -18,11 +19,39 @@ function LocaleSummary({ label }: { label: string }) {
   );
 }
 
+function LongLocaleContent() {
+  const { formatDate, formatNumber } = usePersonalUILocale();
+  return <Stack gap="medium"><span>{formatDate(Date.UTC(2026, 8, 22, 23, 59, 59), { dateStyle: "full", timeStyle: "long", timeZone: "UTC" })}</span><span>{formatNumber(1234567890123.89, { style: "currency", currency: "USD" })}</span></Stack>;
+}
+
 const explorerCase = {
   id: "locale/overview",
   label: "语言、数字与日期",
   summary: "LocaleProvider 独立管理语言与时区；组件文案、ARIA、数字、日期和复数从同一逻辑上下文读取。",
   states: ["usage", "locale", "longContent"],
+  stateExamples: [
+    { state: "longContent", exports: ["LocaleProvider", "usePersonalUILocale"], content: <Field group label="Long localized dates, large currency amounts, and complete accessible descriptions for cross-region financial reports"><LocaleProvider locale="en-US" timeZone="UTC"><LongLocaleContent /></LocaleProvider></Field> },
+    { state: "usage", exports: ["LocaleProvider","usePersonalUILocale"], content: (
+    <Inline gap="large" align="start" wrap>
+      <LocaleProvider locale="zh-CN" timeZone="Asia/Shanghai">
+        <LocaleSummary label="默认中文" />
+      </LocaleProvider>
+      <LocaleProvider locale="en-US" timeZone="America/New_York">
+        <LocaleSummary label="Long English labels" />
+      </LocaleProvider>
+    </Inline>
+  ) },
+    { state: "locale", exports: ["LocaleProvider","usePersonalUILocale"], content: <StatePreview state="locale">{(
+    <Inline gap="large" align="start" wrap>
+      <LocaleProvider locale="zh-CN" timeZone="Asia/Shanghai">
+        <LocaleSummary label="默认中文" />
+      </LocaleProvider>
+      <LocaleProvider locale="en-US" timeZone="America/New_York">
+        <LocaleSummary label="Long English labels" />
+      </LocaleProvider>
+    </Inline>
+  )}</StatePreview> },
+  ],
   content: (
     <Inline gap="large" align="start" wrap>
       <LocaleProvider locale="zh-CN" timeZone="Asia/Shanghai">

@@ -36,6 +36,12 @@ test("builds one complete API record per registered runtime export without cover
     assert.ok(record.source?.file && record.source.line > 0, `${record.name} has implementation provenance`);
     assert.ok(record.example.code.includes("./personal-ui"), `${record.name} has a public-barrel example`);
     assert.ok(record.example.ref.endsWith(".case.tsx"), `${record.name} has compiled case evidence`);
+    assert.deepEqual(record.sourceDemonstratedStates, record.stateCoverage.sourceDemonstratedStates);
+    assert.equal(record.stateCoverage.source, "explorer-state-fixtures");
+    assert.match(record.stateCoverage.scope, /not browser/);
+    assert.ok(record.stateCoverage.fixtures.every((fixture) => record.applicableStates.includes(fixture.state)));
+    assert.equal(record.example.selector.activeFixtures, 1);
+    assert.doesNotMatch(record.example.code, /from ["']\.\.\/(?:state-preview|types)["']/);
     assert.match(record.anchor, /^export-[a-z0-9-]+$/);
     assert.deepEqual(record.apiPage, {
       status: "documented",
@@ -95,6 +101,9 @@ test("renders deterministic API and catalog pages with an API anchor for every e
   }
   assert.match(first.api, /Keyboard \| custom: \[assets\/react-kit\/tests\/browser\/m6-keyboard-ownership\.spec\.ts\]/);
   assert.match(first.api, /ARIA \| owned: \[assets\/react-kit\/tests\/a11y\/m6-export-ownership\.spec\.ts\]/);
+  assert.match(first.api, /Source-demonstrated states:/);
+  assert.match(first.api, /source evidence does not certify browser behavior or accessibility/);
+  assert.match(first.api, /PersonalUiStateExamples/);
 });
 
 test("keeps every transformed compiled family example as valid TSX", () => {

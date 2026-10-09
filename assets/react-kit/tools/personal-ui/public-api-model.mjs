@@ -120,6 +120,7 @@ function explorerRoute(familyId, category) {
 }
 
 function literalText(node) {
+  if (!node) return undefined;
   let value = node;
   while (
     value
@@ -164,7 +165,21 @@ function caseProperty(caseObject, name) {
   return property?.initializer;
 }
 
-function compiledExampleModule(filePath, expectedExports) {
+function unwrapCaseExpression(node) {
+  let value = node;
+  while (value && (ts.isAsExpression(value) || ts.isSatisfiesExpression(value) || ts.isParenthesizedExpression(value))) value = value.expression;
+  return value;
+}
+
+function publicExampleImport(statement, sourceFile) {
+  const module = statement.moduleSpecifier?.text;
+  return ["../../../personal-ui", "../../personal-ui"].includes(module)
+    ? statement.getText(sourceFile).replace(statement.moduleSpecifier.getText(sourceFile), '"./personal-ui"')
+    : statement.getText(sourceFile);
+}
+
+/** Transform the real case and shared host into a consumer module, without dropping state fixtures. */
+export function compiledExampleModule(filePath, expectedExports) {
   const sourceText = fs.readFileSync(filePath, "utf8");
   const sourceFile = ts.createSourceFile(filePath, sourceText, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
   if (sourceFile.parseDiagnostics?.length) {
@@ -175,9 +190,22 @@ function compiledExampleModule(filePath, expectedExports) {
   const caseId = literalText(caseProperty(caseObject, "id"));
   const curatedCode = literalText(caseProperty(caseObject, "code"));
   const content = caseProperty(caseObject, "content");
+  const stateExamples = unwrapCaseExpression(caseProperty(caseObject, "stateExamples"));
   if (!caseId || !curatedCode?.trim() || !content) {
     throw new Error(`Verified Explorer case has no static id/code: ${filePath}`);
   }
+  if (!stateExamples || !ts.isArrayLiteralExpression(stateExamples) || !stateExamples.elements.length) {
+    throw new Error(`Verified Explorer case has no runnable stateExamples: ${filePath}`);
+  }
+  const stateFixtures = stateExamples.elements.map((element, index) => {
+    const object = unwrapCaseExpression(element);
+    if (!object || !ts.isObjectLiteralExpression(object)) throw new Error(`Invalid state fixture ${index} at ${filePath}`);
+    const state = literalText(caseProperty(object, "state"));
+    const names = unwrapCaseExpression(caseProperty(object, "exports"));
+    if (!state || !names || !ts.isArrayLiteralExpression(names)) throw new Error(`Invalid state fixture ${index} at ${filePath}`);
+    return { state, exports: names.elements.map((name) => literalText(name)), index,
+      instructions: literalText(caseProperty(object, "instructions")) };
+  });
 
   let caseBinding;
   for (const statement of sourceFile.statements) {
@@ -192,6 +220,8 @@ function compiledExampleModule(filePath, expectedExports) {
   }
 
   const statements = [];
+  const caseTypes = [];
+  let previewBinding;
   for (const statement of sourceFile.statements) {
     if (ts.isExportAssignment(statement)) continue;
     if (
@@ -202,15 +232,71 @@ function compiledExampleModule(filePath, expectedExports) {
       )
     ) continue;
     if (ts.isImportDeclaration(statement) && ts.isStringLiteral(statement.moduleSpecifier)) {
-      if (statement.moduleSpecifier.text.endsWith("/types")) continue;
+      if (statement.moduleSpecifier.text === "../types") {
+        const imports = statement.importClause?.namedBindings;
+        if (imports && ts.isNamedImports(imports)) caseTypes.push(...imports.elements.map((item) => ({ name: item.propertyName?.text ?? item.name.text, localName: item.name.text })));
+        continue;
+      }
+      if (statement.moduleSpecifier.text === "../state-preview") {
+        const imports = statement.importClause?.namedBindings;
+        const binding = imports && ts.isNamedImports(imports)
+          ? imports.elements.find((item) => (item.propertyName?.text ?? item.name.text) === "StatePreview") : undefined;
+        if (!binding) throw new Error(`Unsupported state-preview import in ${filePath}`);
+        previewBinding = binding.name.text;
+        continue;
+      }
       if (statement.moduleSpecifier.text === "../../../personal-ui") {
-        statements.push(statement.getText(sourceFile).replace('"../../../personal-ui"', '"./personal-ui"'));
+        statements.push(publicExampleImport(statement, sourceFile));
         continue;
       }
     }
     statements.push(statement.getText(sourceFile));
   }
-  statements.push(`export function PersonalUiExample() {\n  return (${content.getText(sourceFile)});\n}`);
+  if (previewBinding) {
+    const previewPath = path.resolve(path.dirname(filePath), "../state-preview.tsx");
+    const previewSource = ts.createSourceFile(previewPath, fs.readFileSync(previewPath, "utf8"), ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+    if (previewSource.parseDiagnostics.length) throw new Error(`Unable to parse shared state host ${previewPath}`);
+    const previewStatements = previewSource.statements.map((statement) => {
+      const text = ts.isImportDeclaration(statement) ? publicExampleImport(statement, previewSource) : statement.getText(previewSource);
+      return previewBinding === "StatePreview" ? text : text.replace(/\bStatePreview\b/g, previewBinding);
+    });
+    statements.unshift(...previewStatements);
+  }
+  const retainedSource = [...statements, stateExamples.getText(sourceFile)].join("\n");
+  const requiredTypes = caseTypes.filter(({ localName }) => new RegExp(`\\b${localName}\\b`).test(retainedSource));
+  if (requiredTypes.length) {
+    const typesPath = path.resolve(path.dirname(filePath), "../types.ts");
+    const typesSource = fs.readFileSync(typesPath, "utf8")
+      .replace(/\bReactNode\b/g, "PersonalUiCaseReactNode")
+      .replace('import type { PersonalUiCaseReactNode } from "react";', 'import type { ReactNode as PersonalUiCaseReactNode } from "react";');
+    statements.unshift(typesSource, ...requiredTypes.filter(({ name, localName }) => name !== localName)
+      .map(({ name, localName }) => `type ${localName} = ${name};`));
+  }
+  const stateType = [...new Set(stateFixtures.map((fixture) => fixture.state))].map((state) => JSON.stringify(state)).join(" | ");
+  const exportType = expectedExports.map((name) => JSON.stringify(name)).join(" | ");
+  statements.push(`export type PersonalUiExampleState = ${stateType};
+export type PersonalUiExampleComponent = ${exportType};
+export interface PersonalUiStateFixture {
+  state: PersonalUiExampleState;
+  exports: readonly PersonalUiExampleComponent[];
+  content: import("react").ReactNode;
+  instructions?: string;
+}
+export const PersonalUiStateExamples: readonly PersonalUiStateFixture[] = ${stateExamples.getText(sourceFile)};
+
+export function PersonalUiExample({ state, component }: {
+  state?: PersonalUiExampleState;
+  component?: PersonalUiExampleComponent;
+} = {}) {
+  if (state === undefined) return (${content.getText(sourceFile)});
+  const fixture = PersonalUiStateExamples.find((example) => example.state === state
+    && (component === undefined || example.exports.some((name) => name === component)));
+  if (!fixture) throw new RangeError(\`No state fixture for \${component ?? "this family"}:\${state}.\`);
+  return <section aria-label={\`\${state} component example\`}>
+    {fixture.instructions ? <p>{fixture.instructions}</p> : null}
+    {fixture.content}
+  </section>;
+}`);
   const implementation = normalizeText(statements.join("\n\n"));
   for (const exportName of expectedExports) {
     if (!new RegExp(`\\b${exportName.replaceAll("$", "\\$")}\\b`).test(implementation)) {
@@ -221,6 +307,7 @@ function compiledExampleModule(filePath, expectedExports) {
     caseId,
     curatedCode: normalizeText(curatedCode),
     code: implementation,
+    stateFixtures,
   };
 }
 
@@ -627,6 +714,8 @@ export function buildPublicApiModel({ kitRoot = defaultKitRoot, skillRoot = path
       exampleCache.set(examplePath, compiledExampleModule(examplePath, familyExpectedExports));
     }
     const example = exampleCache.get(examplePath);
+    const sourceStateEvidence = explorer.stateCoverage.evidence[exportName] ?? [];
+    const demonstratedStates = [...new Set(sourceStateEvidence.map((item) => item.state))];
     const typeDetails = publicTypeDetails(program, symbol);
     const defaults = runtimeDefaults(symbol, typeDetails.publicPropNames, resolvedSkillRoot);
     const source = sourceLocation(symbol, resolvedSkillRoot);
@@ -649,6 +738,17 @@ export function buildPublicApiModel({ kitRoot = defaultKitRoot, skillRoot = path
       interaction: docs.interaction,
       stateMode: docs.stateMode,
       applicableStates: docs.applicableStates,
+      sourceDemonstratedStates: demonstratedStates,
+      stateCoverage: {
+        source: "explorer-state-fixtures",
+        scope: "Runnable source fixtures; not browser, accessibility, or exhaustive behavioral certification.",
+        applicableStates: docs.applicableStates,
+        sourceDemonstratedStates: demonstratedStates,
+        fixtures: sourceStateEvidence.map((item) => ({
+          ...item,
+          instructions: example.stateFixtures.find((fixture) => fixture.index === item.exampleIndex)?.instructions,
+        })),
+      },
       parameterType: typeDetails.parameterType,
       signature,
       source,
@@ -665,6 +765,8 @@ export function buildPublicApiModel({ kitRoot = defaultKitRoot, skillRoot = path
         route: explorerRoute(familyEntry.id, documentation.families?.[familyEntry.id]?.category ?? "foundation"),
         code: example.code,
         excerpt: example.curatedCode,
+        stateFixtures: example.stateFixtures,
+        selector: { component: "PersonalUiExample", props: ["state", "component"], default: "overview", activeFixtures: 1 },
       },
       migration: migration
         ? { status: "documented", ...migration }
@@ -686,6 +788,7 @@ export function buildPublicApiModel({ kitRoot = defaultKitRoot, skillRoot = path
       "assets/react-kit/component-manifest.json",
       "assets/react-kit/component-docs.json",
       "assets/react-kit/src/explorer/cases/**/*.case.tsx",
+      "assets/react-kit/src/explorer/cases/state-preview.tsx",
       "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts",
       "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts",
       "references/v0.3.0-migrations.md",

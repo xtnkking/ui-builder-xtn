@@ -1,18 +1,23 @@
 // @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"banner/overview","exports":["Banner"]}
-import { Banner, Button } from "../../../personal-ui";
+import { StatePreview } from "../state-preview";
+import { Banner } from "../../../personal-ui";
 import type { ExplorerCase } from "../types";
+
 
 const explorerCase = {
   id: "banner/overview",
   label: "全局横幅",
-  summary: "用于页面级持续通知，长说明与操作按钮保持清晰的左右布局。",
-  states: ["default", "empty", "error", "longContent", "dark", "locale"],
-  content: (
-    <Banner tone="info" title="计划维护" action={<Button size="small" variant="secondary" onClick={() => undefined}>查看窗口</Button>}>
-      服务将在周四 20:00 至 20:30 进行滚动升级，期间不会中断已建立的连接。
-    </Banner>
-  ),
-  code: `<Banner tone="info" title="计划维护" action={<Button>查看窗口</Button>}>维护说明</Banner>`,
+  summary: "信息、错误和长内容有独立实例；不把无正文当作空数据状态。",
+  states: ["default","error","longContent","dark","locale"],
+  stateExamples: [
+    { state: "default", exports: ["Banner"], content: <Banner tone="info">配置将在保存后生效。</Banner> },
+    { state: "error", exports: ["Banner"], content: <Banner tone="danger">连接失败，请检查网络后重试。</Banner> },
+    { state: "longContent", exports: ["Banner"], content: <Banner tone="warning">当前工作区的生产环境访问凭据将在维护窗口结束后过期，请先检查所有关联应用的回调地址并轮换密钥，再通知团队成员更新客户端配置，期间已建立的会话会继续保留。</Banner> },
+    { state: "dark", exports: ["Banner"], content: <StatePreview state="dark"><Banner tone="info">配置将在保存后生效。</Banner></StatePreview> },
+    { state: "locale", exports: ["Banner"], content: <StatePreview state="locale"><Banner tone="info">配置将在保存后生效。</Banner></StatePreview> },
+  ],
+  content: <Banner tone="info">配置将在保存后生效。</Banner>,
+  code: "<Banner tone=\"info\">配置将在保存后生效。</Banner>",
 } satisfies ExplorerCase;
 
 export default explorerCase;

@@ -1,0 +1,42 @@
+{
+  "scope": "M6 runnable navigation examples; M2 and M5 remain deferred",
+  "evidenceKind": "reviewed-public-api-applicability",
+  "behavioralVerification": false,
+  "familyCount": 10,
+  "exportCount": 16,
+  "exports": {
+    "Tabs": ["default", "disabled", "controlled", "uncontrolled", "longContent", "keyboard", "mobile", "overlay", "dark", "locale"],
+    "Breadcrumbs": ["default", "empty", "longContent", "keyboard", "dark", "locale"],
+    "Menu": ["default", "disabled", "empty", "longContent", "keyboard", "dark", "locale"],
+    "DropdownMenu": ["default", "disabled", "empty", "longContent", "keyboard", "overlay", "dark", "locale"],
+    "ContextMenu": ["default", "disabled", "empty", "longContent", "keyboard", "overlay", "dark", "locale"],
+    "AppNavigation": ["default", "disabled", "empty", "longContent", "keyboard", "mobile", "dark", "locale"],
+    "TopNavigation": ["default", "disabled", "empty", "longContent", "keyboard", "mobile", "dark", "locale"],
+    "SideNavigation": ["default", "disabled", "empty", "longContent", "keyboard", "mobile", "dark", "locale"],
+    "BottomNavigation": ["default", "disabled", "empty", "longContent", "keyboard", "mobile", "dark", "locale"],
+    "AnchorNavigation": ["default", "controlled", "empty", "longContent", "keyboard", "dark", "locale"],
+    "CommandPalette": ["default", "disabled", "controlled", "uncontrolled", "loading", "empty", "longContent", "keyboard", "overlay", "dark", "locale"],
+    "useCommandPaletteShortcut": ["usage", "keyboard"],
+    "Pagination": ["default", "disabled", "controlled", "loading", "empty", "longContent", "keyboard", "mobile", "overlay", "dark", "locale"],
+    "Stepper": ["default", "disabled", "readOnly", "controlled", "empty", "error", "longContent", "keyboard", "mobile", "overlay", "dark", "locale"],
+    "LoadMore": ["default", "disabled", "loading", "longContent", "keyboard", "overlay", "dark", "locale"],
+    "InfiniteScroll": ["default", "disabled", "loading", "longContent", "keyboard", "overlay", "dark", "locale"]
+  },
+  "reasons": {
+    "Tabs": "value/onChange and defaultValue are real ownership modes; no readOnly or validation API.",
+    "Breadcrumbs": "BreadcrumbItem has no disabled field; empty items, long labels and keyboard links are meaningful cases.",
+    "menus": "MenuItem disabled is real. DropdownMenu and ContextMenu own popup state internally; no open/defaultOpen, readOnly or validation interface.",
+    "appNavigation": "Item arrays and active links are data-driven navigation, not dual-mode value inputs. All four exports have individual reachable examples.",
+    "AnchorNavigation": "activeId/onNavigate is caller-owned. AnchorItem has no disabled field. Example navigation preserves the Explorer hash route.",
+    "CommandPalette": "open/defaultOpen and query/defaultQuery are real modes; commands=[], loading and disabled command items are real states. Hook is demonstrated in a runnable owner.",
+    "Pagination": "page/onPageChange is controlled-only. loadingPage/loadingPageSize, total=0 and custom summary use actual props; no readOnly or validation API.",
+    "Stepper": "currentId/onStepChange is controlled. Omitting onStepChange renders noninteractive progress rather than a nonexistent readOnly prop. steps[].status=error is real error styling.",
+    "LoadMore": "hasMore=false is the end state, not proof of empty data. Request failure belongs to the caller; there are no value ownership or validation modes.",
+    "InfiniteScroll": "Uses the existing official LoadMore keyboard composition, preserving the deferred M5 policy. No fabricated empty/error/value modes."
+  },
+  "limits": [
+    "Applicability and structural fixtures do not certify browser behavior or accessibility.",
+    "The manifest contains ten navigation families, not the twelve suggested task labels; no nonexistent component or export was invented.",
+    "Root task owns execution evidence, metadata, live progress ledger and publication."
+  ]
+}

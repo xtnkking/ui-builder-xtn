@@ -86,6 +86,7 @@ function migrationSection(migration) {
 
 function exportSection(record, familyExampleAnchor) {
   const states = record.applicableStates.map((state) => `\`${state}\``).join(", ");
+  const demonstratedStates = (record.sourceDemonstratedStates ?? []).map((state) => `\`${state}\``).join(", ");
   const restrictions = record.restrictions.map((item) => `- ${item}`).join("\n");
   const exampleSource = `[${record.example.ref}](${referenceHref(record.example.ref)})`;
   const explorer = `[${record.example.route}](../assets/react-kit/index.html${record.example.route})`;
@@ -105,6 +106,10 @@ function exportSection(record, familyExampleAnchor) {
 | ARIA | ${markdownCell(evidenceList(record.aria))} |
 
 Applicable states: ${states || "none"}.
+
+Source-demonstrated states: ${demonstratedStates || "none"}. These are runnable, export-specific source fixtures. They do not certify browser behavior or accessibility; the keyboard fixture provides manual instructions, while the Keyboard/ARIA rows above identify their separate test contracts. The mobile fixture uses a 320px container; viewport media-query behavior requires a real browser viewport.
+
+Select one fixture from the complete family module with \`<PersonalUiExample state="${record.applicableStates[0] ?? "default"}" component="${record.name}" />\`. Omit \`state\` for the overview. \`PersonalUiStateExamples\` retains the exact fixture code and interaction instructions.
 
 #### Public TypeScript
 
@@ -155,7 +160,7 @@ function familyApiSection(family, exportByName) {
 <a id="${exampleAnchor}"></a>
 ### Compiled Family Example
 
-This complete module is read from the AST-verified Explorer case and consumes the public barrel. Adjust business copy and data, not the Personal UI implementation.
+This complete module retains the real overview and state fixtures from the AST-verified Explorer case and consumes the public barrel. The shared state host is included, so there is no dependency on Explorer-private imports. \`PersonalUiExample\` selects one fixture by \`state\` and optional \`component\`; its default is the overview. Adjust business copy and data, not the Personal UI implementation. Source fixtures describe available demonstrations rather than browser or accessibility certification. The mobile host constrains a container to 320px and does not substitute for an actual browser viewport when validating breakpoints.
 
 \`\`\`tsx
 ${example.code}
@@ -173,7 +178,7 @@ export function renderComponentApi(model) {
   return normalizeOutput(`${GENERATED_NOTICE}
 # Personal UI Component API
 
-This is the generated consumer API for Personal UI ${model.version}. It is built from the TypeScript public barrel, Manifest ownership, component documentation metadata, AST-verified Explorer cases, runtime default initializers, registered CSS token sources, and machine-associated migration records. The generator does not read \`component-coverage.json\`.
+This is the generated consumer API for Personal UI ${model.version}. It is built from the TypeScript public barrel, Manifest ownership, per-export applicability metadata, structurally checked runnable Explorer state fixtures, runtime default initializers, registered CSS token sources, and machine-associated migration records. Applicable states and source-demonstrated states are recorded separately; source evidence does not certify browser behavior or accessibility. The generator does not read \`component-coverage.json\`.
 
 - Runtime exports: ${model.runtimeExportCount}
 - Type-only exports: ${model.typeOnlyExportCount}
@@ -216,7 +221,7 @@ ${catalogRows(families, exportByName)}`;
   return normalizeOutput(`${GENERATED_NOTICE}
 # Personal UI Component Catalog
 
-This generated index is for discovery. Follow an export link for its Props, runtime defaults, state mode, keyboard and ARIA ownership, semantic tokens, limitations, compiled example, and migration record. Import runtime APIs only from \`src/personal-ui/index.ts\` through the installed public barrel.
+This generated index is for discovery. Follow an export link for its Props, runtime defaults, state mode, per-export applicable and source-demonstrated states, keyboard and ARIA ownership, semantic tokens, limitations, complete state-selection example, and migration record. Import runtime APIs only from \`src/personal-ui/index.ts\` through the installed public barrel.
 
 - Families: ${model.familyCount}
 - Runtime exports: ${model.runtimeExportCount}

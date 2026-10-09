@@ -1,0 +1,619 @@
+{
+  "schemaVersion": 1,
+  "kind": "m6-input-export-applicability-proposals",
+  "scope": "Root applies metadata only after checking each public API rationale; M2 and M5 remain deferred. Existing mechanical source fixtures are preserved and missing real examples supplemented.",
+  "status": "reviewed-and-applied-local-source-fixtures; browser-certification-not-claimed",
+  "exports": {
+    "NumberInput": {
+      "applicableStates": [
+        "default",
+        "disabled",
+        "readOnly",
+        "controlled",
+        "validation",
+        "longContent",
+        "keyboard",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "reason": "value/onValueChange is required and NumberInput invokes useControlledOnlyValueMode; readOnly and invalid are real public props.",
+      "source": "src/personal-ui/input/inputs-extra.tsx:183",
+      "inapplicableIndependentStates": {
+        "uncontrolled": "No defaultValue contract; supplying it is rejected."
+      },
+      "stateMode": "controlled"
+    },
+    "OtpInput": {
+      "applicableStates": [
+        "default",
+        "disabled",
+        "controlled",
+        "uncontrolled",
+        "validation",
+        "longContent",
+        "keyboard",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "reason": "Public native checked or ControllableValueProps mode permits a real default* fixture; Field validation is delegated through native/composite field context.",
+      "source": "src/personal-ui/input/inputs-extra.tsx:266",
+      "inapplicableIndependentStates": {
+        "readOnly": "No independent readOnly public prop."
+      },
+      "stateMode": "controlled-uncontrolled"
+    },
+    "Checkbox": {
+      "applicableStates": [
+        "default",
+        "disabled",
+        "controlled",
+        "uncontrolled",
+        "validation",
+        "longContent",
+        "keyboard",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "reason": "Public native checked or ControllableValueProps mode permits a real default* fixture; Field validation is delegated through native/composite field context.",
+      "source": "src/personal-ui/input/forms.tsx:1332",
+      "inapplicableIndependentStates": {
+        "readOnly": "ChoiceBaseProps explicitly omits readOnly and runtime sanitizes it."
+      },
+      "stateMode": "controlled-uncontrolled"
+    },
+    "Radio": {
+      "applicableStates": [
+        "default",
+        "disabled",
+        "controlled",
+        "uncontrolled",
+        "validation",
+        "longContent",
+        "keyboard",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "reason": "Public native checked or ControllableValueProps mode permits a real default* fixture; Field validation is delegated through native/composite field context.",
+      "source": "src/personal-ui/input/forms.tsx:1332",
+      "inapplicableIndependentStates": {
+        "readOnly": "ChoiceBaseProps explicitly omits readOnly and runtime sanitizes it."
+      },
+      "stateMode": "controlled-uncontrolled"
+    },
+    "Switch": {
+      "applicableStates": [
+        "default",
+        "disabled",
+        "controlled",
+        "uncontrolled",
+        "validation",
+        "longContent",
+        "keyboard",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "reason": "Public native checked or ControllableValueProps mode permits a real default* fixture; Field validation is delegated through native/composite field context.",
+      "source": "src/personal-ui/input/forms.tsx:1332",
+      "inapplicableIndependentStates": {
+        "readOnly": "ChoiceBaseProps explicitly omits readOnly and runtime sanitizes it."
+      },
+      "stateMode": "controlled-uncontrolled"
+    },
+    "SegmentedControl": {
+      "applicableStates": [
+        "default",
+        "disabled",
+        "controlled",
+        "validation",
+        "longContent",
+        "keyboard",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "reason": "value/onValueChange is required; component asserts controlled-only mode; native/project-level disabled and composite Field validity are real.",
+      "source": "src/personal-ui/input/forms.tsx:1564",
+      "inapplicableIndependentStates": {
+        "readOnly": "No readOnly public prop or root behavior.",
+        "uncontrolled": "No defaultValue and runtime controlledOnly assertion."
+      },
+      "stateMode": "controlled"
+    },
+    "Slider": {
+      "applicableStates": [
+        "default",
+        "disabled",
+        "controlled",
+        "uncontrolled",
+        "validation",
+        "longContent",
+        "keyboard",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "reason": "Public native checked or ControllableValueProps mode permits a real default* fixture; Field validation is delegated through native/composite field context.",
+      "source": "src/personal-ui/input/value-controls.tsx:31",
+      "inapplicableIndependentStates": {
+        "readOnly": "No independent readOnly public prop."
+      },
+      "stateMode": "controlled-uncontrolled"
+    },
+    "Rating": {
+      "applicableStates": [
+        "default",
+        "disabled",
+        "readOnly",
+        "controlled",
+        "uncontrolled",
+        "validation",
+        "longContent",
+        "keyboard",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "reason": "Real readOnly prop and ControllableValueProps; Field supplies business-validation and long-label contexts.",
+      "source": "src/personal-ui/input/value-controls.tsx:31",
+      "inapplicableIndependentStates": {},
+      "stateMode": "controlled-uncontrolled"
+    },
+    "ColorPicker": {
+      "applicableStates": [
+        "default",
+        "disabled",
+        "controlled",
+        "uncontrolled",
+        "validation",
+        "longContent",
+        "keyboard",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "reason": "Public native checked or ControllableValueProps mode permits a real default* fixture; Field validation is delegated through native/composite field context.",
+      "source": "src/personal-ui/input/value-controls.tsx:31",
+      "inapplicableIndependentStates": {
+        "readOnly": "No independent readOnly public prop."
+      },
+      "stateMode": "controlled-uncontrolled"
+    },
+    "TagInput": {
+      "applicableStates": [
+        "default",
+        "disabled",
+        "controlled",
+        "uncontrolled",
+        "validation",
+        "longContent",
+        "keyboard",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "reason": "Public native checked or ControllableValueProps mode permits a real default* fixture; Field validation is delegated through native/composite field context.",
+      "source": "src/personal-ui/input/inputs-extra.tsx:1564",
+      "inapplicableIndependentStates": {
+        "readOnly": "No independent readOnly public prop."
+      },
+      "stateMode": "controlled-uncontrolled"
+    },
+    "Form": {
+      "applicableStates": [
+        "default",
+        "loading",
+        "error",
+        "validation",
+        "longContent",
+        "keyboard",
+        "mobile",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "reason": "busy supplies actual loading semantics; error/validation fixtures compose actual Field/Input errors and form aria-invalid. Long content is a visible form instruction.",
+      "source": "src/personal-ui/input/inputs-extra.tsx:151",
+      "inapplicableIndependentStates": {
+        "empty": "Form has no data-empty mode; an empty descendant input is that child's value state."
+      },
+      "stateMode": "composed"
+    },
+    "Field": {
+      "applicableStates": [
+        "default",
+        "error",
+        "validation",
+        "longContent",
+        "dark",
+        "locale"
+      ],
+      "reason": "Owns labels, messages and invalid-field association. Direct error is both error feedback and validation; long labels/hints are visible.",
+      "source": "src/personal-ui/input/forms.tsx:241",
+      "inapplicableIndependentStates": {
+        "empty": "Field owns label/message association, not its child's input value; no independent empty contract."
+      },
+      "stateMode": "stateless"
+    },
+    "FileUpload": {
+      "applicableStates": [
+        "default",
+        "disabled",
+        "controlled",
+        "loading",
+        "empty",
+        "error",
+        "validation",
+        "longContent",
+        "keyboard",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "reason": "Mandatory items/onFiles makes the caller own queue updates. Uploading/error item statuses are actual public data contracts; items=[] is an empty queue; Field supplies validation context.",
+      "source": "src/personal-ui/input/inputs-extra.tsx:402",
+      "inapplicableIndependentStates": {
+        "uncontrolled": "No defaultItems/defaultValue queue contract. Native file chooser internal state is not an uncontrolled queue."
+      },
+      "stateMode": "controlled"
+    },
+    "MarkdownEditor": {
+      "applicableStates": [
+        "default",
+        "disabled",
+        "readOnly",
+        "controlled",
+        "validation",
+        "longContent",
+        "keyboard",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "reason": "Public value/onValueChange is required; implementation checks controlled-only mode. Real textarea readOnly/disabled/aria-invalid states and long source content are demonstrated.",
+      "source": "src/personal-ui/input/inputs-extra.tsx:574",
+      "inapplicableIndependentStates": {
+        "uncontrolled": "defaultValue is omitted and runtime rejects uncontrolled value mode."
+      },
+      "stateMode": "controlled"
+    },
+    "RichTextEditor": {
+      "applicableStates": [
+        "default",
+        "disabled",
+        "readOnly",
+        "controlled",
+        "validation",
+        "longContent",
+        "keyboard",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "reason": "Public value/onValueChange is required; implementation checks controlled-only mode. Real textarea readOnly/disabled/aria-invalid states and long source content are demonstrated.",
+      "source": "src/personal-ui/input/inputs-extra.tsx:574",
+      "inapplicableIndependentStates": {
+        "uncontrolled": "defaultValue is omitted and runtime rejects uncontrolled value mode."
+      },
+      "stateMode": "controlled"
+    },
+    "CodeEditor": {
+      "applicableStates": [
+        "default",
+        "disabled",
+        "readOnly",
+        "controlled",
+        "validation",
+        "longContent",
+        "keyboard",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "reason": "Public value/onValueChange is required; implementation checks controlled-only mode. Real textarea readOnly/disabled/aria-invalid states and long source content are demonstrated.",
+      "source": "src/personal-ui/input/inputs-extra.tsx:662",
+      "inapplicableIndependentStates": {
+        "uncontrolled": "defaultValue is omitted and runtime rejects uncontrolled value mode."
+      },
+      "stateMode": "controlled"
+    },
+    "InlineEdit": {
+      "applicableStates": [
+        "default",
+        "disabled",
+        "controlled",
+        "loading",
+        "empty",
+        "error",
+        "validation",
+        "longContent",
+        "keyboard",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "reason": "Persisted value/onCommit is controlled-only. New fixtures exercise awaited save delay, actual rejected commit, empty value, validate and long committed name.",
+      "source": "src/personal-ui/input/inputs-extra.tsx:770",
+      "inapplicableIndependentStates": {
+        "readOnly": "No readOnly public prop; async saving temporarily locks draft internally.",
+        "uncontrolled": "Internal draft is not an uncontrolled persisted value; value/onCommit are required."
+      },
+      "stateMode": "controlled"
+    },
+    "Select": {
+      "applicableStates": [
+        "default",
+        "disabled",
+        "controlled",
+        "loading",
+        "empty",
+        "validation",
+        "longContent",
+        "keyboard",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "reason": "Implementation asserts controlled-only selection. loading is explicit; empty options and disabled options/root are real; validation comes from Field.",
+      "source": "src/personal-ui/input/forms.tsx:687",
+      "inapplicableIndependentStates": {
+        "readOnly": "No readOnly prop.",
+        "uncontrolled": "No defaultValue; runtime asserts controlled-only.",
+        "error": "No independent remote-load error prop; a parent Field validation is separately demonstrated."
+      },
+      "stateMode": "controlled"
+    },
+    "SearchableSelect": {
+      "applicableStates": [
+        "default",
+        "disabled",
+        "controlled",
+        "empty",
+        "validation",
+        "longContent",
+        "keyboard",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "reason": "Delegates to controlled-only Combobox; no loading prop. Empty options, disabled root and Field validation are real.",
+      "source": "src/personal-ui/input/inputs-extra.tsx:1091",
+      "inapplicableIndependentStates": {
+        "readOnly": "No readOnly prop.",
+        "uncontrolled": "No defaultValue; delegated Combobox asserts controlled-only.",
+        "loading": "No loading prop; use AsyncSelect for remote loading.",
+        "error": "No remote-load error contract."
+      },
+      "stateMode": "controlled"
+    },
+    "AsyncSelect": {
+      "applicableStates": [
+        "default",
+        "disabled",
+        "controlled",
+        "uncontrolled",
+        "loading",
+        "empty",
+        "error",
+        "validation",
+        "longContent",
+        "keyboard",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "reason": "ControllableValueProps/Query plus explicit loading/error/onRetry and options/loadOptions contracts support actual states; retry fixture updates failed -> ready.",
+      "source": "src/personal-ui/input/inputs-extra.tsx:1134",
+      "inapplicableIndependentStates": {
+        "readOnly": "No independent readOnly prop."
+      },
+      "stateMode": "controlled-uncontrolled"
+    },
+    "Combobox": {
+      "applicableStates": [
+        "default",
+        "disabled",
+        "controlled",
+        "validation",
+        "longContent",
+        "keyboard",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "reason": "Selection asserts controlled-only value mode; disabled and Field validity are real, with long options and actual setters.",
+      "source": "src/personal-ui/input/forms.tsx:1000",
+      "inapplicableIndependentStates": {
+        "readOnly": "No readOnly prop.",
+        "uncontrolled": "No defaultValue; runtime asserts controlled-only."
+      },
+      "stateMode": "controlled"
+    },
+    "Autocomplete": {
+      "applicableStates": [
+        "default",
+        "disabled",
+        "controlled",
+        "uncontrolled",
+        "loading",
+        "validation",
+        "longContent",
+        "keyboard",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "reason": "ControllableValueProps/Query supports defaultValue; explicit loading exists. Field validation and long option text are rendered.",
+      "source": "src/personal-ui/input/inputs-extra.tsx:924",
+      "inapplicableIndependentStates": {
+        "readOnly": "No readOnly prop."
+      },
+      "stateMode": "controlled-uncontrolled"
+    },
+    "MultiSelect": {
+      "applicableStates": [
+        "default",
+        "disabled",
+        "controlled",
+        "uncontrolled",
+        "validation",
+        "longContent",
+        "keyboard",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "reason": "Actual ControllableListValueProps/ValueProps supports value and defaultValue. Disabled data/root and composite Field validity are implemented; long options are visible.",
+      "source": "src/personal-ui/input/inputs-extra.tsx:1416",
+      "inapplicableIndependentStates": {
+        "readOnly": "No independent readOnly prop."
+      },
+      "stateMode": "controlled-uncontrolled"
+    },
+    "Cascader": {
+      "applicableStates": [
+        "default",
+        "disabled",
+        "controlled",
+        "uncontrolled",
+        "validation",
+        "longContent",
+        "keyboard",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "reason": "Actual ControllableListValueProps/ValueProps supports value and defaultValue. Disabled data/root and composite Field validity are implemented; long options are visible.",
+      "source": "src/personal-ui/input/inputs-extra.tsx:1696",
+      "inapplicableIndependentStates": {
+        "readOnly": "No independent readOnly prop."
+      },
+      "stateMode": "controlled-uncontrolled"
+    },
+    "TreeSelect": {
+      "applicableStates": [
+        "default",
+        "disabled",
+        "controlled",
+        "uncontrolled",
+        "validation",
+        "longContent",
+        "keyboard",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "reason": "Actual ControllableListValueProps/ValueProps supports value and defaultValue. Disabled data/root and composite Field validity are implemented; long options are visible.",
+      "source": "src/personal-ui/input/inputs-extra.tsx:1781",
+      "inapplicableIndependentStates": {
+        "readOnly": "No independent readOnly prop."
+      },
+      "stateMode": "controlled-uncontrolled"
+    },
+    "Transfer": {
+      "applicableStates": [
+        "default",
+        "disabled",
+        "controlled",
+        "uncontrolled",
+        "validation",
+        "longContent",
+        "keyboard",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "reason": "ControllableListValueProps supports both value and defaultValue, even though the old shared profile omitted uncontrolled. Composite Field validity and long option labels are real.",
+      "source": "src/personal-ui/input/inputs-extra.tsx:1998",
+      "inapplicableIndependentStates": {
+        "readOnly": "No independent readOnly prop."
+      },
+      "stateMode": "controlled-uncontrolled"
+    },
+    "DateField": {
+      "applicableStates": [
+        "default",
+        "disabled",
+        "readOnly",
+        "controlled",
+        "uncontrolled",
+        "validation",
+        "longContent",
+        "keyboard",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "reason": "Native DateFieldValueProps has controlled and defaultValue branches; native readOnly/disabled/aria-invalid and visible Field long label are real.",
+      "source": "src/personal-ui/input/date-field.tsx:11",
+      "inapplicableIndependentStates": {},
+      "stateMode": "controlled-uncontrolled"
+    },
+    "DateRangeField": {
+      "applicableStates": [
+        "default",
+        "disabled",
+        "readOnly",
+        "controlled",
+        "uncontrolled",
+        "validation",
+        "longContent",
+        "keyboard",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "reason": "ControllableValueProps and explicit disabled/readOnly/invalid/rangeError support actual date-range states.",
+      "source": "src/personal-ui/input/value-controls.tsx:324",
+      "inapplicableIndependentStates": {},
+      "stateMode": "controlled-uncontrolled"
+    },
+    "TimezoneSelect": {
+      "applicableStates": [
+        "default",
+        "disabled",
+        "controlled",
+        "uncontrolled",
+        "validation",
+        "longContent",
+        "keyboard",
+        "overlay",
+        "dark",
+        "locale"
+      ],
+      "reason": "ControllableValueProps plus disabled and Field context provides real defaultValue/validation behavior; long content is an associated visible label.",
+      "source": "src/personal-ui/input/value-controls.tsx:422",
+      "inapplicableIndependentStates": {
+        "readOnly": "No readOnly public prop."
+      },
+      "stateMode": "controlled-uncontrolled"
+    },
+    "DEFAULT_TIMEZONE_OPTIONS": {
+      "applicableStates": [
+        "usage"
+      ],
+      "reason": "Nonvisual constant data, demonstrated by passing it to actual TimezoneSelect options.",
+      "source": "src/personal-ui/input/value-controls.tsx:438",
+      "inapplicableIndependentStates": {},
+      "stateMode": "constant"
+    },
+    "DragDrop": {
+      "applicableStates": [
+        "default",
+        "disabled",
+        "longContent",
+        "keyboard",
+        "dark",
+        "locale"
+      ],
+      "reason": "Only add actual disabled and long-content demonstrations. Existing keyboard fixture remains the official DragDrop+FileUpload composition; no M5 capability expansion or closure.",
+      "source": "src/personal-ui/data/data-extra.tsx:1113",
+      "inapplicableIndependentStates": {},
+      "stateMode": "stateless"
+    }
+  }
+}

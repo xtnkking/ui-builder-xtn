@@ -1,4 +1,5 @@
 // @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"code-block/overview","exports":["CodeBlock"]}
+import { StatePreview } from "../state-preview";
 import { CodeBlock } from "../../../personal-ui";
 import type { ExplorerCase } from "../types";
 
@@ -9,6 +10,12 @@ const explorerCase = {
   label: "可复制代码",
   summary: "代码块可限制高度、换行并通过组件自带按钮复制，避免页面自行实现复制反馈。",
   states: ["default", "longContent", "dark", "locale"],
+  stateExamples: [
+    { state: "default", exports: ["CodeBlock"], content: <CodeBlock code={sample} language="tsx" copyable wrap maxHeight={220} /> },
+    { state: "longContent", exports: ["CodeBlock"], content: <CodeBlock code={sample} language="tsx" copyable wrap maxHeight={220} /> },
+    { state: "dark", exports: ["CodeBlock"], content: <StatePreview state="dark">{<CodeBlock code={sample} language="tsx" copyable wrap maxHeight={220} />}</StatePreview> },
+    { state: "locale", exports: ["CodeBlock"], content: <StatePreview state="locale">{<CodeBlock code={sample} language="tsx" copyable wrap maxHeight={220} />}</StatePreview> },
+  ],
   content: <CodeBlock code={sample} language="tsx" copyable wrap maxHeight={220} />,
   code: `<CodeBlock code={source} language="tsx" copyable wrap maxHeight={220} />`,
 } satisfies ExplorerCase;

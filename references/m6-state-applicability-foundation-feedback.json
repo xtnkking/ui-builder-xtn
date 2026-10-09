@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "kind": "m6-reviewed-state-applicability-notes",
+  "scope": "Local M6 documentation/examples only. Reasons accompany per-export overrides; they do not remove M2/M5 goals or change component APIs.",
+  "reviewedGroups": [
+    { "exports": ["DataTable", "TreeTable"], "reason": "Data, requests, sort and selection are externally owned; no independent disabled/readOnly/validation. TreeTable separately owns defaultExpandedIds expansion and requestChildren errors; DataTable has no defaultSort." },
+    { "exports": ["Button", "IconButton", "SplitButton", "ToggleButton", "RetryButton", "AsyncAction"], "reason": "Loading is a real public button contract. IconButton has fixed icon-only visible geometry; long accessible names are not a visible long-label variant. Only ToggleButton owns controlled/uncontrolled pressed state. AsyncAction has a real callback-failure handler, but neither its Button base nor RetryButton provides value/validation/readOnly state." },
+    { "exports": ["Link"], "reason": "Link omits disabled and does not implement disabled navigation. Do not fabricate a disabled link fixture." },
+    { "exports": ["ResizablePanels"], "reason": "Internal resize state starts with defaultSize; there is no public controlled size, disabled, readOnly or validation. Keyboard/overlay examples use actual handle interaction." },
+    { "exports": ["FocusTrap"], "reason": "Active is a lifecycle flag, not a value-mode or disabled prop. Keyboard/overlay fixture activates it inside a real modal; inactive baseline cannot demonstrate trapping." },
+    { "exports": ["Divider", "Skeleton"], "reason": "These own no text content. Width/layout and dark/locale contexts can be demonstrated; long text, error and empty data cannot be attributed to them." },
+    { "exports": ["Spinner", "ProgressRing"], "reason": "Long label is an accessible name/status text only, not expanded visible content. Neither owns an empty or error presentation; ProgressRing supports determinate/indeterminate progress." },
+    { "exports": ["Progress"], "reason": "Public value and label support progress and visible long labels; zero progress is a value, not an independent data-empty state. Errors belong to a separate feedback owner." },
+    { "exports": ["Alert", "Banner", "InlineMessage"], "reason": "Danger tone is a real semantic error presentation. An absent/blank message is not a supported empty-data case." },
+    { "exports": ["EmptyState", "NoResults", "ErrorState"], "reason": "Their intrinsic empty/error semantics are explicit. ErrorState supports retryLoading and keyboard recovery through its real onRetry action. None owns input validation/value modes or disabled state." },
+    { "exports": ["ValidationSummary"], "reason": "Nonempty issues create validation/error semantics and focus links; an empty issues array renders null. No disabled prop. Long titles/issues and linked-field focus have real examples." },
+    { "exports": ["ToastProvider", "useToast"], "reason": "Provider owns toast presentation sent through the hook, including async action loading, danger messages and long descriptions. The hook's independent contract is usage. Manual trigger instructions do not certify browser behavior." },
+    { "exports": ["Dialog", "Drawer", "ConfirmDialog", "Lightbox", "GuidedTour"], "reason": "Modal open state is controlled-only. Confirmation exposes async callbacks; Lightbox supports actual empty/image-failure fixtures and GuidedTour empty steps. No modal input validation/readOnly/disabled contract." },
+    { "exports": ["Tooltip", "Popconfirm", "Popover", "HoverCard"], "reason": "Tooltip automatically owns trigger lifecycle; Popconfirm has no open/defaultOpen. Only Popover/HoverCard support controlled and uncontrolled opening. Disabled triggers and async confirmation are demonstrated only where their APIs implement them." }
+  ],
+  "limitations": "State source mappings and manual fixture instructions are separate from retained browser/a11y ownership evidence. Narrow320px container is not a320px viewport certificate. Global original M2/M5 decisions remain deferred by the user."
+}

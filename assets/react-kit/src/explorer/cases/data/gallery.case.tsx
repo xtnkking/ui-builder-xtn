@@ -1,4 +1,5 @@
 // @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"gallery/overview","exports":["Gallery"]}
+import { StatePreview } from "../state-preview";
 import { useState } from "react";
 import { Gallery } from "../../../personal-ui";
 import type { ExplorerCase } from "../types";
@@ -64,7 +65,17 @@ const explorerCase = {
   id: "gallery/overview",
   label: "可选择图库",
   summary: "图库提供稳定项目 ID、替代文本和受控选择状态，并在窄屏自动适配列数。",
-  states: ["default", "disabled", "readOnly", "controlled", "validation", "keyboard", "overlay", "dark", "locale"],
+  states: ["default", "controlled", "empty", "longContent", "keyboard", "overlay", "dark", "locale"],
+  stateExamples: [
+    { state: "controlled", exports: ["Gallery"], content: <GalleryExample /> },
+    { state: "empty", exports: ["Gallery"], content: <Gallery items={[]} ariaLabel="空图库" empty="没有可预览的图片" /> },
+    { state: "longContent", exports: ["Gallery"], content: <Gallery ariaLabel="完整配置预览" columns={2} items={[{ id: "details", src: dashboardPreview, alt: "配置看板", caption: "此图片展示全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置，请在保存前确认所有关联配置均符合团队的实际使用要求。" }]} /> },
+    { state: "default", exports: ["Gallery"], content: <GalleryExample /> },
+    { state: "keyboard", exports: ["Gallery"], content: <GalleryExample />, instructions: "用 Tab 访问本例可用控件，使用 Enter、Space 和组件文档中的方向键操作。此项为人工操作案例，不是自动行为验收证书。" },
+    { state: "overlay", exports: ["Gallery"], content: <StatePreview state="overlay">{<GalleryExample />}</StatePreview> },
+    { state: "dark", exports: ["Gallery"], content: <StatePreview state="dark">{<GalleryExample />}</StatePreview> },
+    { state: "locale", exports: ["Gallery"], content: <StatePreview state="locale">{<GalleryExample />}</StatePreview> },
+  ],
   content: <GalleryExample />,
   code: `<Gallery items={items} selectedId={selectedId} onSelect={(item) => setSelectedId(item.id)} ariaLabel="产品场景图库" />`,
 } satisfies ExplorerCase;
