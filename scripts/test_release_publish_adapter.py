@@ -447,6 +447,221 @@ class GitHubContracts(unittest.TestCase):
                 },
             )
 
+    def test_existing_uploaded_assets_are_not_uploaded_again(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root, candidate, plan = prepare_real_candidate(temporary)
+            adapter = publisher.GitHubPublishAdapter(
+                repository_root=root, repository="example/ui-builder-xtn"
+            )
+            record_step(candidate, "create-draft-github-release", {"releaseId": 42})
+            expected = adapter._artifact_files(plan, candidate)
+            assets = [
+                {"id": index + 1, "name": name}
+                for index, name in enumerate(sorted(expected))
+            ]
+            by_id = {
+                index + 1: expected[name]
+                for index, name in enumerate(sorted(expected))
+            }
+            with (
+                mock.patch.object(adapter, "_release_assets", return_value=assets),
+                mock.patch.object(adapter, "_http") as http,
+                mock.patch.object(
+                    adapter, "_download_asset", side_effect=lambda asset_id: by_id[asset_id]
+                ),
+            ):
+                result = adapter._upload_artifacts(plan, candidate)
+            http.assert_not_called()
+            self.assertEqual(len(result["assetHashes"]), 4)
+
+
+class RecordedDraftContracts(unittest.TestCase):
+    """Offline API fixtures for the actual draft-by-tag visibility failure."""
+
+    def setUp(self) -> None:
+        self.adapter = publisher.GitHubPublishAdapter(
+            repository_root=Path.cwd().resolve(), repository="owner/another-kit"
+        )
+        self.candidate = Path("offline-candidate")
+        self.commit = "c" * 40
+        self.plan = {
+            "candidateVersion": "1.7.2",
+            "planDigest": "d" * 64,
+            "source": {"commit": "a" * 40},
+        }
+        self.journal = {
+            "planDigest": self.plan["planDigest"],
+            "steps": {
+                "freeze-release-commit": {
+                    "status": "complete",
+                    "result": {
+                        "releaseCommit": self.commit,
+                        "sourceCommit": "a" * 40,
+                        "planDigest": self.plan["planDigest"],
+                    },
+                },
+                "create-draft-github-release": {
+                    "status": "complete",
+                    "result": {"releaseId": 917, "tag": "v1.7.2", "draft": True},
+                },
+                "push-release-source-and-tag": {
+                    "status": "complete",
+                    "result": {
+                        "branch": "main", "tag": "v1.7.2", "releaseCommit": self.commit,
+                    },
+                },
+                "verify-remote-identity": {
+                    "status": "complete",
+                    "result": {
+                        "releaseId": 917, "tag": "v1.7.2", "releaseCommit": self.commit,
+                    },
+                },
+            },
+        }
+        self.remote = {
+            "id": 917,
+            "tag_name": "v1.7.2",
+            "body": f"<!-- {publisher.PLAN_MARKER_PREFIX}{self.plan['planDigest']} -->",
+            "target_commitish": self.commit,
+            "draft": True,
+        }
+
+    def test_verify_and_publish_use_recorded_id_when_tag_lookup_would_404(self) -> None:
+        public = dict(self.remote, draft=False, published_at="2026-10-09T01:00:00Z")
+        with (
+            mock.patch.object(self.adapter, "_journal", return_value=self.journal),
+            mock.patch.object(self.adapter, "_release_commit", return_value=self.commit),
+            mock.patch.object(self.adapter, "_git_text", return_value="b" * 40),
+            mock.patch.object(
+                self.adapter, "_remote_refs", return_value=(self.commit, "b" * 40, self.commit)
+            ),
+            mock.patch.object(self.adapter, "_artifact_files", return_value={}),
+            mock.patch.object(self.adapter, "_asset_records", return_value=[]),
+            mock.patch.object(
+                self.adapter, "_release_by_tag", side_effect=publisher.GitHubRequestError(404, "get")
+            ) as by_tag,
+            mock.patch.object(
+                self.adapter, "_api_json", side_effect=[self.remote, self.remote, public, public]
+            ) as api,
+            mock.patch.object(self.adapter, "_http") as upload,
+            mock.patch.object(self.adapter, "_git") as git_mutation,
+        ):
+            verified = self.adapter._verify_remote_identity(self.plan, self.candidate)
+            published = self.adapter._publish_github_release(self.plan, self.candidate)
+            resumed = self.adapter._publish_github_release(self.plan, self.candidate)
+        self.assertEqual(verified["releaseId"], 917)
+        self.assertFalse(published["draft"])
+        self.assertEqual(resumed, published)
+        self.assertEqual(
+            api.call_args_list,
+            [
+                mock.call("GET", "/repos/owner/another-kit/releases/917"),
+                mock.call("GET", "/repos/owner/another-kit/releases/917"),
+                mock.call("PATCH", "/repos/owner/another-kit/releases/917", payload={"draft": False}),
+                mock.call("GET", "/repos/owner/another-kit/releases/917"),
+            ],
+        )
+        by_tag.assert_not_called()
+        upload.assert_not_called()
+        git_mutation.assert_not_called()
+
+    def test_missing_malformed_or_unbound_journal_identity_stops_before_api(self) -> None:
+        variants = []
+        for release_id in (None, True, 0, -1, "917"):
+            journal = json.loads(json.dumps(self.journal))
+            journal["steps"]["create-draft-github-release"]["result"]["releaseId"] = release_id
+            variants.append((f"id:{release_id}", journal))
+        for step, field, value in (
+            ("create-draft-github-release", "tag", "v1.7.3"),
+            ("create-draft-github-release", "draft", False),
+            ("freeze-release-commit", "releaseCommit", "main"),
+            ("freeze-release-commit", "sourceCommit", "f" * 40),
+            ("freeze-release-commit", "planDigest", "e" * 64),
+        ):
+            journal = json.loads(json.dumps(self.journal))
+            journal["steps"][step]["result"][field] = value
+            variants.append((f"{step}:{field}", journal))
+        wrong_plan = dict(self.journal, planDigest="e" * 64)
+        variants.append(("journal-plan", wrong_plan))
+        for step in ("freeze-release-commit", "create-draft-github-release"):
+            journal = json.loads(json.dumps(self.journal))
+            journal["steps"][step]["status"] = "failed"
+            variants.append((f"incomplete:{step}", journal))
+        missing = json.loads(json.dumps(self.journal))
+        del missing["steps"]["create-draft-github-release"]
+        variants.append(("missing-draft", missing))
+        for label, journal in variants:
+            with (
+                self.subTest(label=label),
+                mock.patch.object(self.adapter, "_journal", return_value=journal),
+                mock.patch.object(self.adapter, "_api_json") as api,
+            ):
+                with self.assertRaises(release.ReleaseError):
+                    self.adapter._recorded_owned_release(self.plan, self.candidate)
+                api.assert_not_called()
+
+    def test_conflicting_remote_id_tag_owner_commit_and_state_are_rejected(self) -> None:
+        variants = (
+            {"id": 918}, {"id": True}, {"tag_name": "v1.7.3"},
+            {"body": "another owner's release"},
+            {"body": f"<!-- {publisher.PLAN_MARKER_PREFIX}{self.plan['planDigest']}extra -->"},
+            {"target_commitish": "f" * 40}, {"target_commitish": "main"},
+            {"draft": False}, {"draft": 1}, {"draft": None},
+        )
+        for changes in variants:
+            with (
+                self.subTest(changes=changes),
+                mock.patch.object(self.adapter, "_journal", return_value=self.journal),
+                mock.patch.object(self.adapter, "_api_json", return_value=dict(self.remote, **changes)) as api,
+            ):
+                with self.assertRaises(release.ReleaseError):
+                    self.adapter._recorded_owned_release(self.plan, self.candidate)
+                self.assertEqual(api.call_args_list, [mock.call("GET", "/repos/owner/another-kit/releases/917")])
+
+    def test_recorded_id_404_and_other_api_errors_never_create_a_replacement(self) -> None:
+        for status in (404, 403, 500):
+            with (
+                self.subTest(status=status),
+                mock.patch.object(self.adapter, "_journal", return_value=self.journal),
+                mock.patch.object(
+                    self.adapter, "_api_json", side_effect=publisher.GitHubRequestError(status, "get")
+                ) as api,
+                mock.patch.object(self.adapter, "_release_by_tag") as by_tag,
+            ):
+                with self.assertRaises(publisher.GitHubRequestError) as caught:
+                    self.adapter._recorded_owned_release(self.plan, self.candidate)
+                self.assertEqual(caught.exception.status, status)
+                self.assertEqual(api.call_count, 1)
+                by_tag.assert_not_called()
+
+    def test_publish_rejects_verified_identity_conflicts_before_mutation(self) -> None:
+        for field, value in (("releaseId", 918), ("tag", "v1.7.3"), ("releaseCommit", "f" * 40)):
+            journal = json.loads(json.dumps(self.journal))
+            journal["steps"]["verify-remote-identity"]["result"][field] = value
+            with (
+                self.subTest(field=field),
+                mock.patch.object(self.adapter, "_journal", return_value=journal),
+                mock.patch.object(self.adapter, "_release_commit", return_value=self.commit),
+                mock.patch.object(self.adapter, "_api_json") as api,
+            ):
+                with self.assertRaises(release.ReleaseError):
+                    self.adapter._publish_github_release(self.plan, self.candidate)
+                api.assert_not_called()
+
+    def test_publish_revalidates_patch_response_and_rejects_changed_identity(self) -> None:
+        for changes in ({"id": 918}, {"target_commitish": "f" * 40}, {"draft": True}):
+            with (
+                self.subTest(changes=changes),
+                mock.patch.object(self.adapter, "_journal", return_value=self.journal),
+                mock.patch.object(self.adapter, "_release_commit", return_value=self.commit),
+                mock.patch.object(
+                    self.adapter, "_api_json", side_effect=[self.remote, dict(self.remote, draft=False) | changes]
+                ) as api,
+            ):
+                with self.assertRaises(release.ReleaseError):
+                    self.adapter._publish_github_release(self.plan, self.candidate)
+                self.assertEqual(api.call_count, 2)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -535,10 +535,100 @@ class GitHubPublishAdapter:
         tag = value.get("tag_name")
         if tag != f"v{self._version(plan)}" or not isinstance(body, str):
             raise release.ReleaseError("publisher-github-release-conflict")
-        if self._marker(plan) not in body:
+        if f"<!-- {self._marker(plan)} -->" not in body:
             raise release.ReleaseError("publisher-github-release-conflict")
-        if not isinstance(value.get("id"), int):
+        release_id = value.get("id")
+        if not isinstance(release_id, int) or isinstance(release_id, bool) or release_id <= 0:
             raise release.ReleaseError("publisher-github-release-id-invalid")
+
+    @staticmethod
+    def _completed_result(
+        journal: Mapping[str, object], step: str
+    ) -> Mapping[str, object]:
+        steps = journal.get("steps")
+        state = steps.get(step) if isinstance(steps, Mapping) else None
+        result = state.get("result") if isinstance(state, Mapping) else None
+        if (
+            not isinstance(state, Mapping)
+            or state.get("status") != "complete"
+            or not isinstance(result, Mapping)
+        ):
+            raise release.ReleaseError(f"publisher-prior-step-result-missing:{step}")
+        return result
+
+    def _assert_recorded_release_identity(
+        self,
+        value: Mapping[str, object],
+        plan: Mapping[str, object],
+        *,
+        release_id: int,
+        commit: str,
+        allowed_draft_states: Sequence[bool],
+    ) -> None:
+        self._assert_owned_release(value, plan)
+        if value.get("id") != release_id:
+            raise release.ReleaseError("publisher-github-release-id-conflict")
+        if value.get("target_commitish") != commit:
+            raise release.ReleaseError("publisher-github-release-commit-conflict")
+        if not any(value.get("draft") is state for state in allowed_draft_states):
+            raise release.ReleaseError("publisher-github-release-state-conflict")
+
+    def _recorded_owned_release(
+        self,
+        plan: Mapping[str, object],
+        candidate: Path,
+        *,
+        expected_release_id: object | None = None,
+        allow_published: bool = False,
+    ) -> Mapping[str, object]:
+        """Resolve the exact journal-owned draft, which tag lookup can omit.
+
+        The journal remains authoritative on resume. Missing or conflicting
+        identity is an error, never permission to create another release.
+        """
+        journal = self._journal(candidate)
+        if journal.get("planDigest") != self._plan_digest(plan):
+            raise release.ReleaseError("publisher-journal-plan-conflict")
+        frozen = self._completed_result(journal, "freeze-release-commit")
+        commit = frozen.get("releaseCommit")
+        if (
+            not isinstance(commit, str)
+            or re.fullmatch(r"[0-9a-f]{40}", commit) is None
+            or frozen.get("planDigest") != self._plan_digest(plan)
+            or frozen.get("sourceCommit") != self._source_commit(plan)
+        ):
+            raise release.ReleaseError("publisher-frozen-release-identity-conflict")
+        draft = self._completed_result(journal, "create-draft-github-release")
+        release_id = draft.get("releaseId")
+        if (
+            not isinstance(release_id, int)
+            or isinstance(release_id, bool)
+            or release_id <= 0
+        ):
+            raise release.ReleaseError("publisher-github-release-id-invalid")
+        if (
+            draft.get("tag") != f"v{self._version(plan)}"
+            or draft.get("draft") is not True
+        ):
+            raise release.ReleaseError("publisher-recorded-draft-identity-conflict")
+        if expected_release_id is not None and (
+            not isinstance(expected_release_id, int)
+            or isinstance(expected_release_id, bool)
+            or expected_release_id != release_id
+        ):
+            raise release.ReleaseError("publisher-github-release-id-conflict")
+        slug = self._repository_slug()
+        value = self._api_json("GET", f"/repos/{slug}/releases/{release_id}")
+        if not isinstance(value, Mapping):
+            raise release.ReleaseError("publisher-github-release-response-invalid")
+        self._assert_recorded_release_identity(
+            value,
+            plan,
+            release_id=release_id,
+            commit=commit,
+            allowed_draft_states=(True, False) if allow_published else (True,),
+        )
+        return value
 
     def _create_draft_github_release(
         self, plan: Mapping[str, object], candidate: Path
@@ -686,6 +776,8 @@ class GitHubPublishAdapter:
         commit = push.get("releaseCommit")
         if not all(isinstance(value, str) for value in (branch, tag, commit)):
             raise release.ReleaseError("publisher-push-result-invalid")
+        if tag != f"v{self._version(plan)}" or commit != self._release_commit(plan, candidate):
+            raise release.ReleaseError("publisher-push-result-invalid")
         local_tag_ref = self._git_text("rev-parse", f"refs/tags/{tag}")
         remote_branch, remote_tag_ref, remote_tag_commit = self._remote_refs(
             str(branch), str(tag)
@@ -696,9 +788,7 @@ class GitHubPublishAdapter:
             or remote_tag_commit != commit
         ):
             raise release.ReleaseError("publisher-remote-ref-verification-failed")
-        github_release = self._release_by_tag(str(tag), missing_ok=False)
-        assert github_release is not None
-        self._assert_owned_release(github_release, plan)
+        github_release = self._recorded_owned_release(plan, candidate)
         release_id = github_release["id"]
         assert isinstance(release_id, int)
         expected = self._artifact_files(plan, candidate)
@@ -712,14 +802,17 @@ class GitHubPublishAdapter:
     def _publish_github_release(
         self, plan: Mapping[str, object], candidate: Path
     ) -> Mapping[str, object]:
-        verified = self._step_result(candidate, "verify-remote-identity")
+        verified = self._completed_result(self._journal(candidate), "verify-remote-identity")
         release_id = verified.get("releaseId")
-        if not isinstance(release_id, int):
+        if not isinstance(release_id, int) or isinstance(release_id, bool) or release_id <= 0:
             raise release.ReleaseError("publisher-github-release-id-invalid")
         tag = f"v{self._version(plan)}"
-        current = self._release_by_tag(tag, missing_ok=False)
-        assert current is not None
-        self._assert_owned_release(current, plan)
+        commit = self._release_commit(plan, candidate)
+        if verified.get("tag") != tag or verified.get("releaseCommit") != commit:
+            raise release.ReleaseError("publisher-verified-release-identity-conflict")
+        current = self._recorded_owned_release(
+            plan, candidate, expected_release_id=release_id, allow_published=True
+        )
         if current.get("draft") is True:
             slug = self._repository_slug()
             value = self._api_json(
@@ -730,7 +823,13 @@ class GitHubPublishAdapter:
             if not isinstance(value, Mapping):
                 raise release.ReleaseError("publisher-github-release-response-invalid")
             current = value
-        self._assert_owned_release(current, plan)
+        self._assert_recorded_release_identity(
+            current,
+            plan,
+            release_id=release_id,
+            commit=commit,
+            allowed_draft_states=(False,),
+        )
         if current.get("draft") is not False:
             raise release.ReleaseError("publisher-github-release-publish-failed")
         return {
