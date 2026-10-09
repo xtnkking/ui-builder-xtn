@@ -66,6 +66,7 @@ const buttonCase = {
   summary: "Button example",
   states: ["default"],
   content: <Demo />,
+  stateExamples: [{ state: "default", exports: ["Button"], content: <Button>Save</Button> }],
   code: "<Button>Save</Button>",
 } as const;
 export default buttonCase;
