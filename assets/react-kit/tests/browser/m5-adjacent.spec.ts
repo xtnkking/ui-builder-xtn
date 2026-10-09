@@ -105,6 +105,8 @@ test("InfiniteScroll requests once per caller-owned cursor and reports rejected 
       disconnect() { this.target = undefined; }
     }
     Object.defineProperty(window, "IntersectionObserver", { configurable: true, value: ControlledObserver });
+    (window as typeof window & { observedSentinelCount: () => number }).observedSentinelCount = () =>
+      observers.filter(({ target }) => target?.isConnected && target.matches(".pui-infinite-scroll__sentinel")).length;
     (window as typeof window & { triggerSentinel: () => void }).triggerSentinel = () => {
       observers.forEach(({ callback, target }) => {
         if (target) callback([{ isIntersecting: true, target } as IntersectionObserverEntry], {} as IntersectionObserver);
@@ -114,7 +116,11 @@ test("InfiniteScroll requests once per caller-owned cursor and reports rejected 
   await page.goto("/tests/fixtures/m5-adjacent.html");
   const section = page.getByRole("region", { name: "Paged items" });
   const count = section.getByLabel("Load count");
-  const trigger = () => page.evaluate(() => (window as typeof window & { triggerSentinel: () => void }).triggerSentinel());
+  const trigger = async () => {
+    await expect.poll(() => page.evaluate(() =>
+      (window as typeof window & { observedSentinelCount: () => number }).observedSentinelCount())).toBe(1);
+    await page.evaluate(() => (window as typeof window & { triggerSentinel: () => void }).triggerSentinel());
+  };
   await trigger();
   await expect(count).toHaveText("1");
   await expect(section.locator(".pui-infinite-scroll__sentinel")).not.toContainText("正在加载更多内容");
