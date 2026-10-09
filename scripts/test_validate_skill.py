@@ -40,6 +40,13 @@ class SkillValidationContractTests(unittest.TestCase):
             return validate_skill(root)
 
     def ui_builder_fixture(self, skill_content: str) -> dict[str, str]:
+        # Route-parser tests isolate the primary data-workflow link. The real
+        # Skill also links a subsection of that document; leaving it here would
+        # let that independent route hide a removed/image-only primary route.
+        skill_content = skill_content.replace(
+            "[official compositions](references/data-workflows.md#official-file-and-continuous-loading-compositions)",
+            "official compositions",
+        )
         files = {"SKILL.md": skill_content}
         for route in (
             "references/component-api.md",
@@ -55,6 +62,7 @@ class SkillValidationContractTests(unittest.TestCase):
             "references/v0.3.0-roadmap.md",
         ):
             files[route] = "# Stub\n"
+        files["references/integration.md"] += "\n## Supported public usage\n"
         return files
 
     def test_current_repository_skill_is_valid(self) -> None:
