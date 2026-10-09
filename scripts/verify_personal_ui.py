@@ -47,12 +47,28 @@ RUNTIME_DECLARATION = re.compile(
     re.MULTILINE,
 )
 NAMED_EXPORT = re.compile(r"^\s*export\s*\{([^}]*)\}", re.MULTILINE | re.DOTALL)
+# A binding clause cannot cross a module string or statement terminator. Keep
+# comments atomic so quotes, semicolons and `from` inside them are only trivia.
+STATIC_IMPORT_TRIVIA = r"(?:\s|/\*(?:[^*]|\*(?!/))*\*/|//[^\r\n]*(?:\r?\n|$))*"
+STATIC_IMPORT_CLAUSE = r"""(?:/\*(?:[^*]|\*(?!/))*\*/|//[^\r\n]*(?:\r?\n|$)|/(?![/*])|[^/;"'`])*?"""
 STATIC_IMPORT = re.compile(
-    r"""^[ \t]*import(?![ \t]+type\b)(?:[\s\S]*?[ \t]+from[ \t]+)?[ \t]*["']([^"']+)["']""",
+    r"""^[ \t]*import\b(?!"""
+    + STATIC_IMPORT_TRIVIA
+    + r"""type\b)(?:"""
+    + STATIC_IMPORT_CLAUSE
+    + r"""\bfrom\b)?"""
+    + STATIC_IMPORT_TRIVIA
+    + r"""["']([^"']+)["']""",
     re.MULTILINE,
 )
 STATIC_IMPORT_FROM = re.compile(
-    r'''^[ \t]*import(?![ \t]+type\b)([\s\S]*?)[ \t]+from[ \t]+["']([^"']+)["']''',
+    r'''^[ \t]*import\b(?!'''
+    + STATIC_IMPORT_TRIVIA
+    + r'''type\b)('''
+    + STATIC_IMPORT_CLAUSE
+    + r''')\bfrom\b'''
+    + STATIC_IMPORT_TRIVIA
+    + r'''["']([^"']+)["']''',
     re.MULTILINE,
 )
 DYNAMIC_IMPORT = re.compile(r"""\bimport\s*\(\s*["']([^"']+)["']\s*\)""")

@@ -294,6 +294,130 @@ def test_autofill_contract() -> None:
         raise AssertionError("embedded input must not paint an independent rounded rectangle")
 
 
+def test_python_static_import_boundaries() -> None:
+    verifier = runpy.run_path(str(FULL_VERIFIER))
+    code_mask = verifier["code_position_mask"]
+    specifiers = verifier["regex_specifiers"]
+    static_import = verifier["STATIC_IMPORT"]
+    bound_import = verifier["STATIC_IMPORT_FROM"]
+    inspect_usage = verifier["inspect_application_usage"]
+    style = "./personal-ui/styles.css"
+    app = "./App"
+    cases = (
+        (
+            "side-effect first followed by a bound import",
+            "import './personal-ui/styles.css';\nimport { App } from './App';\n",
+            [style, app],
+            [app],
+        ),
+        (
+            "side-effects between bound imports",
+            "import React from 'react';\n"
+            "import './personal-ui/styles.css';\nimport './app.css';\n"
+            "import { App } from './App';\n",
+            ["react", style, "./app.css", app],
+            ["react", app],
+        ),
+        (
+            "side-effect last",
+            "import { App } from './App';\nimport './personal-ui/styles.css';\n",
+            [app, style],
+            [app],
+        ),
+        (
+            "semicolon-free multiline default and named imports",
+            "import React, {\n  StrictMode as Mode\n} from\n 'react'\n"
+            "import './personal-ui/styles.css'\n"
+            "import {\n  App\n} from\n './App'\n",
+            ["react", style, app],
+            ["react", app],
+        ),
+        (
+            "multiple side-effects before a namespace import",
+            "import './personal-ui/styles.css'\nimport './app.css'\n"
+            "import './layout.css'\nimport * as UI from './personal-ui'\n"
+            "import { App } from './App'\n",
+            [style, "./app.css", "./layout.css", "./personal-ui", app],
+            ["./personal-ui", app],
+        ),
+        (
+            "comment trivia does not supply declaration boundaries",
+            "import /* from 'ignored.css'; */ './personal-ui/styles.css'\n"
+            "import {\n /* from 'ignored.css'; */ App\n} from './App'\n",
+            [style, app],
+            [app],
+        ),
+        (
+            "masked imports and type-only declarations are excluded",
+            "/*\nimport 'comment-only.css';\n*/\n"
+            "const copy = `\nimport 'string-only.css';\n`;\n"
+            "import type { ButtonProps } from './personal-ui'\n"
+            "import\n type { ButtonProps as OtherProps } from './personal-ui'\n"
+            "import /* trivia */ type { ButtonProps as ThirdProps } from './personal-ui'\n"
+            "import './personal-ui/styles.css'\nimport { App } from './App'\n",
+            [style, app],
+            [app],
+        ),
+    )
+    with tempfile.TemporaryDirectory(prefix="personal-ui-static-imports-") as temporary:
+        target = Path(temporary)
+        source_root = target / "src" / "personal-ui"
+        source_root.mkdir(parents=True)
+        (source_root / "styles.css").write_text("", encoding="utf-8")
+        (target / "src" / "app.css").write_text("", encoding="utf-8")
+        (target / "src" / "layout.css").write_text("", encoding="utf-8")
+        (target / "src" / "App.tsx").write_text(
+            "import { Button } from './personal-ui';\n"
+            "export const App = () => <Button>Run</Button>;\n",
+            encoding="utf-8",
+        )
+        main_path = target / "src" / "main.tsx"
+        for label, source, expected_specifiers, expected_bound in cases:
+            mask = code_mask(source)
+            actual = specifiers(static_import, source, mask)
+            if actual != expected_specifiers:
+                raise AssertionError(f"{label}: incorrect static imports {actual!r}")
+            bindings = [
+                match for match in bound_import.finditer(source) if mask[match.start()]
+            ]
+            if [match.group(2) for match in bindings] != expected_bound:
+                raise AssertionError(f"{label}: side-effect import consumed a binding")
+            if any("styles.css" in match.group(1) for match in bindings):
+                raise AssertionError(f"{label}: binding clause crossed a module string")
+            main_path.write_text(
+                source + "export const Root = () => <App />;\n", encoding="utf-8"
+            )
+            errors: list[str] = []
+            used, count, components = inspect_usage(
+                target, source_root, "src/personal-ui/styles.css",
+                {"Button"}, {"Button"}, errors,
+            )
+            if not used or count != 1 or components != ["Button"] or errors:
+                raise AssertionError(
+                    f"{label}: wrong reachable usage: "
+                    f"{used=}, {count=}, {components=}, {errors=}"
+                )
+
+        external_source = (
+            "import './personal-ui/styles.css'\n"
+            "import 'foreign-theme/style.css'\nimport { App } from './App'\n"
+            "export const Root = () => <App />;\n"
+        )
+        findings = verifier["script_external_style_findings"](
+            external_source, code_mask(external_source)
+        )
+        if findings != [(2, "foreign-theme/style.css")]:
+            raise AssertionError(f"external side-effect stylesheet was not rejected: {findings}")
+        main_path.write_text(external_source, encoding="utf-8")
+        errors = []
+        used, count, components = inspect_usage(
+            target, source_root, "src/personal-ui/styles.css",
+            {"Button"}, {"Button"}, errors,
+        )
+        if count != 1 or not any("[PUI_EXTERNAL_STYLE]" in error for error in errors):
+            raise AssertionError(f"external stylesheet lost its ownership rejection: {errors}")
+
+
 def test_python_style_gate_contract() -> None:
     verifier = runpy.run_path(str(FULL_VERIFIER))
     classified_runtime_exports = verifier["classified_runtime_exports"]
@@ -1396,6 +1520,7 @@ def main() -> int:
     test_autofill_contract()
     test_registry_driven_component_protection()
     test_test_directory_exclusions()
+    test_python_static_import_boundaries()
     test_python_style_gate_contract()
     test_installer_build_gate()
 
