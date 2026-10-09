@@ -540,54 +540,221 @@ function protectedPropsOverride(source, code, range, allowedReservedMarkerOffset
   return null;
 }
 
-function findOpeningTagEnd(source, start) {
+function typeArgumentsEnd(source, start) {
+  let depth = 0;
   let quote = null;
   let escaped = false;
-  let braceDepth = 0;
   for (let index = start; index < source.length; index += 1) {
     const character = source[index];
     if (quote) {
       if (escaped) escaped = false;
       else if (character === "\\") escaped = true;
       else if (character === quote) quote = null;
+    } else if (character === '"' || character === "'" || character === "`") quote = character;
+    else if (character === "<") depth += 1;
+    else if (character === ">" && source[index - 1] !== "=" && --depth === 0) return index + 1;
+  }
+  return null;
+}
+
+function openingTagHead(source, start = 0) {
+  const tag = source.slice(start).match(/^<\s*[A-Za-z][\w.-]*(?:\s*\.\s*[A-Za-z_$][\w$]*)?/);
+  if (!tag) return null;
+  let end = start + tag[0].length;
+  if (source[end] === "<") end = typeArgumentsEnd(source, end) ?? end;
+  return { end };
+}
+
+function isGenericArrowOpening(code, start) {
+  if (!/^<\s*[A-Za-z_$][\w$]*\s*(?:extends\s+|,)/.test(code.slice(start))) return false;
+  const end = typeArgumentsEnd(code, start);
+  if (end === null) return false;
+  let index = end;
+  while (/\s/.test(code[index] ?? "")) index += 1;
+  if (code[index] !== "(") return false;
+  let depth = 0;
+  for (; index < code.length; index += 1) {
+    if (code[index] === "(") depth += 1;
+    else if (code[index] === ")" && --depth === 0) return /^\s*=>/.test(code.slice(index + 1));
+  }
+  return false;
+}
+
+function jsxBoundaryCode(source) {
+  const output = source.split("");
+  const mask = (start, end) => {
+    for (let index = start; index < end; index += 1) {
+      if (source[index] !== "\n") output[index] = " ";
+    }
+  };
+  const prefixWords = new Set(["return", "throw", "case", "delete", "void", "typeof", "instanceof", "in", "of", "yield", "await", "do", "else", "new"]);
+  const controlWords = new Set(["if", "while", "for", "with", "switch", "catch"]);
+  const parentheses = [];
+  const blocks = [];
+  let canStartRegex = true;
+  let token = "";
+  for (let index = 0; index < source.length; index += 1) {
+    const character = source[index];
+    if (/\s/.test(character)) continue;
+    if (character === '"' || character === "'" || character === "`") {
+      let end = index + 1;
+      while (end < source.length) {
+        if (source[end] === "\\") end += 2;
+        else if (source[end++] === character) break;
+      }
+      mask(index, Math.min(end, source.length));
+      index = end - 1;
+      canStartRegex = false;
+      token = "literal";
       continue;
     }
-    if (character === '"' || character === "'" || character === "`") quote = character;
-    else if (character === "{") braceDepth += 1;
+    if (character === "/" && source[index + 1] === "/") {
+      const end = source.indexOf("\n", index + 2);
+      const stop = end < 0 ? source.length : end;
+      mask(index, stop);
+      index = stop - 1;
+      continue;
+    }
+    if (character === "/" && source[index + 1] === "*") {
+      const end = source.indexOf("*/", index + 2);
+      const stop = end < 0 ? source.length : end + 2;
+      mask(index, stop);
+      index = stop - 1;
+      continue;
+    }
+    if (character === "/" && canStartRegex && source[index - 1] !== "<") {
+      let inClass = false;
+      let end = index + 1;
+      for (; end < source.length && !/[\r\n]/.test(source[end]); end += 1) {
+        if (source[end] === "\\") end += 1;
+        else if (source[end] === "[") inClass = true;
+        else if (source[end] === "]") inClass = false;
+        else if (source[end] === "/" && !inClass) break;
+      }
+      if (source[end] === "/") {
+        end += 1;
+        while (/[A-Za-z]/.test(source[end] ?? "")) end += 1;
+        mask(index, end);
+        index = end - 1;
+        canStartRegex = false;
+        token = "literal";
+        continue;
+      }
+    }
+    const identifier = source.slice(index).match(/^[A-Za-z_$][\w$]*/)?.[0];
+    if (identifier) {
+      index += identifier.length - 1;
+      const member = token === ".";
+      canStartRegex = prefixWords.has(identifier) && !member;
+      token = member ? "member" : identifier;
+      continue;
+    }
+    if (character === "(") {
+      parentheses.push(controlWords.has(token));
+      canStartRegex = true;
+    } else if (character === ")") {
+      canStartRegex = parentheses.pop() ?? false;
+    } else if (character === "{") {
+      blocks.push(token === ")" || token === "=>" || ["else", "try", "finally"].includes(token)
+        || (token === "{" && blocks.at(-1) === true));
+      canStartRegex = true;
+    } else if (character === "}") canStartRegex = blocks.pop() ?? false;
+    else if (character === "]" || character === ".") canStartRegex = false;
+    else if ((character === "+" || character === "-") && source[index + 1] === character) index += 1;
+    else if (character === ">") canStartRegex = source[index - 1] === "=";
+    else canStartRegex = "[,:;?=!~+-*/%&|^<".includes(character);
+    token = character === ">" && source[index - 1] === "=" ? "=>" : character;
+  }
+  return output.join("");
+}
+
+function findOpeningTagEnd(source, start, boundaryCode = jsxBoundaryCode(source)) {
+  let braceDepth = 0;
+  for (let index = openingTagHead(boundaryCode, start)?.end ?? start; index < source.length; index += 1) {
+    const character = boundaryCode[index];
+    if (character === "{") braceDepth += 1;
     else if (character === "}") braceDepth = Math.max(0, braceDepth - 1);
     else if (character === ">" && braceDepth === 0) return index;
   }
   return source.length - 1;
 }
 
-function jsxAttributeNames(openingTag) {
-  const names = new Set();
-  const syntaxOnly = codeOnly(openingTag);
-  const pattern = /(?:\s|^)\b([A-Za-z_:][\w:.-]*)\s*(?==|\s|\/?>)/g;
-  for (const match of syntaxOnly.matchAll(pattern)) names.add(match[1].toLowerCase());
-  return names;
-}
-
-function reservedJsxAttributes(openingTag) {
+function openingTagAttributes(openingTag) {
+  const syntaxOnly = jsxBoundaryCode(openingTag);
+  const head = openingTagHead(syntaxOnly);
+  if (!head) return [];
   const attributes = [];
-  const syntaxOnly = codeOnly(openingTag);
-  const pattern = /(?:\s|^)\b(data-pui-[\w-]+)\b/g;
-  for (const match of syntaxOnly.matchAll(pattern)) {
-    const offset = (match.index ?? 0) + match[0].indexOf(match[1]);
-    attributes.push({
-      name: match[1].toLowerCase(),
-      offset,
-      staticUndefined: /^\s*=\s*\{\s*(?:undefined|void\s+0)\s*\}(?=\s|\/?>)/.test(
-        syntaxOnly.slice(offset + match[1].length),
-      ),
-    });
+  const expressionEnd = (start) => {
+    let depth = 0;
+    for (let index = start; index < syntaxOnly.length; index += 1) {
+      if (syntaxOnly[index] === "{") depth += 1;
+      else if (syntaxOnly[index] === "}" && --depth === 0) return index + 1;
+    }
+    return openingTag.length;
+  };
+  let index = head.end;
+  while (index < openingTag.length) {
+    while (/\s/.test(openingTag[index] ?? "")) index += 1;
+    if (index >= openingTag.length || /[/>]/.test(openingTag[index])) break;
+    const offset = index;
+    if (openingTag[index] === "{") {
+      index = expressionEnd(index);
+      attributes.push({
+        name: null,
+        offset,
+        value: openingTag.slice(offset, index),
+        spread: /^\{\s*\.\.\./.test(syntaxOnly.slice(offset, index)),
+      });
+      continue;
+    }
+    const name = openingTag.slice(index).match(/^[A-Za-z_:][\w:.-]*/)?.[0];
+    if (!name) {
+      index += 1;
+      continue;
+    }
+    index += name.length;
+    while (/\s/.test(openingTag[index] ?? "")) index += 1;
+    let value = null;
+    if (openingTag[index] === "=") {
+      index += 1;
+      while (/\s/.test(openingTag[index] ?? "")) index += 1;
+      const valueStart = index;
+      if (openingTag[index] === "{") index = expressionEnd(index);
+      else if (openingTag[index] === '"' || openingTag[index] === "'") {
+        const quote = openingTag[index++];
+        while (index < openingTag.length) {
+          if (openingTag[index] === "\\") index += 2;
+          else if (openingTag[index++] === quote) break;
+        }
+      } else {
+        while (index < openingTag.length && !/[\s>]/.test(openingTag[index])
+          && !openingTag.startsWith("/>", index)) index += 1;
+      }
+      value = openingTag.slice(valueStart, index);
+    }
+    attributes.push({ name, offset, value, spread: false });
   }
   return attributes;
 }
 
-function literalAttribute(openingTag, attribute) {
+function jsxAttributeNames(openingTag, attributes = openingTagAttributes(openingTag)) {
+  return new Set(attributes.filter((attribute) => attribute.name).map((attribute) => attribute.name.toLowerCase()));
+}
+
+function reservedJsxAttributes(openingTag, attributes = openingTagAttributes(openingTag)) {
+  return attributes.filter((attribute) => /^data-pui-[\w-]+$/i.test(attribute.name ?? ""))
+    .map((attribute) => ({
+      name: attribute.name.toLowerCase(),
+      offset: attribute.offset,
+      staticUndefined: /^\{\s*(?:undefined|void\s+0)\s*\}$/.test(codeOnly(attribute.value ?? "")),
+    }));
+}
+
+function literalAttribute(openingTag, attribute, attributes = openingTagAttributes(openingTag)) {
+  const direct = attributes.find((value) => value.name?.toLowerCase() === attribute.toLowerCase());
+  if (!direct) return null;
   const escaped = attribute.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const match = openingTag.match(
+  const match = `${direct.name}=${direct.value ?? ""}`.match(
     new RegExp(`\\b${escaped}\\s*=\\s*(?:"([^"]*)"|'([^']*)'|\\{\\s*["']([^"']*)["']\\s*\\}|([^\\s>]+))`, "i"),
   );
   return match ? (match[1] ?? match[2] ?? match[3] ?? match[4] ?? "") : null;
@@ -1674,14 +1841,19 @@ function scanScript(file, source, context) {
     );
   };
 
-  const openingPattern = /(?<![\w$])<\s*([A-Za-z][\w.-]*(?:\s*\.\s*[A-Za-z_$][\w$]*)?)(?=[\s/>])/g;
-  for (const match of code.matchAll(openingPattern)) {
+  const openingPattern = /(?<![\w$])<\s*([A-Za-z][\w.-]*(?:\s*\.\s*[A-Za-z_$][\w$]*)?)(?=[\s/<>])/g;
+  const jsxCode = jsxBoundaryCode(source);
+  for (const match of jsxCode.matchAll(openingPattern)) {
     const offset = match.index ?? 0;
+    if (isGenericArrowOpening(jsxCode, offset)) continue;
     const rawTag = match[1].replaceAll(/\s+/g, "");
-    const end = findOpeningTagEnd(source, offset);
+    const end = findOpeningTagEnd(source, offset, jsxCode);
     const openingTag = source.slice(offset, end + 1);
-    const openingAttributes = jsxAttributeNames(openingTag);
-    const reservedAttributes = reservedJsxAttributes(openingTag);
+    // Attribute values may contain business spreads or nested JSX. Inspect
+    // only direct attributes here; the opening-pattern loop also visits slots.
+    const directAttributes = openingTagAttributes(openingTag);
+    const openingAttributes = jsxAttributeNames(openingTag, directAttributes);
+    const reservedAttributes = reservedJsxAttributes(openingTag, directAttributes);
     const [openingBase, openingMember] = rawTag.split(".");
     const publicComponentExport = publicAliases.has(openingBase) && !openingMember
       ? publicAliases.get(openingBase)
@@ -1695,7 +1867,7 @@ function scanScript(file, source, context) {
           allowedReservedMarkerOffsets.add(offset + attribute.offset);
         }
       }
-      if (/\{\s*\.\.\./.test(openingTag)) {
+      if (directAttributes.some((attribute) => attribute.spread)) {
         addIssue(
           "PUI_COMPONENT_STYLE_OVERRIDE",
           `spread props on Personal UI component ${rawTag} can inject styling or an imperative ref; pass explicit public props instead`,
@@ -1721,17 +1893,18 @@ function scanScript(file, source, context) {
         );
       }
     }
-    const componentProp = /\b([A-Za-z_$][\w$]*)\s*=\s*\{\s*([A-Za-z_$][\w$]*(?:\s*\.\s*[A-Za-z_$][\w$]*)?)\s*\}/g;
-    for (const attribute of openingTag.matchAll(componentProp)) {
-      const propName = attribute[1];
-      const reference = attribute[2].replaceAll(/\s+/g, "");
+    for (const attribute of directAttributes) {
+      const componentProp = attribute.value?.match(/^\{\s*([A-Za-z_$][\w$]*(?:\s*\.\s*[A-Za-z_$][\w$]*)?)\s*\}$/);
+      if (!attribute.name || !componentProp) continue;
+      const propName = attribute.name;
+      const reference = componentProp[1].replaceAll(/\s+/g, "");
       const [base, member] = reference.split(".");
       if (externalAliases.has(base)) {
         // controllerField receives a non-rendering form binding. Keep visual
         // props and all other external packages subject to the normal gate.
         if (publicComponent && propName === "controllerField"
           && externalAliases.get(base) === "react-hook-form") continue;
-        reportExternal(externalAliases.get(base), offset + (attribute.index ?? 0), `JSX prop ${propName}`);
+        reportExternal(externalAliases.get(base), offset + attribute.offset, `JSX prop ${propName}`);
         continue;
       }
       const componentLikeProp = /^(?:as|component|control|element|icon|render|slot|trigger)/i.test(propName)
@@ -1742,7 +1915,7 @@ function scanScript(file, source, context) {
         || localAliases.has(base)
         || (localNamespaces.has(base) && Boolean(member));
       if (componentLikeProp && /^[A-Z]/.test(base) && !proven) {
-        addIssue("PUI_UNINSPECTABLE_ELEMENT", `JSX prop ${propName} receives ${reference}, whose component ownership cannot be proven`, offset + (attribute.index ?? 0));
+        addIssue("PUI_UNINSPECTABLE_ELEMENT", `JSX prop ${propName} receives ${reference}, whose component ownership cannot be proven`, offset + attribute.offset);
       }
     }
     if (!rawTag.includes(".") && /^[a-z]/.test(rawTag)) {
@@ -1750,9 +1923,9 @@ function scanScript(file, source, context) {
       if (tag === "style") {
         addIssue("PUI_UNINSPECTABLE_STYLE", "raw JSX <style> can inject unverified application CSS and is forbidden", offset);
       } else if (tag === "link") {
-        const rel = literalAttribute(openingTag, "rel")?.toLowerCase().split(/\s+/) ?? [];
-        const as = literalAttribute(openingTag, "as")?.toLowerCase() ?? "";
-        const href = literalAttribute(openingTag, "href");
+        const rel = literalAttribute(openingTag, "rel", directAttributes)?.toLowerCase().split(/\s+/) ?? [];
+        const as = literalAttribute(openingTag, "as", directAttributes)?.toLowerCase() ?? "";
+        const href = literalAttribute(openingTag, "href", directAttributes);
         if ((rel.includes("stylesheet") || as === "style") && href && isRemoteStyleSpecifier(href)) {
           addIssue(
             "PUI_EXTERNAL_STYLE",
@@ -1763,10 +1936,10 @@ function scanScript(file, source, context) {
       } else if (tag.includes("-") || context.forbiddenTags.has(tag)) {
         addIssue("PUI_RAW_CONTROL", `raw <${tag}> is forbidden; use a bundled Personal UI public export`, offset);
       }
-      if (/\{\s*\.\.\./.test(openingTag)) {
+      if (directAttributes.some((attribute) => attribute.spread)) {
         addIssue("PUI_UNINSPECTABLE_PROPS", `spread props on raw <${tag}> cannot prove that role and interaction stay component-owned`, offset);
       }
-      const role = literalAttribute(openingTag, "role");
+      const role = literalAttribute(openingTag, "role", directAttributes);
       if (openingAttributes.has("role") && role === null) {
         addIssue("PUI_DYNAMIC_ROLE", `dynamic role on <${tag}> cannot prove Personal UI ownership`, offset);
       } else if (role && context.forbiddenRoles.has(role.toLowerCase())) {

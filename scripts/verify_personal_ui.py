@@ -11,6 +11,7 @@ import shutil
 import subprocess
 from collections import Counter
 from pathlib import Path
+from typing import NamedTuple
 
 from personal_ui_installation import (
     STATE_RELATIVE,
@@ -1310,55 +1311,330 @@ def application_style_findings(
     return findings
 
 
-def find_jsx_opening_tag_end(source: str, start: int) -> int:
-    quote: str | None = None
-    escaped = False
-    brace_depth = 0
-    for index in range(start, len(source)):
-        character = source[index]
-        if quote is not None:
+class JSXAttribute(NamedTuple):
+    name: str | None
+    offset: int
+    value: str | None
+    spread: bool = False
+
+
+def jsx_boundary_code(source: str) -> str:
+    """Mask literals for JSX discovery and balanced attribute expressions only."""
+    mask = [True] * len(source)
+    identifier = re.compile(r"[A-Za-z_$][\w$]*")
+    prefix_keywords = {
+        "await", "case", "delete", "do", "else", "in", "instanceof",
+        "new", "of", "return", "throw", "typeof", "void", "yield",
+    }
+    control_parentheses = {"catch", "for", "if", "switch", "while", "with"}
+    parentheses: list[bool] = []
+    previous_token = ""
+    can_start_regex = True
+    index = 0
+
+    def hide(start: int, end: int) -> None:
+        mask[start:end] = [False] * (end - start)
+
+    def regex_end(start: int) -> int | None:
+        cursor = start + 1
+        escaped = False
+        in_class = False
+        while cursor < len(source):
+            character = source[cursor]
+            if character in "\r\n":
+                return None
             if escaped:
                 escaped = False
             elif character == "\\":
                 escaped = True
-            elif character == quote:
-                quote = None
+            elif character == "[":
+                in_class = True
+            elif character == "]":
+                in_class = False
+            elif character == "/" and not in_class:
+                cursor += 1
+                while cursor < len(source) and source[cursor].isalpha():
+                    cursor += 1
+                return cursor
+            cursor += 1
+        return None
+
+    while index < len(source):
+        character = source[index]
+        if character.isspace():
+            index += 1
             continue
-        if character in {"'", '"', "`"}:
-            quote = character
-        elif character == "{":
+        if source.startswith("/*", index):
+            end = source.find("*/", index + 2)
+            end = end + 2 if end >= 0 else len(source)
+            hide(index, end)
+            index = end
+            continue
+        if source.startswith("//", index):
+            end = index + 2
+            while end < len(source) and source[end] not in "\r\n":
+                end += 1
+            hide(index, end)
+            index = end
+            continue
+        if character in "\"'`":
+            end = index + 1
+            while end < len(source):
+                current = source[end]
+                end += 1
+                if current == "\\":
+                    end = min(len(source), end + 1)
+                elif current == character:
+                    break
+            hide(index, end)
+            index = end
+            previous_token = "literal"
+            can_start_regex = False
+            continue
+        if character == "/":
+            if source.startswith("/>", index) and not can_start_regex:
+                index += 2
+                previous_token = "jsx"
+                can_start_regex = False
+                continue
+            closes_jsx = index > 0 and source[index - 1] == "<"
+            if can_start_regex and not closes_jsx:
+                end = regex_end(index)
+                if end is not None:
+                    hide(index, end)
+                    index = end
+                    previous_token = "literal"
+                    can_start_regex = False
+                    continue
+            previous_token = "/"
+            can_start_regex = not closes_jsx
+            index += 1
+            continue
+        match = identifier.match(source, index)
+        if match:
+            token = match.group(0)
+            member = previous_token == "."
+            can_start_regex = token in prefix_keywords and not member
+            previous_token = "member" if member else token
+            index = match.end()
+            continue
+        if character.isdigit():
+            index += 1
+            while index < len(source) and (
+                source[index].isalnum() or source[index] in "_."
+            ):
+                index += 1
+            previous_token = "literal"
+            can_start_regex = False
+            continue
+        if character == "(":
+            parentheses.append(previous_token in control_parentheses)
+            can_start_regex = True
+        elif character == ")":
+            can_start_regex = parentheses.pop() if parentheses else False
+        elif character in "]}":
+            can_start_regex = False
+        elif source.startswith("...", index):
+            index += 3
+            previous_token = "..."
+            can_start_regex = True
+            continue
+        elif source.startswith("++", index) or source.startswith("--", index):
+            previous_token = source[index : index + 2]
+            index += 2
+            continue
+        else:
+            can_start_regex = character in "([{=,:;!~+-*%&|^?<>"
+        previous_token = character
+        index += 1
+    return masked_code(source, mask)
+
+
+def type_arguments_end(code: str, start: int) -> int:
+    """Return the exclusive end of a balanced JSX type-argument list."""
+    depth = 0
+    for index in range(start, len(code)):
+        character = code[index]
+        if character == "<":
+            depth += 1
+        elif character == ">" and (index == 0 or code[index - 1] != "="):
+            depth -= 1
+            if depth == 0:
+                return index + 1
+    return -1
+
+
+def jsx_opening_tag_head(
+    opening_source: str, opening_code: str | None = None
+) -> tuple[str, int] | None:
+    code = (
+        opening_code
+        if opening_code is not None
+        else jsx_boundary_code(opening_source)
+    )
+    match = re.match(
+        r"<\s*([A-Za-z_$][\w$:-]*(?:\s*\.\s*[A-Za-z_$][\w$:-]*)*)",
+        code,
+    )
+    if not match:
+        return None
+    attributes_start = match.end()
+    if attributes_start < len(code) and not (
+        code[attributes_start].isspace() or code[attributes_start] in "</>"
+    ):
+        return None
+    cursor = attributes_start
+    while cursor < len(code) and code[cursor].isspace():
+        cursor += 1
+    if cursor < len(code) and code[cursor] == "<":
+        attributes_start = type_arguments_end(code, cursor)
+        if attributes_start < 0 or (
+            attributes_start < len(code)
+            and not (
+                code[attributes_start].isspace()
+                or code[attributes_start] in "/>"
+            )
+        ):
+            return None
+    return re.sub(r"\s+", "", match.group(1)), attributes_start
+
+
+def find_jsx_opening_tag_end(
+    source: str, start: int, code: str | None = None
+) -> int:
+    opening_source = source[start:]
+    opening_code = (
+        code[start:]
+        if code is not None
+        else jsx_boundary_code(opening_source)
+    )
+    head = jsx_opening_tag_head(opening_source, opening_code)
+    if head is None:
+        return -1
+    brace_depth = 0
+    for index in range(head[1], len(opening_code)):
+        character = opening_code[index]
+        if character == "{":
             brace_depth += 1
         elif character == "}":
             brace_depth = max(0, brace_depth - 1)
         elif character == ">" and brace_depth == 0:
-            return index
+            return start + index
     return len(source) - 1
 
 
-def jsx_attribute_names(opening_code: str) -> set[str]:
-    return {
-        match.group(1).lower()
-        for match in re.finditer(
-            r"(?:\s|^)\b([A-Za-z_:][\w:.-]*)\s*(?==|\s|/?>)", opening_code
-        )
-    }
+def jsx_opening_attributes(opening_source: str) -> list[JSXAttribute]:
+    """Read attributes at the opening tag boundary, skipping expression values."""
+    code = jsx_boundary_code(opening_source)
+    head = jsx_opening_tag_head(opening_source, code)
+    if head is None:
+        return []
+    attributes: list[JSXAttribute] = []
+    cursor = head[1]
 
+    def skip_trivia(index: int) -> int:
+        while index < len(opening_source):
+            if opening_source[index].isspace():
+                index += 1
+            elif opening_source.startswith("/*", index):
+                end = opening_source.find("*/", index + 2)
+                index = end + 2 if end >= 0 else len(opening_source)
+            elif opening_source.startswith("//", index):
+                end = opening_source.find("\n", index + 2)
+                index = end + 1 if end >= 0 else len(opening_source)
+            else:
+                break
+        return index
 
-def non_static_reserved_jsx_attributes(opening_code: str) -> list[str]:
-    offending: list[str] = []
-    for match in re.finditer(
-        r"(?:\s|^)\b(data-pui-[\w-]+)\b", opening_code
-    ):
-        attribute = match.group(1).lower()
-        if attribute not in KNOWN_RESERVED_CONTROL_DATA_PROPS:
+    def expression_end(index: int) -> int:
+        depth = 0
+        for position in range(index, len(code)):
+            if code[position] == "{":
+                depth += 1
+            elif code[position] == "}":
+                depth -= 1
+                if depth == 0:
+                    return position + 1
+        return len(code)
+
+    while cursor < len(opening_source):
+        cursor = skip_trivia(cursor)
+        if cursor >= len(opening_source) or opening_source[cursor] in "/>":
+            break
+        offset = cursor
+        if opening_source[cursor] == "{":
+            cursor = expression_end(cursor)
+            attributes.append(
+                JSXAttribute(
+                    None,
+                    offset,
+                    opening_source[offset:cursor],
+                    bool(re.match(r"\{\s*\.\.\.", code[offset:cursor])),
+                )
+            )
             continue
-        value = opening_code[match.end() :]
-        if re.match(
-            r"\s*=\s*\{\s*(?:undefined|void\s+0)\s*\}(?=\s|/?>)",
-            value,
+        match = re.match(r"[A-Za-z_:][\w:.-]*", code[cursor:])
+        if not match:
+            break
+        name = match.group(0).lower()
+        cursor = skip_trivia(cursor + match.end())
+        value: str | None = None
+        if cursor < len(opening_source) and opening_source[cursor] == "=":
+            cursor = skip_trivia(cursor + 1)
+            value_start = cursor
+            if cursor < len(opening_source) and opening_source[cursor] == "{":
+                cursor = expression_end(cursor)
+            elif cursor < len(opening_source) and opening_source[cursor] in "\"'`":
+                quote = opening_source[cursor]
+                cursor += 1
+                while cursor < len(opening_source):
+                    character = opening_source[cursor]
+                    cursor += 1
+                    if character == "\\":
+                        cursor += 1
+                    elif character == quote:
+                        break
+            else:
+                while cursor < len(opening_source) and not (
+                    opening_source[cursor].isspace()
+                    or opening_source[cursor] in "/>"
+                ):
+                    cursor += 1
+            value = opening_source[value_start:cursor]
+        attributes.append(JSXAttribute(name, offset, value))
+    return attributes
+
+
+def jsx_attribute_names(
+    opening_source: str, attributes: list[JSXAttribute] | None = None
+) -> set[str]:
+    direct = (
+        attributes
+        if attributes is not None
+        else jsx_opening_attributes(opening_source)
+    )
+    return {attribute.name for attribute in direct if attribute.name is not None}
+
+
+def non_static_reserved_jsx_attributes(
+    opening_source: str, attributes: list[JSXAttribute] | None = None
+) -> list[str]:
+    direct = (
+        attributes
+        if attributes is not None
+        else jsx_opening_attributes(opening_source)
+    )
+    offending: list[str] = []
+    for attribute in direct:
+        if attribute.name not in KNOWN_RESERVED_CONTROL_DATA_PROPS:
+            continue
+        value = attribute.value or ""
+        if re.fullmatch(
+            r"\{\s*(?:undefined|void\s+0)\s*\}",
+            masked_code(value, code_position_mask(value)),
         ):
             continue
-        offending.append(attribute)
+        offending.append(attribute.name)
     return offending
 
 
@@ -1632,6 +1908,7 @@ def inspect_component_style_overrides(
         )
     relative = path.relative_to(target).as_posix()
     seen: set[tuple[int, str, str]] = set()
+    jsx_code = jsx_boundary_code(source)
 
     def report(
         offset: int,
@@ -1658,18 +1935,23 @@ def inspect_component_style_overrides(
             )
 
     for reference, exported in references:
-        pattern = re.compile(rf"<\s*{reference}(?=[\s/>])")
-        for match in pattern.finditer(code):
-            end = find_jsx_opening_tag_end(source, match.start())
-            opening_code = code[match.start() : end + 1]
-            opening_attributes = jsx_attribute_names(opening_code)
+        pattern = re.compile(rf"<\s*{reference}(?=[\s/><])")
+        for match in pattern.finditer(jsx_code):
+            end = find_jsx_opening_tag_end(source, match.start(), jsx_code)
+            if end < match.start():
+                continue
+            opening_source = source[match.start() : end + 1]
+            attributes = jsx_opening_attributes(opening_source)
+            opening_attributes = jsx_attribute_names(opening_source, attributes)
             offending = [
                 PROTECTED_COMPONENT_PROP_NAMES.get(attribute, attribute)
                 for attribute in opening_attributes
                 if attribute in PROTECTED_COMPONENT_PROP_NAMES
             ]
-            offending.extend(non_static_reserved_jsx_attributes(opening_code))
-            if re.search(r"\{\s*\.\.\.", opening_code):
+            offending.extend(
+                non_static_reserved_jsx_attributes(opening_source, attributes)
+            )
+            if any(attribute.spread for attribute in attributes):
                 offending.append("spread props")
             if not offending:
                 continue
@@ -1965,6 +2247,8 @@ def jsx_external_stylesheet_findings(
     findings: list[tuple[int, str]] = []
     for match in re.finditer(r"<\s*link(?=[\s>])", code, re.IGNORECASE):
         end = find_jsx_opening_tag_end(source, match.start())
+        if end < match.start():
+            continue
         opening = source[match.start() : end + 1]
         rel = html_literal_attribute(opening, "rel")
         resource_type = html_literal_attribute(opening, "as")
@@ -2357,12 +2641,15 @@ def runtime_usages(
     aliases: dict[str, str],
     namespaces: set[str],
     registered_exports: set[str],
+    *,
+    jsx_code: str | None = None,
 ) -> set[str]:
+    jsx_code = code if jsx_code is None else jsx_code
     used: set[str] = set()
     for local, exported in aliases.items():
         escaped = re.escape(local)
         if (
-            re.search(rf"<\s*{escaped}(?=[\s/>.])", code)
+            re.search(rf"<\s*{escaped}(?=[\s/><.])", jsx_code)
             or re.search(rf"\b{escaped}\s*\(", code)
             or re.search(rf"\bcreateElement\s*\(\s*{escaped}\b", code)
         ):
@@ -2372,7 +2659,7 @@ def runtime_usages(
         for exported in registered_exports:
             escaped_export = re.escape(exported)
             if (
-                re.search(rf"<\s*{escaped_namespace}\s*\.\s*{escaped_export}(?=[\s/>])", code)
+                re.search(rf"<\s*{escaped_namespace}\s*\.\s*{escaped_export}(?=[\s/><])", jsx_code)
                 or re.search(rf"\b{escaped_namespace}\s*\.\s*{escaped_export}\s*\(", code)
                 or re.search(
                     rf"\bcreateElement\s*\(\s*{escaped_namespace}\s*\.\s*{escaped_export}\b",
@@ -2753,7 +3040,7 @@ def inspect_application_usage(
     style_import_count = sum(
         count for path, count in personal_style_imports.items() if path in reachable
     )
-    for path, (_raw_text, code, _mask) in script_records.items():
+    for path, (raw_text, code, _mask) in script_records.items():
         if path in reachable:
             used_components.update(
                 runtime_usages(
@@ -2761,6 +3048,7 @@ def inspect_application_usage(
                     direct_aliases.get(path, {}),
                     namespaces.get(path, set()),
                     registered_exports,
+                    jsx_code=jsx_boundary_code(raw_text),
                 )
             )
     return bool(used_components), style_import_count, sorted(used_components)

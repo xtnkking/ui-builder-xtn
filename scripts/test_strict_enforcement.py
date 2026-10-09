@@ -194,6 +194,405 @@ def test_registry_driven_component_protection() -> None:
     )
 
 
+def python_jsx_boundary_findings(files: dict[str, str]) -> tuple[list[str], set[str]]:
+    verifier = runpy.run_path(str(FULL_VERIFIER))
+    registry = json.loads(REGISTRY.read_text(encoding="utf-8"))
+    protected = verifier["classified_runtime_exports"](registry, "fixed-control")
+    public = set(registry["exports"])
+    aliases = {name: name for name in public}
+    errors: list[str] = []
+    used: set[str] = set()
+    for relative, source in files.items():
+        code = verifier["masked_code"](source, verifier["code_position_mask"](source))
+        verifier["inspect_component_style_overrides"](
+            SKILL_ROOT, SKILL_ROOT / relative, source, code, aliases, set(), protected, errors,
+        )
+        used.update(verifier["runtime_usages"](
+            code, aliases, set(), public, jsx_code=verifier["jsx_boundary_code"](source),
+        ))
+    return errors, used
+
+
+def expect_valid_jsx_boundaries(name: str, files: dict[str, str], used: set[str]) -> None:
+    expect_valid(name, files, used)
+    errors, actual = python_jsx_boundary_findings(files)
+    if errors or not used <= actual:
+        raise AssertionError(f"{name}: Python boundary parity failed: {errors}; missing exports {sorted(used - actual)}")
+
+
+def expect_issue_jsx_boundaries(name: str, files: dict[str, str], reason: str) -> None:
+    expect_issue(name, files, {"PUI_COMPONENT_STYLE_OVERRIDE"})
+    errors, _used = python_jsx_boundary_findings(files)
+    if not any("[PUI_COMPONENT_STYLE_OVERRIDE]" in error and reason in error for error in errors):
+        raise AssertionError(f"{name}: Python verifier missed {reason!r}: {errors}")
+
+
+def test_jsx_attribute_business_expressions() -> None:
+    expect_valid_jsx_boundaries(
+        "callback object spread is business state, not JSX spread props",
+        {
+            "src/App.tsx": """
+                import {SearchInput} from './personal-ui';
+                const draft = {search: ''};
+                const setDraft = (value: typeof draft) => value;
+                export const App = () => <SearchInput
+                  value={draft.search}
+                  onChange={(event) => setDraft({...draft, search: event.currentTarget.value})}
+                />;
+            """,
+        },
+        {"SearchInput"},
+    )
+    expect_valid_jsx_boundaries(
+        "option array and object spreads stay inside the options value",
+        {
+            "src/App.tsx": """
+                import {Select} from './personal-ui';
+                const roleOptions = [{value: 'member', label: 'Member'}];
+                const all = {value: 'all'};
+                export const App = () => <Select
+                  options={[{...all, label: 'All roles'}, ...roleOptions]}
+                  defaultValue='all'
+                />;
+            """,
+        },
+        {"Select"},
+    )
+
+
+def test_jsx_attribute_layout_slots() -> None:
+    expect_valid_jsx_boundaries(
+        "mobile row layout class belongs to the nested div",
+        {
+            "src/App.tsx": """
+                import {DataTable, Badge} from './personal-ui';
+                const rows = [{id: 'member-1', name: 'Ada'}];
+                export const App = () => <DataTable
+                  rows={rows}
+                  columns={[{id: 'name', header: 'Name', cell: (row) => row.name}]}
+                  rowKey={(row) => row.id} ariaLabel='Members'
+                  mobileRow={(row) => <div className='member-card'>
+                    <strong>{row.name}</strong><Badge>Member</Badge>
+                  </div>}
+                />;
+            """,
+        },
+        {"DataTable", "Badge"},
+    )
+    expect_valid_jsx_boundaries(
+        "Drawer footer layout props belong to its surrounding layout",
+        {
+            "src/App.tsx": """
+                import {Drawer, Button, Stack} from './personal-ui';
+                export const App = () => <Drawer open={true} onOpenChange={() => {}}
+                  footer={<div className='form-actions'>
+                    <Stack className='footer-layout' style={{minHeight: 0}}>
+                      <Button>Save</Button>
+                    </Stack>
+                  </div>}
+                />;
+            """,
+        },
+        {"Drawer", "Button", "Stack"},
+    )
+
+
+def test_jsx_attribute_direct_protected_overrides() -> None:
+    expect_issue_jsx_boundaries(
+        "a typed props object still cannot be spread onto a public control",
+        {
+            "src/App.tsx": """
+                import {Input} from './personal-ui';
+                import type {InputProps} from './personal-ui';
+                const props: InputProps = {defaultValue: 'Ada'};
+                const draft = {search: ''};
+                const setDraft = (value: typeof draft) => value;
+                export const App = () => <Input
+                  onChange={(event) => setDraft({...draft, search: event.currentTarget.value})}
+                  {...props}
+                />;
+            """,
+        },
+        "spread props",
+    )
+    files = {
+        "src/App.tsx": """
+            import {Drawer, Button} from './personal-ui';
+            export const App = () => <Drawer open={true} onOpenChange={() => {}}
+              footer={<div className='form-actions'><Button>Save</Button></div>}
+              className='foreign-drawer' style={{opacity: 0.5}}
+              css={{padding: 0}} sx={{padding: 0}} tw='flat' ref={() => {}}
+              dangerouslySetInnerHTML={{__html: 'unsafe'}} data-pui-owner='Consumer'
+            />;
+        """,
+    }
+    result, report = run_scan(files)
+    messages = {
+        issue["message"]
+        for issue in report.get("issues", [])
+        if issue.get("code") == "PUI_COMPONENT_STYLE_OVERRIDE"
+    }
+    expected = (
+        "className", "style", "css", "sx", "tw", "ref",
+        "dangerouslySetInnerHTML", "data-pui-owner",
+    )
+    if result.returncode == 0 or report.get("valid") is not False or len(messages) != len(expected):
+        raise AssertionError(f"direct protected props after a slot were not all rejected: {report}")
+    for name in expected:
+        if not any(f"{name} on Personal UI component Drawer is forbidden" in message for message in messages):
+            raise AssertionError(f"direct {name} after a slot was not rejected: {report}")
+    errors, _used = python_jsx_boundary_findings(files)
+    if len(errors) != 1 or "JSX for Drawer" not in errors[0]:
+        raise AssertionError(f"Python direct override ownership was not preserved: {errors}")
+    for name in expected:
+        if name not in errors[0]:
+            raise AssertionError(f"Python direct {name} after a slot was not rejected: {errors}")
+
+
+def test_jsx_attribute_nested_protected_overrides() -> None:
+    cases = (
+        (
+            "footer JSX remains independently inspected",
+            """
+                import {Drawer, Input, Button} from './personal-ui';
+                const props = {children: 'Save'};
+                export const App = () => <Drawer open={true} onOpenChange={() => {}}
+                  footer={<div className='form-actions'>
+                    <Input className='foreign-input' />
+                    <Button style={{padding: 0}}>Save</Button>
+                    <Button {...props} />
+                  </div>}
+                />;
+            """,
+            (
+                "className on Personal UI component Input is forbidden",
+                "style on Personal UI component Button is forbidden",
+                "spread props on Personal UI component Button",
+            ),
+        ),
+        (
+            "render callback JSX retains ref and reserved-prop enforcement",
+            """
+                import {DataTable, Input} from './personal-ui';
+                const capture = () => {};
+                export const App = () => <DataTable rows={[]} columns={[]}
+                  mobileRow={(row) => <div className='member-card'>
+                    <Input ref={capture} />
+                    <Input data-pui-owner='Consumer' />
+                  </div>}
+                />;
+            """,
+            (
+                "ref on Personal UI component Input is forbidden",
+                "data-pui-owner on Personal UI component Input is forbidden",
+            ),
+        ),
+    )
+    for name, source, expected in cases:
+        result, report = run_scan({"src/App.tsx": source})
+        messages = {
+            issue["message"]
+            for issue in report.get("issues", [])
+            if issue.get("code") == "PUI_COMPONENT_STYLE_OVERRIDE"
+        }
+        if result.returncode == 0 or report.get("valid") is not False or len(messages) != len(expected):
+            raise AssertionError(f"{name}: nested controls were not independently rejected: {report}")
+        for fragment in expected:
+            if not any(fragment in message for message in messages):
+                raise AssertionError(f"{name}: missing nested override {fragment!r}: {report}")
+        errors, _used = python_jsx_boundary_findings({"src/App.tsx": source})
+        if len(errors) != len(expected) or any("JSX for Drawer" in error or "JSX for DataTable" in error for error in errors):
+            raise AssertionError(f"{name}: Python nested override ownership was not preserved: {errors}")
+        for fragment in expected:
+            match = re.search(r"(className|style|ref|data-pui-owner|spread props).*component (\w+)", fragment)
+            reason, exported = match.groups()
+            if not any(f"JSX for {exported}" in error and reason in error for error in errors):
+                raise AssertionError(f"{name}: Python missed {fragment!r}: {errors}")
+
+
+def test_jsx_generic_public_component_boundaries() -> None:
+    expect_valid_jsx_boundaries(
+        "generic public JSX keeps explicit props and nested layout ownership",
+        {
+            "src/App.tsx": """
+                import {DataTable, Badge} from './personal-ui';
+                type Row = {id: string; name: string};
+                export const App = () => <DataTable<Row>
+                  rows={[]} columns={[]} rowKey={(row) => row.id} ariaLabel='Members'
+                  mobileRow={(row) => <div className='member-card'><Badge>{row.name}</Badge></div>}
+                />;
+            """,
+        },
+        {"DataTable", "Badge"},
+    )
+    expect_valid_jsx_boundaries(
+        "nested generic type arguments end before direct JSX props",
+        {
+            "src/App.tsx": """
+                import {DataTable} from './personal-ui';
+                export const App = () => <DataTable<{id: string; values: Array<{label: string}>}>
+                  rows={[]} columns={[]} rowKey={(row) => row.id} ariaLabel='Members'
+                />;
+            """,
+        },
+        {"DataTable"},
+    )
+    expect_issue_jsx_boundaries(
+        "generic public JSX cannot bypass direct spread enforcement",
+        {
+            "src/App.tsx": """
+                import {DataTable} from './personal-ui';
+                import type {DataTableProps} from './personal-ui';
+                type Row = {id: string};
+                const props: DataTableProps<Row> = {
+                  rows: [], columns: [], rowKey: (row) => row.id, ariaLabel: 'Members'
+                };
+                export const App = () => <DataTable<Row> {...props} />;
+            """,
+        },
+        "spread props",
+    )
+    expect_issue_jsx_boundaries(
+        "generic public JSX cannot bypass direct className enforcement",
+        {
+            "src/App.tsx": """
+                import {DataTable} from './personal-ui';
+                type Row = {id: string};
+                export const App = () => <DataTable<Row>
+                  rows={[]} columns={[]} rowKey={(row) => row.id} ariaLabel='Members'
+                  className='foreign-table'
+                />;
+            """,
+        },
+        "className",
+    )
+
+
+def test_tsx_generic_arrow_is_not_jsx() -> None:
+    expect_valid_jsx_boundaries(
+        "a generic business-state callback is not a JSX opening",
+        {
+            "src/App.tsx": """
+                import {SearchInput} from './personal-ui';
+                type Draft = {search: string};
+                const draft: Draft = {search: ''};
+                const setDraft = (value: Draft) => value;
+                const updateDraft = <T extends keyof Draft>(field: T, value: Draft[T]) =>
+                  setDraft({...draft, [field]: value});
+                export const App = () => <SearchInput value={draft.search}
+                  onChange={(event) => updateDraft('search', event.currentTarget.value)}
+                />;
+            """,
+        },
+        {"SearchInput"},
+    )
+    expect_issue_jsx_boundaries(
+        "a generic arrow still exposes real protected JSX in its body",
+        {
+            "src/App.tsx": """
+                import {Input} from './personal-ui';
+                type Draft = {search: string};
+                export const renderField = <T extends keyof Draft>(field: T, value: Draft[T]) =>
+                  <Input defaultValue={value} className='foreign-input' />;
+            """,
+        },
+        "className",
+    )
+
+
+def test_jsx_regex_expression_boundaries() -> None:
+    expressions = (
+        r"/\}/.test(label)",
+        r"/\{/.test(label)",
+        r"/[{}]/.test(label)",
+        r"/['{}]/.test(label)",
+        "label.length / 2",
+        "'{}'.length / 2",
+        "({return: 8}).return / 2",
+        r"(() => { /* } > { */ return /[{}]/.test(label); })()",
+        r"(() => { if (label) /\{/.test(label); return label; })()",
+    )
+    for expression in expressions:
+        prefix = (
+            "import {Input} from './personal-ui'; const label = '{}'; "
+            "export const App = () => <Input title={String("
+            + expression + ")} "
+        )
+        expect_valid_jsx_boundaries(
+            f"regex/division expression keeps the attribute boundary: {expression}",
+            {"src/App.tsx": prefix + "defaultValue='Ada' />;"},
+            {"Input"},
+        )
+        expect_issue_jsx_boundaries(
+            f"direct className after regex/division stays protected: {expression}",
+            {"src/App.tsx": prefix + "className='foreign-input' />;"},
+            "className",
+        )
+
+
+def test_jsx_regex_nested_component_protection() -> None:
+    expect_valid_jsx_boundaries(
+        "generic type comments and quote-containing regex keep nested layout ownership",
+        {
+            "src/App.tsx": r"""
+                import {DataTable, Badge} from './personal-ui';
+                type Row = {id: string; name: string};
+                export const App = () => <DataTable<Row /* > } { */>
+                  rows={[]} columns={[]} rowKey={(row) => row.id} ariaLabel='Members'
+                  mobileRow={(row) => /['{}]/.test(row.name)
+                    ? <div className='member-card'><Badge>Member</Badge></div>
+                    : <div className='member-card'>No match</div>}
+                />;
+            """,
+        },
+        {"DataTable", "Badge"},
+    )
+    source = r"""
+        import {Drawer, Input, Button} from './personal-ui';
+        const label = '{}';
+        const props = {children: 'Save'};
+        export const App = () => <Drawer open={true} onOpenChange={() => {}}
+          footer={/['{}]/.test(label) ? <div className='form-actions'>
+            <Input className='foreign-input' />
+            <Button {...props} />
+          </div> : null}
+        />;
+    """
+    result, report = run_scan({"src/App.tsx": source})
+    messages = {
+        issue["message"]
+        for issue in report.get("issues", [])
+        if issue.get("code") == "PUI_COMPONENT_STYLE_OVERRIDE"
+    }
+    expected = (
+        "className on Personal UI component Input is forbidden",
+        "spread props on Personal UI component Button",
+    )
+    if result.returncode == 0 or len(messages) != len(expected):
+        raise AssertionError(f"regex-containing slot lost nested control ownership: {report}")
+    for fragment in expected:
+        if not any(fragment in message for message in messages):
+            raise AssertionError(f"regex-containing slot missed {fragment!r}: {report}")
+    errors, _used = python_jsx_boundary_findings({"src/App.tsx": source})
+    if len(errors) != 2 or not any("JSX for Input" in error and "className" in error for error in errors) or not any("JSX for Button" in error and "spread props" in error for error in errors):
+        raise AssertionError(f"Python regex-containing slot lost nested control ownership: {errors}")
+    expect_issue_jsx_boundaries(
+        "generic comment delimiters cannot hide a direct className after a slot",
+        {
+            "src/App.tsx": r"""
+                import {DataTable} from './personal-ui';
+                type Row = {id: string};
+                export const App = () => <DataTable<Row /* > } { */>
+                  rows={[]} columns={[]} rowKey={(row) => row.id} ariaLabel='Members'
+                  mobileRow={(row) => <div className='member-card'>{row.id}</div>}
+                  className='foreign-table'
+                />;
+            """,
+        },
+        "className",
+    )
+
+
 def test_test_directory_exclusions() -> None:
     safe_application = (
         "import {Button} from './personal-ui'; "
@@ -1519,6 +1918,14 @@ def main() -> int:
 
     test_autofill_contract()
     test_registry_driven_component_protection()
+    test_jsx_attribute_business_expressions()
+    test_jsx_attribute_layout_slots()
+    test_jsx_attribute_direct_protected_overrides()
+    test_jsx_attribute_nested_protected_overrides()
+    test_jsx_generic_public_component_boundaries()
+    test_tsx_generic_arrow_is_not_jsx()
+    test_jsx_regex_expression_boundaries()
+    test_jsx_regex_nested_component_protection()
     test_test_directory_exclusions()
     test_python_static_import_boundaries()
     test_python_style_gate_contract()
@@ -1528,7 +1935,7 @@ def main() -> int:
         json.dumps(
             {
                 "valid": True,
-                "scannerCases": len(cases) + 17,
+                "scannerCases": len(cases) + 52,
                 "installerGate": True,
                 "autofillContract": True,
                 "pythonStyleGate": True,
