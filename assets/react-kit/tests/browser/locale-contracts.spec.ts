@@ -7,8 +7,10 @@ test.describe("locale geometry", () => {
     await page.goto("/#/components/locale");
 
     await expect(page.getByRole("heading", { level: 1, name: "LocaleProvider / usePersonalUILocale" })).toBeVisible();
-    const zh = page.locator('[data-locale-example="zh-CN"]');
-    const en = page.locator('[data-locale-example="en-US"]');
+    const overview = page.getByRole("tabpanel", { name: "总览", exact: true });
+    await expect(overview).toBeVisible();
+    const zh = overview.locator('[data-locale-example="zh-CN"]');
+    const en = overview.locator('[data-locale-example="en-US"]');
     await expect(zh).toContainText("12 条结果");
     await expect(en).toContainText("12 results");
     await expect(zh.getByRole("navigation", { name: "数据分页" })).toBeVisible();

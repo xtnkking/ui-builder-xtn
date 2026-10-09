@@ -176,6 +176,7 @@
     "assets/react-kit/tests/components/m5-sortable-list-contracts.test.tsx",
     "assets/react-kit/tests/components/m5-tree-keyboard.test.tsx",
     "assets/react-kit/tests/components/m5-tree-table-contracts.test.tsx",
+    "assets/react-kit/tests/components/m6-radio-example.test.tsx",
     "assets/react-kit/tests/components/modal-dismissal-hydration-contracts.test.tsx",
     "assets/react-kit/tests/components/modal-overlay-contracts.test.tsx",
     "assets/react-kit/tests/components/navigation-contracts.test.tsx",
@@ -17211,7 +17212,8 @@
         "assets/react-kit/src/explorer/cases/input/radio.case.tsx"
       ],
       "unit": [
-        "assets/react-kit/tests/components/form-control-contracts.test.tsx"
+        "assets/react-kit/tests/components/form-control-contracts.test.tsx",
+        "assets/react-kit/tests/components/m6-radio-example.test.tsx"
       ],
       "browser": [],
       "keyboard": [

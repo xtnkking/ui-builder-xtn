@@ -223,18 +223,25 @@ export function registerKeyboardEvidence(cases: readonly KeyboardEvidenceCase[])
       const preparedTarget = await prepareEvidence(page, evidence);
 
       if (evidence.strategy === "shortcut") {
+        const commandOwners = page.locator('[data-pui-owner="CommandPalette"]');
+        await expect(commandOwners).toHaveCount(1);
         const { owner } = await findOwner(page, { ...evidence, ownerName: evidence.ownerName ?? "CommandPalette", ownerScope: "page" });
         await expect(owner).toBeVisible();
         await page.keyboard.press("Escape");
         await expect(owner).toBeHidden();
+        await expect(commandOwners).toHaveCount(0);
         return;
       }
 
       const { owner } = await findOwner(page, evidence);
       if (evidence.strategy === "modal-escape") {
+        const commandOwners = evidence.exportName === "CommandPalette"
+          ? page.locator('[data-pui-owner="CommandPalette"]') : undefined;
+        if (commandOwners) await expect(commandOwners).toHaveCount(1);
         await expect(owner).toBeVisible();
         await page.keyboard.press("Escape");
         await expect(owner).toBeHidden();
+        if (commandOwners) await expect(commandOwners).toHaveCount(0);
         if (preparedTarget) await expect(preparedTarget).toBeFocused();
         return;
       }

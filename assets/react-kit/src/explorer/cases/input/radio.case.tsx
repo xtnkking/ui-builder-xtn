@@ -1,16 +1,17 @@
 // @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"radio/overview","exports":["Radio"]}
-import { useState } from "react";
+import { useId, useState } from "react";
 import { Field, Radio } from "../../../personal-ui";
 import type { ExplorerCase } from "../types";
 import { StatePreview } from "../state-preview";
 
 function RadioExample() {
+  const groupName = useId();
   const [plan, setPlan] = useState("team");
   return (
     <Field label="套餐" group required>
-      <Radio name="explorer-plan" label="个人版" checked={plan === "personal"} onChange={() => setPlan("personal")} />
-      <Radio name="explorer-plan" label="团队版" checked={plan === "team"} onChange={() => setPlan("team")} />
-      <Radio name="explorer-plan" label="企业版（暂不可用）" checked={false} disabled onChange={() => undefined} />
+      <Radio name={groupName} label="个人版" checked={plan === "personal"} onChange={() => setPlan("personal")} />
+      <Radio name={groupName} label="团队版" checked={plan === "team"} onChange={() => setPlan("team")} />
+      <Radio name={groupName} label="企业版（暂不可用）" checked={false} disabled onChange={() => undefined} />
     </Field>
   );
 }

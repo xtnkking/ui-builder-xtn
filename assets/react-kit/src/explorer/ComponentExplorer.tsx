@@ -68,7 +68,47 @@ function Directory({ families, activeFamilyId, onNavigate }: {
   );
 }
 
+function CasePreviewExample({ example }: { example: ExplorerCase }) {
+  const [activeState, setActiveState] = useState("overview");
+  const stateItems = [{
+    id: "overview",
+    label: "总览",
+    content: activeState === "overview"
+      ? <div className="demo-explorer-preview">{example.content}</div>
+      : null,
+  }, ...(example.stateExamples ?? []).map((stateExample, index) => ({
+    id: `state-${index}`,
+    label: `${stateExample.state} · ${stateExample.exports.join(" / ")}`,
+    content: activeState === `state-${index}` ? (
+      <section data-state-example={stateExample.state} data-state-exports={stateExample.exports.join(",")}>
+        {stateExample.instructions && <p>{stateExample.instructions}</p>}
+        <div className="demo-explorer-preview">{stateExample.content}</div>
+      </section>
+    ) : null,
+  }))];
+  return (
+    <section className="demo-explorer-case">
+      <div className="demo-explorer-case__summary">
+        <h2>{example.label}</h2>
+        <p>{example.summary}</p>
+        <div className="demo-explorer-case__states" aria-label="适用状态，不表示已演示">
+          {example.states.map((state) => <Tag key={state}>{state}</Tag>)}
+        </div>
+      </div>
+      {example.stateExamples?.length ? (
+        <Tabs ariaLabel={`${example.label}状态案例`} value={activeState} onValueChange={setActiveState} items={stateItems} />
+      ) : (
+        <>
+          <div className="demo-explorer-preview">{example.content}</div>
+          <p data-state-coverage="pending">状态案例尚未逐项绑定；以上标签仅表示适用范围。</p>
+        </>
+      )}
+    </section>
+  );
+}
+
 function FamilyCases({ family, cases }: { family: ExplorerFamily; cases?: readonly ExplorerCase[] }) {
+  const [activeCase, setActiveCase] = useState(`${cases?.[0]?.id ?? ""}-preview`);
   if (!cases?.length) {
     return (
       <div className="demo-explorer-pending" data-example-status="pending-m6-03">
@@ -81,63 +121,26 @@ function FamilyCases({ family, cases }: { family: ExplorerFamily; cases?: readon
     );
   }
 
-  const items = cases.flatMap((example) => {
-    const stateItems = [{
-      id: "overview",
-      label: "总览",
-      content: <div className="demo-explorer-preview">{example.content}</div>,
-    }, ...(example.stateExamples ?? []).map((stateExample, index) => ({
-      id: `state-${index}`,
-      label: `${stateExample.state} · ${stateExample.exports.join(" / ")}`,
-      content: (
-        <section data-state-example={stateExample.state} data-state-exports={stateExample.exports.join(",")}>
-          {stateExample.instructions && <p>{stateExample.instructions}</p>}
-          <div className="demo-explorer-preview">{stateExample.content}</div>
-        </section>
-      ),
-    }))];
-    return [
+  const items = cases.flatMap((example) => [
     {
       id: `${example.id}-preview`,
       label: cases.length === 1 ? "预览" : `${example.label}预览`,
-      content: (
-        <section className="demo-explorer-case">
-          <div className="demo-explorer-case__summary">
-            <h2>{example.label}</h2>
-            <p>{example.summary}</p>
-            <div className="demo-explorer-case__states" aria-label="适用状态，不表示已演示">
-              {example.states.map((state) => <Tag key={state}>{state}</Tag>)}
-            </div>
-          </div>
-          {example.stateExamples?.length ? (
-            <Tabs
-              ariaLabel={`${example.label}状态案例`}
-              defaultValue="overview"
-              items={stateItems}
-            />
-          ) : (
-            <>
-              <div className="demo-explorer-preview">{example.content}</div>
-              <p data-state-coverage="pending">状态案例尚未逐项绑定；以上标签仅表示适用范围。</p>
-            </>
-          )}
-        </section>
-      ),
+      content: activeCase === `${example.id}-preview` ? <CasePreviewExample example={example} /> : null,
     },
     {
       id: `${example.id}-code`,
       label: cases.length === 1 ? "代码" : `${example.label}代码`,
-      content: <CodeBlock code={example.code} language="tsx" copyable />,
+      content: activeCase === `${example.id}-code` ? <CodeBlock code={example.code} language="tsx" copyable /> : null,
     },
-    ];
-  });
+  ]);
 
   return (
     <div className="demo-explorer-cases" data-example-status="runnable">
       <Tabs
         key={family.id}
         ariaLabel={`${family.label}案例`}
-        defaultValue={`${cases[0].id}-preview`}
+        value={activeCase}
+        onValueChange={setActiveCase}
         items={items}
       />
     </div>
