@@ -10,15 +10,14 @@ import {
 import {
   assertPinnedBaselineIdentity,
   buildCompatibilityReport,
-  isReleaseTargetVersion,
   parseSemver,
+  validateReleaseVersionPolicy,
 } from "./api-compatibility-core.mjs";
 
 const BASELINE_VERSION = "0.2.19";
 const BASELINE_TAG = "v0.2.19";
 const BASELINE_COMMIT = "0587d4b08c1a70efff80c228b332f4064a7db6d1";
 const BASELINE_API_DIGEST = "709a8d1a64a9b5ab4a6ad7574a5d66c1a4a62c1b2d06cf4b0b6e072c099a7b35";
-const ROADMAP_TARGET_VERSION = "0.3.0";
 const baselinePath = path.join(
   defaultProjectDirectory,
   `etc/personal-ui.api-baseline.v${BASELINE_VERSION}.json`,
@@ -159,23 +158,7 @@ function validateVersionSources(current) {
 
 function readVersionPolicy(packageVersion) {
   const policy = readJson(policyPath, "API version policy");
-  if (policy.schemaVersion !== 1 || policy.baselineVersion !== BASELINE_VERSION) {
-    throw new Error(`API version policy must identify baseline ${BASELINE_VERSION} with schemaVersion 1`);
-  }
-  parseSemver(policy.releaseTarget);
-  if (policy.releaseTarget !== ROADMAP_TARGET_VERSION) {
-    throw new Error(`API version policy releaseTarget must remain ${ROADMAP_TARGET_VERSION} during this hardening cycle`);
-  }
-  if (
-    packageVersion !== BASELINE_VERSION
-    && !isReleaseTargetVersion(packageVersion, policy.releaseTarget)
-  ) {
-    throw new Error(
-      `Package metadata must remain at unreleased baseline ${BASELINE_VERSION}, `
-      + `release target ${policy.releaseTarget}, or its rc.N prerelease; found ${packageVersion}`,
-    );
-  }
-  return policy;
+  return validateReleaseVersionPolicy(policy, packageVersion, BASELINE_VERSION);
 }
 
 function firstDifference(expected, actual) {

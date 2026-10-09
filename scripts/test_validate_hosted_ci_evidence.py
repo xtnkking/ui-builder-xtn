@@ -11,6 +11,8 @@ import unittest
 from pathlib import Path
 
 import generate_hosted_ci_evidence as generator
+import release_personal_ui as release
+import test_release_personal_ui as release_fixture
 import validate_hosted_ci_evidence as validator
 
 
@@ -346,11 +348,12 @@ class HostedEvidenceContracts(unittest.TestCase):
             for descriptor in evidence["artifacts"]:
                 source = source_bundle / descriptor["path"]
                 (inputs / source.name).write_bytes(source.read_bytes())
-            plan = {
-                "planDigest": PLAN_DIGEST,
-                "source": {"commit": SOURCE_COMMIT},
-                "artifacts": {"archive": {"sha256": ARCHIVE_SHA}},
-            }
+            plan, _, _, _ = release.build_release_plan(
+                release_fixture.snapshot(
+                    release_fixture.fixture_files(licensed=True), publishable_source=True
+                ),
+                candidate_version="0.3.0-rc.1",
+            )
             plan_path = root / "plan.json"
             plan_path.write_bytes(json_bytes(plan))
             output = root / "assembled" / "hosted-ci.json"
@@ -360,7 +363,79 @@ class HostedEvidenceContracts(unittest.TestCase):
                 output=output,
                 fixture_catalog=ROOT / "references/support-fixtures.json",
             )
-            self.assertTrue(self.validate(output).accepted)
+            result = validator.validate_hosted_ci_evidence_file(
+                output,
+                fixture_catalog=ROOT / "references/support-fixtures.json",
+                expected_bindings={
+                    "planDigest": plan["planDigest"],
+                    "sourceCommit": plan["source"]["commit"],
+                    "archiveSha256": plan["artifacts"]["archive"]["sha256"],
+                },
+            )
+            self.assertTrue(result.accepted, result.errors)
+
+    def test_next_patch_plan_is_exact_and_untrusted_plan_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="pui-hosted-next-patch-") as temporary:
+            root = Path(temporary)
+            source_root = root / "source"
+            source_path, evidence = create_bundle(source_root)
+            original_source_bytes = source_path.read_bytes()
+            inputs = root / "inputs"
+            inputs.mkdir()
+            for descriptor in evidence["artifacts"]:
+                source = source_root / descriptor["path"]
+                (inputs / source.name).write_bytes(source.read_bytes())
+            plan, _, _, _ = release.build_release_plan(
+                release_fixture.snapshot(
+                    release_fixture.fixture_files(licensed=True, release_target="0.3.1"),
+                    publishable_source=True,
+                ),
+                candidate_version="0.3.1-rc.2",
+                existing_versions=["v0.3.0"],
+            )
+            plan_path = root / "plan.json"
+            plan_path.write_bytes(json_bytes(plan))
+            output = root / "assembled/hosted-ci.json"
+            assembled = generator.assemble_bundle(
+                plan_path=plan_path,
+                input_root=inputs,
+                output=output,
+                fixture_catalog=ROOT / "references/support-fixtures.json",
+            )
+            self.assertEqual(assembled["planDigest"], plan["planDigest"])
+            self.assertEqual(assembled["sourceCommit"], plan["source"]["commit"])
+            self.assertEqual(assembled["archiveSha256"], plan["artifacts"]["archive"]["sha256"])
+            self.assertEqual(assembled["workflow"]["runAttempt"], RUN_ATTEMPT)
+            result = validator.validate_hosted_ci_evidence_file(
+                output, fixture_catalog=ROOT / "references/support-fixtures.json",
+                expected_bindings={
+                    "planDigest": plan["planDigest"],
+                    "sourceCommit": plan["source"]["commit"],
+                    "archiveSha256": plan["artifacts"]["archive"]["sha256"],
+                },
+            )
+            self.assertTrue(result.accepted, result.errors)
+            for mutation in ("digest", "line", "formal", "source"):
+                bad = copy.deepcopy(plan)
+                if mutation == "digest":
+                    bad["candidateVersion"] = "0.3.1-rc.999"
+                elif mutation == "line":
+                    bad["versionPolicy"]["releaseTarget"] = "0.4.0"
+                elif mutation == "formal":
+                    bad["verificationCommands"] = []
+                else:
+                    bad["source"]["commit"] = "d" * 40
+                if mutation != "digest":
+                    bad = release.attach_plan_digest(bad)
+                plan_path.write_bytes(json_bytes(bad))
+                rejected_output = root / "rejected" / mutation / "hosted-ci.json"
+                with self.subTest(mutation=mutation), self.assertRaises(ValueError):
+                    generator.assemble_bundle(
+                        plan_path=plan_path, input_root=inputs, output=rejected_output,
+                        fixture_catalog=ROOT / "references/support-fixtures.json",
+                    )
+                self.assertFalse(rejected_output.exists())
+                self.assertEqual(source_path.read_bytes(), original_source_bytes)
 
 
 if __name__ == "__main__":

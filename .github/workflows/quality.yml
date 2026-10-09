@@ -481,15 +481,9 @@ jobs:
           merge-multiple: true
 
       - name: Build deterministic RC bindings without writing a candidate
-        run: >-
-          python scripts/release_personal_ui.py prepare
-          --root .
-          --output "${{ runner.temp }}/unused-release-output"
-          --version 0.3.0-rc.1
-          --source-mode commit
-          --source-ref "${PUI_SOURCE_COMMIT}"
-          --dry-run
-          > "${{ runner.temp }}/release-plan.json"
+        run: |
+          RELEASE_TARGET=$(python -c "import json; from pathlib import Path; print(json.loads(Path('assets/react-kit/api-version-policy.json').read_text(encoding='utf-8'))['releaseTarget'])")
+          python scripts/release_personal_ui.py prepare --root . --output "${{ runner.temp }}/unused-release-output" --version "${RELEASE_TARGET}-rc.1" --source-mode commit --source-ref "${PUI_SOURCE_COMMIT}" --dry-run > "${{ runner.temp }}/release-plan.json"
 
       - name: Assemble and validate artifact-backed hosted evidence
         run: |

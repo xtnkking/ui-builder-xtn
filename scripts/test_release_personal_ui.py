@@ -20,7 +20,7 @@ def json_bytes(value: object) -> bytes:
     return (json.dumps(value, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
 
 
-def fixture_files(*, licensed: bool) -> dict[str, bytes]:
+def fixture_files(*, licensed: bool, release_target: str = "0.3.0") -> dict[str, bytes]:
     source = b'export const Button = "button";\n'
     package: dict[str, object] = {
         "name": "personal-ui-react-starter",
@@ -86,7 +86,7 @@ def fixture_files(*, licensed: bool) -> dict[str, bytes]:
             {
                 "schemaVersion": 1,
                 "baselineVersion": "0.2.19",
-                "releaseTarget": "0.3.0",
+                "releaseTarget": release_target,
             }
         ),
         "assets/react-kit/etc/personal-ui.api-compatibility.json": json_bytes(
@@ -95,7 +95,7 @@ def fixture_files(*, licensed: bool) -> dict[str, bytes]:
                 "classification": "breaking",
                 "current": {"version": "0.2.19"},
                 "versionPolicy": {
-                    "releaseTarget": "0.3.0",
+                    "releaseTarget": release_target,
                     "packageVersion": "0.2.19",
                     "valid": True,
                 },
@@ -1292,6 +1292,124 @@ class PromotionContracts(unittest.TestCase):
                     repository_root=root,
                 )
             self.assertIn("m8-acceptance-evidence-binding-mismatch", blockers)
+
+
+class NextPatchReleaseContracts(unittest.TestCase):
+    """Exercise the next line in temporary fixtures, retaining historical identity."""
+
+    def _rc(self, root: Path, *, verified: bool = True) -> tuple[Path, dict, release.SourceSnapshot]:
+        files = fixture_files(licensed=True, release_target="0.3.1")
+        source = snapshot(files, publishable_source=True)
+        candidate = root / "rc"
+        repository = root / "repository"
+        repository.mkdir()
+        plan = release.prepare_release(
+            repository,
+            candidate,
+            candidate_version="0.3.1-rc.1",
+            source_snapshot=source,
+            existing_versions=["v0.3.0"],
+        )
+        if verified:
+            release.verify_release(candidate, command_runner=lambda _argv, _cwd: 0)
+        return candidate, plan, source
+
+    def test_next_patch_rc_and_stable_preserve_historical_baseline(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="pui-next-patch-") as temporary:
+            root = Path(temporary)
+            rc, rc_plan, source = self._rc(root)
+            release.validate_rc_release_plan(rc_plan)
+            stable = root / "stable"
+            stable_plan = release.prepare_release(
+                root / "repository",
+                stable,
+                candidate_version="0.3.1",
+                source_snapshot=source,
+                existing_versions=["v0.3.0"],
+                promotion_from=str(rc),
+            )
+            files = release.collect_staged_files(stable)
+            release.verify_candidate_files(stable_plan, files)
+            release.verify_artifact_bundle(stable, stable_plan, files)
+            self.assertEqual(stable_plan["promotion"]["reviewedPlan"], rc_plan)
+            self.assertEqual(stable_plan["promotion"]["fileDelta"]["changedPaths"], sorted(release.PROMOTION_METADATA_PATHS))
+            self.assertEqual(rc_plan["versionPolicy"]["baselineVersion"], "0.2.19")
+            self.assertEqual(rc_plan["versionPolicy"]["releaseTarget"], "0.3.1")
+            self.assertEqual(json.loads(source.files[release.VERSION_PATHS["package"]])["version"], "0.2.19")
+            self.assertEqual(files["references/v0.3.0-migrations.md"], source.files["references/v0.3.0-migrations.md"])
+            self.assertIn(b"Promoted from verified `0.3.1-rc.1`", files["CHANGELOG.md"])
+            self.assertIn(b"Stable release prepared from verified `0.3.1-rc.1`", (stable / "artifacts" / release.NOTES_NAME).read_bytes())
+
+    def test_next_patch_rejects_reused_versions_and_cross_line_promotion(self) -> None:
+        arguments = {
+            "baseline_value": "0.2.19",
+            "release_target_value": "0.3.1",
+            "classification": "breaking",  # Historical 0.2.19 comparison, not a new patch break.
+        }
+        for candidate, existing, promoted, message in (
+            ("0.3.0", ["v0.3.0"], "0.3.0-rc.1", "outside the planned"),
+            ("0.3.1", ["v0.3.1"], "0.3.1-rc.1", "already exists"),
+            ("0.3.1-rc.1", ["v0.3.1-rc.1"], None, "already exists"),
+            ("0.3.1", [], "0.4.0-rc.1", "same release line"),
+        ):
+            with self.subTest(candidate=candidate, promotion=promoted):
+                with self.assertRaisesRegex(release.ReleaseError, message):
+                    release.validate_target_version(
+                        **arguments,
+                        candidate_value=candidate,
+                        existing_versions=existing,
+                        promotion_from=promoted,
+                    )
+
+    def test_next_patch_promotion_rejects_source_and_archive_tampering(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="pui-next-patch-") as temporary:
+            root = Path(temporary)
+            rc, plan, source = self._rc(root)
+            changed = dict(source.files)
+            changed["README.md"] += b"Different source.\n"
+            with self.assertRaisesRegex(release.ReleaseError, "same immutable source"):
+                release.prepare_release(
+                    root / "repository", root / "wrong-source", candidate_version="0.3.1",
+                    source_snapshot=snapshot(changed, publishable_source=True),
+                    existing_versions=["v0.3.0"], promotion_from=str(rc),
+                )
+            archive = rc / plan["artifacts"]["archive"]["path"]
+            archive.write_bytes(archive.read_bytes() + b"changed bytes")
+            with self.assertRaisesRegex(release.ReleaseError, "release artifact"):
+                release.prepare_release(
+                    root / "repository", root / "wrong-archive", candidate_version="0.3.1",
+                    source_snapshot=source, existing_versions=["v0.3.0"], promotion_from=str(rc),
+                )
+
+    def test_next_patch_requires_bound_formal_journal(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="pui-next-patch-") as temporary:
+            root = Path(temporary)
+            rc, plan, source = self._rc(root, verified=False)
+            with self.assertRaisesRegex(release.ReleaseError, "verified RC"):
+                release.prepare_release(
+                    root / "repository", root / "unverified", candidate_version="0.3.1",
+                    source_snapshot=source, existing_versions=["v0.3.0"], promotion_from=str(rc),
+                )
+            release.verify_release(rc, command_runner=lambda _argv, _cwd: 0)
+            journal_path = rc / release.JOURNAL_NAME
+            journal_bytes = journal_path.read_bytes()
+            for field, value in (("planDigest", "0" * 64), ("commands", [])):
+                journal = json.loads(journal_bytes)
+                if field == "commands":
+                    journal["steps"]["verify"][field] = value
+                else:
+                    journal[field] = value
+                journal_path.write_bytes(json_bytes(journal))
+                with self.subTest(field=field), self.assertRaises(release.ReleaseError):
+                    release.prepare_release(
+                        root / "repository", root / f"forged-{field}", candidate_version="0.3.1",
+                        source_snapshot=source, existing_versions=["v0.3.0"], promotion_from=str(rc),
+                    )
+            thin = copy.deepcopy(plan)
+            thin["verificationCommands"] = []
+            thin = release.attach_plan_digest(thin)
+            with self.assertRaisesRegex(release.ReleaseError, "frozen formal"):
+                release.validate_rc_release_plan(thin)
 
 
 class RecordingAdapter:

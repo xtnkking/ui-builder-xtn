@@ -22,7 +22,7 @@ Every evaluation run must bind to one already prepared candidate with all of the
 
 The coordinator verifies the release plan, journal, archive bytes, and checksum before creating any evaluator workspace. A request hash comes from `evaluation/m8/scenarios.json` and is checked against the exact UTF-8 request bytes before dispatch. The run record also freezes the selected support fixture id, actual operating system, architecture, Node, package-manager, browser, Python, and installer command versions.
 
-Changing candidate bytes, request bytes, support fixture, or installation command creates a new run id. Results from different bindings cannot be merged into one passing record.
+Changing candidate bytes, request bytes, support fixture, or installation command creates a new run id. Results from different bindings cannot be merged into one passing record. The assembler-only continuity record defined below can preserve eligible origin evidence without creating or relabeling a target consumer run.
 
 ## Visible Projection
 
@@ -123,7 +123,7 @@ Repairs are append-only, monotonically numbered steps. Each step records:
 - the exact focused verification commands and results;
 - whether the candidate changed.
 
-A consumer-only repair stays in the same run history. Any canonical Skill change invalidates the candidate binding: prepare a new candidate and start a new blind run in a fresh evaluator context for affected scenarios. A prompted retry is remediation evidence, not another first-pass independent result.
+A consumer-only repair stays in the same run history. A canonical Skill change invalidates the candidate binding: prepare a new candidate and start a new blind run in a fresh evaluator context for affected scenarios. Only the assembler-only continuity policy below permits reuse after its complete source and candidate comparison proves the change is within that policy. A prompted retry is remediation evidence, not another first-pass independent result.
 
 ## Isolation And Retention
 
@@ -144,8 +144,41 @@ A passing `m8-acceptance` bundle contains more than the six consumer summaries:
 
 The validator rejects a missing section, a non-passed check, a candidate-changing repair retained under the old binding, a fake Safari/WebKit substitution, an archive that differs from the candidate binding, or any missing/tampered artifact. Hosted CI remains a separate release evidence type and is not inferred from this bundle.
 
+## Assembler-Only Evidence Continuity
+
+`scripts/m8_evidence_continuity.py` produces and validates a separate `personal-ui-m8-evidence-continuity` record under policy `assembler-only-v1`. It records a narrow reuse decision between two already verified, publishable RC candidates. It does not convert the origin bundle into a target `m8-acceptance` bundle, execute a new consumer or browser run, or declare M8 or publication complete.
+
+The origin must be a complete, passed M8 acceptance bundle that validates against the origin RC, including its six consumers, migration, quality matrix, retained review, and actual system-Safari evidence. A continuity record cannot be used as another continuity record's origin. Both RC plans, source identities, journals, inventories, and archive bytes are revalidated; a version string or previously recorded summary alone is insufficient.
+
+The producer reads the complete canonical source file sets at both immutable commits and verifies their content digests. Both path sets must be identical, and only these files may differ in source bytes:
+
+- `scripts/assemble_m8_acceptance.py`;
+- `scripts/test_assemble_m8_acceptance.py`;
+- `CHANGELOG.md`.
+
+It independently applies the release orchestrator's deterministic version transforms to each complete source set and requires exact agreement with each candidate ZIP inventory. Version-bearing JSON files are compared in full; they are not ignored or reduced to version fields. Component or CSS changes, dependency or lockfile changes, installer changes, evaluation-rule changes, workflows, and templates are outside this policy and require their own affected acceptance evidence.
+
+An actual maintenance review is retained with its path, byte length, and SHA-256. The continuity report retains separately hashed origin and target proof material and an `originAcceptance` reference to the unchanged full origin record. The output's evidence root must contain that origin reference so bundle-relative references can be verified without traversal. Create a new output file and then validate it against the target RC plan:
+
+```text
+python scripts/m8_evidence_continuity.py create \
+  --repository <canonical-repository> \
+  --origin-candidate <verified-origin-rc-directory> \
+  --target-candidate <verified-target-rc-directory> \
+  --origin-acceptance <original-full-m8-acceptance.json> \
+  --maintenance-review <actual-maintenance-review.md> \
+  --output <new-continuity-report.json>
+
+python scripts/m8_evidence_continuity.py validate <continuity-report.json> \
+  --target-plan <verified-target-rc-directory>/release-plan.json
+```
+
+Validation reopens the retained files and recomputes `sourceDelta` and `candidateDelta`; it does not trust a handwritten allowlist or passed summary. `consumerRunsSourceCommit` remains the origin commit, and `reuseScope` is limited to `consumers`, `migration`, `quality`, and `origin-system-safari`. Original run identities, first-result history, attribution, historical recording deviations, and known limitations remain unchanged. The target summary identifies the reviewed RC whose eligible source changes are covered by this reuse decision.
+
+`hostedCIInherited` is always `false`. Origin system-Safari evidence remains part of the origin quality record; it is not target-source hosted CI. Release preflight still requires a separately validated hosted-CI bundle from the target RC's exact source. A same-source stable promotion references this reviewed target RC and must pass its own formal verification independently. The continuity helper and its documentation are maintained working tools; changing them does not create another RC or change either frozen candidate's source identity.
+
 ## Completion Boundary
 
 This material layer is ready when both JSON files parse, all six request hashes match, scenario ids match organizer rule ids one-to-one, every support fixture id exists in the declared support fixture catalog, and no evaluator request contains an organizer acceptance answer.
 
-M8-01 itself is not complete until M7 is complete and a clean immutable `v0.3.0-rc.1` candidate has been prepared, verified, bound to an isolated evaluation environment, and recorded without overwriting the `0.2.19` baseline or installed copies.
+The original M8-01 hardening target was `v0.3.0-rc.1`. For each subsequent release, use the configured `api-version-policy.json.releaseTarget` and its positive `rc.N` candidate; the current target is `0.3.1`. The same M7, clean immutable source, formal verification, isolated environment and binding prerequisites apply. Preserve the immutable `0.2.19` migration baseline and installed copies. A prior release's evidence cannot certify new source outside the defined continuity policy.

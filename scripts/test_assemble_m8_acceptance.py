@@ -873,5 +873,77 @@ class M8AcceptanceAssemblerContracts(unittest.TestCase):
                     )
 
 
+class NextReleaseAssemblerContracts(unittest.TestCase):
+    def setUp(self) -> None:
+        self.temporary = tempfile.TemporaryDirectory(prefix="pui-next-m8-assembler-")
+        self.addCleanup(self.temporary.cleanup)
+        self.root = Path(self.temporary.name)
+        self.candidate = self.root / "candidate"
+        repository = self.root / "repository"
+        repository.mkdir()
+        files = release_fixture.fixture_files(licensed=True, release_target="0.3.1")
+        for relative in (
+            "scripts/install_personal_ui.py",
+            "scripts/verify_personal_ui.py",
+            "scripts/run_m8_migration_failure_case.py",
+            "evaluation/m8/migration-v0.2.19-consumer/template.json",
+        ):
+            files[relative] = SKILL_ROOT.joinpath(*Path(relative).parts).read_bytes()
+        self.plan = release.prepare_release(
+            repository, self.candidate, candidate_version="0.3.1-rc.2",
+            source_snapshot=release_fixture.snapshot(files, publishable_source=True),
+            existing_versions=["v0.3.0"],
+        )
+        release.verify_release(self.candidate, command_runner=lambda _argv, _cwd: 0)
+
+    def test_next_patch_uses_frozen_policy_and_verified_candidate(self) -> None:
+        plan, files, binding = assembler._load_candidate(self.candidate)
+        self.assertEqual(binding["version"], "0.3.1-rc.2")
+        self.assertEqual(plan["versionPolicy"]["releaseTarget"], "0.3.1")
+        self.assertEqual(plan["versionPolicy"]["baselineVersion"], "0.2.19")
+        self.assertEqual(binding["planDigest"], self.plan["planDigest"])
+        self.assertEqual(json.loads(files[release.VERSION_PATHS["policy"]])["baselineVersion"], "0.2.19")
+        self.assertEqual(migration_runner.CANONICAL_BASELINE_VERSION, "0.2.19")
+        self.assertEqual(migration_runner.CANONICAL_BASELINE_COMMIT, "0587d4b08c1a70efff80c228b332f4064a7db6d1")
+
+    def test_plan_and_frozen_policy_must_agree(self) -> None:
+        for version in ("0.3.1", "0.3.1-beta.1", "0.4.0-rc.1", "0.3.1-rc.0"):
+            plan = copy.deepcopy(self.plan)
+            plan["candidateVersion"] = version
+            plan["versionPolicy"]["candidateVersion"] = version
+            plan = release.attach_plan_digest(plan)
+            with self.subTest(version=version), self.assertRaises(assembler.AssemblyError):
+                assembler._candidate_binding(plan)
+        original_files = release.collect_staged_files(self.candidate)
+        for relative, field, value in (
+            (release.VERSION_PATHS["policy"], "releaseTarget", "0.3.0"),
+            (release.VERSION_PATHS["compatibility"], "classification", "none"),
+        ):
+            files = dict(original_files)
+            frozen = json.loads(files[relative])
+            frozen[field] = value
+            files[relative] = release.pretty_json_bytes(frozen)
+            with self.subTest(field=field), mock.patch.object(
+                assembler.migration_runner, "load_verified_candidate",
+                return_value=(self.plan, files, self.candidate / "staging/ui-builder-xtn"),
+            ):
+                with self.assertRaisesRegex(assembler.AssemblyError, "frozen release policy"):
+                    assembler._load_candidate(self.candidate)
+
+    def test_next_patch_rejects_archive_and_verification_tampering(self) -> None:
+        archive = self.candidate / self.plan["artifacts"]["archive"]["path"]
+        original = archive.read_bytes()
+        archive.write_bytes(original + b"not the frozen ZIP")
+        with self.assertRaisesRegex(assembler.AssemblyError, "immutable verified M8 candidate"):
+            assembler._load_candidate(self.candidate)
+        archive.write_bytes(original)
+        journal_path = self.candidate / release.JOURNAL_NAME
+        journal = json.loads(journal_path.read_bytes())
+        journal["steps"]["verify"]["commands"] = []
+        journal_path.write_bytes(release.pretty_json_bytes(journal))
+        with self.assertRaisesRegex(assembler.AssemblyError, "immutable verified M8 candidate"):
+            assembler._load_candidate(self.candidate)
+
+
 if __name__ == "__main__":
     unittest.main()

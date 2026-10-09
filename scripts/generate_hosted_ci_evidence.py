@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Any, Mapping
 
 import validate_hosted_ci_evidence as validator
+import release_personal_ui as release
 
 
 SKILL_ROOT = Path(__file__).resolve().parents[1]
@@ -211,6 +212,10 @@ def assemble_bundle(
     fixture_catalog: Path = DEFAULT_FIXTURES,
 ) -> dict[str, object]:
     plan = read_object(plan_path)
+    try:
+        release.validate_rc_release_plan(plan)
+    except release.ReleaseError as error:
+        raise ValueError(f"hosted evidence requires a trusted RC release plan: {error}") from error
     catalog = read_object(fixture_catalog)
     source = plan.get("source")
     artifacts = plan.get("artifacts")

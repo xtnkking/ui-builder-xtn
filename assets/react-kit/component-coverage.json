@@ -123,6 +123,8 @@
     "assets/react-kit/src/explorer/cases/pattern/wizard.case.tsx",
     "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts",
     "assets/react-kit/tests/browser/composite-form-contracts.spec.ts",
+    "assets/react-kit/tests/browser/d2-drag-upload.spec.ts",
+    "assets/react-kit/tests/browser/infinite-scroll-composition.spec.ts",
     "assets/react-kit/tests/browser/legacy-regressions.spec.ts",
     "assets/react-kit/tests/browser/locale-contracts.spec.ts",
     "assets/react-kit/tests/browser/m4-overlay-extensions.spec.ts",
@@ -151,6 +153,7 @@
     "assets/react-kit/tests/components/carousel-behavior.test.tsx",
     "assets/react-kit/tests/components/context-menu-contracts.test.tsx",
     "assets/react-kit/tests/components/core-contracts.test.tsx",
+    "assets/react-kit/tests/components/d2-drag-upload-composition.test.tsx",
     "assets/react-kit/tests/components/data-extra-contracts.test.tsx",
     "assets/react-kit/tests/components/data-table-contracts.test.tsx",
     "assets/react-kit/tests/components/disclosure-contracts.test.tsx",
@@ -158,6 +161,7 @@
     "assets/react-kit/tests/components/feedback-contracts.test.tsx",
     "assets/react-kit/tests/components/form-control-contracts.test.tsx",
     "assets/react-kit/tests/components/form-library-adapter.test.tsx",
+    "assets/react-kit/tests/components/infinite-scroll-composition.test.tsx",
     "assets/react-kit/tests/components/inputs-extra-contracts.test.tsx",
     "assets/react-kit/tests/components/layer-kernel-contracts.test.tsx",
     "assets/react-kit/tests/components/locale-contracts.test.tsx",
@@ -204,7 +208,7 @@
       "source": 142,
       "example": 142,
       "unit": 117,
-      "browser": 49,
+      "browser": 50,
       "keyboard": 100,
       "a11y": 120
     },
@@ -8221,10 +8225,12 @@
         "assets/react-kit/src/explorer/cases/actions/drag.case.tsx"
       ],
       "unit": [
+        "assets/react-kit/tests/components/d2-drag-upload-composition.test.tsx",
         "assets/react-kit/tests/components/data-extra-contracts.test.tsx",
         "assets/react-kit/tests/components/m5-drag-drop-contracts.test.tsx"
       ],
       "browser": [
+        "assets/react-kit/tests/browser/d2-drag-upload.spec.ts",
         "assets/react-kit/tests/browser/m5-drag-drop.spec.ts"
       ],
       "keyboard": [
@@ -9757,10 +9763,12 @@
         "assets/react-kit/src/explorer/cases/input/upload.case.tsx"
       ],
       "unit": [
+        "assets/react-kit/tests/components/d2-drag-upload-composition.test.tsx",
         "assets/react-kit/tests/components/inputs-extra-contracts.test.tsx",
         "assets/react-kit/tests/components/m5-file-upload-contracts.test.tsx"
       ],
       "browser": [
+        "assets/react-kit/tests/browser/d2-drag-upload.spec.ts",
         "assets/react-kit/tests/browser/m5-file-upload.spec.ts"
       ],
       "keyboard": [
@@ -11563,9 +11571,11 @@
         "assets/react-kit/src/explorer/cases/navigation/infinite-scroll.case.tsx"
       ],
       "unit": [
+        "assets/react-kit/tests/components/infinite-scroll-composition.test.tsx",
         "assets/react-kit/tests/components/navigation-extra-contracts.test.tsx"
       ],
       "browser": [
+        "assets/react-kit/tests/browser/infinite-scroll-composition.spec.ts",
         "assets/react-kit/tests/browser/m5-adjacent.spec.ts"
       ],
       "keyboard": [
@@ -13345,9 +13355,12 @@
         "assets/react-kit/src/explorer/cases/navigation/load-more.case.tsx"
       ],
       "unit": [
+        "assets/react-kit/tests/components/infinite-scroll-composition.test.tsx",
         "assets/react-kit/tests/components/navigation-extra-contracts.test.tsx"
       ],
-      "browser": [],
+      "browser": [
+        "assets/react-kit/tests/browser/infinite-scroll-composition.spec.ts"
+      ],
       "keyboard": [
         "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
       ],

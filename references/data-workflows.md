@@ -14,6 +14,8 @@ Use this reference for searchable lists, server-backed filters, asynchronous opt
 | Sortable, selectable, responsive result set | `DataTable` |
 | Ordinary list page shell | `ListManagementPage` or `SearchFilterPage` |
 | Complete server-list reference | `MemberManagementPage` |
+| File drop with a keyboard selection command | `DragDrop` + `FileUpload` |
+| Continuous observation with a keyboard load/retry command | `InfiniteScroll` + `LoadMore` |
 
 Do not rebuild these controls with native interactive markup, a third-party command menu, or application-owned `.pui-*` styles. Import them from the installed `personal-ui` barrel.
 
@@ -48,3 +50,13 @@ A fixed viewport is a named keyboard region even when the current page is sparse
 ## Completion checks
 
 Exercise slow success, empty, retained-data error, zero-row error, retry, sort, page, page-size, selection, long content, and mobile rendering as applicable. Check that the table frame, pager, and action controls do not resize while loading. Use the Explorer routes `#/components/data-table`, `#/components/select`, and `#/patterns/list-filter` as runnable examples.
+
+## Official file and continuous loading compositions
+
+Use the complete [DragExample](../assets/react-kit/src/explorer/cases/actions/drag.case.tsx) and [InfiniteScrollExample](../assets/react-kit/src/explorer/cases/navigation/infinite-scroll.case.tsx), or their generated complete family modules. Import controls through the public barrel; do not fork the implementation or bind two unrelated queues/requests. These examples provide business-state coordination around existing exports and introduce no public API.
+
+For `DragDrop` + `FileUpload`, one owner holds the file queue, receive/reject callbacks, disabled state and item removal. `accept=".csv,text/csv"` accepts any listed rule: a matching extension **or** matching MIME is sufficient, and a file matching neither is rejected. The official browse button supplies the keyboard entry point; the drop region itself has no keyboard file-selection action. The example keeps received files `queued` and reports rejected filenames with an official `InlineMessage`; it performs no network upload. Repeated same-name selections have distinct stable IDs, and removal uses `FileUploadItem.id`. Apply global disabled to both controls and guard shared callbacks. If a business composition also configures size/count limits, its drop and selection paths must enforce those same limits; the example does not configure them and does not claim to demonstrate them.
+
+For `InfiniteScroll` + `LoadMore`, bind `onLoadMore` to the same owner callback, records, cursor, loading and hasMore. Establish a synchronous pending-promise latch before fetch can run; React loading state alone is not cross-entry mutual exclusion. Reentrant calls join the pending promise. The owner consumes failures, retains records and cursor, shows the official `Alert`, and releases the latch in `finally`. While an error remains, disable automatic observation and let LoadMore explicitly retry that same cursor. Success appends the returned page once and adopts its cursor/hasMore; after `hasMore=false`, neither path starts another request. A global disabled state blocks both commands without deleting retained data. InfiniteScroll's own per-loadKey sentinel remains useful but does not coordinate an independently bound LoadMore action.
+
+The [composition keyboard contract](m5-keyboard-contracts.md#official-compositions-d2d3-2026-10-09) names the actual Tab/activation owners and evidence. D3's four unit contracts and its keyboard/observer/retry/end/focus/axe browser scenario passed in all three engines using retained Chromium and bounded recovery receipts. D2's three unit contracts and nine browser cases passed, with eight prior results retained and only the missing WebKit keyboard case rechecked after fixing its mounted starting-focus prerequisite. Existing individual-component passes retain their original source identities; these development results are not a release. Do not infer OS file-dialog focus restoration from automated filechooser injection or infer full workflow behavior from axe alone.

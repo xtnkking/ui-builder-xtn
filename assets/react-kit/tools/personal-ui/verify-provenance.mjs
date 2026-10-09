@@ -1727,6 +1727,10 @@ function scanScript(file, source, context) {
       const reference = attribute[2].replaceAll(/\s+/g, "");
       const [base, member] = reference.split(".");
       if (externalAliases.has(base)) {
+        // controllerField receives a non-rendering form binding. Keep visual
+        // props and all other external packages subject to the normal gate.
+        if (publicComponent && propName === "controllerField"
+          && externalAliases.get(base) === "react-hook-form") continue;
         reportExternal(externalAliases.get(base), offset + (attribute.index ?? 0), `JSX prop ${propName}`);
         continue;
       }

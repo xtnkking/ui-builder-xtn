@@ -67,6 +67,30 @@ export function compareSemver(leftValue, rightValue) {
   return comparePrerelease(left.prerelease, right.prerelease);
 }
 
+export function validateReleaseVersionPolicy(policy, packageVersion, baselineVersion) {
+  if (!policy || policy.schemaVersion !== 1 || policy.baselineVersion !== baselineVersion) {
+    throw new Error(`API version policy must identify baseline ${baselineVersion} with schemaVersion 1`);
+  }
+  const releaseTarget = parseSemver(policy.releaseTarget);
+  if (releaseTarget.prerelease.length > 0 || releaseTarget.raw.includes("+")) {
+    throw new Error("API version policy releaseTarget must be a stable version without build metadata");
+  }
+  if (compareSemver(releaseTarget, baselineVersion) <= 0) {
+    throw new Error(`API version policy releaseTarget must be newer than baseline ${baselineVersion}`);
+  }
+  const candidate = parseSemver(packageVersion);
+  if (
+    candidate.raw.includes("+")
+    || (packageVersion !== baselineVersion && !isReleaseTargetVersion(packageVersion, policy.releaseTarget))
+  ) {
+    throw new Error(
+      `Package metadata must identify baseline ${baselineVersion}, `
+      + `release target ${policy.releaseTarget}, or its rc.N prerelease; found ${packageVersion}`,
+    );
+  }
+  return policy;
+}
+
 function difference(left, right) {
   const rightSet = new Set(right);
   return left.filter((value) => !rightSet.has(value)).sort(compareNames);

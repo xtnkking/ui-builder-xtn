@@ -9,6 +9,7 @@ import {
   assertPinnedBaselineIdentity,
   isReleaseTargetVersion,
   parseSemver,
+  validateReleaseVersionPolicy,
 } from "./api-compatibility-core.mjs";
 
 function snapshot(version = "0.2.19") {
@@ -43,6 +44,44 @@ test("release target metadata accepts only the stable target or its rc.N line", 
   assert.equal(isReleaseTargetVersion("0.3.0-rc.0", "0.3.0"), false);
   assert.equal(isReleaseTargetVersion("0.3.0-beta.1", "0.3.0"), false);
   assert.equal(isReleaseTargetVersion("0.3.1-rc.1", "0.3.0"), false);
+});
+
+test("configured stable release targets preserve immutable baseline and package version constraints", () => {
+  const baseline = snapshot();
+  const policy = Object.freeze({ schemaVersion: 1, baselineVersion: "0.2.19", releaseTarget: "0.3.1" });
+  for (const packageVersion of ["0.2.19", "0.3.1", "0.3.1-rc.1", "0.3.1-rc.12"]) {
+    const validated = validateReleaseVersionPolicy(policy, packageVersion, baseline.version);
+    assert.equal(validated, policy);
+    const current = snapshot(packageVersion);
+    current.signatures[1].declaration = "export interface ButtonProps { className?: never; }";
+    const report = buildCompatibilityReport(baseline, current, validated.releaseTarget);
+    assert.equal(report.baseline.version, "0.2.19");
+    assert.equal(report.baseline.gitTag, "v0.2.19");
+    assert.equal(report.classification, "breaking");
+    assert.equal(report.versionPolicy.packageVersion, packageVersion);
+    assert.equal(report.versionPolicy.releaseTarget, "0.3.1");
+    assert.equal(report.versionPolicy.requiredBump, "minor");
+    assert.equal(report.versionPolicy.valid, true);
+  }
+  for (const invalidPolicy of [
+    null,
+    { ...policy, schemaVersion: 2 },
+    { ...policy, baselineVersion: "0.3.0" },
+    ...["invalid", "0.3.1-rc.1", "0.3.1+build.1", "0.2.19", "0.2.18"]
+      .map((releaseTarget) => ({ ...policy, releaseTarget })),
+  ]) {
+    assert.throws(() => validateReleaseVersionPolicy(invalidPolicy, "0.2.19", baseline.version));
+  }
+  for (const packageVersion of [
+    "invalid", "0.3.0", "0.3.0-rc.1", "0.3.2", "0.3.1-beta.1", "0.3.1-rc.0",
+    "0.3.1-rc.01", "0.3.1-rc.1.extra", "0.3.1+build.1", "0.3.1-rc.1+build.1", "0.2.19+build.1",
+  ]) {
+    assert.throws(() => validateReleaseVersionPolicy(policy, packageVersion, baseline.version));
+  }
+  const insufficientTarget = validateReleaseVersionPolicy({ ...policy, releaseTarget: "0.2.20" }, "0.2.19", baseline.version);
+  const changed = snapshot();
+  changed.signatures[1].declaration = "export interface ButtonProps { className?: never; }";
+  assert.equal(buildCompatibilityReport(baseline, changed, insufficientTarget.releaseTarget).versionPolicy.valid, false);
 });
 
 test("an unchanged snapshot has no compatibility changes", () => {

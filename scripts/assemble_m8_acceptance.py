@@ -24,7 +24,6 @@ import validate_m8_evidence as validator
 
 
 SCHEMA_VERSION = 1
-EXPECTED_CANDIDATE_VERSION = "0.3.0-rc.1"
 FRAGMENT_NAME = "quality-fragment.json"
 ACCEPTANCE_NAME = "m8-acceptance.json"
 QUALITY_RAW_INVENTORY_KIND = "personal-ui-m8-quality-raw-artifact-inventory"
@@ -205,6 +204,10 @@ def _reject_placeholders(value: object, *, label: str) -> None:
 
 
 def _candidate_binding(plan: Mapping[str, object]) -> dict[str, object]:
+    try:
+        release.validate_rc_release_plan(plan)
+    except release.ReleaseError as error:
+        raise AssemblyError(f"candidate RC release contract is invalid: {error}") from error
     source = plan.get("source")
     artifacts = plan.get("artifacts")
     archive = artifacts.get("archive") if isinstance(artifacts, dict) else None
@@ -233,10 +236,6 @@ def _candidate_binding(plan: Mapping[str, object]) -> dict[str, object]:
     validator._validate_candidate(probe, errors)
     if errors:
         raise AssemblyError("candidate binding is invalid: " + "; ".join(errors))
-    if candidate["version"] != EXPECTED_CANDIDATE_VERSION:
-        raise AssemblyError(
-            f"M8 requires {EXPECTED_CANDIDATE_VERSION}, got {candidate['version']!r}"
-        )
     return candidate
 
 
@@ -267,7 +266,33 @@ def _load_candidate(candidate_path: Path) -> tuple[dict[str, object], dict[str, 
         or verify.get("commands") != expected_executed
     ):
         raise AssemblyError("candidate lacks exact successful formal verification evidence")
-    return plan, files, _candidate_binding(plan)
+    candidate = _candidate_binding(plan)
+    try:
+        frozen_policy = json.loads(files[release.VERSION_PATHS["policy"]].decode("utf-8"))
+        frozen_compatibility = json.loads(files[release.VERSION_PATHS["compatibility"]].decode("utf-8"))
+    except (KeyError, UnicodeError, json.JSONDecodeError) as error:
+        raise AssemblyError(f"candidate frozen release policy is invalid: {error}") from error
+    version_policy = plan["versionPolicy"]
+    if (
+        not isinstance(frozen_policy, dict)
+        or frozen_policy.get("schemaVersion") != SCHEMA_VERSION
+        or frozen_policy.get("baselineVersion") != version_policy["baselineVersion"]
+        or frozen_policy.get("releaseTarget") != version_policy["releaseTarget"]
+        or not isinstance(frozen_compatibility, dict)
+        or frozen_compatibility.get("classification") != version_policy["classification"]
+    ):
+        raise AssemblyError("candidate frozen release policy differs from its plan")
+    compatibility_policy = frozen_compatibility.get("versionPolicy")
+    compatibility_current = frozen_compatibility.get("current")
+    if (
+        not isinstance(compatibility_policy, dict)
+        or compatibility_policy.get("releaseTarget") != version_policy["releaseTarget"]
+        or compatibility_policy.get("packageVersion") != candidate["version"]
+        or not isinstance(compatibility_current, dict)
+        or compatibility_current.get("version") != candidate["version"]
+    ):
+        raise AssemblyError("candidate frozen release policy differs from its plan")
+    return plan, files, candidate
 
 
 def _artifact_source(root: Path, descriptor: Mapping[str, object], *, label: str) -> Path:

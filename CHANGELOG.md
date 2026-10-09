@@ -4,6 +4,25 @@
 
 ### Added
 
+- 为受支持的显式公共属性调用提供完整 React Hook Form、受控/非受控和有限 `controlRef` 示例，并分开验证 TypeScript 合同与来源政策。类型正确的 JSX 属性展开仍按政策拒绝，不宣称两种门禁对所有 TypeScript 写法等价。
+- 官方 `DragDrop + FileUpload` 示例共用文件清单、类型拒绝和禁用状态；保留 accept 的 OR 语义，同名文件按稳定 ID 分别移除。`InfiniteScroll + LoadMore` 共用同步请求所有权、数据和游标；失败保留原记录并通过手动入口重试。低层组件的独立键盘能力不因此扩大。
+- 新增 M8 证据连续性 producer/validator（`personal-ui-m8-evidence-continuity` / `assembler-only-v1`）及测试接线：只允许 assembler、其具名测试源码和 CHANGELOG 的维护差异，保留旧消费者与迁移身份；M6/M7 等新增源码不在有限复用范围内。
+
+### Changed
+
+- 来源校验器允许官方 `controllerField` 接收 React Hook Form 的非视觉绑定对象；其他第三方包和视觉属性继续受原来源门禁约束。
+- 发布适配器按 journal 登记且已确认归属的 Release ID 恢复草稿，远端核验和实际发布共用 tag、计划标记、commit 与状态校验；已公开的相同 Release 只读续跑，身份缺失或冲突时拒绝，不创建替代草稿、移动引用或重复上传附件。
+- Explorer 按公开 API 记录 110 个运行时家族、142 个导出的真实适用状态实例，API 示例保留完整状态代码并支持单实例选择；严格门禁拒绝标签式和伪造映射。人工键盘入口及 320px 容器不冒充浏览器行为证明。
+- 下一 releaseTarget 为 `0.3.1`。发行器、hosted 证据与 acceptance assembler 从完整受验证计划取得同一 release line 的候选版本，继续拒绝跨源晋升、无效摘要、错误 ZIP 和缺失正式验证命令；保留不可变 `v0.2.19` 历史迁移基线。
+
+### Release status
+
+- 以上为本地新增源码，尚未公开发行。相对公开 `v0.3.0` 没有公共组件 API 变化；兼容报告相对历史 `v0.2.19` 的 breaking 结论继续保留。新修复必须取得自己的候选、CI 和 M8 证据。
+
+## [0.3.0] - 2026-10-08
+
+### Added
+
 - 为 142 个 runtime export 建立可搜索 Explorer、逐 export API/示例文档、键盘与 ARIA 证据，以及 `zh-CN` / `en-US` Locale 契约。
 - 新增单一 release orchestrator，提供无写入 dry-run、隔离 prepare、可重复 ZIP、SHA-256、plan digest、verify、可续跑 journal，以及默认只读的 Git/GitHub 发布适配器；远端写入必须同时满足正式证据、精确 stable plan 授权和 `publish --execute`。
 - 新增 artifact-backed hosted CI 证据：8 个支持 fixture、Chromium/Firefox/WebKit 实际版本和 system Safari 18+ smoke 均绑定同一 GitHub run 与候选摘要；每个 job 产物按路径、大小和 SHA-256 重新校验，Playwright WebKit 不能代替真实 Safari。
@@ -37,8 +56,8 @@
 
 ### Release status
 
-- 本节是源码冻结前的变更记录，不代表任何候选或公开版本已经通过验收。失败、取消或旧提交的记录只保留为诊断证据，不能用于新源码验收。
-- 发行状态由与候选精确绑定的 hosted CI、M8 acceptance bundle、发布 journal、不可变 tag 和 GitHub Release 共同证明；这些后冻结结果不写回生成它们的源码提交。公开发布仍需精确 stable `planDigest` 授权。
+- Promoted from verified `0.3.0-rc.2` with reviewed RC plan `9231765176650250833dbff8cd31078f5ba7204de71353faeaa2bf9f1db4bcd3`.
+- Public availability is established only after exact stable-plan authorization, immutable tag verification, GitHub Release publication, and public reinstall checks.
 
 ## 0.2.19 - 2026-09-17
 

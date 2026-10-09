@@ -631,6 +631,48 @@ def validate_target_version(
             )
 
 
+def validate_rc_release_plan(plan: Mapping[str, object]) -> None:
+    """Check the frozen RC contract without preparing or verifying a candidate."""
+    assert_plan_digest(plan)
+    if plan.get("schemaVersion") != SCHEMA_VERSION or plan.get("kind") != "personal-ui-release-plan":
+        raise ReleaseError("RC release plan schema or kind is unsupported")
+    candidate_value = plan.get("candidateVersion")
+    if not isinstance(candidate_value, str) or SemVer.parse(candidate_value).rc_number is None:
+        raise ReleaseError("release evidence requires an rc.N candidate")
+    policy = plan.get("versionPolicy")
+    if not isinstance(policy, Mapping) or any(
+        not isinstance(policy.get(field), str)
+        for field in ("baselineVersion", "releaseTarget", "candidateVersion", "classification", "sourceVersion")
+    ):
+        raise ReleaseError("RC release plan version policy is incomplete")
+    if policy.get("candidateVersion") != candidate_value or policy.get("sourceVersion") != policy.get("baselineVersion"):
+        raise ReleaseError("RC release plan version policy differs from the candidate")
+    if plan.get("promotion") is not None:
+        raise ReleaseError("RC release plan must not contain a stable promotion")
+    validate_target_version(
+        baseline_value=str(policy["baselineVersion"]),
+        release_target_value=str(policy["releaseTarget"]),
+        candidate_value=candidate_value,
+        classification=str(policy["classification"]),
+        existing_versions=(),
+    )
+    source = plan.get("source")
+    if (
+        not isinstance(source, Mapping)
+        or source.get("mode") != "commit"
+        or source.get("dirty") is not False
+        or any(re.fullmatch(r"[0-9a-f]{40}", str(source.get(field))) is None for field in ("commit", "tree"))
+        or re.fullmatch(r"[0-9a-f]{64}", str(source.get("contentDigest"))) is None
+        or type(source.get("sourceDateEpoch")) is not int
+        or int(source["sourceDateEpoch"]) < 0
+        or plan.get("publishable") is not True
+        or plan.get("publicationBlockers") != []
+    ):
+        raise ReleaseError("RC release plan requires publishable immutable source")
+    if not _is_formal_verification_plan(plan.get("verificationCommands")):
+        raise ReleaseError("RC release plan requires the frozen formal verification commands")
+
+
 def _validate_source_integrity(files: Mapping[str, bytes], manifest: Mapping[str, object]) -> None:
     integrity = manifest.get("sourceIntegrity")
     if not isinstance(integrity, dict):
@@ -2295,6 +2337,17 @@ def _m8_release_evidence_blocker(
         bindings = _reviewed_evidence_bindings(plan)
     except ReleaseError:
         return "m8-acceptance-evidence-promotion-invalid"
+    try:
+        document = _load_json_file(path, "M8 evidence")
+        if document.get("kind") == "personal-ui-m8-evidence-continuity":
+            if __package__:
+                from .m8_evidence_continuity import validate_continuity_file
+            else:
+                from m8_evidence_continuity import validate_continuity_file
+            result = validate_continuity_file(path, expected_plan=plan)
+            return None if result.accepted else f"m8-acceptance-evidence-{result.category}"
+    except (ReleaseError, OSError, ValueError):
+        return "m8-acceptance-evidence-invalid"
     result = validate_m8_evidence_file(
         path,
         expected_bindings=bindings,

@@ -146,6 +146,14 @@ Application code may own business state, data fetching, copy, product images, an
 
 Respect the target's existing package manager and project-root lockfile. Run the exact install and build commands from `plan.commands` after the installer updates `package.json`; the installer deliberately does not execute them inside its file transaction.
 
+## Supported Public Usage
+
+Delivery requires two gates: TypeScript checks public prop types and controlled-state combinations; provenance checks public component ownership and customization policy. Neither result substitutes for the other. Explicit public props are supported. JSX spread is deliberately unsupported even when the spread object satisfies a public Props type; do not describe it as a TypeScript error or claim all valid TypeScript programs are accepted by provenance.
+
+Use `controllerField` for a form-library binding, explicit `value` and the documented callback for controlled controls, `defaultValue` for uncontrolled controls, and a limited `controlRef` for focus or validity. Unknown hyphenated JSX attributes have special TypeScript rules; provenance continues to enforce reserved ownership attributes beyond those named in the public types.
+
+The complete [supported usage example](../assets/react-kit/tests/fixtures/supported-public-usage.tsx) includes its imports, state, form-library controller, options, focus handle and save callback. It is compiled by the type contracts and tested byte-for-byte (apart from its barrel import path) by `scripts/test_supported_usage_contracts.py`. The [type fixture](../assets/react-kit/tests/types/supported-usage-contracts.test-d.tsx) intentionally also demonstrates a type-correct spread that the ownership gate rejects.
+
 ## Managed Source Boundary
 
 `src/personal-ui/` in a target project is generated, versioned source. Do not edit it, add files to it, or copy one of its implementation files elsewhere for customization. The verifier treats every missing, changed, or extra file as a release error; there is no local-extension allowance.
@@ -156,7 +164,7 @@ For a sparse operational list, use the bundled `ListManagementPage` or `SearchFi
 
 The machine-readable authority is `assets/react-kit/component-manifest.json`:
 
-- The current manifest classifies all 139 runtime exports as 136 visual components or patterns and 3 non-visual hooks/constants across 118 families and 130 discovery aliases.
+- The current manifest classifies 142 runtime exports as 137 visual components or patterns and 5 non-visual APIs across 119 families. The generated catalog and coverage report identify the current aliases and evidence owners.
 - Every `component` or `pattern` family maps to real source files and at least one registered public runtime export.
 - Every rendered component family declares a source ownership marker that exists in those source files.
 - Foundation entries map to real CSS or TypeScript artifacts even when they have no runtime component.
@@ -176,7 +184,7 @@ A requested capability that has no registered public export must not be built in
 5. Add or update the `component-manifest.json` family entry with `publicExports`, `sourceFiles`, aliases, and `ownerMarkers`.
 6. Add focused tests and a representative gallery or workflow example.
 7. Run `python scripts/update_component_manifest_integrity.py`, then run the manifest validator, strict-enforcement self-test, and source typecheck/build.
-8. Increment and synchronize the semantic version across the kit registry, component manifest, and package metadata.
+8. Record the API compatibility and release target. Synchronize registry, manifest, and package versions through isolated candidate preparation; the canonical development snapshot can retain its baseline metadata.
 9. Reinstall the new version into the target with `integrate --force` after reviewing `--dry-run`, then compose the feature from its public barrel export.
 
 If canonical source cannot be changed within the task's authority, stop and report the missing library capability. Do not make a temporary native, CSS-only, or third-party substitute.
