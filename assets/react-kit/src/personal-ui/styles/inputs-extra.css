@@ -574,7 +574,12 @@
 
 .pui-tag-input__control {
   display: flex;
+  min-width: 0;
+  max-width: 100%;
   min-height: var(--pui-control-height);
+  max-height: 12rem;
+  overflow-x: hidden;
+  overflow-y: auto;
   align-items: center;
   flex-wrap: wrap;
   gap: 6px;
@@ -594,9 +599,15 @@
   border-color: var(--pui-danger);
 }
 
+.pui-tag-input.is-invalid .pui-tag-input__control:focus-within {
+  box-shadow: inset 0 0 0 1px var(--pui-danger);
+}
+
 .pui-tag-input__input {
   flex: 1 1 120px;
-  min-width: 80px;
+  width: 120px;
+  min-width: min(80px, 100%);
+  max-width: 100%;
   height: 28px;
   padding: 0 3px;
   border: 0;

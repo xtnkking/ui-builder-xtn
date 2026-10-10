@@ -620,6 +620,8 @@ fieldset.pui-field > legend {
 }
 
 .pui-label__required {
+  flex: 0 0 auto;
+  white-space: nowrap;
   background: var(--pui-bg);
 }
 
@@ -1333,7 +1335,9 @@ input[type="password"]::-ms-reveal {
   align-items: center;
   gap: 6px;
   width: fit-content;
-  max-width: 100%;
+  min-width: 0;
+  max-width: min(100%, 20rem);
+  flex: 0 1 auto;
   min-height: 30px;
   padding: 0 10px;
   border: 1px solid var(--_pui-neutral-tag-border);
@@ -1376,12 +1380,13 @@ input[type="password"]::-ms-reveal {
 }
 
 .pui-tag__leading {
-  display: grid;
-  place-items: center;
-  flex: 0 0 16px;
-  width: 16px;
-  height: 16px;
-  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  min-width: 16px;
+  min-height: 16px;
+  line-height: 1.5;
 }
 
 .pui-tag__leading > * {
@@ -1396,9 +1401,17 @@ input[type="password"]::-ms-reveal {
 }
 
 .pui-tag__label {
+  display: block;
+  flex: 1 1 auto;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.pui-tag__label:focus-visible {
+  border-radius: 2px;
+  outline: 2px solid var(--pui-focus-ring);
+  outline-offset: -2px;
 }
 
 .pui-tag__remove {
@@ -1406,7 +1419,8 @@ input[type="password"]::-ms-reveal {
   place-items: center;
   width: 28px;
   height: 28px;
-  margin-right: -8px;
+  flex: 0 0 28px;
+  margin-inline-end: -8px;
   padding: 0;
   border: 0;
   border-radius: 50%;
@@ -1545,6 +1559,7 @@ input[type="password"]::-ms-reveal {
 }
 
 .pui-pagination__controls .pui-select-shell {
+  --pui-control-height: 36px;
   width: 94px;
 }
 
@@ -2302,7 +2317,7 @@ input[type="password"]::-ms-reveal {
   height: 24px !important;
 }
 
-.pui-tag__leading > * {
+.pui-tag__leading > :is(svg, img, picture, video, canvas, iframe) {
   width: 13px !important;
   height: 13px !important;
 }

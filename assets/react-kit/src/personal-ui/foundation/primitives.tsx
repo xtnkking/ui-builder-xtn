@@ -1,7 +1,9 @@
 import {
   useCallback,
+  useEffect,
   useImperativeHandle,
   useRef,
+  useState,
   type ButtonHTMLAttributes,
   type HTMLAttributes,
   type ReactNode,
@@ -18,6 +20,7 @@ import {
 import { assignElementRef } from "../internal/control-handles";
 import { sanitizeFixedControlProps } from "../internal/fixed-control-props";
 import { recordLayerActivation } from "../internal/layer-activation";
+import { observeComputedStyleChanges } from "../internal/portal-tokens";
 import { usePersonalUILocale } from "./locale";
 import { cx, getTabStops, isVisibleElement } from "../internal/utils";
 
@@ -306,6 +309,21 @@ export function Tag({
 }: TagProps) {
   const { message } = usePersonalUILocale();
   const rootProps = sanitizeFixedControlProps(props);
+  const labelRef = useRef<HTMLSpanElement>(null);
+  const [labelOverflowing, setLabelOverflowing] = useState(false);
+  const textLabel = typeof children === "string" || typeof children === "number"
+    ? String(children)
+    : undefined;
+  useEffect(() => {
+    const element = labelRef.current;
+    if (!element) return;
+    const measure = () => {
+      const overflowing = textLabel !== undefined && element.scrollWidth > element.clientWidth + 1;
+      setLabelOverflowing((current) => current === overflowing ? current : overflowing);
+    };
+    measure();
+    return observeComputedStyleChanges(element, measure, { observeAncestors: false });
+  }, [textLabel]);
   const contentTitle = title ?? (
     typeof children === "string" || typeof children === "number"
       ? String(children)
@@ -325,7 +343,15 @@ export function Tag({
       data-pui-owner="Tag"
     >
       {leading ? <span className="pui-tag__leading" aria-hidden="true">{leading}</span> : null}
-      <span className="pui-tag__label">{children}</span>
+      <span
+        ref={labelRef}
+        className="pui-tag__label"
+        tabIndex={labelOverflowing ? 0 : undefined}
+        role={labelOverflowing ? "group" : undefined}
+        aria-label={labelOverflowing ? textLabel : undefined}
+      >
+        {children}
+      </span>
       {selected ? <span className="pui-sr-only">{message("tag.selected")}</span> : null}
       {onRemove ? (
         <button

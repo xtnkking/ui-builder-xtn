@@ -23,13 +23,13 @@ function EnglishFilterBarExample() {
 const explorerCase = {
   id: "filter-bar/overview",
   label: "筛选栏",
-  summary: "筛选字段只更新草稿，显式查询才应用条件；演示本地成员集合过滤，加载、校验和错误由字段、动作与反馈组件负责。",
+  summary: "搜索字段默认约 320px，随容器收缩并自然换行；字段只更新草稿，显式查询才应用条件，加载、校验和错误由字段、动作与反馈组件负责。",
   states: ["default", "longContent", "keyboard", "mobile", "overlay", "dark", "locale"],
   stateExamples: [
     { state: "default", exports: ["FilterBar"], content: <FilterBarExample /> },
     { state: "longContent", exports: ["FilterBar"], content: <FilterBarExample longContent /> },
     { state: "keyboard", exports: ["FilterBar"], instructions: "输入 lin，再用 Tab 和 Enter 激活查询，或在搜索框按 Enter 提交；输入期间结果不变，提交后结果变为林夏。", content: <FilterBarExample /> },
-    { state: "mobile", exports: ["FilterBar"], content: <StatePreview state="mobile"><FilterBarExample /></StatePreview> },
+    { state: "mobile", exports: ["FilterBar"], instructions: "此 320px 容器在桌面视口内也会纵排字段和动作；搜索框保持原高度，输入不会自动提交。", content: <StatePreview state="mobile"><FilterBarExample /></StatePreview> },
     { state: "overlay", exports: ["FilterBar"], content: <StatePreview state="overlay"><FilterBarExample /></StatePreview> },
     { state: "dark", exports: ["FilterBar"], content: <StatePreview state="dark"><FilterBarExample /></StatePreview> },
     { state: "locale", exports: ["FilterBar"], content: <StatePreview state="locale"><EnglishFilterBarExample /></StatePreview> },

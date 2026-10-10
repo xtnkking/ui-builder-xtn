@@ -773,6 +773,7 @@ export function Lightbox(rawProps: LightboxProps) {
                 layer.dismiss("backdrop");
               }
             }}
+            data-single={items.length === 1 || undefined}
             data-pui-owner="Lightbox"
           >
             <InternalIconButtonSlot name="lightbox-close">
@@ -795,7 +796,9 @@ export function Lightbox(rawProps: LightboxProps) {
                 />
               )}
               <figcaption>
-                {current.caption != null ? <span>{current.caption}</span> : null}
+                {current.caption != null ? (
+                  <span className="pui-lightbox__caption" role="region" aria-label={current.alt} tabIndex={0}>{current.caption}</span>
+                ) : null}
                 <span className="pui-lightbox__position" aria-live="polite" aria-atomic="true">
                   {resolvedIndex + 1} / {items.length}
                 </span>

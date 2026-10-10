@@ -1642,6 +1642,20 @@ export function TagInput(rawProps: TagInputProps) {
   useOutsideDismiss(open, rootRef, () => setOpen(false), popoverRef);
   useEffect(() => { setPortalTarget(floatingPortalTarget(rootRef.current)); }, []);
   useEffect(() => { if (disabled) setOpen(false); }, [disabled]);
+  useLayoutEffect(() => {
+    const input = inputElementRef.current;
+    const control = input?.parentElement;
+    if (!input || !control || input.ownerDocument.activeElement !== input) return;
+    const inputBounds = input.getBoundingClientRect();
+    const controlBounds = control.getBoundingClientRect();
+    const visibleTop = controlBounds.top + control.clientTop;
+    const visibleBottom = visibleTop + control.clientHeight;
+    if (inputBounds.bottom > visibleBottom) {
+      control.scrollTop += inputBounds.bottom - visibleBottom;
+    } else if (inputBounds.top < visibleTop) {
+      control.scrollTop -= visibleTop - inputBounds.top;
+    }
+  }, [tagValues]);
   const add = (candidate: string) => {
     if (disabled) return;
     const normalized = normalizeValue(candidate);

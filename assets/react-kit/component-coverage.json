@@ -125,6 +125,7 @@
     "assets/react-kit/tests/browser/composite-form-contracts.spec.ts",
     "assets/react-kit/tests/browser/d2-drag-upload.spec.ts",
     "assets/react-kit/tests/browser/explorer-audit-findings.spec.ts",
+    "assets/react-kit/tests/browser/explorer-responsive-followup.spec.ts",
     "assets/react-kit/tests/browser/infinite-scroll-composition.spec.ts",
     "assets/react-kit/tests/browser/legacy-regressions.spec.ts",
     "assets/react-kit/tests/browser/locale-contracts.spec.ts",
@@ -212,7 +213,7 @@
       "source": 142,
       "example": 142,
       "unit": 117,
-      "browser": 51,
+      "browser": 58,
       "keyboard": 100,
       "a11y": 120
     },
@@ -2735,7 +2736,9 @@
       "unit": [
         "assets/react-kit/tests/components/feedback-contracts.test.tsx"
       ],
-      "browser": [],
+      "browser": [
+        "assets/react-kit/tests/browser/explorer-responsive-followup.spec.ts"
+      ],
       "keyboard": [],
       "a11y": [
         "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
@@ -9556,6 +9559,7 @@
         "assets/react-kit/tests/components/form-control-contracts.test.tsx"
       ],
       "browser": [
+        "assets/react-kit/tests/browser/explorer-responsive-followup.spec.ts",
         "assets/react-kit/tests/browser/legacy-regressions.spec.ts"
       ],
       "keyboard": [],
@@ -9956,6 +9960,7 @@
         "assets/react-kit/tests/components/actions-contracts.test.tsx"
       ],
       "browser": [
+        "assets/react-kit/tests/browser/explorer-responsive-followup.spec.ts",
         "assets/react-kit/tests/browser/legacy-regressions.spec.ts"
       ],
       "keyboard": [
@@ -10114,7 +10119,9 @@
         "assets/react-kit/src/explorer/cases/foundation/focus-trap.case.tsx"
       ],
       "unit": [],
-      "browser": [],
+      "browser": [
+        "assets/react-kit/tests/browser/explorer-responsive-followup.spec.ts"
+      ],
       "keyboard": [
         "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
       ],
@@ -12122,7 +12129,9 @@
       "unit": [
         "assets/react-kit/tests/components/feedback-contracts.test.tsx"
       ],
-      "browser": [],
+      "browser": [
+        "assets/react-kit/tests/browser/explorer-responsive-followup.spec.ts"
+      ],
       "keyboard": [],
       "a11y": [
         "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
@@ -12685,6 +12694,7 @@
         "assets/react-kit/tests/components/portal-theme-contracts.test.tsx"
       ],
       "browser": [
+        "assets/react-kit/tests/browser/explorer-responsive-followup.spec.ts",
         "assets/react-kit/tests/browser/m4-overlay-extensions.spec.ts"
       ],
       "keyboard": [
@@ -15952,7 +15962,9 @@
       "unit": [
         "assets/react-kit/tests/components/navigation-contracts.test.tsx"
       ],
-      "browser": [],
+      "browser": [
+        "assets/react-kit/tests/browser/explorer-responsive-followup.spec.ts"
+      ],
       "keyboard": [
         "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
       ],
@@ -20821,7 +20833,9 @@
         "assets/react-kit/tests/components/actions-contracts.test.tsx",
         "assets/react-kit/tests/components/button-contracts.test.tsx"
       ],
-      "browser": [],
+      "browser": [
+        "assets/react-kit/tests/browser/explorer-responsive-followup.spec.ts"
+      ],
       "keyboard": [
         "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
       ],
@@ -22416,7 +22430,9 @@
       "unit": [
         "assets/react-kit/tests/components/simple-fixed-controls.test.tsx"
       ],
-      "browser": [],
+      "browser": [
+        "assets/react-kit/tests/browser/explorer-responsive-followup.spec.ts"
+      ],
       "keyboard": [
         "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
       ],
@@ -22619,6 +22635,7 @@
         "assets/react-kit/tests/components/inputs-extra-contracts.test.tsx"
       ],
       "browser": [
+        "assets/react-kit/tests/browser/explorer-responsive-followup.spec.ts",
         "assets/react-kit/tests/browser/legacy-regressions.spec.ts"
       ],
       "keyboard": [
@@ -23903,7 +23920,9 @@
       "unit": [
         "assets/react-kit/tests/components/actions-contracts.test.tsx"
       ],
-      "browser": [],
+      "browser": [
+        "assets/react-kit/tests/browser/explorer-responsive-followup.spec.ts"
+      ],
       "keyboard": [
         "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
       ],

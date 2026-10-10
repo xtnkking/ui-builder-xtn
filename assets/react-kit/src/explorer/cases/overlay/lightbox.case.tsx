@@ -33,7 +33,7 @@ function FailedLightboxExample() {
 
 function LongLightboxExample() {
   const [open, setOpen] = useState(false);
-  return <><Button onClick={() => setOpen(true)}>预览长说明图片</Button><Lightbox open={open} onOpenChange={setOpen} value="details" onValueChange={() => undefined} items={[{ id: "details", src: image, alt: "产品配置预览图", caption: "此图片用于展示全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置，请在保存前确认所有关联配置均符合团队的实际使用要求。" }]} /></>;
+  return <><Button onClick={() => setOpen(true)}>预览长说明图片</Button><Lightbox open={open} onOpenChange={setOpen} value="details" onValueChange={() => undefined} items={[{ id: "details", src: image, alt: "产品配置预览图", caption: "此图片用于展示全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置，请在保存前确认所有关联配置均符合团队的实际使用要求。说明较长时，文字区域会在合理高度内独立滚动，图片仍保持居中且拥有可读空间；完整说明不会被截断，键盘用户和窄屏用户也可以继续阅读全部内容。" }]} /></>;
 }
 
 function EnglishLightboxExample() {
@@ -45,7 +45,7 @@ function EnglishLightboxExample() {
 const explorerCase: ExplorerCase = {
   id: "lightbox/overview",
   label: "图片浏览",
-  summary: "展示受控当前项、方向键/Home/End 导航、加载失败回退和关闭后的焦点恢复。",
+  summary: "展示受控当前项、单图与多图布局、长说明滚动、方向键/Home/End 导航、加载失败回退和关闭后的焦点恢复。",
   states: ["default", "controlled", "empty", "error", "longContent", "keyboard", "overlay", "dark", "locale"],
   content: <LightboxExample />,
   stateExamples: [
@@ -53,7 +53,7 @@ const explorerCase: ExplorerCase = {
     { state: "controlled", exports: ["Lightbox"], instructions: "打开查看器并切换图片；当前项和打开状态均由示例状态回调管理。", content: <LightboxExample /> },
     { state: "empty", exports: ["Lightbox"], instructions: "items 为空时不会显示查看器面板，页面应自行显示没有图片的说明。", content: <><Lightbox open onOpenChange={() => undefined} value="" onValueChange={() => undefined} items={[]} /><p>当前没有可预览的图片，查看器保持不可见。</p></> },
     { state: "error", exports: ["Lightbox"], instructions: "打开查看器；无效的内联 PNG 无法解码，将触发组件的图片错误回退。", content: <FailedLightboxExample /> },
-    { state: "longContent", exports: ["Lightbox"], content: <LongLightboxExample /> },
+    { state: "longContent", exports: ["Lightbox"], instructions: "打开单图查看器；长说明在有界区域内滚动，不会把图片挤出可读区域。也请在 320px 浏览器视口打开，查看真实窄屏效果。", content: <LongLightboxExample /> },
     { state: "keyboard", exports: ["Lightbox"], instructions: "用 Enter 打开查看器；左右方向键切换图片，Home/End 跳转首尾，Esc 关闭并返回预览按钮。", content: <LightboxExample /> },
     { state: "overlay", exports: ["Lightbox"], instructions: "在外层弹窗内打开图片查看器；Esc 先关闭查看器并返回预览按钮。", content: <StatePreview state="overlay"><LightboxExample /></StatePreview> },
     { state: "dark", exports: ["Lightbox"], content: <StatePreview state="dark"><LightboxExample /></StatePreview> },

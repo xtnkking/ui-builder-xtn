@@ -3665,6 +3665,7 @@
     },
     {
       "dependencies": [
+        "feedback",
         "foundation",
         "input",
         "internal",
