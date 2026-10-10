@@ -41,7 +41,7 @@ function EnglishDrawerExample() {
 
 const explorerCase: ExplorerCase = {
   id: "drawer/overview",
-  label: "Drawer 边缘模式",
+  label: "抽屉贴边模式",
   summary: "默认 edge 模式在桌面三边贴合，并保留左侧圆角、焦点恢复和移动端转换。",
   states: ["default", "controlled", "longContent", "keyboard", "overlay", "dark", "locale"],
   content: <DrawerExample />,

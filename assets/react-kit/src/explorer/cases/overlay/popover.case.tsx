@@ -25,7 +25,7 @@ function PopoverExample() {
 
 const explorerCase: ExplorerCase = {
   id: "popover/overview",
-  label: "Popover 受控浮层",
+  label: "受控气泡浮层",
   summary: "受控打开状态、Escape 返回焦点和自适应定位使用同一公开实现。",
   states: ["default", "disabled", "controlled", "uncontrolled", "longContent", "keyboard", "overlay", "dark", "locale"],
   content: <PopoverExample />,

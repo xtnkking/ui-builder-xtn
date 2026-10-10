@@ -10,6 +10,7 @@ import {
   SearchInput,
   StatusIndicator,
   TreeTable,
+  VisuallyHidden,
   type DataColumn,
   type DataSort,
   type TreeTableColumn,
@@ -68,7 +69,7 @@ function DataTableExample() {
       width: 72,
       cell: (row) => (
         <Checkbox
-          label={`选择 ${row.name}`}
+          label={<VisuallyHidden>{`选择 ${row.name}`}</VisuallyHidden>}
           checked={selected.includes(row.id)}
           onChange={(event) => setSelected((current) => event.currentTarget.checked ? [...current, row.id] : current.filter((id) => id !== row.id))}
         />

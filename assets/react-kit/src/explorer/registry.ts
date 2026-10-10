@@ -1,5 +1,6 @@
 import componentDocsJson from "../../component-docs.json";
 import componentManifestJson from "../../component-manifest.json";
+import { explorerFamilyLabels } from "./labels";
 
 export type ExplorerCategoryId =
   | "foundation"
@@ -28,6 +29,8 @@ export interface ExplorerFamily {
   id: string;
   category: ExplorerCategoryId;
   label: string;
+  chineseLabel: string;
+  englishLabel: string;
   exports: string[];
   aliases: string[];
   href: string;
@@ -55,23 +58,6 @@ export const explorerCategories: readonly ExplorerCategory[] = [
 const categoryOrder = new Map(explorerCategories.map((category, index) => [category.id, index]));
 const categoryById = new Map(explorerCategories.map((category) => [category.id, category]));
 
-const familyLabels: Record<string, string> = {
-  authentication: "认证与品牌登录",
-  "list-filter": "列表与筛选页面",
-  "data-table": "DataTable / TreeTable",
-  dialog: "Dialog / ConfirmDialog",
-  number: "NumberInput",
-  typography: "Typography 字体规范",
-  spacing: "Spacing 间距规范",
-  radius: "Radius 圆角规范",
-  surface: "Surface 表面规范",
-  icons: "Icons 图标规范",
-  motion: "Motion 动效规范",
-  "z-index": "Z-index 层级规范",
-  density: "Density 密度规范",
-  focus: "Focus 焦点规范",
-};
-
 const familyPurposes: Record<string, string> = {
   authentication: "登录 注册 认证 品牌家族",
   "list-filter": "成员管理 CRUD 查询 筛选 列表",
@@ -93,13 +79,6 @@ function normalizeCategory(category: DocsCategory): ExplorerCategoryId {
   return category === "actions" ? "foundation" : category;
 }
 
-function familyLabel(id: string, exports: string[]): string {
-  if (familyLabels[id]) return familyLabels[id];
-  if (exports.length === 0) return id;
-  if (exports.length <= 2) return exports.join(" / ");
-  return `${exports[0]} 等 ${exports.length} 项`;
-}
-
 function familyHref(id: string, category: ExplorerCategoryId): string {
   return `#/${category === "pattern" ? "patterns" : "components"}/${id}`;
 }
@@ -116,13 +95,15 @@ export const explorerFamilies: readonly ExplorerFamily[] = manifest.entries
     if (!categoryMeta) {
       throw new Error(`Explorer family ${id} uses an unknown category.`);
     }
-    const label = familyLabel(id, manifestEntry.publicExports);
+    const { label, chineseLabel, englishLabel } = explorerFamilyLabels(id, manifestEntry.publicExports);
     const aliases = manifestEntry.aliases ?? [];
     const exports = manifestEntry.publicExports ?? [];
     return {
       id,
       category,
       label,
+      chineseLabel,
+      englishLabel,
       exports,
       aliases,
       href: familyHref(id, category),

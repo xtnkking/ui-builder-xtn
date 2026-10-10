@@ -580,6 +580,7 @@ function DemoContent() {
   const explorerCases: ExplorerCases = {
     "list-filter": [{
       id: "member-management",
+      previewLayout: "page",
       label: "成员管理",
       summary: "带草稿筛选、显式查询、加载、空结果、失败和重试状态的 CRUD 列表页面。",
       states: ["default", "loading", "empty", "error", "validation", "longContent", "keyboard", "mobile", "overlay"],
@@ -588,6 +589,7 @@ function DemoContent() {
     }],
     authentication: [{
       id: "family-login",
+      previewLayout: "page",
       label: "品牌家族登录",
       summary: "公司身份与登录控件保持一致，产品只通过名称、强调色、文案和视觉插槽表达差异。",
       states: ["default", "loading", "error", "validation", "longContent", "keyboard", "mobile"],
@@ -596,6 +598,7 @@ function DemoContent() {
     }],
     number: [{
       id: "number-input-states",
+      previewLayout: "page",
       label: "数字输入状态",
       summary: "同时展示受控值、空值、只读和禁用状态，并保持步进按钮几何稳定。",
       states: ["default", "disabled", "readOnly", "controlled", "validation", "keyboard"],
@@ -604,6 +607,7 @@ function DemoContent() {
     }],
     "data-table": [{
       id: "permission-table",
+      previewLayout: "page",
       label: "用户权限表格",
       summary: "分页与非分页、固定与内容高度、选择列和操作列冻结，以及稳定加载状态。",
       states: ["default", "controlled", "loading", "empty", "longContent", "keyboard", "mobile"],
@@ -612,6 +616,7 @@ function DemoContent() {
     }],
     dialog: [{
       id: "nested-dialog-workflow",
+      previewLayout: "page",
       label: "复杂弹窗工作流",
       summary: "覆盖不可点击遮罩关闭、嵌套确认、异步保存和弹窗内复杂选择器。",
       states: ["default", "controlled", "loading", "error", "validation", "keyboard", "overlay"],

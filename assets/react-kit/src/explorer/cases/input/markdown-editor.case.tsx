@@ -26,7 +26,7 @@ function MarkdownValidationExample() {
 
 const explorerCase = {
   id: "markdown-editor/overview",
-  label: "Markdown 源码编辑",
+  label: "源码编辑（Markdown）",
   summary: "MarkdownEditor 提供格式工具栏；RichTextEditor 仅作为已弃用的兼容别名展示。",
   states: ["default", "disabled", "readOnly", "controlled", "validation", "longContent", "keyboard", "overlay", "dark", "locale"] as const,
   stateExamples: [

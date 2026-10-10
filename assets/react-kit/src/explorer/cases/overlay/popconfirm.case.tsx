@@ -27,7 +27,7 @@ function PopconfirmExample() {
 
 const explorerCase: ExplorerCase = {
   id: "popconfirm/overview",
-  label: "Popconfirm 就地确认",
+  label: "就地气泡确认",
   summary: "用于低复杂度危险操作，展示异步确认、禁用和错误承载边界。",
   states: ["default", "disabled", "loading", "error", "longContent", "keyboard", "overlay", "dark", "locale"],
   content: <PopconfirmExample />,

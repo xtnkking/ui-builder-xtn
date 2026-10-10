@@ -11,7 +11,7 @@ function PortalExample() {
 
 const explorerCase = {
   id: "portal/overview",
-  label: "Portal 容器",
+  label: "跨层渲染容器",
   summary: "内容通过真实 Portal 移入本例的目标容器；不向页面外散布预览内容，并保留来源主题。",
   states: ["default", "longContent", "mobile", "dark", "locale"],
   stateExamples: [

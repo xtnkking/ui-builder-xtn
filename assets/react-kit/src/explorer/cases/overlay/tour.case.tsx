@@ -41,7 +41,7 @@ function EnglishGuidedTourExample() {
 
 const explorerCase: ExplorerCase = {
   id: "tour/overview",
-  label: "GuidedTour 目标与回退",
+  label: "引导目标与回退",
   summary: "覆盖真实目标定位、目标缺失回退、受控步骤与 Escape 退出。",
   states: ["default", "controlled", "empty", "longContent", "keyboard", "overlay", "dark", "locale"],
   content: <GuidedTourExample />,

@@ -27,6 +27,8 @@ export interface ExplorerCase {
   stateExamples?: readonly ExplorerStateExample[];
   content: ReactNode;
   code: string;
+  /** Whole-page fixtures already own their internal spacing. */
+  previewLayout?: "contained" | "page";
 }
 
 export interface ExplorerStateExample {

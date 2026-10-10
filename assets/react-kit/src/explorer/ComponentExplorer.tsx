@@ -27,6 +27,7 @@ import {
   filterExplorerFamilies,
   type ExplorerFamily,
 } from "./registry";
+import { formatStateLabel } from "./labels";
 
 export type { ExplorerCase, ExplorerCases } from "./cases";
 
@@ -52,7 +53,7 @@ function Directory({ families, activeFamilyId, onNavigate }: {
         if (categoryFamilies.length === 0) return null;
         const items: NavigationItem[] = categoryFamilies.map((family) => ({
           id: family.id,
-          label: family.label,
+          label: <span className="demo-explorer-directory__label"><span>{family.chineseLabel}</span><small title={family.englishLabel}>{family.englishLabel}</small></span>,
           href: family.href,
           active: family.id === activeFamilyId,
           onSelect: onNavigate,
@@ -68,21 +69,29 @@ function Directory({ families, activeFamilyId, onNavigate }: {
   );
 }
 
-function CasePreviewExample({ example }: { example: ExplorerCase }) {
+const compactFamilies = new Set(["button", "icon-button", "button-group", "split-button", "toggle-button", "link", "clipboard", "tag", "badge", "status", "spinner", "rating", "radio", "checkbox", "switch"]);
+
+function PreviewFrame({ example, family, children }: { example: ExplorerCase; family: ExplorerFamily; children: React.ReactNode }) {
+  const size = example.previewLayout === "page" || family.category === "pattern" || family.id === "data-table"
+    ? "wide" : compactFamilies.has(family.id) ? "compact" : "regular";
+  return <div className="demo-explorer-preview" data-preview-size={size} data-preview-layout={example.previewLayout ?? "contained"}>{children}</div>;
+}
+
+function CasePreviewExample({ example, family }: { example: ExplorerCase; family: ExplorerFamily }) {
   const [activeState, setActiveState] = useState("overview");
   const stateItems = [{
     id: "overview",
     label: "总览",
     content: activeState === "overview"
-      ? <div className="demo-explorer-preview">{example.content}</div>
+      ? <PreviewFrame example={example} family={family}>{example.content}</PreviewFrame>
       : null,
   }, ...(example.stateExamples ?? []).map((stateExample, index) => ({
     id: `state-${index}`,
-    label: `${stateExample.state} · ${stateExample.exports.join(" / ")}`,
+    label: formatStateLabel(stateExample.state),
     content: activeState === `state-${index}` ? (
       <section data-state-example={stateExample.state} data-state-exports={stateExample.exports.join(",")}>
-        {stateExample.instructions && <p>{stateExample.instructions}</p>}
-        <div className="demo-explorer-preview">{stateExample.content}</div>
+        <p className="demo-explorer-state-note">适用组件：{stateExample.exports.join(" / ")}{stateExample.instructions && <><br />{stateExample.instructions}</>}</p>
+        <PreviewFrame example={example} family={family}>{stateExample.content}</PreviewFrame>
       </section>
     ) : null,
   }))];
@@ -92,14 +101,14 @@ function CasePreviewExample({ example }: { example: ExplorerCase }) {
         <h2>{example.label}</h2>
         <p>{example.summary}</p>
         <div className="demo-explorer-case__states" aria-label="适用状态，不表示已演示">
-          {example.states.map((state) => <Tag key={state}>{state}</Tag>)}
+          {example.states.map((state) => <Tag key={state}>{formatStateLabel(state)}</Tag>)}
         </div>
       </div>
       {example.stateExamples?.length ? (
         <Tabs ariaLabel={`${example.label}状态案例`} value={activeState} onValueChange={setActiveState} items={stateItems} />
       ) : (
         <>
-          <div className="demo-explorer-preview">{example.content}</div>
+          <PreviewFrame example={example} family={family}>{example.content}</PreviewFrame>
           <p data-state-coverage="pending">状态案例尚未逐项绑定；以上标签仅表示适用范围。</p>
         </>
       )}
@@ -125,7 +134,7 @@ function FamilyCases({ family, cases }: { family: ExplorerFamily; cases?: readon
     {
       id: `${example.id}-preview`,
       label: cases.length === 1 ? "预览" : `${example.label}预览`,
-      content: activeCase === `${example.id}-preview` ? <CasePreviewExample example={example} /> : null,
+      content: activeCase === `${example.id}-preview` ? <CasePreviewExample example={example} family={family} /> : null,
     },
     {
       id: `${example.id}-code`,
@@ -205,7 +214,7 @@ export function ComponentExplorer({ cases: additionalCases = {} }: { cases?: Exp
           </div>
           <PageHeading
             eyebrow={explorerCategories.find((category) => category.id === family.category)?.label}
-            title={family.label}
+            title={<span className="demo-explorer-heading"><span>{family.chineseLabel}</span><small>{family.englishLabel}</small></span>}
             description={family.exports.length
               ? `公开导出：${family.exports.join("、")}`
               : "基础规范，无独立 runtime export"}

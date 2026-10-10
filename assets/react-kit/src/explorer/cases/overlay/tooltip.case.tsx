@@ -18,7 +18,7 @@ function TooltipExample() {
 
 const explorerCase: ExplorerCase = {
   id: "tooltip/overview",
-  label: "Tooltip 状态",
+  label: "文字提示状态",
   summary: "展示指针与键盘触发、禁用状态和由 Portal 承载的说明内容。",
   states: ["default", "disabled", "longContent", "keyboard", "overlay", "dark", "locale"],
   content: <TooltipExample />,

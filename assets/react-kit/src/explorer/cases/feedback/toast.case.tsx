@@ -25,7 +25,7 @@ function ToastExample() { return <ToastProvider><ToastCommands /></ToastProvider
 
 const explorerCase = {
   id: "toast/overview",
-  label: "Toast / Snackbar",
+  label: "轻提示与消息条",
   summary: "真正发送提示，展示位置、形状、可选关闭与倒计时，以及实际异步操作。状态按钮提供人工触发入口。",
   states: ["default", "loading", "error", "longContent", "keyboard", "overlay", "dark", "locale", "usage"],
   stateExamples: [

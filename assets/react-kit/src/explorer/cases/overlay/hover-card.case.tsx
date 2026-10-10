@@ -26,7 +26,7 @@ function ControlledHoverCardExample() {
 
 const explorerCase: ExplorerCase = {
   id: "hover-card/overview",
-  label: "HoverCard 资料预览",
+  label: "悬停资料预览",
   summary: "指针悬停与键盘聚焦共享触发器，并在焦点离开后稳定关闭。",
   states: ["default", "disabled", "controlled", "uncontrolled", "longContent", "keyboard", "overlay", "dark", "locale"],
   content: <HoverCardExample />,

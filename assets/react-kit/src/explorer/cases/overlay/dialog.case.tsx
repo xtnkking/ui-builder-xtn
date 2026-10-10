@@ -82,7 +82,7 @@ function EnglishDialogs() {
 
 const explorerCase: ExplorerCase = {
   id: "dialog/overview",
-  label: "Dialog 与 ConfirmDialog",
+  label: "对话框与确认弹窗",
   summary: "覆盖受控开关、不可点击遮罩关闭、表单编辑、危险确认和异步提交边界。",
   states: ["default", "controlled", "loading", "error", "longContent", "keyboard", "overlay", "dark", "locale"],
   content: <DialogExample />,

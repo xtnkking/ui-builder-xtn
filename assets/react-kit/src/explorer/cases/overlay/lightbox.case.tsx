@@ -44,7 +44,7 @@ function EnglishLightboxExample() {
 
 const explorerCase: ExplorerCase = {
   id: "lightbox/overview",
-  label: "Lightbox 图片浏览",
+  label: "图片浏览",
   summary: "展示受控当前项、方向键/Home/End 导航、加载失败回退和关闭后的焦点恢复。",
   states: ["default", "controlled", "empty", "error", "longContent", "keyboard", "overlay", "dark", "locale"],
   content: <LightboxExample />,
