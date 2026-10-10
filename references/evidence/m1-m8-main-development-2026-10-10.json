@@ -1,0 +1,838 @@
+{
+  "schemaVersion": 1,
+  "kind": "personal-ui-original-goals-main-development-closeout",
+  "result": "passed",
+  "recordedAt": "2026-10-10T07:14:19.819521Z",
+  "baseCommit": "4f4dda6fc13f983adb14844a4584e1a804e10e9e",
+  "sourceBinding": {
+    "algorithm": "SHA-256",
+    "changedFiles": {
+      "CHANGELOG.md": "10b5a1fc17f4f464a3de634805cdf29dabed4a762fb841739c3985b4907c34c5",
+      "README.md": "9dc4320f6d64fd0d06f601a6275cf796b4d4b0becfe06f8da02550d482db8678",
+      "SKILL.md": "c48696e0bc1edbcfc41c63388ecc1dc9316aa2c65db5d2c2af46fa8490291122",
+      "assets/react-kit/component-coverage.json": "58ac407581f64762dc8d857132881772ecd9554a5231f928f924d476ecc6445c",
+      "assets/react-kit/component-docs.json": "49e24e0e791d76d42d17b469ec2eaf10f7abb56949563c719f70c56050005840",
+      "assets/react-kit/component-manifest.json": "2ae17bd53dd030c64b6df6e0f23bddfdfccc4314dbed7289ab0fc67792418fcc",
+      "assets/react-kit/etc/personal-ui.api-compatibility.json": "935d2dc0db69143ae4c79c5a3dfd794c315049af851dbe34a783867a49dc24e9",
+      "assets/react-kit/etc/personal-ui.api.md": "e5afdf3ca3393f601670c5671097c9dacc834b01ecaa6e10aa0a068650a455c7",
+      "assets/react-kit/playwright.original-goals-m5.config.ts": "6ae77e08bdd21d012b6610c0057d9554b9b6a9c5dfb26ede0bb0416fef568367",
+      "assets/react-kit/src/explorer/cases/actions/drag.case.tsx": "7e71a83993103c688bb43dbd7dbe4135cae48716e7162a7e0781a2c2d742d79c",
+      "assets/react-kit/src/explorer/cases/navigation/infinite-scroll.case.tsx": "a2f2e0be6cc039e583985a25c8e167c71a98ee1bc57416055903704e987121a8",
+      "assets/react-kit/src/personal-ui/data/data-extra.tsx": "fab14d330f31a42aa1ecf640a4e7133d3978725758d531b166389a630e28ac03",
+      "assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx": "1a2396babf9b7c1c7286b6ab12880e9177a38ab82490b0ec975045554a9324ad",
+      "assets/react-kit/src/personal-ui/styles/extended.css": "4cc2552cc93307141f27fb934bf4bdd63589925dc12112063a127667dbb5557f",
+      "assets/react-kit/tests/browser/m5-drag-drop.spec.ts": "c0d29db74e2968ac7c2493cfc0ec015a31c9bd6846c37f3da3ec60adb31fdae1",
+      "assets/react-kit/tests/browser/m5-standalone-infinite-scroll.spec.ts": "9e0720c6313672bedc3407736fd230f9a4c75ee993d44e972d66880059de7afb",
+      "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts": "64ff94ccea968a179549da794532e4dfb8e11f64d576c5b283748c4aad35a0e5",
+      "assets/react-kit/tests/components/infinite-scroll-composition.test.tsx": "e83e09c78c55469adecc166ba2f02a419eab4eafaabb222aaebd1267c6a229a8",
+      "assets/react-kit/tests/components/m5-drag-drop-contracts.test.tsx": "128247d3540a99d4015e60a3c18d9800a6a38aa59fccd08c780504bb94c3b59e",
+      "assets/react-kit/tests/components/m5-standalone-infinite-scroll.test.tsx": "ff00c883684be13ae790033eeb72602544c09ba842af338c0464b8ebfd3565d0",
+      "assets/react-kit/tests/fixtures/m5-drag-drop.tsx": "53fd16a59c31633c37a23e1690242812608827fee97792abc7f833fd4b12dd8a",
+      "assets/react-kit/tests/fixtures/m5-standalone-infinite-scroll.html": "0b44fd260b8bf00e3eb1f84ca3da0ee2c0e3b0a802238843b039061b732ef1e3",
+      "assets/react-kit/tests/fixtures/m5-standalone-infinite-scroll.tsx": "9a27d9c4573d84ab8ea707ecf9444d08b693df93a6b84651da9470bb55b1dc8b",
+      "assets/react-kit/tests/types/supported-usage-contracts.test-d.tsx": "991e9afb9cc3bda06f5a6373dd87b816576864d87487a923d154e3030df4b9ed",
+      "assets/react-kit/tools/personal-ui/typed-usage.mjs": "2c1e80fd08bb769e4bb15f2b71c95140f3dce4754e6c9fc56a300b2c3193157c",
+      "assets/react-kit/tools/personal-ui/validate-explorer-cases.mjs": "fb5cf198336d9f5f4821735d771cb1ff1657cfea58dbdfc7630c3c2bf285e095",
+      "assets/react-kit/tools/personal-ui/validate-explorer-cases.test.mjs": "578a97316cc7a77f92e8c1484676d0f054f7481736b60f355252a5132f4720d4",
+      "assets/react-kit/tools/personal-ui/verify-provenance.mjs": "a228b9095bedc6ed6a11744c940ddf16cfa6feeaad5e21f66e7b1f86d33eaed3",
+      "assets/react-kit/tsconfig.supported-usage.json": "588b93a8d2b8ae9214027b5ff76289d60bf7f367d6815f5dcf14ba07a1234d75",
+      "references/component-api.md": "b31c23c2977c3b4021c0e5ae2fdc0482cb788fcdf3adbdadaa589a42c8d3e3dd",
+      "references/component-capabilities.md": "72a4adc4c53468874df0c7770d39f61310c2b0ac88a3f19b6f9ba2317e654653",
+      "references/data-workflows.md": "665c66e65afa4e4d3cd1d4649bc7d51ce6fb67b449c0e99e86a73d25ff67a4ad",
+      "references/integration.md": "642e72768cdc27c6d3a4e83d1217e6885f08d904dd870cc338a8f7f9d12dd2fd",
+      "references/m1-m8-closeout.md": "fcca59ff631d469e62dec2b9cf11db08607d7bcd7f9e7825398d552254a5807b",
+      "references/m5-keyboard-contracts.md": "e1bc82194d86ec4e94f6726ac1fbcdeb23a32272a9b6752dd5662ade6e108c92",
+      "references/v0.3.0-migrations.md": "49344cb65b979e519a147c4bf14d52d0cb4d732741e5c97ca4ae2b646d81a8ec",
+      "references/v0.3.0-roadmap.md": "449347406d004e7ab97f41adf19c01d4a24ff651c7516baa9417a0bd2ffc2438",
+      "scripts/install_personal_ui.py": "900763f268801617cb0d395768c8499ae99989b9bc472b8018727ffb8cee27a9",
+      "scripts/test_strict_enforcement.py": "eec728256cfcdd3fee2f7029371bf1d298ff2a69daf5cc4cf57a5f78b6ef85f5",
+      "scripts/test_supported_usage_contracts.py": "e9821e43d0385744252f9c5d40f9e100d57f4543dea4c79175d124fbcb41ac2c",
+      "scripts/verify_personal_ui.py": "bd69fa30102893efa6bd114556f51240f69bd7b972e6b633ac2e4d5eb88a54cd"
+    },
+    "meaning": "Working-source files captured for this main commit. Historical check input digests and candidate measurements retain their own revision; no old evidence is renamed."
+  },
+  "M2": {
+    "status": "complete",
+    "criteria": "Safe typed JSX prop spreads and supported public syntax accepted consistently by TypeScript and provenance; reject visual overrides, unknown/unsafe props and wrong types. Keep source ownership enforced.",
+    "completedAt": "2026-10-10T07:06:59Z",
+    "implemented": [
+      "Shared TypeScript Compiler API implementation in both provenance entry points; project-batched Python analysis.",
+      "Accepted safe typed JSX spreads: literals, satisfies, public Props annotations, aliases, imports, typed factory results/parameters, bounded generics, unions, nested spreads and generic public JSX.",
+      "Accepted inspected typed prop objects in createElement and JSX runtime calls; compiler-backed public call type checking including loose runtime overloads.",
+      "Rejected observable hidden style/ref/reserved/unknown prop injection, opaque any/unknown/open-index sources, wrong public prop types and controlled-state omissions.",
+      "Installed helper inventory, path integrity and byte-equality checks; legacy safe-spread expectations updated without removing intentional ownership violations."
+    ],
+    "evidence": [
+      {
+        "action": "52306b71f7cf453dac55e2879d2c14ad",
+        "step": "original-goals-m2-supported-types",
+        "result": "passed",
+        "scope": "Focused supported-usage type fixture and dependencies"
+      },
+      {
+        "action": "c208eeab6bbe4936b5490ade5ef81541",
+        "step": "original-goals-m2-supported-usage",
+        "result": "passed",
+        "scope": "Six focused positive/negative public usage, parity and installed helper distribution contracts"
+      },
+      {
+        "action": "f60099b71ffe47f0857d731d0b2680a4",
+        "step": "original-goals-m2-legacy-boundaries",
+        "result": "passed",
+        "scope": "Four changed legacy JSX ownership boundary functions, final compiler helper revision"
+      }
+    ],
+    "limitations": "Equivalence applies to the public ownership contract, not every structurally assignable or arbitrarily suppressed TypeScript program. Known non-public/protected keys are rejected even when TypeScript structural widening would permit them. Unresolved/any/unknown/open-index props fail closed. Bounded generic parameters and third-party declaration contracts cannot prove absence of arbitrary extra runtime keys; runtime fixed-control sanitization remains the boundary. Full application TypeScript build remains required. No claim of mathematical runtime soundness or blanket all-TypeScript equivalence.",
+    "remaining": [],
+    "correctionImpact": "Shared verifier helper only: resolve installed React.JSX.IntrinsicAttributes.key through a virtual compiler module; accept key-only factories when public component props are optional; retain invalid key diagnostics and style/ref rejection. Baseline receipts stay bound to their actual old helper hash. New key receipt binds this correction. Runtime source and browser/consumer evidence unchanged; no whole-suite, baseline, or global gate reruns.",
+    "correctionEvidence": [
+      {
+        "action": "c0f014e1901a45beb7c6640f0b5998ff",
+        "step": "original-goals-m2-react-intrinsic-key",
+        "result": "passed",
+        "scope": "Exact React intrinsic key positive/negative JSX/createElement/jsx-runtime and retained style/ref rejection, both verifiers"
+      }
+    ]
+  },
+  "M5": {
+    "status": "complete",
+    "criteria": "DragDrop independently supports keyboard file browsing; InfiniteScroll independently supports keyboard manual loading/retry with deduplication, focus and disabled/loading/end/error behavior.",
+    "documentationToolRepair": {
+      "classification": "tooling",
+      "failedStep": "original-goals-docs-refresh",
+      "failedAction": "f5b7aa973198480aadef04316dc618bb",
+      "observedFailure": "Explorer realizesState(error) has no InfiniteScroll onLoadMore rejection branch; the real throwing callback is reachable but unrecognized.",
+      "repair": "Add only InfiniteScroll/onLoadMore rejection recognition with positive and non-rejecting negative contracts. Retain original failed output; retry same docs step once after repair. No product or matrix rerun."
+    },
+    "implementation": "DragDrop owns default keyboard browse with accept/multiple/shared rejection and explicit optional delegation. InfiniteScroll owns default manual load/retry with synchronous observer/manual dedupe, stable focus, disabled/loading/end/error and no-observer fallback. Existing official pair compositions explicitly disable duplicate owned commands. Source metadata, Explorer/default code and scoped keyboard docs updated.",
+    "evidence": [
+      {
+        "actionId": "a3ea4e27fd3d4ce18d0a4b56cb8b9e43",
+        "result": "passed",
+        "scope": "22 focused component contracts, first attempt"
+      },
+      {
+        "actionId": "52b8f5b42377478986caee19314d2cf8",
+        "result": "passed",
+        "scope": "One named Explorer error recognizer tooling contract with six negative controls"
+      },
+      {
+        "actionId": "85d9478497704a1e8b0314f666e762f4",
+        "result": "partial",
+        "scope": "Eight actual Chromium passing test lines retained; enclosing CLI later timed out and remains failed"
+      },
+      {
+        "actionId": "4400e2bb61324cce98433c82e6a98f9a",
+        "result": "partial",
+        "scope": "Firefox JSON: eight expected, zero unexpected/flaky/skipped/errors. WebKit CLI then hit fixed90s timeout with no completed report."
+      },
+      {
+        "actionId": "11422ebf11634311b62490ad032e848d",
+        "result": "passed",
+        "scope": "Only the eight missing WebKit cases: exact filename/title/engine identities, all passed retry0/errors[], reporter end passed and actual CLI exit0; digest49463855d33397c8ff7a3ca0d0adc7b0c3a284f03632bf7d8e064562aca043ce. Explicit same-step infrastructure exception recorded before launch, no passed engine repeated."
+      }
+    ],
+    "remaining": [],
+    "failureClassification": "Infrastructure closeout complete under explicit original-goals-m5-webkit-diagnostic-lifecycle exception: trace/video disabled only in focused developer config, streaming exact-case results retained. Prior timeout records remain failed; no product assertion failure observed or passing-engine rerun."
+  },
+  "M8": {
+    "acceptedCells": 108,
+    "retainedCells": 48,
+    "newCells": 60,
+    "browserRetries": 0,
+    "publicIndex": "m8-original-matrix-closeout-2026-10-10.json",
+    "publicIndexSha256": "70b52199e336bfda41f246d50c39a07d75eac5a35c4aa4698e940698aa24818a"
+  },
+  "sourceImpact": {
+    "M2": "Compiler/provenance tooling and installer support only; component runtime unchanged by M2. Named positive/negative, type and distribution observations bind the actual tool revisions.",
+    "M5": "Runtime changes are limited to DragDrop, InfiniteScroll and their owned picker style. No original six-consumer business source uses either widget. Standalone/retained-composition tests and named three-engine behavior own these changes.",
+    "matrix": "The 108 original cells remain RC.8 family 18 and RC.9 other 90. They are not 108 fresh measurements of this main development source.",
+    "tooling": "Explorer rejection recognition, Windows process lifecycle recovery, and exporter path normalization are separately recorded tool repairs. None invalidates or relabels passing product measurements."
+  },
+  "checks": [
+    {
+      "id": "52306b71f7cf453dac55e2879d2c14ad",
+      "step": "original-goals-m2-supported-types",
+      "status": "passed",
+      "argv": [
+        "node",
+        "node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "-p",
+        "tsconfig.supported-usage.json"
+      ],
+      "startedAt": "2026-10-10T06:53:12.527142Z",
+      "endedAt": "2026-10-10T06:53:17.964313Z",
+      "exitCode": 0,
+      "reason": "",
+      "inputDigest": "512325ea477fb911831960177a0c07f415253edcc1fca3ae9b847b5a888ec9a5",
+      "logs": {
+        "stdout": {
+          "archive": "organizer/action-logs/52306b71f7cf453dac55e2879d2c14ad",
+          "file": "stdout.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size": 0
+        },
+        "stderr": {
+          "archive": "organizer/action-logs/52306b71f7cf453dac55e2879d2c14ad",
+          "file": "stderr.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size": 0
+        }
+      }
+    },
+    {
+      "id": "983979011dd147da93283b9b44447176",
+      "step": "original-goals-m2-supported-usage",
+      "status": "failed",
+      "argv": [
+        "python",
+        "scripts/test_supported_usage_contracts.py"
+      ],
+      "startedAt": "2026-10-10T06:53:11.951190Z",
+      "endedAt": "2026-10-10T06:53:38.987966Z",
+      "exitCode": 1,
+      "reason": "",
+      "inputDigest": "da2264ca01bc97e53f543e420041e3a7568d3a03822fc6152a6795bf6273f4a1",
+      "logs": {
+        "stdout": {
+          "archive": "organizer/action-logs/983979011dd147da93283b9b44447176",
+          "file": "stdout.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size": 0
+        },
+        "stderr": {
+          "archive": "organizer/action-logs/983979011dd147da93283b9b44447176",
+          "file": "stderr.log",
+          "sha256": "8bd43810a37842e8719616ad3b8c2725e60eb9e915dd20e4088d1f8e8523ec06",
+          "size": 2981
+        }
+      }
+    },
+    {
+      "id": "c208eeab6bbe4936b5490ade5ef81541",
+      "step": "original-goals-m2-supported-usage",
+      "status": "passed",
+      "argv": [
+        "python",
+        "scripts/test_supported_usage_contracts.py"
+      ],
+      "startedAt": "2026-10-10T06:58:16.210662Z",
+      "endedAt": "2026-10-10T06:58:35.903424Z",
+      "exitCode": 0,
+      "reason": "Product: compiler AST now recognizes generic local function components. Tooling: Python findings retain per-offset controls instead of deduping same-line failures. Both gates now share project-batched compiler analysis for JSX and typed createElement/runtime props; focused positive/negative factory cases added before correction rerun.",
+      "inputDigest": "a39b1d54ed6a336d516cd4e82ad5c96e6fddc62aed5c39c967621ee9bb1666f6",
+      "logs": {
+        "stdout": {
+          "archive": "organizer/action-logs/c208eeab6bbe4936b5490ade5ef81541",
+          "file": "stdout.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size": 0
+        },
+        "stderr": {
+          "archive": "organizer/action-logs/c208eeab6bbe4936b5490ade5ef81541",
+          "file": "stderr.log",
+          "sha256": "a74632e9250460eb13a3a9e281a5f664315e0c994da3a66ceea6ab67eefb3505",
+          "size": 110
+        }
+      }
+    },
+    {
+      "id": "32edc1111eb840d9b9beeb863b1a42ef",
+      "step": "original-goals-m2-legacy-boundaries",
+      "status": "failed",
+      "argv": [
+        "python",
+        "-c",
+        "import test_strict_enforcement as t; t.test_jsx_attribute_direct_protected_overrides(); t.test_jsx_attribute_nested_protected_overrides(); t.test_jsx_generic_public_component_boundaries(); t.test_jsx_regex_nested_component_protection()"
+      ],
+      "startedAt": "2026-10-10T07:00:19.366517Z",
+      "endedAt": "2026-10-10T07:00:27.598303Z",
+      "exitCode": 1,
+      "reason": "",
+      "inputDigest": "56733d63bdf88c1f303e1aae231eb16f1c8b98a5f614421fc5add9c28f077421",
+      "logs": {
+        "stdout": {
+          "archive": "organizer/action-logs/32edc1111eb840d9b9beeb863b1a42ef",
+          "file": "stdout.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size": 0
+        },
+        "stderr": {
+          "archive": "organizer/action-logs/32edc1111eb840d9b9beeb863b1a42ef",
+          "file": "stderr.log",
+          "sha256": "5bc203f8f1205991fca8731f0be3f39f0870cc13667297ce4b3ad2101f10ce43",
+          "size": 1719
+        }
+      }
+    },
+    {
+      "id": "f60099b71ffe47f0857d731d0b2680a4",
+      "step": "original-goals-m2-legacy-boundaries",
+      "status": "passed",
+      "argv": [
+        "python",
+        "-c",
+        "import test_strict_enforcement as t; t.test_jsx_attribute_direct_protected_overrides(); t.test_jsx_attribute_nested_protected_overrides(); t.test_jsx_generic_public_component_boundaries(); t.test_jsx_regex_nested_component_protection()"
+      ],
+      "startedAt": "2026-10-10T07:01:06.022803Z",
+      "endedAt": "2026-10-10T07:01:35.826443Z",
+      "exitCode": 0,
+      "reason": "Consumer fixture: old nested ownership examples omitted now-enforced public Drawer title/children and DataTable rowKey/ariaLabel. Supplied required props while retaining the same intentional nested className/style/ref/reserved-prop violations. No product implementation change or broad tests.",
+      "inputDigest": "aa43abc8a677ff01c7368d476b20304686204bfd437c5ffc38f7072623bd4644",
+      "logs": {
+        "stdout": {
+          "archive": "organizer/action-logs/f60099b71ffe47f0857d731d0b2680a4",
+          "file": "stdout.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size": 0
+        },
+        "stderr": {
+          "archive": "organizer/action-logs/f60099b71ffe47f0857d731d0b2680a4",
+          "file": "stderr.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size": 0
+        }
+      }
+    },
+    {
+      "id": "a3ea4e27fd3d4ce18d0a4b56cb8b9e43",
+      "step": "original-goals-m5-components",
+      "status": "passed",
+      "argv": [
+        "node",
+        "node_modules/vitest/vitest.mjs",
+        "run",
+        "--config",
+        "vitest.config.ts",
+        "tests/components/m5-drag-drop-contracts.test.tsx",
+        "tests/components/m5-standalone-infinite-scroll.test.tsx",
+        "tests/components/navigation-extra-contracts.test.tsx",
+        "tests/components/d2-drag-upload-composition.test.tsx",
+        "tests/components/infinite-scroll-composition.test.tsx"
+      ],
+      "startedAt": "2026-10-10T06:52:30.155611Z",
+      "endedAt": "2026-10-10T06:52:35.319862Z",
+      "exitCode": 0,
+      "reason": "",
+      "inputDigest": null,
+      "logs": {
+        "stdout": {
+          "archive": "organizer/action-logs/a3ea4e27fd3d4ce18d0a4b56cb8b9e43",
+          "file": "stdout.log",
+          "sha256": "3eb3ae6fbf55b07594ee1a80954583fc6e8e691e1f6b7803fe45f1f6c0eb9221",
+          "size": 632
+        },
+        "stderr": {
+          "archive": "organizer/action-logs/a3ea4e27fd3d4ce18d0a4b56cb8b9e43",
+          "file": "stderr.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size": 0
+        }
+      }
+    },
+    {
+      "id": "85d9478497704a1e8b0314f666e762f4",
+      "step": "original-goals-m5-browser",
+      "status": "failed",
+      "argv": [
+        "node",
+        "node_modules/@playwright/test/cli.js",
+        "test",
+        "--config",
+        "playwright.m5-adjacent.config.ts",
+        "tests/browser/m5-drag-drop.spec.ts",
+        "tests/browser/m5-standalone-infinite-scroll.spec.ts",
+        "tests/browser/d2-drag-upload.spec.ts",
+        "tests/browser/infinite-scroll-composition.spec.ts",
+        "--workers=1",
+        "--retries=0"
+      ],
+      "startedAt": "2026-10-10T06:53:02.461802Z",
+      "endedAt": "2026-10-10T06:59:02.568112Z",
+      "exitCode": -1,
+      "reason": "",
+      "inputDigest": null,
+      "logs": {
+        "stdout": {
+          "archive": "organizer/action-logs/85d9478497704a1e8b0314f666e762f4",
+          "file": "stdout.log",
+          "sha256": "df321f025076b64d4a8294fbfca63dd92a10190e1d4bd2202f9d3065494556f5",
+          "size": 1390
+        },
+        "stderr": {
+          "archive": "organizer/action-logs/85d9478497704a1e8b0314f666e762f4",
+          "file": "stderr.log",
+          "sha256": "0bf04749171d96da790facf6770f8fe7c742ebc7f5c4128d17adee7b7c78aad3",
+          "size": 1150
+        }
+      }
+    },
+    {
+      "id": "4400e2bb61324cce98433c82e6a98f9a",
+      "step": "original-goals-m5-browser",
+      "status": "failed",
+      "argv": [
+        "E:\\huanJing\\Miniconda3\\data\\python.exe",
+        "D:\\m8-official-144235a\\_organizer\\original-goals-m5-browser-missing.py"
+      ],
+      "startedAt": "2026-10-10T07:02:05.069544Z",
+      "endedAt": "2026-10-10T07:04:49.585540Z",
+      "exitCode": 1,
+      "reason": "Infrastructure repair: preserve eight actual Chromium passes; run only missing Firefox and WebKit in separate 90s CLIs using one explicit server, after cleanup of exact action-owned orphan processes",
+      "inputDigest": null,
+      "logs": {
+        "stdout": {
+          "archive": "organizer/action-logs/4400e2bb61324cce98433c82e6a98f9a",
+          "file": "stdout.log",
+          "sha256": "4ebe15dff3426e4185247fd0e5ded8e4101a4420340a800afc072d52e63f97f4",
+          "size": 1195
+        },
+        "stderr": {
+          "archive": "organizer/action-logs/4400e2bb61324cce98433c82e6a98f9a",
+          "file": "stderr.log",
+          "sha256": "901c53631f2b78761d1e03d1845bf73be608831c2bf94d4cf05f49f6637427e1",
+          "size": 68
+        }
+      }
+    },
+    {
+      "id": "11422ebf11634311b62490ad032e848d",
+      "step": "original-goals-m5-browser",
+      "status": "passed",
+      "argv": [
+        "E:\\huanJing\\Miniconda3\\data\\python.exe",
+        "D:\\m8-official-144235a\\_organizer\\original-goals-m5-webkit-closeout.py"
+      ],
+      "startedAt": "2026-10-10T07:09:59.649106Z",
+      "endedAt": "2026-10-10T07:11:20.272246Z",
+      "exitCode": 0,
+      "reason": "Explicit recorded infrastructure exception original-goals-m5-webkit-diagnostic-lifecycle: only WebKit eight cases, diagnostic trace/video disabled, exact streaming identity/status contract; stop after this attempt",
+      "inputDigest": null,
+      "logs": {
+        "stdout": {
+          "archive": "organizer/action-logs/11422ebf11634311b62490ad032e848d",
+          "file": "stdout.log",
+          "sha256": "f70092652bee5d0ccad02425c3693e8616516e061fbc199353bc5a2d11fec3c3",
+          "size": 4504
+        },
+        "stderr": {
+          "archive": "organizer/action-logs/11422ebf11634311b62490ad032e848d",
+          "file": "stderr.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size": 0
+        }
+      }
+    },
+    {
+      "id": "52b8f5b42377478986caee19314d2cf8",
+      "step": "original-goals-m5-explorer-error-contract",
+      "status": "passed",
+      "argv": [
+        "node",
+        "--test",
+        "--test-name-pattern=InfiniteScroll error fixture requires",
+        "tools/personal-ui/validate-explorer-cases.test.mjs"
+      ],
+      "startedAt": "2026-10-10T06:58:15.773218Z",
+      "endedAt": "2026-10-10T06:58:16.377412Z",
+      "exitCode": 0,
+      "reason": "",
+      "inputDigest": null,
+      "logs": {
+        "stdout": {
+          "archive": "organizer/action-logs/52b8f5b42377478986caee19314d2cf8",
+          "file": "stdout.log",
+          "sha256": "b75f04916be9790e1b33d81cee139bd244034c7a5f77d8a070f67d5ca235f13b",
+          "size": 337
+        },
+        "stderr": {
+          "archive": "organizer/action-logs/52b8f5b42377478986caee19314d2cf8",
+          "file": "stderr.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size": 0
+        }
+      }
+    },
+    {
+      "id": "535e67af605142b5ae3dcfdd5fad35fa",
+      "step": "original-goals-manifest-refresh",
+      "status": "passed",
+      "argv": [
+        "E:/huanJing/Miniconda3/data/python.exe",
+        "scripts/update_component_manifest_integrity.py"
+      ],
+      "startedAt": "2026-10-10T06:51:20.793650Z",
+      "endedAt": "2026-10-10T06:51:21.108602Z",
+      "exitCode": 0,
+      "reason": "",
+      "inputDigest": "2a63e70a0678cf9bf4520e7c2cc9a44bbdf72ccd2b6584f88b878b6eae2b29b2",
+      "logs": {
+        "stdout": {
+          "archive": "organizer/action-logs/535e67af605142b5ae3dcfdd5fad35fa",
+          "file": "stdout.log",
+          "sha256": "ab65bb9fd6d6f7273d58d3673836bf963172e9c82ee4e775a8492ce8592228e3",
+          "size": 116
+        },
+        "stderr": {
+          "archive": "organizer/action-logs/535e67af605142b5ae3dcfdd5fad35fa",
+          "file": "stderr.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size": 0
+        }
+      }
+    },
+    {
+      "id": "133d2110cfff45478a6473c87d84b513",
+      "step": "original-goals-api-refresh",
+      "status": "passed",
+      "argv": [
+        "D:/nodejs/data/node.exe",
+        "tools/personal-ui/generate-api-report.mjs",
+        "--write"
+      ],
+      "startedAt": "2026-10-10T06:52:16.709017Z",
+      "endedAt": "2026-10-10T06:52:21.528233Z",
+      "exitCode": 0,
+      "reason": "",
+      "inputDigest": "86b42160cf2a586c5c7c0a4ea7d1a2617f7077858c25f80ba354be1ff766ecdd",
+      "logs": {
+        "stdout": {
+          "archive": "organizer/action-logs/133d2110cfff45478a6473c87d84b513",
+          "file": "stdout.log",
+          "sha256": "1819e051cbd7ae323da837dac3e4b605a0505750f8a813b51200474f4514f0af",
+          "size": 104
+        },
+        "stderr": {
+          "archive": "organizer/action-logs/133d2110cfff45478a6473c87d84b513",
+          "file": "stderr.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size": 0
+        }
+      }
+    },
+    {
+      "id": "89c3819622d1440788a0db2cecb50349",
+      "step": "original-goals-api-compat-refresh",
+      "status": "passed",
+      "argv": [
+        "D:/nodejs/data/node.exe",
+        "tools/personal-ui/check-api-compatibility.mjs",
+        "--write"
+      ],
+      "startedAt": "2026-10-10T06:52:22.587926Z",
+      "endedAt": "2026-10-10T06:52:27.310633Z",
+      "exitCode": 0,
+      "reason": "",
+      "inputDigest": "f501c8643d322370bdd6b96907bb149353513136882b2b18f3fe00e9812dfb57",
+      "logs": {
+        "stdout": {
+          "archive": "organizer/action-logs/89c3819622d1440788a0db2cecb50349",
+          "file": "stdout.log",
+          "sha256": "c55ff561d7648fdccaafd4c447a02ea6cd805ea7f95fe43b12f2ecb830984574",
+          "size": 104
+        },
+        "stderr": {
+          "archive": "organizer/action-logs/89c3819622d1440788a0db2cecb50349",
+          "file": "stderr.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size": 0
+        }
+      }
+    },
+    {
+      "id": "f5b7aa973198480aadef04316dc618bb",
+      "step": "original-goals-docs-refresh",
+      "status": "failed",
+      "argv": [
+        "D:/nodejs/data/node.exe",
+        "tools/personal-ui/generate-component-docs.mjs",
+        "--write"
+      ],
+      "startedAt": "2026-10-10T06:56:35.628856Z",
+      "endedAt": "2026-10-10T06:56:42.330492Z",
+      "exitCode": 1,
+      "reason": "",
+      "inputDigest": "cddae52ca53614792dc162d0410d17ff59dc42531fed04bc9eb211786acdef47",
+      "logs": {
+        "stdout": {
+          "archive": "organizer/action-logs/f5b7aa973198480aadef04316dc618bb",
+          "file": "stdout.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size": 0
+        },
+        "stderr": {
+          "archive": "organizer/action-logs/f5b7aa973198480aadef04316dc618bb",
+          "file": "stderr.log",
+          "sha256": "4b52cacbc31b8baab298b902b8d9909a7f28fdcb606651b58edf0104425c9941",
+          "size": 1141
+        }
+      }
+    },
+    {
+      "id": "f5f16abd6a144d4e8a9be75775645880",
+      "step": "original-goals-docs-refresh",
+      "status": "passed",
+      "argv": [
+        "D:/nodejs/data/node.exe",
+        "tools/personal-ui/generate-component-docs.mjs",
+        "--write"
+      ],
+      "startedAt": "2026-10-10T06:58:35.215713Z",
+      "endedAt": "2026-10-10T06:58:42.510574Z",
+      "exitCode": 0,
+      "reason": "Tooling: Explorer error-state recognizer lacked InfiniteScroll onLoadMore rejection support. Added exact reachable-rejection rule and six negative controls; named contract 52b8f5b42377478986caee19314d2cf8 passed. Runtime unchanged; preserve original failed generator output.",
+      "inputDigest": "cddae52ca53614792dc162d0410d17ff59dc42531fed04bc9eb211786acdef47",
+      "logs": {
+        "stdout": {
+          "archive": "organizer/action-logs/f5f16abd6a144d4e8a9be75775645880",
+          "file": "stdout.log",
+          "sha256": "36441c420fc3f75e05a2c29d64d5356729bbccfd9de08e8c2ce77c543a595bac",
+          "size": 73
+        },
+        "stderr": {
+          "archive": "organizer/action-logs/f5f16abd6a144d4e8a9be75775645880",
+          "file": "stderr.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size": 0
+        }
+      }
+    },
+    {
+      "id": "e7fdc65530b54c279dc239f5d246b3d1",
+      "step": "original-goals-coverage-refresh",
+      "status": "passed",
+      "argv": [
+        "E:/huanJing/Miniconda3/data/python.exe",
+        "scripts/generate_component_coverage.py",
+        "--strict"
+      ],
+      "startedAt": "2026-10-10T06:58:47.656671Z",
+      "endedAt": "2026-10-10T06:58:50.229451Z",
+      "exitCode": 0,
+      "reason": "",
+      "inputDigest": "a537b774b83e114e8a747fba05e30c956279dd714827cc84e652801c354db02c",
+      "logs": {
+        "stdout": {
+          "archive": "organizer/action-logs/e7fdc65530b54c279dc239f5d246b3d1",
+          "file": "stdout.log",
+          "sha256": "922015328cb35f45ec251bf845a38a7de6deeab05b739f5ea95eb0d03501e05d",
+          "size": 108
+        },
+        "stderr": {
+          "archive": "organizer/action-logs/e7fdc65530b54c279dc239f5d246b3d1",
+          "file": "stderr.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size": 0
+        }
+      }
+    },
+    {
+      "id": "6da5948e76344ee59fc5e578eb2ca0f1",
+      "step": "original-goals-final-types",
+      "status": "passed",
+      "argv": [
+        "D:/nodejs/data/node.exe",
+        "node_modules/typescript/bin/tsc",
+        "--noEmit"
+      ],
+      "startedAt": "2026-10-10T06:56:14.853012Z",
+      "endedAt": "2026-10-10T06:56:19.028975Z",
+      "exitCode": 0,
+      "reason": "",
+      "inputDigest": "8ef84fd403b306d1dbb5568d8ff5ade327c0e6ba4db8785ce4531ac86dc275a0",
+      "logs": {
+        "stdout": {
+          "archive": "organizer/action-logs/6da5948e76344ee59fc5e578eb2ca0f1",
+          "file": "stdout.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size": 0
+        },
+        "stderr": {
+          "archive": "organizer/action-logs/6da5948e76344ee59fc5e578eb2ca0f1",
+          "file": "stderr.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size": 0
+        }
+      }
+    },
+    {
+      "id": "9ee09c38391d4081af3bc5d07444ec31",
+      "step": "original-goals-final-build",
+      "status": "passed",
+      "argv": [
+        "D:/nodejs/data/node.exe",
+        "node_modules/vite/bin/vite.js",
+        "build"
+      ],
+      "startedAt": "2026-10-10T06:56:19.856926Z",
+      "endedAt": "2026-10-10T06:56:23.758428Z",
+      "exitCode": 0,
+      "reason": "",
+      "inputDigest": "d926220e09cd968f7edc4f3a090ceaa1a9e1300afe7798fea4e72cbf68480570",
+      "logs": {
+        "stdout": {
+          "archive": "organizer/action-logs/9ee09c38391d4081af3bc5d07444ec31",
+          "file": "stdout.log",
+          "sha256": "54a2fd616310ac7876e13ababee8c784a62bd330414a8b359be66e8b8cf4bf2f",
+          "size": 333
+        },
+        "stderr": {
+          "archive": "organizer/action-logs/9ee09c38391d4081af3bc5d07444ec31",
+          "file": "stderr.log",
+          "sha256": "ccb6bf354a0674eeb1e49df9a880a000b75240079fdb849282bb899d81eeb58c",
+          "size": 332
+        }
+      }
+    },
+    {
+      "id": "13f571739af64e27ab42bcd04aab00aa",
+      "step": "original-goals-final-provenance",
+      "status": "passed",
+      "argv": [
+        "D:/nodejs/data/node.exe",
+        "tools/personal-ui/verify-provenance.mjs",
+        "--target",
+        ".",
+        "--source-root",
+        "src/personal-ui",
+        "--manifest",
+        "component-manifest.json"
+      ],
+      "startedAt": "2026-10-10T07:01:47.836126Z",
+      "endedAt": "2026-10-10T07:01:52.576460Z",
+      "exitCode": 0,
+      "reason": "",
+      "inputDigest": "65b9714766814e1f3d13fa521e0a461c787c472232e5ec43061b29c8e01e9c1a",
+      "logs": {
+        "stdout": {
+          "archive": "organizer/action-logs/13f571739af64e27ab42bcd04aab00aa",
+          "file": "stdout.log",
+          "sha256": "256606d1215da5deab94f54e82499537ff2617437c02b790cce6333b29ff7ea1",
+          "size": 3054
+        },
+        "stderr": {
+          "archive": "organizer/action-logs/13f571739af64e27ab42bcd04aab00aa",
+          "file": "stderr.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size": 0
+        }
+      }
+    },
+    {
+      "id": "f0a5daf0970d4d318beb398ae41075e5",
+      "step": "original-goals-skill-validation",
+      "status": "passed",
+      "argv": [
+        "E:/huanJing/Miniconda3/data/python.exe",
+        "scripts/validate_skill.py",
+        "."
+      ],
+      "startedAt": "2026-10-10T07:01:14.082366Z",
+      "endedAt": "2026-10-10T07:01:29.702713Z",
+      "exitCode": 0,
+      "reason": "",
+      "inputDigest": "6f7229034c605db7fd4d27002258d24f7742af1380088150cddf17c45821823f",
+      "logs": {
+        "stdout": {
+          "archive": "organizer/action-logs/f0a5daf0970d4d318beb398ae41075e5",
+          "file": "stdout.log",
+          "sha256": "f85ae7991347a4b8461ed0693be731cd778e1f93671cd0c085a2592a28bcd3ab",
+          "size": 16
+        },
+        "stderr": {
+          "archive": "organizer/action-logs/f0a5daf0970d4d318beb398ae41075e5",
+          "file": "stderr.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size": 0
+        }
+      }
+    },
+    {
+      "id": "415ce1d718064718a7104fb1e3d3e1de",
+      "step": "original-goals-skill-format",
+      "status": "passed",
+      "argv": [
+        "E:/huanJing/Miniconda3/data/python.exe",
+        "C:/Users/XTN/.codex/skills/.system/skill-creator/scripts/quick_validate.py",
+        "."
+      ],
+      "startedAt": "2026-10-10T07:01:13.703893Z",
+      "endedAt": "2026-10-10T07:01:13.964877Z",
+      "exitCode": 0,
+      "reason": "",
+      "inputDigest": "64576e968f9951e0a7820bc2f4721aec2a3d320216339f5031be5b6aff64bfb7",
+      "logs": {
+        "stdout": {
+          "archive": "organizer/action-logs/415ce1d718064718a7104fb1e3d3e1de",
+          "file": "stdout.log",
+          "sha256": "6cf9e7f0d34ccd36dbd28f270cd28dd04277b2e1516bd4333ce7bb501d7b18d4",
+          "size": 17
+        },
+        "stderr": {
+          "archive": "organizer/action-logs/415ce1d718064718a7104fb1e3d3e1de",
+          "file": "stderr.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size": 0
+        }
+      }
+    },
+    {
+      "id": "c0f014e1901a45beb7c6640f0b5998ff",
+      "step": "original-goals-m2-react-intrinsic-key",
+      "status": "passed",
+      "argv": [
+        "python",
+        "-m",
+        "unittest",
+        "test_supported_usage_contracts.SupportedUsageContracts.test_react_intrinsic_key_is_supported_without_weakening_public_props"
+      ],
+      "startedAt": "2026-10-10T07:06:53.855457Z",
+      "endedAt": "2026-10-10T07:06:59.798006Z",
+      "exitCode": 0,
+      "reason": "",
+      "inputDigest": "189594891c3c2a77af273a53d39b3fe621ab2050bf46c2792a83d32daad5819c",
+      "logs": {
+        "stdout": {
+          "archive": "organizer/action-logs/c0f014e1901a45beb7c6640f0b5998ff",
+          "file": "stdout.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size": 0
+        },
+        "stderr": {
+          "archive": "organizer/action-logs/c0f014e1901a45beb7c6640f0b5998ff",
+          "file": "stderr.log",
+          "sha256": "5705e6e662bcf84dbac4730b58637081829e0a43e59995ce57b3f0cd07103315",
+          "size": 103
+        }
+      }
+    }
+  ],
+  "retainedExceptions": [
+    {
+      "id": "original-goals-m5-webkit-diagnostic-lifecycle",
+      "recordedAt": "2026-10-10T07:09:58.924681Z",
+      "step": "original-goals-m5-browser",
+      "classification": "infrastructure",
+      "reason": "Root-directed plan exception under current user-authorized full M5 closeout: exact inaccessible WebKit traces/resources observed; Firefox eight actual assertions finished in9s but CLI took73s (~60s diagnostic teardown). Disable trace/video only in focused developer config; no asserted behavior/axe/screenshot contract removed. Stream exact eight test-end identities/status/errors. Only WebKit, total150s, no Chromium/Firefox repeats. Preserve both original failures; if this fails, stop with concrete evidence, no further trial loop.",
+      "priorActions": [
+        "85d9478497704a1e8b0314f666e762f4",
+        "4400e2bb61324cce98433c82e6a98f9a"
+      ],
+      "previousMaxAttempts": 2,
+      "newMaxAttempts": 3,
+      "toolRevision": {
+        "E:\\huanJing\\skill\\ui-builder-xtn-github\\assets\\react-kit\\playwright.original-goals-m5.config.ts": "6ae77e08bdd21d012b6610c0057d9554b9b6a9c5dfb26ede0bb0416fef568367",
+        "D:\\m8-official-144235a\\_organizer\\original-goals-m5-browser-cleanup.py": "4bf2beddf09fa1126b9ab82dbeccc060f3d72d17b20272dd87510feffda7c523",
+        "D:\\m8-official-144235a\\_organizer\\original-goals-m5-stream-reporter.mjs": "481067a5d20b455e5a4c331a2bcce51ca6f193e1ee394ea8afbb884716f06cd9",
+        "D:\\m8-official-144235a\\_organizer\\original-goals-m5-webkit-closeout.py": "5788ca4a74ef74f1cb7117e25545f2f7e6846e5694f976f8d615dd53cf95a45d"
+      }
+    }
+  ],
+  "delivery": {
+    "target": "GitHub main",
+    "newRelease": false,
+    "existingTagAndAssetsChanged": false,
+    "note": "This dated development/evidence snapshot precedes the normal push; the Git commit and remote ref establish delivery."
+  }
+}

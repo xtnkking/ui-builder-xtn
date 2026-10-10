@@ -1266,6 +1266,11 @@ export type InfiniteScrollProps = PublicControlProps<Omit<HTMLAttributes<HTMLDiv
     rootMargin?: string;
     loadingLabel?: ReactNode;
     endLabel?: ReactNode;
+    /** Disable only when a companion LoadMore owns the keyboard command. */
+    showLoadMoreButton?: boolean;
+    loadMoreLabel?: ReactNode;
+    retryLabel?: ReactNode;
+    errorLabel?: ReactNode;
 };
 export declare function InfiniteScroll(rawProps: InfiniteScrollProps): import("react").JSX.Element;
 export type StepStatus = "complete" | "current" | "upcoming" | "error";
@@ -1810,6 +1815,10 @@ export type DragDropProps = PublicControlProps<Omit<HTMLAttributes<HTMLDivElemen
     onRejected?: (files: File[]) => void;
     disabled?: boolean;
     accept?: string;
+    multiple?: boolean;
+    /** Disable only when a companion FileUpload owns the keyboard browse command. */
+    showBrowseButton?: boolean;
+    browseLabel?: ReactNode;
     ariaLabel?: string;
 };
 export declare function DragDrop(rawProps: DragDropProps): import("react").JSX.Element;

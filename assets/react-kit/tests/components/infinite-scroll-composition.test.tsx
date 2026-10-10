@@ -48,7 +48,7 @@ describe("InfiniteScroll and LoadMore request composition", () => {
         setLoading(false);
         setHasMore(false);
       };
-      return <><InfiniteScroll hasMore={hasMore} loadKey={page} loading={loading} onLoadMore={load}><p>Existing records</p></InfiniteScroll><LoadMore hasMore={hasMore} loading={loading} onLoadMore={load} label="Load next page" /></>;
+      return <><InfiniteScroll showLoadMoreButton={false} hasMore={hasMore} loadKey={page} loading={loading} onLoadMore={load}><p>Existing records</p></InfiniteScroll><LoadMore hasMore={hasMore} loading={loading} onLoadMore={load} label="Load next page" /></>;
     }
     try {
       render(<ReactLoadingOnlyExample />);

@@ -35,7 +35,7 @@ export function DragExample() {
       disabledRef.current = event.currentTarget.checked;
       setDisabled(event.currentTarget.checked);
     }} />
-    <DragDrop accept={accept} disabled={disabled} ariaLabel="接收CSV文件" onFiles={receive} onRejected={reject}>
+    <DragDrop accept={accept} disabled={disabled} showBrowseButton={false} ariaLabel="接收CSV文件" onFiles={receive} onRejected={reject}>
       <p>将组织全部成员的跨区域结算记录文件拖放至此处，文件必须包含完整的组织标识、统计日期和访问范围。你也可以使用下面的选择文件按钮，两种入口共享同一个本地待处理清单，不执行网络上传；CSV扩展名或text/csv MIME任一匹配即可。</p>
     </DragDrop>
     <FileUpload items={items} accept={accept} disabled={disabled} onFiles={receive}
@@ -48,20 +48,31 @@ export function DragExample() {
     </InlineMessage> : null}
   </Stack>;
 }
+export function StandaloneDragExample() {
+  const [names, setNames] = useState<string[]>([]);
+  const [rejected, setRejected] = useState<string[]>([]);
+  return <Stack>
+    <DragDrop ariaLabel="CSV文件选择" accept=".csv,text/csv" onFiles={(files) => setNames(files.map((file) => file.name))} onRejected={(files) => setRejected(files.map((file) => file.name))}>
+      <p>拖放CSV文件，或按Tab进入内置选择文件按钮，使用Enter或Space打开文件选择器。</p>
+    </DragDrop>
+    <InlineMessage>已选择：{names.join("、") || "尚未选择文件"}</InlineMessage>
+    {rejected.length ? <InlineMessage tone="danger">未接收：{rejected.join("、")}</InlineMessage> : null}
+  </Stack>;
+}
 const explorerCase = {
   id: "drag/overview",
   label: "文件拖放",
-  summary: "拖放与既有官方FileUpload键盘入口共享本地清单；此案例不提供网络上传，也不改变组件自身的键盘能力。",
+  summary: "DragDrop默认内置键盘选择文件按钮，拖放和选择共用类型验证与回调；可关闭内置按钮后与FileUpload组合共享文件清单。",
   states: ["default", "disabled", "longContent", "keyboard", "dark", "locale"],
   stateExamples: [
-    { state: "default", exports: ["DragDrop"], content: <DragExample /> },
+    { state: "default", exports: ["DragDrop"], content: <StandaloneDragExample /> },
     { state: "disabled", exports: ["DragDrop"], content: <DragDrop ariaLabel="禁用文件拖放" disabled onFiles={() => undefined}><p>上传策略已锁定。</p></DragDrop> },
     { state: "longContent", exports: ["DragDrop"], content: <DragExample /> },
-    { state: "keyboard", exports: ["DragDrop"], content: <DragExample />, instructions: "用Tab聚焦FileUpload的选择CSV文件按钮，按Enter打开文件选择器；通过这个既有官方组合提供替代操作。此项是人工入口，不是DragDrop独立键盘能力的声明。" },
+    { state: "keyboard", exports: ["DragDrop"], content: <StandaloneDragExample />, instructions: "Tab进入DragDrop内置按钮，Enter或Space选择文件；区域和隐藏文件输入不额外占用Tab位置。" },
     { state: "dark", exports: ["DragDrop"], content: <StatePreview state="dark"><DragExample /></StatePreview> },
     { state: "locale", exports: ["DragDrop"], content: <StatePreview state="locale"><DragExample /></StatePreview> },
   ],
-  content: <DragExample />,
-  code: `// 完整共享队列、拒绝反馈和禁用逻辑见本案例的 DragExample。\n<DragDrop accept={accept} disabled={disabled} onFiles={receive} onRejected={reject}>拖放CSV到这里</DragDrop>\n<FileUpload items={items} accept={accept} disabled={disabled} onFiles={receive} onRejected={(rejections) => reject(rejections.map((entry) => entry.file))} onRemove={remove} />`,
+  content: <StandaloneDragExample />,
+  code: `<DragDrop accept=".csv,text/csv" onFiles={receive} onRejected={reject}>拖放CSV到这里，或使用内置选择文件按钮</DragDrop>\n// 与FileUpload共享队列时，显式设置showBrowseButton={false}，只保留一个选择入口。`,
 } satisfies ExplorerCase;
 export default explorerCase;

@@ -4,7 +4,9 @@
 
 它不是一份只靠提示词约束的视觉规范。Personal UI 源码、公开导出、组件清单、安装器和来源校验器组成同一个闭环：使用者提出功能后，页面中的控件必须直接使用本仓库提供的组件代码。
 
-当前版本的改动见 [CHANGELOG.md](CHANGELOG.md)。
+最新公开版本为 [v0.3.1](https://github.com/xtnkking/ui-builder-xtn/releases/tag/v0.3.1)，已于 2026-10-10 发布并完成公开附件的干净安装核验。`main` 的后续开发与该不可变发行版分开记录，具体改动见 [CHANGELOG.md](CHANGELOG.md)。
+
+M1–M8 的当前交付范围、原目标差异和验收依据见 [目标收口记录](references/m1-m8-closeout.md)。该记录明确区分已发布成果与新增的 M2/M5 原目标、M8 全矩阵工作，避免用历史阶段表误判当前状态。
 
 ## 强制源码模式
 
@@ -13,10 +15,10 @@
 - 业务代码只能从 `src/personal-ui/index.ts` 的公开 barrel 导入运行时组件和页面模式。
 - 目标项目不得临时仿写控件、深层导入实现文件、修改已安装组件、添加本地扩展，或用第三方 JSX 组件绕开 Personal UI。
 - `component-manifest.json` 将 119 个基础、组件和页面模式家族以及 130 个目录别名绑定到真实源文件，并覆盖 142 个 runtime export。
-- `component-manifest.json` 还保存全部 41 个 managed source 文件的 SHA-256，任何缺失、修改或额外文件都会失败。
+- `component-manifest.json` 还保存全部 42 个 managed source 文件的 SHA-256，任何缺失、修改或额外文件都会失败。
 - 安装器会把固定的 `verify:personal-ui` 直接前置到现有 `build` 命令，同时保留调用方自己的 `prebuild`；npm、pnpm 或 Yarn 的常规 build 都必须先通过源码完整性和组件来源门禁。
 - 校验器扫描项目中的脚本、JSX/TSX、MDX、HTML、CSS、PostCSS、SCSS、Sass 和 Less，并识别实际使用的公开导出；不需要靠人工列出组件，也没有允许源码漂移的绕过开关。
-- 业务样式可以负责非交互布局和文档允许的主题 token，但不能用通用控件选择器、私有 `.pui-*` / `data-pui-*` 选择器、CSS-in-JS 包装、预处理器注入、动态 `<style>`、外部全局样式、DOM/CSSOM 修改，或受保护组件的 `className`、`style`、`css`、`sx`、`tw`、`ref`、spread props / `cloneElement` 改写组件皮肤和几何。
+- 业务样式可以负责非交互布局和文档允许的主题 token，但不能用通用控件选择器、私有 `.pui-*` / `data-pui-*` 选择器、CSS-in-JS 包装、预处理器注入、动态 `<style>`、外部全局样式、DOM/CSSOM 修改，或受保护组件的 `className`、`style`、`css`、`sx`、`tw`、`ref` / `cloneElement` 改写组件皮肤和几何。类型可解析的安全公共属性展开走同一门禁，不能借展开注入这些覆盖属性；具体见集成指南。
 
 业务代码仍然可以负责数据请求、状态、文案、产品图片、非交互布局和文档允许的 token 配置。按钮、输入、选择、导航、反馈、弹层、数据展示和复用页面模式必须由 Personal UI 公开组件负责。
 
@@ -40,7 +42,9 @@
 
 ## v0.3.0 优化路线图
 
-本仓库包含 M0–M6 的本地验收成果，以及 M7 的模块边界、CSS 门禁、安装/升级事务和发布编排器；MIT License 与 lockfile 中 226 个依赖的第三方清单也已收口。hosted workflow 收集 8 个支持 fixture、三引擎版本和 system Safari 18+ 的原始证据。M8 提供六类独立消费需求、候选隔离投影、真实场景质量记录、追加式证据和严格的验收聚合器。完整范围与验收条件见 [v0.3.0 Hardening Roadmap](references/v0.3.0-roadmap.md)，评估隔离规则见 [M8 独立评估协议](references/m8-evaluation-protocol.md)，执行顺序见 [M4–M8 完整实施与交接计划](references/v0.3.0-m4-m8-execution-plan.md)。这些源码文档是候选冻结时的计划快照；M7/M8 的正式完成与公开发布状态，应核对同一冻结 RC 绑定的 hosted bundle、M8 acceptance bundle、发布 journal、不可变 tag 和 GitHub Release，不能由本文或旧候选结果推断。当前 142 个 runtime export 的入口见生成的 [组件目录](references/component-catalog.md) 与 [组件 API](references/component-api.md)。源码权威与兼容范围见 [源码权威与支持政策](references/source-authority.md) 和 [支持矩阵](references/support-matrix.json)。`v0.2.19` 是不可变迁移基线；候选版本在隔离 staging 中生成，公开发布须由精确 stable `planDigest` 授权。
+M1–M7 的工程成果与 M8 的独立消费、迁移、质量和公开交付流程已随 v0.3.1 发布。恢复原目标后的新增实现和全矩阵结果集中记录在 [目标收口记录](references/m1-m8-closeout.md)，不再用旧阶段快照表示当前交付状态。
+
+原始范围见 [Hardening Roadmap](references/v0.3.0-roadmap.md)，评估隔离规则见 [M8 独立评估协议](references/m8-evaluation-protocol.md)，执行分解见 [M4–M8 实施计划](references/v0.3.0-m4-m8-execution-plan.md)。当前 142 个 runtime export 的入口见 [组件目录](references/component-catalog.md) 与 [组件 API](references/component-api.md)；兼容范围见 [源码权威与支持政策](references/source-authority.md) 和 [支持矩阵](references/support-matrix.json)。`v0.2.19` 保留为不可变迁移基线。
 
 ## 环境要求
 

@@ -15,8 +15,8 @@
   "current": {
     "packageName": "personal-ui",
     "version": "0.3.1",
-    "apiDigest": "1ed719fdedb214ee512888ca95ff108382cb961e36ddc60c7f43a3149e39d129",
-    "compatibilityDigest": "d2ea6cf8775ba754acd32f102c3d558204a4801a111cd19df16e3e83192bb6c4",
+    "apiDigest": "c171ad2d0ac942eed567dd881c97c6aa4621f6930fa981e702b3a4e0346a9812",
+    "compatibilityDigest": "2d2d91e26ac73419e2d0e065727d9320faa28102b3f7998a2cf168b0bbae9a15",
     "runtimeExports": 142,
     "typeOnlyExports": 228,
     "publicSignatures": 370
@@ -598,14 +598,14 @@
           "baselineKind": "runtime",
           "currentKind": "runtime",
           "baselineHash": "ee27cea7f8bce2d72781c669407b3cf79fca227bc0a2c84acbc8c46e3a1ec173",
-          "currentHash": "a0956c7ee004daedd797273bc39f4cb99f03e591065677993a5ca5a762676481"
+          "currentHash": "0eff1758b45a9192ba5ba6d59736c89b21445225830477ec6cbde418cdf0e514"
         },
         {
           "id": "DragDropProps",
           "baselineKind": "type",
           "currentKind": "type",
           "baselineHash": "7783928d6c27ffa01273b1218675a12c7ad2020bc0361986e05e0626ad5f4f7d",
-          "currentHash": "b9cae754a394aac0d2e9eb71c602fc4924f1fa200f79a83ad06b3109500638d6"
+          "currentHash": "63652aadd970d713ff71b78085009b517b714bba4c1a7c22f3968e1b982aa478"
         },
         {
           "id": "Drawer",
@@ -808,14 +808,14 @@
           "baselineKind": "runtime",
           "currentKind": "runtime",
           "baselineHash": "1831bbd8698f85918a4c2403f683c7c02febb0ac99d3a1bd570a68507df773ac",
-          "currentHash": "9a67ff4f6952f219430c7805635ebca0f129990272e868e176f248fc077737f5"
+          "currentHash": "458a3ff9c1e755a6c6b0903a35f2174b1b178b32dd2354cb36ddb77e14720d9f"
         },
         {
           "id": "InfiniteScrollProps",
           "baselineKind": "type",
           "currentKind": "type",
           "baselineHash": "70f8544f5ef445c8c007d68d9404ab3cc77f8d3d376e0bf9afa95a75bacde38e",
-          "currentHash": "aa51e0111183c121971a213d9ee39915bceccbd766fa3afd73ff20514b1167fe"
+          "currentHash": "505f1f163fd66d04c36b2a6fe5dd66987ca24562fb37b1381afc37419c754c92"
         },
         {
           "id": "InlineEdit",

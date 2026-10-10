@@ -30,6 +30,7 @@ BUNDLED_SOURCE_ROOT = ASSET_ROOT / "src" / "personal-ui"
 REGISTRY_PATH = ASSET_ROOT / "registry.json"
 COMPONENT_MANIFEST_PATH = ASSET_ROOT / "component-manifest.json"
 PROVENANCE_TOOL_PATH = ASSET_ROOT / "tools" / "personal-ui" / "verify-provenance.mjs"
+TYPED_USAGE_TOOL_PATH = ASSET_ROOT / "tools" / "personal-ui" / "typed-usage.mjs"
 INSTALLED_TOOL_ROOT = Path("tools") / "personal-ui"
 PROVENANCE_SCRIPT_NAME = "verify:personal-ui"
 COMPONENT_SELECTOR = re.compile(r"(?<![\w-])\.pui-[\w-]+")
@@ -484,6 +485,9 @@ def validate_project_path_integrity(target: Path, source_root: Path) -> list[str
         "installed Personal UI provenance verifier": target
         / INSTALLED_TOOL_ROOT
         / "verify-provenance.mjs",
+        "installed Personal UI public prop analyzer": target
+        / INSTALLED_TOOL_ROOT
+        / "typed-usage.mjs",
         "legacy Personal UI registry": target / "registry.json",
     }
     safe_paths: set[Path] = set()
@@ -521,6 +525,7 @@ def validate_bundled_path_integrity() -> list[str]:
         ("registry", REGISTRY_PATH),
         ("component manifest", COMPONENT_MANIFEST_PATH),
         ("provenance verifier", PROVENANCE_TOOL_PATH),
+        ("public prop analyzer", TYPED_USAGE_TOOL_PATH),
     ):
         if is_link_like(path):
             errors.append(
@@ -1808,6 +1813,8 @@ def inspect_component_style_overrides(
     namespaces: set[str],
     protected_exports: set[str],
     errors: list[str],
+    typed_usage: dict[int, dict[str, object]] | None = None,
+    typed_calls: dict[str, dict[str, object]] | None = None,
 ) -> None:
     aliases = dict(aliases)
     component_wrapper_factories: set[str] = set()
@@ -1918,7 +1925,7 @@ def inspect_component_style_overrides(
         code_name: str = "PUI_COMPONENT_STYLE_OVERRIDE",
     ) -> None:
         line = source_line(source, offset)
-        key = (line, exported, code_name)
+        key = (offset, exported, code_name)
         if key in seen:
             return
         seen.add(key)
@@ -1933,6 +1940,34 @@ def inspect_component_style_overrides(
                 f"uses {reason}, which bypasses bundled component appearance "
                 "or ownership"
             )
+
+    # The Node build gate and Python installation verifier deliberately share
+    # the same TypeScript AST/type analysis. Regex discovers ownership aliases;
+    # it no longer guesses the contents of a spread.
+    typed_offsets: list[int] = []
+    for reference, _exported in references:
+        typed_offsets.extend(
+            match.start() for match in re.finditer(
+                rf"<\s*{reference}(?=[\s/><])", jsx_code
+            )
+        )
+    typed_results: dict[int, dict[str, object]] = typed_usage if typed_usage is not None else {}
+    if (typed_offsets or references) and typed_usage is None:
+        helper = TYPED_USAGE_TOOL_PATH
+        try:
+            result = subprocess.run(
+                [shutil.which("node") or "node", str(helper)],
+                input=json.dumps({"target": str(target), "file": str(path), "source": source, "offsets": typed_offsets, "allCalls": True}),
+                capture_output=True, text=True, encoding="utf-8", timeout=60,
+                check=False,
+            )
+            payload = json.loads(result.stdout)
+            if result.returncode or not isinstance(payload, dict) or "jsx" not in payload:
+                raise ValueError(str(payload))
+            typed_results = dict(zip(typed_offsets, payload["jsx"]))
+            typed_calls = payload["calls"]
+        except (OSError, ValueError, subprocess.SubprocessError) as error:
+            errors.append(f"{relative} [PUI_PUBLIC_PROP_TYPE] public prop analysis unavailable: {error}")
 
     for reference, exported in references:
         pattern = re.compile(rf"<\s*{reference}(?=[\s/><])")
@@ -1951,8 +1986,12 @@ def inspect_component_style_overrides(
             offending.extend(
                 non_static_reserved_jsx_attributes(opening_source, attributes)
             )
-            if any(attribute.spread for attribute in attributes):
-                offending.append("spread props")
+            typed = typed_results.get(match.start(), {})
+            if typed.get("spread"):
+                offending.append("spread props: " + str(typed["spread"]))
+            if not offending:
+                for message in typed.get("types", []):
+                    errors.append(f"{relative}:{source_line(source, match.start())} [PUI_PUBLIC_PROP_TYPE] invalid public props on {exported}: {message}")
             if not offending:
                 continue
             report(
@@ -2101,7 +2140,10 @@ def inspect_component_style_overrides(
             return
         ranges = call_argument_ranges(code, opening_parenthesis)
         argument_range = ranges[props_index] if len(ranges) > props_index else None
-        reason = protected_props_override(source, code, argument_range)
+        typed = (typed_calls or {}).get(f"{opening_parenthesis}:{props_index}")
+        reason = typed.get("spread") if typed is not None else protected_props_override(source, code, argument_range)
+        for message in (typed or {}).get("types", []):
+            errors.append(f"{relative}:{source_line(source, opening_parenthesis)} [PUI_PUBLIC_PROP_TYPE] invalid public call props on {exported}: {message}")
         if reason:
             offset = argument_range[0] if argument_range else opening_parenthesis
             report(offset, exported, reason, syntax)
@@ -3011,6 +3053,34 @@ def inspect_application_usage(
                 if namespace:
                     namespaces.setdefault(normalized_path, set()).add(namespace)
 
+    # Resolve application modules once and share one TypeScript program across
+    # files. Creating a compiler process for every form/control would turn the
+    # install check into a repeated project compilation.
+    typed_requests = []
+    for path, (raw_text, _code, _mask) in script_records.items():
+        offsets = [match.start() for match in re.finditer(
+            r"<\s*[A-Za-z_$][\w$]*(?:\s*\.\s*[A-Za-z_$][\w$]*)?(?=[\s/><])",
+            jsx_boundary_code(raw_text),
+        )]
+        typed_requests.append({"file": str(path), "source": raw_text, "offsets": offsets})
+    typed_by_file: dict[Path, dict[int, dict[str, object]]] = {}
+    calls_by_file: dict[Path, dict[str, dict[str, object]]] = {}
+    if typed_requests:
+        try:
+            result = subprocess.run(
+                [shutil.which("node") or "node", str(TYPED_USAGE_TOOL_PATH)],
+                input=json.dumps({"target": str(target), "requests": typed_requests, "allCalls": True}),
+                capture_output=True, text=True, encoding="utf-8", timeout=120, check=False,
+            )
+            payload = json.loads(result.stdout)
+            if result.returncode or not isinstance(payload, list) or len(payload) != len(typed_requests):
+                raise ValueError(str(payload))
+            typed_by_file = {Path(request["file"]): dict(zip(request["offsets"], findings["jsx"]))
+                             for request, findings in zip(typed_requests, payload)}
+            calls_by_file = {Path(request["file"]): findings["calls"] for request, findings in zip(typed_requests, payload)}
+        except (OSError, ValueError, subprocess.SubprocessError) as error:
+            errors.append(f"[PUI_PUBLIC_PROP_TYPE] application public prop analysis unavailable: {error}")
+
     for path, (raw_text, code, _mask) in script_records.items():
         inspect_component_style_overrides(
             target,
@@ -3021,6 +3091,8 @@ def inspect_application_usage(
             namespaces.get(path, set()),
             style_protected_exports,
             errors,
+            typed_by_file.get(path, {}),
+            calls_by_file.get(path, {}),
         )
 
     known_paths = set(import_specifiers)
@@ -3401,6 +3473,12 @@ def main() -> int:
             PROVENANCE_TOOL_PATH,
             installed_provenance_tool_path,
             label="provenance verifier",
+            errors=errors,
+        ),
+        "publicPropAnalyzer": compare_installed_support_file(
+            TYPED_USAGE_TOOL_PATH,
+            target / INSTALLED_TOOL_ROOT / "typed-usage.mjs",
+            label="public prop analyzer",
             errors=errors,
         ),
     }

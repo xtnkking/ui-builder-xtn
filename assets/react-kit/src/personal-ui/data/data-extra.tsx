@@ -1119,6 +1119,10 @@ export type DragDropProps = PublicControlProps<Omit<
   onRejected?: (files: File[]) => void;
   disabled?: boolean;
   accept?: string;
+  multiple?: boolean;
+  /** Disable only when a companion FileUpload owns the keyboard browse command. */
+  showBrowseButton?: boolean;
+  browseLabel?: ReactNode;
   ariaLabel?: string;
 };
 
@@ -1131,6 +1135,9 @@ export function DragDrop(rawProps: DragDropProps) {
     onRejected,
     disabled,
     accept,
+    multiple = true,
+    showBrowseButton = true,
+    browseLabel = message("upload.browse"),
     ariaLabel = message("dragDrop.label"),
     onDragEnter,
     onDragOver,
@@ -1139,16 +1146,22 @@ export function DragDrop(rawProps: DragDropProps) {
     ...rootProps
   } = safeProps;
   const [active, setActive] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const selectFiles = (incoming: File[]) => {
+    if (disabled) return;
+    const accepted: File[] = [];
+    const rejected: File[] = [];
+    incoming.forEach((file) => {
+      if (!matchesFileAccept(file, accept) || (!multiple && accepted.length > 0)) rejected.push(file);
+      else accepted.push(file);
+    });
+    if (accepted.length) onFiles(accepted);
+    if (rejected.length) onRejected?.(rejected);
+  };
   const readFiles = (event: DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     setActive(false);
-    if (!disabled) {
-      const accepted: File[] = [];
-      const rejected: File[] = [];
-      Array.from(event.dataTransfer.files).forEach((file) => (matchesFileAccept(file, accept) ? accepted : rejected).push(file));
-      if (accepted.length) onFiles(accepted);
-      if (rejected.length) onRejected?.(rejected);
-    }
+    selectFiles(Array.from(event.dataTransfer.files));
     onDrop?.(event);
   };
   return (
@@ -1177,6 +1190,13 @@ export function DragDrop(rawProps: DragDropProps) {
       data-pui-owner="DragDrop"
     >
       {children}
+      {showBrowseButton ? <>
+        <Button size="small" disabled={disabled} onClick={() => inputRef.current?.click()}>{browseLabel}</Button>
+        <input ref={inputRef} className="pui-drag-drop__native" type="file" accept={accept} multiple={multiple} disabled={disabled} tabIndex={-1} aria-hidden="true" onChange={(event) => {
+          selectFiles(Array.from(event.currentTarget.files ?? []));
+          event.currentTarget.value = "";
+        }} />
+      </> : null}
     </div>
   );
 }

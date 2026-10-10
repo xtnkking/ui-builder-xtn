@@ -216,6 +216,7 @@
 .pui-drag-drop { min-width: 0; transition: background-color 130ms ease, outline-color 130ms ease; }
 .pui-drag-drop.is-active { outline: 2px solid var(--pui-focus-ring); outline-offset: -2px; background: var(--pui-primary-soft); }
 .pui-drag-drop[data-disabled] { opacity: .58; }
+.pui-drag-drop__native { display: none; }
 
 .pui-sortable { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
 .pui-sortable > li { display: grid; grid-template-columns: 20px minmax(0, 1fr) auto; align-items: center; gap: 8px; min-height: 46px; padding: 5px 7px; border: 1px solid var(--pui-border); border-radius: var(--pui-radius-control); background: var(--pui-surface); }

@@ -681,6 +681,7 @@ function realizesState(state, instance, declarations, instructions) {
     || (exportName === "Stepper" && containsValue(value("steps"), (item) => item && typeof item === "object" && item.status === "error"))
     || (exportName === "StatusPage" && ["error", "permission", "offline"].includes(value("kind")))
     || (exportName === "AsyncAction" && rejectedAction("onAction"))
+    || (exportName === "InfiniteScroll" && truthy("hasMore") && !truthy("disabled") && !truthy("loading") && rejectedAction("onLoadMore"))
     || (exportName === "FamilyLoginPage" && rejectedAction("onSubmit"))
     || (exportName === "MemberManagementPage" && rejectedAction("fetchMembers"))
     || (exportName === "ToastProvider" && Boolean(instructions?.trim()) && instance.toastCommands.some((command) =>

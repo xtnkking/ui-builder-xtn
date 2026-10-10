@@ -4,7 +4,15 @@ This is an implementation audit of the `0.2.19` working tree on 2026-09-21 durin
 
 Decisions below are deliberately narrow: **implement** repairs a public behavior already implied by the API; **limit** states an actual supported mode without inventing a feature; **rename/migrate** resolves an overstated public name with compatibility and migration evidence. **Pending** means a specified gap remains, not that every part of the export is unfinished. A dedicated fixture is not a representative consumer example; cross-engine evidence is qualified where only focused reruns exist. No entry authorizes a consumer-side imitation or a new backend.
 
-The table retains its 2026-09-21 audit findings, including historical missing-example notes. Current official file and loading compositions are described in the [2026-10-09 addendum](#official-composition-addendum-2026-10-09); their source and new evidence are tracked separately from the original component results.
+The table retains its 2026-09-21 audit findings, including historical missing-example notes. Official file and loading compositions added on 2026-10-09 are described in the [composition addendum](#official-composition-addendum-2026-10-09). The subsequent standalone capability restoration below supersedes the table's historical drop-only/observer-only limits; source and new evidence remain distinct from the original component results.
+
+## Standalone keyboard capability restoration (2026-10-10)
+
+Main development now restores the original M5 standalone requirement. `DragDrop` owns a canonical browse Button and native file chooser by default, applies the same accept/multiple/disabled and rejection path to chosen and dropped files, and resets its native picker so the same file may be chosen again. `showBrowseButton={false}` is the explicit composition mode when FileUpload owns that command.
+
+`InfiniteScroll` owns a canonical manual Button by default. Keyboard and observer activations share a synchronous in-flight latch and cursor identity; rejected loads retain content and expose a manual retry, while automatic observation stays stopped for that failed key. `showLoadMoreButton={false}` retains the external LoadMore composition. Request transport, cursor advancement and rendered data remain caller-owned. There is no new upload backend, request cache or variable-height virtualization claim.
+
+Current focused evidence and acceptance status are recorded in [M1–M8 closeout](m1-m8-closeout.md); the dated tables and composition receipts below retain their original scope.
 
 ## M5-06 Named Exports
 
@@ -60,7 +68,7 @@ The [keyboard contract](m5-keyboard-contracts.md#official-compositions-d2d3-2026
 ## Priority For Remaining M5-06 Work
 
 1. **Implemented narrow capability corrections:** `VirtualList` fixed `itemSize` and bounded/focus/tail behavior, `TreeTable` semantic-table disclosure/retry, `DragDrop.accept` filtering/rejection, `SortableList` contextual actions/status, `InlineEdit` focus/reset, and the `MarkdownEditor` migration have source and focused evidence. API, compatibility, coverage and Manifest artifacts were refreshed at the M5 boundary.
-2. **Deliberate limits:** `DragDrop` is drop-only, `InfiniteScroll` is observer-only, `FileUpload` delegates network transport, and `TreeTable` is not a treegrid. Their names and usage guidance must retain those boundaries; these are not missing implementations to paper over in consumer CSS.
+2. **Historical deliberate limits:** the 2026-09-21 drop-only DragDrop and observer-only InfiniteScroll limits are superseded by the standalone restoration above. FileUpload still delegates network transport and TreeTable is still a semantic table rather than a treegrid. Consumer CSS cannot add or replace these component-owned behaviors.
 3. **M6 ownership:** Dedicated M5 React fixtures establish the keyboard and state contracts. The separate searchable explorer, comprehensive consumer examples, generated API pages and locale work remain M6; do not mark them done here. `LoadMore`, `MultiSelect`, `TagInput`, `BarChart`, and `Gallery` retain their documented adjacent limits and coverage gaps without claiming they were fully redesigned in M5.
 
 This table is an audit, not a substitute for the [keyboard contract](m5-keyboard-contracts.md), the focused M5 verification record, or the M6 explorer.

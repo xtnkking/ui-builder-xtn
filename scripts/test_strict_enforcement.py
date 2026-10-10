@@ -202,14 +202,21 @@ def python_jsx_boundary_findings(files: dict[str, str]) -> tuple[list[str], set[
     aliases = {name: name for name in public}
     errors: list[str] = []
     used: set[str] = set()
-    for relative, source in files.items():
-        code = verifier["masked_code"](source, verifier["code_position_mask"](source))
-        verifier["inspect_component_style_overrides"](
-            SKILL_ROOT, SKILL_ROOT / relative, source, code, aliases, set(), protected, errors,
-        )
-        used.update(verifier["runtime_usages"](
-            code, aliases, set(), public, jsx_code=verifier["jsx_boundary_code"](source),
-        ))
+    with tempfile.TemporaryDirectory(prefix="pui-python-boundary-") as temporary:
+        target = Path(temporary)
+        shutil.copytree(MANAGED_SOURCE, target / "src/personal-ui")
+        for relative, source in files.items():
+            destination = target / relative
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            destination.write_text(source, encoding="utf-8")
+        for relative, source in files.items():
+            code = verifier["masked_code"](source, verifier["code_position_mask"](source))
+            verifier["inspect_component_style_overrides"](
+                target, target / relative, source, code, aliases, set(), protected, errors,
+            )
+            used.update(verifier["runtime_usages"](
+                code, aliases, set(), public, jsx_code=verifier["jsx_boundary_code"](source),
+            ))
     return errors, used
 
 
@@ -298,8 +305,8 @@ def test_jsx_attribute_layout_slots() -> None:
 
 
 def test_jsx_attribute_direct_protected_overrides() -> None:
-    expect_issue_jsx_boundaries(
-        "a typed props object still cannot be spread onto a public control",
+    expect_valid_jsx_boundaries(
+        "a safe typed props object is accepted on a public control",
         {
             "src/App.tsx": """
                 import {Input} from './personal-ui';
@@ -313,7 +320,7 @@ def test_jsx_attribute_direct_protected_overrides() -> None:
                 />;
             """,
         },
-        "spread props",
+        {"Input"},
     )
     files = {
         "src/App.tsx": """
@@ -355,8 +362,9 @@ def test_jsx_attribute_nested_protected_overrides() -> None:
             "footer JSX remains independently inspected",
             """
                 import {Drawer, Input, Button} from './personal-ui';
-                const props = {children: 'Save'};
+                const props = {children: 'Save', style: {color: 'red'}};
                 export const App = () => <Drawer open={true} onOpenChange={() => {}}
+                  title='Details' children={<p>Details</p>}
                   footer={<div className='form-actions'>
                     <Input className='foreign-input' />
                     <Button style={{padding: 0}}>Save</Button>
@@ -375,7 +383,8 @@ def test_jsx_attribute_nested_protected_overrides() -> None:
             """
                 import {DataTable, Input} from './personal-ui';
                 const capture = () => {};
-                export const App = () => <DataTable rows={[]} columns={[]}
+            export const App = () => <DataTable<{id: string}> rows={[]} columns={[]}
+                  rowKey={(row) => row.id} ariaLabel='Members'
                   mobileRow={(row) => <div className='member-card'>
                     <Input ref={capture} />
                     <Input data-pui-owner='Consumer' />
@@ -437,8 +446,8 @@ def test_jsx_generic_public_component_boundaries() -> None:
         },
         {"DataTable"},
     )
-    expect_issue_jsx_boundaries(
-        "generic public JSX cannot bypass direct spread enforcement",
+    expect_valid_jsx_boundaries(
+        "generic public JSX accepts safe typed props",
         {
             "src/App.tsx": """
                 import {DataTable} from './personal-ui';
@@ -450,7 +459,7 @@ def test_jsx_generic_public_component_boundaries() -> None:
                 export const App = () => <DataTable<Row> {...props} />;
             """,
         },
-        "spread props",
+        {"DataTable"},
     )
     expect_issue_jsx_boundaries(
         "generic public JSX cannot bypass direct className enforcement",
@@ -550,8 +559,9 @@ def test_jsx_regex_nested_component_protection() -> None:
     source = r"""
         import {Drawer, Input, Button} from './personal-ui';
         const label = '{}';
-        const props = {children: 'Save'};
+        const props = {children: 'Save', style: {color: 'red'}};
         export const App = () => <Drawer open={true} onOpenChange={() => {}}
+          title='Details' children={<p>Details</p>}
           footer={/['{}]/.test(label) ? <div className='form-actions'>
             <Input className='foreign-input' />
             <Button {...props} />

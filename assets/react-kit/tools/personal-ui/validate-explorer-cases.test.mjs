@@ -703,6 +703,17 @@ test("recognizes upload and commit asynchronous fixtures only on owning exports"
   }
 });
 
+test("InfiniteScroll error fixture requires its reachable rejecting load callback", () => {
+  const rejecting = 'loadKey="one" onLoadMore={async () => { throw new Error("offline"); }}';
+  assert.equal(inspectSingleState("InfiniteScroll", "error", `hasMore ${rejecting}`, "加载后观察错误并重试"), true);
+  assert.equal(inspectSingleState("InfiniteScroll", "error", 'hasMore loadKey="one" onLoadMore={async () => undefined}', "加载后观察错误并重试"), false);
+  assert.equal(inspectSingleState("InfiniteScroll", "error", `hasMore disabled ${rejecting}`, "加载后观察错误并重试"), false);
+  assert.equal(inspectSingleState("InfiniteScroll", "error", `hasMore loading ${rejecting}`, "加载后观察错误并重试"), false);
+  assert.equal(inspectSingleState("InfiniteScroll", "error", `hasMore={false} ${rejecting}`, "加载后观察错误并重试"), false);
+  assert.equal(inspectSingleState("Input", "error", `hasMore ${rejecting}`, "加载后观察错误并重试"), false);
+  assert.equal(inspectSingleState("InfiniteScroll", "error", `hasMore ${rejecting}`), false);
+});
+
 test("feedback state proof belongs to the actual owner and enabled toast trigger", () => {
   const long = "实际显示的详细通知内容用于检验换行和操作布局".repeat(3);
   const cases = [

@@ -23,4 +23,42 @@ describe("DragDrop file acceptance", () => {
     expect(onFiles).not.toHaveBeenCalled();
     expect(onRejected).not.toHaveBeenCalled();
   });
+
+  it("owns one browse command and uses the same accept and single-file policy for selection and drop", () => {
+    const onFiles = vi.fn();
+    const onRejected = vi.fn();
+    const view = render(<DragDrop ariaLabel="Drop target" accept=".csv,text/csv" multiple={false} onFiles={onFiles} onRejected={onRejected}>Files</DragDrop>);
+    const input = view.container.querySelector<HTMLInputElement>("input[type=file]")!;
+    expect(screen.getAllByRole("button")).toHaveLength(1);
+    expect(input).toHaveAttribute("tabindex", "-1");
+    expect(input).toHaveAttribute("aria-hidden", "true");
+    expect(input).not.toHaveAttribute("multiple");
+    const suffix = new File(["a"], "a.csv", { type: "text/plain" });
+    const mime = new File(["b"], "b.txt", { type: "text/csv" });
+    const denied = new File(["c"], "c.png", { type: "image/png" });
+    fireEvent.change(input, { target: { files: [denied, suffix, mime] } });
+    expect(onFiles).toHaveBeenLastCalledWith([suffix]);
+    expect(onRejected).toHaveBeenLastCalledWith([denied, mime]);
+    expect(input).toHaveValue("");
+    fireEvent.change(input, { target: { files: [suffix] } });
+    expect(onFiles).toHaveBeenCalledTimes(2);
+    fireEvent.drop(screen.getByRole("group", { name: "Drop target" }), { dataTransfer: { files: [denied, suffix, mime] } });
+    expect(onFiles).toHaveBeenLastCalledWith([suffix]);
+    expect(onRejected).toHaveBeenLastCalledWith([denied, mime]);
+  });
+
+  it("blocks forced file changes while disabled and can explicitly delegate browse without a duplicate command", () => {
+    const onFiles = vi.fn();
+    const onRejected = vi.fn();
+    const view = render(<DragDrop disabled onFiles={onFiles} onRejected={onRejected}>Files</DragDrop>);
+    expect(screen.getByRole("button")).toBeDisabled();
+    const input = view.container.querySelector<HTMLInputElement>("input[type=file]")!;
+    expect(input).toBeDisabled();
+    fireEvent.change(input, { target: { files: [new File(["a"], "one.csv")] } });
+    expect(onFiles).not.toHaveBeenCalled();
+    expect(onRejected).not.toHaveBeenCalled();
+    view.rerender(<DragDrop showBrowseButton={false} onFiles={onFiles}>Files</DragDrop>);
+    expect(screen.queryByRole("button")).toBeNull();
+    expect(view.container.querySelector("input[type=file]")).toBeNull();
+  });
 });

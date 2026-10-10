@@ -142,17 +142,30 @@ Do not deep-import an implementation file:
 import { Button } from "./personal-ui/primitives";
 ```
 
-Application code may own business state, data fetching, copy, product images, and non-interactive semantic layout. It must not add native protected controls, interactive ARIA roles, locally styled lookalikes, third-party JSX controls, `.pui-*` selectors, reserved `data-pui-*` markers, generic CSS selectors that can restyle protected controls, protected-selector mixins or `@apply`, JSX `<style>`, remote/package-global CSS, CSS-in-JS wrappers, or DOM/CSSOM style mutation. Protected Personal UI components must not receive application `className`, `style`, `css`, `sx`, `tw`, `ref`, or spread props through JSX, factories, runtime JSX calls, aliases, or `cloneElement`; put layout classes on a surrounding element or use a manifest-classified layout utility. A local wrapper is acceptable only when it composes public Personal UI exports without implementing or restyling a replacement control.
+Application code may own business state, data fetching, copy, product images, and non-interactive semantic layout. It must not add native protected controls, interactive ARIA roles, locally styled lookalikes, third-party JSX controls, `.pui-*` selectors, reserved `data-pui-*` markers, generic CSS selectors that can restyle protected controls, protected-selector mixins or `@apply`, JSX `<style>`, remote/package-global CSS, CSS-in-JS wrappers, or DOM/CSSOM style mutation. Protected Personal UI components must not receive application `className`, `style`, `css`, `sx`, `tw`, `ref`, or hidden ownership overrides through JSX, factories, runtime JSX calls, aliases, or `cloneElement`; put layout classes on a surrounding element or use a manifest-classified layout utility. Safe typed JSX spreads follow the compiler-backed contract below. A local wrapper is acceptable only when it composes public Personal UI exports without implementing or restyling a replacement control.
 
 Respect the target's existing package manager and project-root lockfile. Run the exact install and build commands from `plan.commands` after the installer updates `package.json`; the installer deliberately does not execute them inside its file transaction.
 
 ## Supported Public Usage
 
-Delivery requires two gates: TypeScript checks public prop types and controlled-state combinations; provenance checks public component ownership and customization policy. Neither result substitutes for the other. Explicit public props are supported. JSX spread is deliberately unsupported even when the spread object satisfies a public Props type; do not describe it as a TypeScript error or claim all valid TypeScript programs are accepted by provenance.
+Delivery requires TypeScript and provenance. TypeScript checks the whole application; provenance checks component ownership and also uses the same TypeScript compiler to check public JSX and factory-call prop types. Safe JSX spreads are supported, including object literals, `satisfies`, named public Props annotations, aliases, imported objects, typed function results and parameters, bounded generics, unions, nested spreads and generic public JSX. The same analysis accepts inspected prop objects in `React.createElement` and JSX-runtime calls, and checks their public component prop types even when the factory's own overload is loose. Python installation verification and the Node build gate share `tools/personal-ui/typed-usage.mjs`, with one compiler program per project.
+
+```tsx
+import { Button, type ButtonProps } from "./personal-ui";
+
+const saveProps = { variant: "primary", children: "Save" } satisfies ButtonProps;
+export function SaveAction(props: ButtonProps) {
+  return <Button {...saveProps} {...props} />;
+}
+```
+
+This restores equivalent prop syntax within the public ownership contract; it is not a promise that every arbitrary TypeScript program is safe. The gate rejects `any`/`unknown`, unbounded generics, open index signatures, unresolvable computed keys and observable protected or unknown keys. It follows available declarations/initializers and local factory returns so widening or asserting an object to a public Props type cannot conceal a known `style`, `ref` or ownership override. Third-party declaration files remain trusted type contracts, as they are for TypeScript itself; type assertions, diagnostic suppression and runtime mutation do not prove arbitrary runtime soundness. Source ownership, forbidden native controls and protected selectors are still enforced independently. A `PUI_PUBLIC_PROP_TYPE` error is a real public JSX type diagnostic; a protected/opaque spread rejection is an ownership diagnostic.
+
+React's `key` is supported in JSX and factory prop spreads using the installed `React.JSX.IntrinsicAttributes` type, including a props object containing only `key`. Invalid object/boolean keys remain type errors; `ref` and styling escapes remain forbidden.
 
 Use `controllerField` for a form-library binding, explicit `value` and the documented callback for controlled controls, `defaultValue` for uncontrolled controls, and a limited `controlRef` for focus or validity. Unknown hyphenated JSX attributes have special TypeScript rules; provenance continues to enforce reserved ownership attributes beyond those named in the public types.
 
-The complete [supported usage example](../assets/react-kit/tests/fixtures/supported-public-usage.tsx) includes its imports, state, form-library controller, options, focus handle and save callback. It is compiled by the type contracts and tested byte-for-byte (apart from its barrel import path) by `scripts/test_supported_usage_contracts.py`. The [type fixture](../assets/react-kit/tests/types/supported-usage-contracts.test-d.tsx) intentionally also demonstrates a type-correct spread that the ownership gate rejects.
+The complete [supported usage example](../assets/react-kit/tests/fixtures/supported-public-usage.tsx) includes its imports, state, form-library controller, options, focus handle and save callback. It is compiled by the type contracts and tested byte-for-byte (apart from its barrel import path) by `scripts/test_supported_usage_contracts.py`. The [type fixture](../assets/react-kit/tests/types/supported-usage-contracts.test-d.tsx) and focused provenance contracts cover accepted typed spreads alongside rejected wrong types, controlled-state omissions and hidden ownership escapes.
 
 ## Managed Source Boundary
 

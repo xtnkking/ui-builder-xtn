@@ -22,8 +22,8 @@ The canonical implementation is `assets/react-kit/src/personal-ui/`; `assets/rea
 
 - Do not recreate a registered control with native interactive markup, application CSS, a local wrapper, copied source, or a third-party JSX component. Do not deep-import implementation files.
 - Do not style protected controls through `.pui-*`, `data-pui-*`, generic control selectors, CSS-in-JS, runtime CSS/DOM mutation, external global styles, or JSX `<style>`.
-- Protected public components must not receive application `className`, `style`, `css`, `sx`, `tw`, `ref`, spread props, or `cloneElement` overrides. Use a surrounding layout element, a documented token, or a canonical typed prop.
-- Use explicit public props and pass both TypeScript and provenance checks. A type-correct object spread is still unsupported by the ownership policy; the verifier does not replace TypeScript. Use the official `controllerField` adapter for form-library fields; see [supported usage](references/integration.md#supported-public-usage).
+- Protected public components must not receive application `className`, `style`, `css`, `sx`, `tw`, `ref`, or `cloneElement` overrides, including through property spreads. Use a surrounding layout element, a documented token, or a canonical typed prop.
+- Use public props and pass both TypeScript and provenance checks. Typed JSX spreads must resolve to safe public properties; unknown/opaque objects and protected overrides fail closed. Use the official `controllerField` adapter for form-library fields; see the supported syntax and compiler requirements in [supported usage](references/integration.md#supported-public-usage).
 - Use Lucide icons through component props. Keep option, tab, menu-item, product, table-column, and row identities stable, unique, and non-empty within their owner.
 - Keep business copy and machine values consumer-owned. Built-in fallback and ARIA text use the locale contract; product data must not be silently translated or reformatted for submission.
 
@@ -34,7 +34,7 @@ If a requested capability has no registered public export, stop that part of pag
 - Installation, integration, source checks, and field-aligned controls: [integration guide](references/integration.md).
 - Native/composite submission, validation, reset, external forms, and React Hook Form: [form contract](references/form-contract.md).
 - Search, async options, explicit queries, loading, tables, sorting, pinning, height, and pagination: [data workflow contract](references/data-workflows.md).
-- Keyboard file selection with drag-and-drop, and manual loading with infinite scrolling: the [official compositions](references/data-workflows.md#official-file-and-continuous-loading-compositions). These low-level primitives require the documented companion control.
+- Keyboard file selection with drag-and-drop, and manual loading with infinite scrolling: [file and loading workflows](references/data-workflows.md#official-file-and-continuous-loading-compositions). DragDrop and InfiniteScroll own their keyboard command by default; disable that command explicitly when the documented companion control owns it.
 - Dialog, Drawer, ConfirmDialog, nested layers, dismissal, focus, Portal, and scroll lock: [overlay contract](references/overlay-contract.md).
 - Login, CRUD/list, create/edit, detail, settings, wizard, import/export, and status shells: [page pattern routing](references/page-patterns.md).
 - Built-in text, `zh-CN`/`en-US`, nested providers, Portal inheritance, SSR, dates, numbers, and plurals: [locale contract](references/locale-contract.md).

@@ -3152,7 +3152,7 @@ export function DragExample() {
       disabledRef.current = event.currentTarget.checked;
       setDisabled(event.currentTarget.checked);
     }} />
-    <DragDrop accept={accept} disabled={disabled} ariaLabel="接收CSV文件" onFiles={receive} onRejected={reject}>
+    <DragDrop accept={accept} disabled={disabled} showBrowseButton={false} ariaLabel="接收CSV文件" onFiles={receive} onRejected={reject}>
       <p>将组织全部成员的跨区域结算记录文件拖放至此处，文件必须包含完整的组织标识、统计日期和访问范围。你也可以使用下面的选择文件按钮，两种入口共享同一个本地待处理清单，不执行网络上传；CSV扩展名或text/csv MIME任一匹配即可。</p>
     </DragDrop>
     <FileUpload items={items} accept={accept} disabled={disabled} onFiles={receive}
@@ -3166,6 +3166,18 @@ export function DragExample() {
   </Stack>;
 }
 
+export function StandaloneDragExample() {
+  const [names, setNames] = useState<string[]>([]);
+  const [rejected, setRejected] = useState<string[]>([]);
+  return <Stack>
+    <DragDrop ariaLabel="CSV文件选择" accept=".csv,text/csv" onFiles={(files) => setNames(files.map((file) => file.name))} onRejected={(files) => setRejected(files.map((file) => file.name))}>
+      <p>拖放CSV文件，或按Tab进入内置选择文件按钮，使用Enter或Space打开文件选择器。</p>
+    </DragDrop>
+    <InlineMessage>已选择：{names.join("、") || "尚未选择文件"}</InlineMessage>
+    {rejected.length ? <InlineMessage tone="danger">未接收：{rejected.join("、")}</InlineMessage> : null}
+  </Stack>;
+}
+
 export type PersonalUiExampleState = "default" | "disabled" | "longContent" | "keyboard" | "dark" | "locale";
 export type PersonalUiExampleComponent = "DragDrop";
 export interface PersonalUiStateFixture {
@@ -3175,10 +3187,10 @@ export interface PersonalUiStateFixture {
   instructions?: string;
 }
 export const PersonalUiStateExamples: readonly PersonalUiStateFixture[] = [
-    { state: "default", exports: ["DragDrop"], content: <DragExample /> },
+    { state: "default", exports: ["DragDrop"], content: <StandaloneDragExample /> },
     { state: "disabled", exports: ["DragDrop"], content: <DragDrop ariaLabel="禁用文件拖放" disabled onFiles={() => undefined}><p>上传策略已锁定。</p></DragDrop> },
     { state: "longContent", exports: ["DragDrop"], content: <DragExample /> },
-    { state: "keyboard", exports: ["DragDrop"], content: <DragExample />, instructions: "用Tab聚焦FileUpload的选择CSV文件按钮，按Enter打开文件选择器；通过这个既有官方组合提供替代操作。此项是人工入口，不是DragDrop独立键盘能力的声明。" },
+    { state: "keyboard", exports: ["DragDrop"], content: <StandaloneDragExample />, instructions: "Tab进入DragDrop内置按钮，Enter或Space选择文件；区域和隐藏文件输入不额外占用Tab位置。" },
     { state: "dark", exports: ["DragDrop"], content: <StatePreview state="dark"><DragExample /></StatePreview> },
     { state: "locale", exports: ["DragDrop"], content: <StatePreview state="locale"><DragExample /></StatePreview> },
   ];
@@ -3187,7 +3199,7 @@ export function PersonalUiExample({ state, component }: {
   state?: PersonalUiExampleState;
   component?: PersonalUiExampleComponent;
 } = {}) {
-  if (state === undefined) return (<DragExample />);
+  if (state === undefined) return (<StandaloneDragExample />);
   const fixture = PersonalUiStateExamples.find((example) => example.state === state
     && (component === undefined || example.exports.some((name) => name === component)));
   if (!fixture) throw new RangeError(`No state fixture for ${component ?? "this family"}:${state}.`);
@@ -3207,9 +3219,9 @@ export function PersonalUiExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `DragDropProps` |
-| Implementation | [assets/react-kit/src/personal-ui/data/data-extra.tsx:1125](../assets/react-kit/src/personal-ui/data/data-extra.tsx#L1125) |
+| Implementation | [assets/react-kit/src/personal-ui/data/data-extra.tsx:1129](../assets/react-kit/src/personal-ui/data/data-extra.tsx#L1129) |
 | Explorer / example | [#/components/drag](../assets/react-kit/index.html#/components/drag); [compiled family example](#family-drag-compiled-example) (case `drag/overview`, source [assets/react-kit/src/explorer/cases/actions/drag.case.tsx](../assets/react-kit/src/explorer/cases/actions/drag.case.tsx)) |
-| Keyboard | delegated: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
+| Keyboard | native: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
 
 Applicable states: `default`, `disabled`, `longContent`, `keyboard`, `dark`, `locale`.
@@ -3228,6 +3240,10 @@ export type DragDropProps = PublicControlProps<Omit<HTMLAttributes<HTMLDivElemen
     onRejected?: (files: File[]) => void;
     disabled?: boolean;
     accept?: string;
+    multiple?: boolean;
+    /** Disable only when a companion FileUpload owns the keyboard browse command. */
+    showBrowseButton?: boolean;
+    browseLabel?: ReactNode;
     ariaLabel?: string;
 };
 ```
@@ -3236,7 +3252,10 @@ export type DragDropProps = PublicControlProps<Omit<HTMLAttributes<HTMLDivElemen
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `ariaLabel` | `message("dragDrop.label")` | [assets/react-kit/src/personal-ui/data/data-extra.tsx:1134](../assets/react-kit/src/personal-ui/data/data-extra.tsx#L1134) |
+| `ariaLabel` | `message("dragDrop.label")` | [assets/react-kit/src/personal-ui/data/data-extra.tsx:1141](../assets/react-kit/src/personal-ui/data/data-extra.tsx#L1141) |
+| `browseLabel` | `message("upload.browse")` | [assets/react-kit/src/personal-ui/data/data-extra.tsx:1140](../assets/react-kit/src/personal-ui/data/data-extra.tsx#L1140) |
+| `multiple` | `true` | [assets/react-kit/src/personal-ui/data/data-extra.tsx:1138](../assets/react-kit/src/personal-ui/data/data-extra.tsx#L1138) |
+| `showBrowseButton` | `true` | [assets/react-kit/src/personal-ui/data/data-extra.tsx:1139](../assets/react-kit/src/personal-ui/data/data-extra.tsx#L1139) |
 
 #### Semantic Tokens
 
@@ -3252,14 +3271,13 @@ Derived from registered family CSS ([src/personal-ui/styles/extended.css](../ass
 #### Usage Excerpt
 
 ```tsx
-// 完整共享队列、拒绝反馈和禁用逻辑见本案例的 DragExample。
-<DragDrop accept={accept} disabled={disabled} onFiles={receive} onRejected={reject}>拖放CSV到这里</DragDrop>
-<FileUpload items={items} accept={accept} disabled={disabled} onFiles={receive} onRejected={(rejections) => reject(rejections.map((entry) => entry.file))} onRemove={remove} />
+<DragDrop accept=".csv,text/csv" onFiles={receive} onRejected={reject}>拖放CSV到这里，或使用内置选择文件按钮</DragDrop>
+// 与FileUpload共享队列时，显式设置showBrowseButton={false}，只保留一个选择入口。
 ```
 
 #### Migration
 
-[DragDrop accept filtering](v0.3.0-migrations.md#dragdrop-accept-filtering). `DragDrop.accept` previously appeared in a data attribute but forwarded every file. It now filters the callback payload using file extensions and MIME rules; `onRejected(files)` can report files excluded by `accept`. It remains a drop-only surface with a named group, not a keyboard file picker or network uploader. Use `FileUpload` when users need browse, validation, status, and keyboard selection. Type evidence: [assets/react-kit/tests/types/data-extra-contracts.test-d.tsx](../assets/react-kit/tests/types/data-extra-contracts.test-d.tsx).
+[DragDrop accept filtering](v0.3.0-migrations.md#dragdrop-accept-filtering). `DragDrop.accept` previously appeared in a data attribute but forwarded every file. It now filters the callback payload using file extensions and MIME rules; `onRejected(files)` can report files excluded by `accept`. Subsequent main development adds an owned keyboard browse button by default, with the same filtering path for browsing and dropping. `showBrowseButton={false}` retains the drop-only mode when a companion `FileUpload` owns keyboard selection; do not remove the only keyboard selection path. FileUpload still supplies file-status and validation workflows; network transport remains caller-owned. Type evidence: [assets/react-kit/tests/types/data-extra-contracts.test-d.tsx](../assets/react-kit/tests/types/data-extra-contracts.test-d.tsx).
 
 ---
 
@@ -3783,7 +3801,7 @@ export function PersonalUiExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled` |
 | Parameter type | `SortableListProps<T>` |
-| Implementation | [assets/react-kit/src/personal-ui/data/data-extra.tsx:1197](../assets/react-kit/src/personal-ui/data/data-extra.tsx#L1197) |
+| Implementation | [assets/react-kit/src/personal-ui/data/data-extra.tsx:1217](../assets/react-kit/src/personal-ui/data/data-extra.tsx#L1217) |
 | Explorer / example | [#/components/sortable](../assets/react-kit/index.html#/components/sortable); [compiled family example](#family-sortable-compiled-example) (case `sortable/overview`, source [assets/react-kit/src/explorer/cases/actions/sortable.case.tsx](../assets/react-kit/src/explorer/cases/actions/sortable.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -3816,7 +3834,7 @@ export type SortableListProps<T> = PublicControlProps<Omit<HTMLAttributes<HTMLOL
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `getItemLabel` | `(item) => item.id` | [assets/react-kit/src/personal-ui/data/data-extra.tsx:1200](../assets/react-kit/src/personal-ui/data/data-extra.tsx#L1200) |
+| `getItemLabel` | `(item) => item.id` | [assets/react-kit/src/personal-ui/data/data-extra.tsx:1220](../assets/react-kit/src/personal-ui/data/data-extra.tsx#L1220) |
 
 #### Semantic Tokens
 
@@ -9647,7 +9665,7 @@ export function PersonalUiExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled` |
 | Parameter type | `AnchorNavigationProps` |
-| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:541](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L541) |
+| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:578](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L578) |
 | Explorer / example | [#/components/anchor](../assets/react-kit/index.html#/components/anchor); [compiled family example](#family-anchor-compiled-example) (case `anchor/overview`, source [assets/react-kit/src/explorer/cases/navigation/anchor.case.tsx](../assets/react-kit/src/explorer/cases/navigation/anchor.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -9679,7 +9697,7 @@ export type AnchorNavigationProps = PublicControlProps<Omit<HTMLAttributes<HTMLE
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `ariaLabel` | `message("anchor.label")` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:544](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L544) |
+| `ariaLabel` | `message("anchor.label")` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:581](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L581) |
 
 #### Semantic Tokens
 
@@ -9799,7 +9817,7 @@ export function PersonalUiExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `AppNavigationProps` |
-| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:111](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L111) |
+| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:113](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L113) |
 | Explorer / example | [#/components/app-navigation](../assets/react-kit/index.html#/components/app-navigation); [compiled family example](#family-app-navigation-compiled-example) (case `app-navigation/overview`, source [assets/react-kit/src/explorer/cases/navigation/app-navigation.case.tsx](../assets/react-kit/src/explorer/cases/navigation/app-navigation.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -9873,7 +9891,7 @@ No migration is required for the current public export.
 | Kind / stability | `component` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `NavigationVariantProps` |
-| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:128](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L128) |
+| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:130](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L130) |
 | Explorer / example | [#/components/app-navigation](../assets/react-kit/index.html#/components/app-navigation); [compiled family example](#family-app-navigation-compiled-example) (case `app-navigation/overview`, source [assets/react-kit/src/explorer/cases/navigation/app-navigation.case.tsx](../assets/react-kit/src/explorer/cases/navigation/app-navigation.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -9945,7 +9963,7 @@ No migration is required for the current public export.
 | Kind / stability | `component` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `NavigationVariantProps` |
-| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:123](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L123) |
+| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:125](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L125) |
 | Explorer / example | [#/components/app-navigation](../assets/react-kit/index.html#/components/app-navigation); [compiled family example](#family-app-navigation-compiled-example) (case `app-navigation/overview`, source [assets/react-kit/src/explorer/cases/navigation/app-navigation.case.tsx](../assets/react-kit/src/explorer/cases/navigation/app-navigation.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -10017,7 +10035,7 @@ No migration is required for the current public export.
 | Kind / stability | `component` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `NavigationVariantProps` |
-| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:118](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L118) |
+| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:120](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L120) |
 | Explorer / example | [#/components/app-navigation](../assets/react-kit/index.html#/components/app-navigation); [compiled family example](#family-app-navigation-compiled-example) (case `app-navigation/overview`, source [assets/react-kit/src/explorer/cases/navigation/app-navigation.case.tsx](../assets/react-kit/src/explorer/cases/navigation/app-navigation.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -10322,7 +10340,7 @@ export function PersonalUiExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled-uncontrolled` |
 | Parameter type | `CommandPaletteProps` |
-| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:348](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L348) |
+| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:385](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L385) |
 | Explorer / example | [#/components/command](../assets/react-kit/index.html#/components/command); [compiled family example](#family-command-compiled-example) (case `command/overview`, source [assets/react-kit/src/explorer/cases/navigation/command.case.tsx](../assets/react-kit/src/explorer/cases/navigation/command.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -10372,10 +10390,10 @@ type CommandPaletteQueryProps = {
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `emptyText` | `message("command.empty")` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:366](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L366) |
-| `loading` | `false` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:364](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L364) |
-| `placeholder` | `message("command.search")` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:367](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L367) |
-| `title` | `message("command.title")` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:360](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L360) |
+| `emptyText` | `message("command.empty")` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:403](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L403) |
+| `loading` | `false` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:401](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L401) |
+| `placeholder` | `message("command.search")` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:404](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L404) |
+| `title` | `message("command.title")` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:397](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L397) |
 
 #### Semantic Tokens
 
@@ -10410,7 +10428,7 @@ No migration is required for the current public export.
 | Kind / stability | `non-visual` / `stable` |
 | State mode | `hook` |
 | Parameter type | `CommandPaletteShortcutOptions` |
-| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:511](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L511) |
+| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:548](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L548) |
 | Explorer / example | [#/components/command](../assets/react-kit/index.html#/components/command); [compiled family example](#family-command-compiled-example) (case `command/overview`, source [assets/react-kit/src/explorer/cases/navigation/command.case.tsx](../assets/react-kit/src/explorer/cases/navigation/command.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | none: This non-visual hook renders no ARIA semantics. |
@@ -10438,10 +10456,10 @@ export interface CommandPaletteShortcutOptions {
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `ctrlKey` | `true` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:511](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L511) |
-| `enabled` | `true` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:511](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L511) |
-| `key` | `"k"` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:511](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L511) |
-| `metaKey` | `true` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:511](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L511) |
+| `ctrlKey` | `true` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:548](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L548) |
+| `enabled` | `true` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:548](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L548) |
+| `key` | `"k"` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:548](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L548) |
+| `metaKey` | `true` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:548](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L548) |
 
 #### Semantic Tokens
 
@@ -10555,7 +10573,7 @@ export function InfiniteScrollExample({ fetchPage = fetchRecordsExample, initial
   }, [fetchPage]);
 
   return <Stack>
-    <InfiniteScroll hasMore={snapshot.hasMore} loadKey={snapshot.cursor} loading={snapshot.loading} disabled={disabled || snapshot.error !== null} onLoadMore={loadNext}>
+    <InfiniteScroll showLoadMoreButton={false} hasMore={snapshot.hasMore} loadKey={snapshot.cursor} loading={snapshot.loading} disabled={disabled || snapshot.error !== null} onLoadMore={loadNext}>
       <ul aria-label="已加载记录">{snapshot.records.map((record) => <li key={record.id}>{record.label}</li>)}</ul>
     </InfiniteScroll>
     <p role="status" aria-label="加载状态">已加载 {snapshot.records.length} 条记录，cursor {snapshot.cursor}</p>
@@ -10564,7 +10582,21 @@ export function InfiniteScrollExample({ fetchPage = fetchRecordsExample, initial
   </Stack>;
 }
 
-export type PersonalUiExampleState = "default" | "disabled" | "loading" | "longContent" | "keyboard" | "overlay" | "dark" | "locale";
+export function StandaloneInfiniteScrollExample() {
+  const [records, setRecords] = useState(recordSourceExample.slice(0, 2));
+  const [cursor, setCursor] = useState(2);
+  const [hasMore, setHasMore] = useState(true);
+  return <InfiniteScroll hasMore={hasMore} loadKey={cursor} onLoadMore={async () => {
+    const page = await fetchRecordsExample(cursor);
+    setRecords((current) => [...current, ...page.records]);
+    setCursor(page.cursor);
+    setHasMore(page.hasMore);
+  }}>
+    <ul aria-label="已加载记录">{records.map((record) => <li key={record.id}>{record.label}</li>)}</ul>
+  </InfiniteScroll>;
+}
+
+export type PersonalUiExampleState = "default" | "disabled" | "loading" | "error" | "longContent" | "keyboard" | "overlay" | "dark" | "locale";
 export type PersonalUiExampleComponent = "InfiniteScroll";
 export interface PersonalUiStateFixture {
   state: PersonalUiExampleState;
@@ -10573,11 +10605,12 @@ export interface PersonalUiStateFixture {
   instructions?: string;
 }
 export const PersonalUiStateExamples: readonly PersonalUiStateFixture[] = [
-    { state: "default", exports: ["InfiniteScroll"], content: <InfiniteScrollExample /> },
-    { state: "disabled", exports: ["InfiniteScroll"], instructions: "disabled 禁止观察器发起加载；本例同时禁用配套的手动按钮。", content: <Stack><InfiniteScroll hasMore disabled loadKey="disabled" onLoadMore={() => undefined}><p>已有记录。</p></InfiniteScroll><LoadMore hasMore disabled onLoadMore={() => undefined} /></Stack> },
-    { state: "loading", exports: ["InfiniteScroll"], content: <Stack><InfiniteScroll hasMore loading loadKey="pending" onLoadMore={() => undefined}><p>当前记录仍保留；下方哨兵显示加载。</p></InfiniteScroll><LoadMore hasMore loading onLoadMore={() => undefined} /></Stack> },
+    { state: "default", exports: ["InfiniteScroll"], content: <StandaloneInfiniteScrollExample /> },
+    { state: "disabled", exports: ["InfiniteScroll"], instructions: "disabled同时禁止观察器和内置按钮。", content: <InfiniteScroll hasMore disabled loadKey="disabled" onLoadMore={() => undefined}><p>已有记录。</p></InfiniteScroll> },
+    { state: "loading", exports: ["InfiniteScroll"], content: <InfiniteScroll hasMore loading loadKey="pending" onLoadMore={() => undefined}><p>当前记录仍保留；按钮和哨兵显示加载。</p></InfiniteScroll> },
+    { state: "error", exports: ["InfiniteScroll"], instructions: "自动观察或内置按钮加载失败后保留已有记录；同一按钮提供手动重试，不自动循环请求失败游标。", content: <InfiniteScroll hasMore loadKey="failure" onLoadMore={async () => { throw new Error("示例请求失败"); }}><p>已有审核记录保留。</p></InfiniteScroll> },
     { state: "longContent", exports: ["InfiniteScroll"], content: <InfiniteScroll hasMore={false} loadKey="long" onLoadMore={() => undefined}><p>跨区域基础设施迁移项目的全部成员权限、数据访问范围与安全策略审核记录需要完整显示，并保留容器中的滚动和换行布局。</p></InfiniteScroll> },
-    { state: "keyboard", exports: ["InfiniteScroll"], instructions: "InfiniteScroll 的观察器本身没有键盘激活动作；Tab 到官方配套 LoadMore，再用 Enter/Space 请求下一页。此例不改变 M5 的组合使用契约。", content: <InfiniteScrollExample /> },
+    { state: "keyboard", exports: ["InfiniteScroll"], instructions: "Tab进入内置加载按钮，Enter或Space加载；失败后同一按钮变为重试。加载和结束不移除当前焦点节点。", content: <StandaloneInfiniteScrollExample /> },
     { state: "overlay", exports: ["InfiniteScroll"], content: <StatePreview state="overlay"><InfiniteScrollExample /></StatePreview> },
     { state: "dark", exports: ["InfiniteScroll"], content: <StatePreview state="dark"><InfiniteScrollExample /></StatePreview> },
     { state: "locale", exports: ["InfiniteScroll"], content: <StatePreview state="locale"><InfiniteScrollExample /></StatePreview> },
@@ -10587,7 +10620,7 @@ export function PersonalUiExample({ state, component }: {
   state?: PersonalUiExampleState;
   component?: PersonalUiExampleComponent;
 } = {}) {
-  if (state === undefined) return (<InfiniteScrollExample />);
+  if (state === undefined) return (<StandaloneInfiniteScrollExample />);
   const fixture = PersonalUiStateExamples.find((example) => example.state === state
     && (component === undefined || example.exports.some((name) => name === component)));
   if (!fixture) throw new RangeError(`No state fixture for ${component ?? "this family"}:${state}.`);
@@ -10607,14 +10640,14 @@ export function PersonalUiExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `InfiniteScrollProps` |
-| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:198](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L198) |
+| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:205](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L205) |
 | Explorer / example | [#/components/infinite-scroll](../assets/react-kit/index.html#/components/infinite-scroll); [compiled family example](#family-infinite-scroll-compiled-example) (case `infinite-scroll/overview`, source [assets/react-kit/src/explorer/cases/navigation/infinite-scroll.case.tsx](../assets/react-kit/src/explorer/cases/navigation/infinite-scroll.case.tsx)) |
-| Keyboard | delegated: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
+| Keyboard | native: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
 
-Applicable states: `default`, `disabled`, `loading`, `longContent`, `keyboard`, `overlay`, `dark`, `locale`.
+Applicable states: `default`, `disabled`, `loading`, `error`, `longContent`, `keyboard`, `overlay`, `dark`, `locale`.
 
-Source-demonstrated states: `default`, `disabled`, `loading`, `longContent`, `keyboard`, `overlay`, `dark`, `locale`. These are runnable, export-specific source fixtures. They do not certify browser behavior or accessibility; the keyboard fixture provides manual instructions, while the Keyboard/ARIA rows above identify their separate test contracts. The mobile fixture uses a 320px container; viewport media-query behavior requires a real browser viewport.
+Source-demonstrated states: `default`, `disabled`, `loading`, `error`, `longContent`, `keyboard`, `overlay`, `dark`, `locale`. These are runnable, export-specific source fixtures. They do not certify browser behavior or accessibility; the keyboard fixture provides manual instructions, while the Keyboard/ARIA rows above identify their separate test contracts. The mobile fixture uses a 320px container; viewport media-query behavior requires a real browser viewport.
 
 Select one fixture from the complete family module with `<PersonalUiExample state="default" component="InfiniteScroll" />`. Omit `state` for the overview. `PersonalUiStateExamples` retains the exact fixture code and interaction instructions.
 
@@ -10633,6 +10666,11 @@ export type InfiniteScrollProps = PublicControlProps<Omit<HTMLAttributes<HTMLDiv
     rootMargin?: string;
     loadingLabel?: ReactNode;
     endLabel?: ReactNode;
+    /** Disable only when a companion LoadMore owns the keyboard command. */
+    showLoadMoreButton?: boolean;
+    loadMoreLabel?: ReactNode;
+    retryLabel?: ReactNode;
+    errorLabel?: ReactNode;
 };
 ```
 
@@ -10640,11 +10678,15 @@ export type InfiniteScrollProps = PublicControlProps<Omit<HTMLAttributes<HTMLDiv
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `disabled` | `false` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:208](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L208) |
-| `endLabel` | `message("infiniteScroll.end")` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:211](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L211) |
-| `loading` | `false` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:207](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L207) |
-| `loadingLabel` | `message("loadMore.loadingContent")` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:210](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L210) |
-| `rootMargin` | `"160px"` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:209](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L209) |
+| `disabled` | `false` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:215](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L215) |
+| `endLabel` | `message("infiniteScroll.end")` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:218](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L218) |
+| `errorLabel` | `message("async.loadMoreFailed")` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:222](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L222) |
+| `loadMoreLabel` | `message("loadMore.label")` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:220](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L220) |
+| `loading` | `false` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:214](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L214) |
+| `loadingLabel` | `message("loadMore.loadingContent")` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:217](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L217) |
+| `retryLabel` | `message("common.retry")` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:221](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L221) |
+| `rootMargin` | `"160px"` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:216](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L216) |
+| `showLoadMoreButton` | `true` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:219](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L219) |
 
 #### Semantic Tokens
 
@@ -10660,12 +10702,11 @@ Derived from registered family CSS ([src/personal-ui/styles/extended.css](../ass
 #### Usage Excerpt
 
 ```tsx
-import { useCallback, useRef, useState } from "react";
-import { Alert, InfiniteScroll, LoadMore, Stack } from "./personal-ui";
+import { useState } from "react";
+import { InfiniteScroll } from "./personal-ui";
 
 type RecordItem = { id: string; label: string };
 type Page = { records: RecordItem[]; cursor: number; hasMore: boolean };
-type Snapshot = Page & { loading: boolean; error: string | null };
 const source = Array.from({ length: 6 }, (_, index) => ({ id: String(index + 1), label: "审核记录 " + (index + 1) }));
 async function fetchPage(cursor: number): Promise<Page> {
   await new Promise<void>((resolve) => setTimeout(resolve, 650));
@@ -10674,32 +10715,13 @@ async function fetchPage(cursor: number): Promise<Page> {
 }
 
 export function RecordsExample({ disabled = false }: { disabled?: boolean }) {
-  const [state, setState] = useState<Snapshot>({ records: source.slice(0, 2), cursor: 2, hasMore: true, loading: false, error: null });
-  const current = useRef(state);
-  const pending = useRef<Promise<void> | null>(null);
-  const blocked = useRef(disabled);
-  blocked.current = disabled;
-  const loadNext = useCallback((): Promise<void> => {
-    if (pending.current) return pending.current;
-    if (blocked.current || !current.current.hasMore) return Promise.resolve();
-    const cursor = current.current.cursor;
-    const commit = (next: Snapshot) => { current.current = next; setState(next); };
-    const request = Promise.resolve().then(() => fetchPage(cursor)).then(
-      (page) => commit({ records: [...current.current.records, ...page.records], cursor: page.cursor, hasMore: page.hasMore, loading: true, error: null }),
-      (error: unknown) => commit({ ...current.current, error: error instanceof Error ? error.message : "加载失败" }),
-    ).finally(() => { pending.current = null; commit({ ...current.current, loading: false }); });
-    pending.current = request;
-    commit({ ...current.current, loading: true, error: null });
-    return request;
-  }, []);
-  return <Stack>
-    <InfiniteScroll hasMore={state.hasMore} loadKey={state.cursor} loading={state.loading} disabled={disabled || state.error !== null} onLoadMore={loadNext}>
-      <ul>{state.records.map((record) => <li key={record.id}>{record.label}</li>)}</ul>
-    </InfiniteScroll>
-    <p role="status">已加载 {state.records.length} 条记录，cursor {state.cursor}</p>
-    {state.error ? <Alert tone="danger" title="加载失败">{state.error} 已有记录保留，请通过下方按钮重试。</Alert> : null}
-    <LoadMore hasMore={state.hasMore} loading={state.loading} disabled={disabled} onLoadMore={loadNext} label="手动加载下一页" />
-  </Stack>;
+  const [state, setState] = useState<Page>({ records: source.slice(0, 2), cursor: 2, hasMore: true });
+  return <InfiniteScroll disabled={disabled} hasMore={state.hasMore} loadKey={state.cursor} onLoadMore={async () => {
+    const page = await fetchPage(state.cursor);
+    setState((current) => ({ ...page, records: [...current.records, ...page.records] }));
+  }}>
+    <ul>{state.records.map((record) => <li key={record.id}>{record.label}</li>)}</ul>
+  </InfiniteScroll>;
 }
 ```
 
@@ -10814,7 +10836,7 @@ export function PersonalUiExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `LoadMoreProps` |
-| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:162](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L162) |
+| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:164](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L164) |
 | Explorer / example | [#/components/load-more](../assets/react-kit/index.html#/components/load-more); [compiled family example](#family-load-more-compiled-example) (case `load-more/overview`, source [assets/react-kit/src/explorer/cases/navigation/load-more.case.tsx](../assets/react-kit/src/explorer/cases/navigation/load-more.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -10843,9 +10865,9 @@ export type LoadMoreProps = PublicControlProps<Omit<HTMLAttributes<HTMLElement>,
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `hasMore` | `true` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:169](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L169) |
-| `label` | `message("loadMore.label")` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:170](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L170) |
-| `loadingLabel` | `message("loadMore.loading")` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:171](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L171) |
+| `hasMore` | `true` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:171](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L171) |
+| `label` | `message("loadMore.label")` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:172](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L172) |
+| `loadingLabel` | `message("loadMore.loading")` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:173](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L173) |
 
 #### Semantic Tokens
 
@@ -11102,7 +11124,7 @@ No migration is required for the current public export.
 | Kind / stability | `component` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `MenuProps` |
-| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:137](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L137) |
+| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:139](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L139) |
 | Explorer / example | [#/components/menu](../assets/react-kit/index.html#/components/menu); [compiled family example](#family-menu-compiled-example) (case `menu/overview`, source [assets/react-kit/src/explorer/cases/navigation/menu.case.tsx](../assets/react-kit/src/explorer/cases/navigation/menu.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -11142,7 +11164,7 @@ export type MenuProps = PublicControlProps<Omit<AppNavigationSharedProps, "brand
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `orientation` | `"vertical"` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:139](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L139) |
+| `orientation` | `"vertical"` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:141](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L141) |
 
 #### Semantic Tokens
 
@@ -11425,7 +11447,7 @@ export function PersonalUiExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled` |
 | Parameter type | `StepperProps` |
-| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:274](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L274) |
+| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:311](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L311) |
 | Explorer / example | [#/components/stepper](../assets/react-kit/index.html#/components/stepper); [compiled family example](#family-stepper-compiled-example) (case `stepper/overview`, source [assets/react-kit/src/explorer/cases/navigation/stepper.case.tsx](../assets/react-kit/src/explorer/cases/navigation/stepper.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -11462,8 +11484,8 @@ export type StepperProps = PublicControlProps<Omit<HTMLAttributes<HTMLElement>, 
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `linear` | `true` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:281](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L281) |
-| `orientation` | `"responsive"` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:280](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L280) |
+| `linear` | `true` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:318](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L318) |
+| `orientation` | `"responsive"` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:317](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L317) |
 
 #### Semantic Tokens
 
@@ -15013,7 +15035,7 @@ export function PersonalUiExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `ExpandableTextProps` |
-| Implementation | [assets/react-kit/src/personal-ui/data/data-extra.tsx:1249](../assets/react-kit/src/personal-ui/data/data-extra.tsx#L1249) |
+| Implementation | [assets/react-kit/src/personal-ui/data/data-extra.tsx:1269](../assets/react-kit/src/personal-ui/data/data-extra.tsx#L1269) |
 | Explorer / example | [#/components/overflow](../assets/react-kit/index.html#/components/overflow); [compiled family example](#family-overflow-compiled-example) (case `overflow/overview`, source [assets/react-kit/src/explorer/cases/data/overflow.case.tsx](../assets/react-kit/src/explorer/cases/data/overflow.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -15040,9 +15062,9 @@ export type ExpandableTextProps = PublicControlProps<Omit<HTMLAttributes<HTMLDiv
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `collapseLabel` | `message("expandable.collapse")` | [assets/react-kit/src/personal-ui/data/data-extra.tsx:1256](../assets/react-kit/src/personal-ui/data/data-extra.tsx#L1256) |
-| `collapsedLines` | `2` | [assets/react-kit/src/personal-ui/data/data-extra.tsx:1254](../assets/react-kit/src/personal-ui/data/data-extra.tsx#L1254) |
-| `expandLabel` | `message("expandable.expand")` | [assets/react-kit/src/personal-ui/data/data-extra.tsx:1255](../assets/react-kit/src/personal-ui/data/data-extra.tsx#L1255) |
+| `collapseLabel` | `message("expandable.collapse")` | [assets/react-kit/src/personal-ui/data/data-extra.tsx:1276](../assets/react-kit/src/personal-ui/data/data-extra.tsx#L1276) |
+| `collapsedLines` | `2` | [assets/react-kit/src/personal-ui/data/data-extra.tsx:1274](../assets/react-kit/src/personal-ui/data/data-extra.tsx#L1274) |
+| `expandLabel` | `message("expandable.expand")` | [assets/react-kit/src/personal-ui/data/data-extra.tsx:1275](../assets/react-kit/src/personal-ui/data/data-extra.tsx#L1275) |
 
 #### Semantic Tokens
 

@@ -1,4 +1,5 @@
 import {
+  useCallback,
   useEffect,
   useId,
   useMemo,
@@ -13,6 +14,7 @@ import type { ControllableOpenProps, PublicControlProps } from "../foundation/co
 import { useControllableState } from "../internal/controllable-state";
 import { Button } from "../foundation/primitives";
 import { SearchInput } from "../input/forms";
+import { InlineMessage } from "../feedback/feedback-extra";
 import { Dialog } from "../overlay/overlays";
 import { sanitizeFixedControlProps } from "../internal/fixed-control-props";
 import { usePersonalUILocale } from "../foundation/locale";
@@ -193,6 +195,11 @@ export type InfiniteScrollProps = PublicControlProps<Omit<
   rootMargin?: string;
   loadingLabel?: ReactNode;
   endLabel?: ReactNode;
+  /** Disable only when a companion LoadMore owns the keyboard command. */
+  showLoadMoreButton?: boolean;
+  loadMoreLabel?: ReactNode;
+  retryLabel?: ReactNode;
+  errorLabel?: ReactNode;
 };
 
 export function InfiniteScroll(rawProps: InfiniteScrollProps) {
@@ -209,6 +216,10 @@ export function InfiniteScroll(rawProps: InfiniteScrollProps) {
     rootMargin = "160px",
     loadingLabel = message("loadMore.loadingContent"),
     endLabel = message("infiniteScroll.end"),
+    showLoadMoreButton = true,
+    loadMoreLabel = message("loadMore.label"),
+    retryLabel = message("common.retry"),
+    errorLabel = message("async.loadMoreFailed"),
     ...rootProps
   } = safeProps;
   if (loadKey === undefined || loadKey === null) {
@@ -216,33 +227,59 @@ export function InfiniteScroll(rawProps: InfiniteScrollProps) {
   }
   const sentinelRef = useRef<HTMLDivElement>(null);
   const requestRef = useRef(false);
-  const requestedKeyRef = useRef<{ value: string | number | undefined } | null>(null);
+  const requestedKeyRef = useRef<{ value: string | number } | null>(null);
+  const failedKeyRef = useRef<{ value: string | number } | null>(null);
   const [requestPending, setRequestPending] = useState(false);
+  const [failure, setFailure] = useState<{ key: string | number } | null>(null);
+  const mountedRef = useRef(true);
+  useEffect(() => { mountedRef.current = true; return () => { mountedRef.current = false; }; }, []);
+  const failed = failure !== null && Object.is(failure.key, loadKey);
+  const latest = useRef({ disabled, hasMore, loading, loadKey, onLoadMore, onLoadError });
+  latest.current = { disabled, hasMore, loading, loadKey, onLoadMore, onLoadError };
+
+  const request = useCallback((manual: boolean) => {
+    const current = latest.current;
+    const retry = failedKeyRef.current !== null && Object.is(failedKeyRef.current.value, current.loadKey);
+    if (current.disabled || !current.hasMore || current.loading || requestRef.current || (!manual && retry)) return;
+    if (requestedKeyRef.current && Object.is(requestedKeyRef.current.value, current.loadKey) && !retry) return;
+    const key = current.loadKey;
+    // Acquire ownership before a callback, React render or observer can re-enter.
+    requestRef.current = true;
+    requestedKeyRef.current = { value: key };
+    failedKeyRef.current = null;
+    setFailure(null);
+    setRequestPending(true);
+    void Promise.resolve().then(current.onLoadMore).catch((error: unknown) => {
+      failedKeyRef.current = { value: key };
+      if (mountedRef.current) setFailure({ key });
+      current.onLoadError?.(error);
+    }).finally(() => {
+      requestRef.current = false;
+      if (mountedRef.current) setRequestPending(false);
+    }).catch(() => undefined); // A throwing error observer must not create an unhandled rejection.
+  }, []);
 
   useEffect(() => {
     const target = sentinelRef.current;
-    if (!target || !hasMore || loading || disabled || requestPending || typeof IntersectionObserver === "undefined") return;
+    if (!target || !hasMore || loading || disabled || requestPending || failed || typeof IntersectionObserver === "undefined") return;
     const observer = new IntersectionObserver((entries) => {
-      if (!entries.some((entry) => entry.isIntersecting) || requestRef.current || (requestedKeyRef.current && Object.is(requestedKeyRef.current.value, loadKey))) return;
-      requestedKeyRef.current = { value: loadKey };
-      requestRef.current = true;
-      setRequestPending(true);
-      Promise.resolve().then(onLoadMore)
-        .catch((error: unknown) => { onLoadError?.(error); })
-        .finally(() => {
-          requestRef.current = false;
-          setRequestPending(false);
-        });
+      if (entries.some((entry) => entry.isIntersecting)) request(false);
     }, { rootMargin });
     observer.observe(target);
     return () => observer.disconnect();
-  }, [disabled, hasMore, loadKey, loading, onLoadError, onLoadMore, requestPending, rootMargin]);
+  }, [disabled, failed, hasMore, loadKey, loading, request, requestPending, rootMargin]);
 
   return (
     <div {...rootProps} className="pui-infinite-scroll" data-pui-owner="InfiniteScroll">
       {children}
+      {showLoadMoreButton ? <div className="pui-load-more">
+        <Button loading={loading || requestPending} loadingLabel={loadingLabel} disabled={disabled}
+          aria-disabled={!hasMore || (!failed && requestedKeyRef.current !== null && Object.is(requestedKeyRef.current.value, loadKey)) || undefined}
+          tabIndex={!hasMore ? -1 : undefined} onClick={() => request(true)}>{failed ? retryLabel : loadMoreLabel}</Button>
+      </div> : null}
+      {failed ? <InlineMessage tone="danger">{errorLabel}</InlineMessage> : null}
       <div ref={sentinelRef} className="pui-infinite-scroll__sentinel" aria-live="polite">
-        {loading ? <><LoaderCircle className="pui-spinner" aria-hidden="true" /><span>{loadingLabel}</span></> : null}
+        {loading || requestPending ? <><LoaderCircle className="pui-spinner" aria-hidden="true" /><span>{loadingLabel}</span></> : null}
         {!hasMore ? <span>{endLabel}</span> : null}
       </div>
     </div>

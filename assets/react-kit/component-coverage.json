@@ -141,6 +141,7 @@
     "assets/react-kit/tests/browser/m5-inline-edit.spec.ts",
     "assets/react-kit/tests/browser/m5-markdown-editor.spec.ts",
     "assets/react-kit/tests/browser/m5-sortable-list.spec.ts",
+    "assets/react-kit/tests/browser/m5-standalone-infinite-scroll.spec.ts",
     "assets/react-kit/tests/browser/m5-tree-keyboard.spec.ts",
     "assets/react-kit/tests/browser/m5-tree-table.spec.ts",
     "assets/react-kit/tests/browser/m5-virtual-list.spec.ts",
@@ -174,6 +175,7 @@
     "assets/react-kit/tests/components/m5-inline-edit-contracts.test.tsx",
     "assets/react-kit/tests/components/m5-markdown-editor-contracts.test.tsx",
     "assets/react-kit/tests/components/m5-sortable-list-contracts.test.tsx",
+    "assets/react-kit/tests/components/m5-standalone-infinite-scroll.test.tsx",
     "assets/react-kit/tests/components/m5-tree-keyboard.test.tsx",
     "assets/react-kit/tests/components/m5-tree-table-contracts.test.tsx",
     "assets/react-kit/tests/components/m6-radio-example.test.tsx",
@@ -8116,7 +8118,7 @@
           "reason": "No migration is required for the current public export."
         },
         "keyboard": {
-          "mode": "delegated",
+          "mode": "native",
           "status": "documented",
           "refs": [
             "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
@@ -11421,6 +11423,7 @@
           "default",
           "disabled",
           "loading",
+          "error",
           "longContent",
           "keyboard",
           "overlay",
@@ -11446,7 +11449,7 @@
           "reason": "No migration is required for the current public export."
         },
         "keyboard": {
-          "mode": "delegated",
+          "mode": "native",
           "status": "documented",
           "refs": [
             "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
@@ -11499,6 +11502,7 @@
           "default",
           "disabled",
           "loading",
+          "error",
           "longContent",
           "keyboard",
           "overlay",
@@ -11509,6 +11513,7 @@
           "default",
           "disabled",
           "loading",
+          "error",
           "longContent",
           "keyboard",
           "overlay",
@@ -11535,33 +11540,39 @@
             "verification": "runnable-source-fixture"
           },
           {
-            "state": "longContent",
+            "state": "error",
             "file": "assets/react-kit/src/explorer/cases/navigation/infinite-scroll.case.tsx",
             "exampleIndex": 3,
             "verification": "runnable-source-fixture"
           },
           {
-            "state": "keyboard",
+            "state": "longContent",
             "file": "assets/react-kit/src/explorer/cases/navigation/infinite-scroll.case.tsx",
             "exampleIndex": 4,
+            "verification": "runnable-source-fixture"
+          },
+          {
+            "state": "keyboard",
+            "file": "assets/react-kit/src/explorer/cases/navigation/infinite-scroll.case.tsx",
+            "exampleIndex": 5,
             "verification": "manual-interaction-fixture"
           },
           {
             "state": "overlay",
             "file": "assets/react-kit/src/explorer/cases/navigation/infinite-scroll.case.tsx",
-            "exampleIndex": 5,
+            "exampleIndex": 6,
             "verification": "runnable-source-fixture"
           },
           {
             "state": "dark",
             "file": "assets/react-kit/src/explorer/cases/navigation/infinite-scroll.case.tsx",
-            "exampleIndex": 6,
+            "exampleIndex": 7,
             "verification": "runnable-source-fixture"
           },
           {
             "state": "locale",
             "file": "assets/react-kit/src/explorer/cases/navigation/infinite-scroll.case.tsx",
-            "exampleIndex": 7,
+            "exampleIndex": 8,
             "verification": "runnable-source-fixture"
           }
         ],
@@ -11573,11 +11584,13 @@
       ],
       "unit": [
         "assets/react-kit/tests/components/infinite-scroll-composition.test.tsx",
+        "assets/react-kit/tests/components/m5-standalone-infinite-scroll.test.tsx",
         "assets/react-kit/tests/components/navigation-extra-contracts.test.tsx"
       ],
       "browser": [
         "assets/react-kit/tests/browser/infinite-scroll-composition.spec.ts",
-        "assets/react-kit/tests/browser/m5-adjacent.spec.ts"
+        "assets/react-kit/tests/browser/m5-adjacent.spec.ts",
+        "assets/react-kit/tests/browser/m5-standalone-infinite-scroll.spec.ts"
       ],
       "keyboard": [
         "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"

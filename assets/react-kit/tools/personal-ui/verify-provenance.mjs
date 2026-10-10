@@ -4,6 +4,7 @@ import fs from "node:fs";
 import crypto from "node:crypto";
 import path from "node:path";
 import process from "node:process";
+import { createTypedUsageInspector } from "./typed-usage.mjs";
 
 const SCRIPT_EXTENSIONS = new Set([".js", ".jsx", ".mjs", ".cjs", ".ts", ".tsx", ".mts", ".cts", ".mdx"]);
 const HTML_EXTENSIONS = new Set([".html", ".htm"]);
@@ -1750,6 +1751,9 @@ function scanScript(file, source, context) {
   }
   const intrinsicAliases = stringTagAliases(source, new Set([...context.forbiddenTags, "style"]));
   const localComponents = localComponentDeclarations(code);
+  // Generic/annotated declarations cannot be reliably recognized by a regex.
+  // The same compiler used for public props also identifies local components.
+  for (const name of context.typedUsage().localComponents(file)) localComponents.add(name);
 
   for (const name of localComponents) {
     if (!/^[A-Z]/.test(name)) continue;
@@ -1829,11 +1833,15 @@ function scanScript(file, source, context) {
   };
 
   const inspectedComponentProps = new Set();
+  let typedCalls;
   const inspectProtectedInvocation = (reference, openingParenthesis, propsIndex, syntax) => {
     const exported = resolvePublicExport(reference);
     if (!exported || !context.styleProtectedExports.has(exported)) return;
     const range = callArgumentRanges(code, openingParenthesis)[propsIndex];
-    const reason = protectedPropsOverride(source, code, range, allowedReservedMarkerOffsets);
+    typedCalls ??= context.typedUsage().inspectCalls(file);
+    const typed = typedCalls[`${openingParenthesis}:${propsIndex}`];
+    const reason = typed ? typed.spread : protectedPropsOverride(source, code, range, allowedReservedMarkerOffsets);
+    for (const message of typed?.types ?? []) addIssue("PUI_PUBLIC_PROP_TYPE", `invalid public call props on ${exported}: ${message}`, openingParenthesis);
     if (!reason) return;
     const key = `${exported}:${range?.start ?? openingParenthesis}`;
     if (inspectedComponentProps.has(key)) return;
@@ -1871,10 +1879,16 @@ function scanScript(file, source, context) {
           allowedReservedMarkerOffsets.add(offset + attribute.offset);
         }
       }
-      if (directAttributes.some((attribute) => attribute.spread)) {
+      let typed;
+      try { typed = context.typedUsage().inspect(file, offset); }
+      catch (error) { typed = { spread: `public prop analysis unavailable: ${error.message}`, types: [] }; }
+      for (const message of typed.types) {
+        addIssue("PUI_PUBLIC_PROP_TYPE", `invalid public props on ${rawTag}: ${message}`, offset);
+      }
+      if (typed.spread) {
         addIssue(
           "PUI_COMPONENT_STYLE_OVERRIDE",
-          `spread props on Personal UI component ${rawTag} can inject styling or an imperative ref; pass explicit public props instead`,
+          `spread props on Personal UI component ${rawTag}: ${typed.spread}`,
           offset,
         );
       }
@@ -2375,6 +2389,9 @@ function main() {
       forbiddenRoles,
       allowedExternalPackages,
     };
+    let typedUsage;
+    context.typedUsage = () => typedUsage ??= createTypedUsageInspector(target,
+      [...files].filter((file) => SCRIPT_EXTENSIONS.has(path.extname(file).toLowerCase())));
     for (const file of [...files].sort()) {
       const installedToolRoot = path.join(target, "tools", "personal-ui");
       if (isInside(file, managedRoot) || isInside(file, installedToolRoot)) continue;

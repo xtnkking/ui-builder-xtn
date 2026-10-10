@@ -3,10 +3,21 @@ import { SupportedUsageExample } from "../fixtures/supported-public-usage";
 
 const supportedExplicitExample = <SupportedUsageExample onSave={() => undefined} />;
 
-// TypeScript supports object spread; provenance deliberately rejects this policy boundary.
-// This positive type fixture records the difference rather than pretending spread is a type error.
+// Both the public type contract and compiler-backed provenance accept safe spreads.
 const typedButtonProps = { disabled: false, children: "Save" } satisfies ButtonProps;
-const typeCorrectButPolicyUnsupported = <Button {...typedButtonProps} />;
+const supportedTypedSpread = <Button {...typedButtonProps} />;
+function WithProps(props: ButtonProps) { return <Button {...props} />; }
+function WithGenericProps<T extends ButtonProps>(props: T) { return <Button {...props} />; }
+const supportedParameter = <WithProps {...typedButtonProps} />;
+const supportedGenericParameter = <WithGenericProps {...typedButtonProps} />;
+// @ts-expect-error Public boolean props remain typed in JSX spreads.
+const wrongSpread = <Button {...{disabled: "yes"}} />;
+// @ts-expect-error Explicit props use the same public boolean contract.
+const wrongDirect = <Button loading="yes" />;
 
 void supportedExplicitExample;
-void typeCorrectButPolicyUnsupported;
+void supportedTypedSpread;
+void supportedParameter;
+void supportedGenericParameter;
+void wrongSpread;
+void wrongDirect;

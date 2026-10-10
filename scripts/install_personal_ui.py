@@ -41,6 +41,7 @@ SOURCE_KIT = ASSET_ROOT / "src" / "personal-ui"
 REGISTRY_PATH = ASSET_ROOT / "registry.json"
 COMPONENT_MANIFEST_PATH = ASSET_ROOT / "component-manifest.json"
 PROVENANCE_TOOL_PATH = ASSET_ROOT / "tools" / "personal-ui" / "verify-provenance.mjs"
+TYPED_USAGE_TOOL_PATH = ASSET_ROOT / "tools" / "personal-ui" / "typed-usage.mjs"
 INSTALLED_TOOL_ROOT = Path("tools") / "personal-ui"
 PROVENANCE_SCRIPT_NAME = "verify:personal-ui"
 PROVENANCE_SCRIPT_COMMAND = (
@@ -77,6 +78,7 @@ LOCK_RECORD_LIMIT = 8192
 INTEGRATED_SUPPORT_OWNERSHIP = {
     (INSTALLED_TOOL_ROOT / "component-manifest.json").as_posix(),
     (INSTALLED_TOOL_ROOT / "verify-provenance.mjs").as_posix(),
+    (INSTALLED_TOOL_ROOT / "typed-usage.mjs").as_posix(),
     STATE_RELATIVE.as_posix(),
 }
 
@@ -535,6 +537,7 @@ def support_file_map() -> dict[Path, bytes]:
     return {
         INSTALLED_TOOL_ROOT / "component-manifest.json": COMPONENT_MANIFEST_PATH.read_bytes(),
         INSTALLED_TOOL_ROOT / "verify-provenance.mjs": PROVENANCE_TOOL_PATH.read_bytes(),
+        INSTALLED_TOOL_ROOT / "typed-usage.mjs": TYPED_USAGE_TOOL_PATH.read_bytes(),
     }
 
 

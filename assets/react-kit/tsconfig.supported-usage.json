@@ -1,0 +1,4 @@
+{
+  "extends": "./tsconfig.json",
+  "include": ["tests/types/supported-usage-contracts.test-d.tsx"]
+}
