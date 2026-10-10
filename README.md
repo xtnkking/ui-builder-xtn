@@ -2,6 +2,8 @@
 
 `ui-builder-xtn` 是一个带完整 React + TypeScript 源码的 Codex Skill，用于构建风格一致、交互稳定的产品界面。
 
+[在线组件预览](https://xtnkking.github.io/ui-builder-xtn/) · [组件目录](references/component-catalog.md) · [组件 API](references/component-api.md)
+
 它不是一份只靠提示词约束的视觉规范。Personal UI 源码、公开导出、组件清单、安装器和来源校验器组成同一个闭环：使用者提出功能后，页面中的控件必须直接使用本仓库提供的组件代码。
 
 最新公开版本为 [v0.3.1](https://github.com/xtnkking/ui-builder-xtn/releases/tag/v0.3.1)，已于 2026-10-10 发布并完成公开附件的干净安装核验。`main` 的后续开发与该不可变发行版分开记录，具体改动见 [CHANGELOG.md](CHANGELOG.md)。
@@ -35,6 +37,10 @@ M1–M8 的当前交付范围、原目标差异和验收依据见 [目标收口�
 完整映射见 [组件目录](references/component-catalog.md)，安装、升级和强制来源规则见 [集成指南](references/integration.md)。
 
 ## 预览与设计基准
+
+[打开在线组件 Explorer](https://xtnkking.github.io/ui-builder-xtn/)，无需安装即可搜索组件、切换状态案例、查看代码示例，并操作登录、列表、表单和弹层演示。演示使用本地模拟数据。
+
+在线站点由 GitHub Pages 展示 `main` 最近一次成功部署的代码，组件或预览源码更新后自动构建部署。它与固定版本的 Release 附件分别维护；每个组件的 hash 路由可以直接分享和刷新。部署入口为 [Component Preview 工作流](https://github.com/xtnkking/ui-builder-xtn/actions/workflows/preview.yml)。
 
 `assets/react-kit` 中的 React 实例和 `src/personal-ui/` 是实际可安装、可运行的组件来源。旧的 `personal-ui-library-preview.html` 是独立的静态设计稿，其原生控件和演示交互不会随 Skill 源码自动更新，也不能被复制到业务页面。自 v0.2.8 起，基础控件高度、圆角、主色和弹窗间距已向该设计稿的默认浅色模式对齐；复杂表单弹窗、嵌套确认和桌面端默认贴边抽屉等新场景则以 React 预览及公开组件 API 为准。
 
