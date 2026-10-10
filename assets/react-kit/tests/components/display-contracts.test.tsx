@@ -60,6 +60,20 @@ function expectClosedRoot(element: HTMLElement, owner: string) {
 }
 
 describe("display fixed-control contracts", () => {
+  it("exposes the keyboard-scrollable code as a named region with its full content", () => {
+    const { rerender } = render(<CodeBlock code={'{"enabled":true}'} language="json" copyable={false} maxHeight={120} />);
+    const region = screen.getByRole("region", { name: "json 代码" });
+    expect(region.tagName).toBe("PRE");
+    expect(region).toHaveAttribute("tabindex", "0");
+    expect(region.querySelector("code")).toHaveTextContent('{"enabled":true}');
+    region.focus();
+    expect(region).toHaveFocus();
+
+    rerender(<CodeBlock code="plain text" copyable={false} />);
+    expect(screen.getByRole("region")).toHaveAccessibleName();
+    expect(screen.getByRole("region").querySelector("code")).toHaveTextContent("plain text");
+  });
+
   it("exposes a dot badge label as text without naming a generic span", () => {
     const { container } = render(<Badge dot label="Service online" />);
     const indicator = container.querySelector(".pui-badge__indicator--dot");

@@ -33,6 +33,8 @@ The historical tables remain intact. The [2026-10-09 official composition addend
 
 ## P2 Independent Exports
 
+`CodeBlock` exposes its complete code in a localized, named `region` on the focusable `pre`. Native scrolling remains browser-owned; the optional copy button is a separate stop. A bare generic `pre` must not receive an accessible name without nameable semantics. The focused display unit and CodeBlock axe regression cover this contract; a test declaration is not a claim that every browser run passed.
+
 These exports have their own keyboard models. They are not implicitly covered by the Tree/Calendar/Menu fixtures above. All five share the targeted [React fixture](../assets/react-kit/tests/fixtures/m5-adjacent.tsx), [browser cases](../assets/react-kit/tests/browser/m5-adjacent.spec.ts), and [axe case](../assets/react-kit/tests/a11y/m5-adjacent.spec.ts). Focused cases, including the added Tab paths, exited normally in Chromium/Firefox/WebKit; the shared axe case passed in all three engines with Transfer mounted. These are targeted runs, not a whole-stage release gate. The general unit files below mostly prove prop/state ownership.
 
 | Export | Tab stops and real focus owner | Keys, unavailable state, and exit/return | Existing unit / missing proof |

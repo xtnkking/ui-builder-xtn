@@ -128,6 +128,24 @@ const ariaEvidenceCases = [
 
 registerAriaEvidence(ariaEvidenceCases);
 
+test("CodeBlock scroll region has a valid name and no blocking axe incomplete result", async ({ page }) => {
+  await page.goto("/#/components/code-block");
+  const owner = page.locator('.demo-explorer-preview [data-pui-owner="CodeBlock"]').first();
+  const region = owner.getByRole("region");
+  await expect(region).toHaveAccessibleName(/.+/);
+  await region.focus();
+  await expect(region).toBeFocused();
+  await page.keyboard.press("Shift+Tab");
+  await expect(owner.getByRole("button").first()).toBeFocused();
+  const result = await new AxeBuilder({ page })
+    .include('.demo-explorer-preview [data-pui-owner="CodeBlock"]')
+    .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
+    .analyze();
+  const blocking = [...result.violations, ...result.incomplete]
+    .filter((rule) => rule.impact === "critical" || rule.impact === "serious");
+  expect(blocking).toEqual([]);
+});
+
 test("FamilyLoginPage product copy has determinate contrast at the stacked breakpoint", async ({ page }) => {
   await page.setViewportSize({ width: 736, height: 900 });
   await page.goto("/#/patterns/authentication");

@@ -219,6 +219,45 @@ describe("modal layer kernel contracts", () => {
     background.remove();
   });
 
+  it("allows native internal scroll stops in both directions while retaining modal boundaries", () => {
+    render(
+      <Dialog open onOpenChange={() => undefined} title="原生滚动停点" footer={<Button>底部操作</Button>}>
+        <div tabIndex={-1}>浏览器滚动区域</div>
+        <Button>正文操作</Button>
+      </Dialog>,
+    );
+    const dialog = screen.getByRole("dialog", { name: "原生滚动停点" });
+    const internalStop = within(dialog).getByText("浏览器滚动区域");
+    const first = within(dialog).getByRole("button", { name: "关闭对话框" });
+    const last = within(dialog).getByRole("button", { name: "底部操作" });
+    const pressTab = (target: HTMLElement, shiftKey = false) => {
+      const event = new KeyboardEvent("keydown", { key: "Tab", shiftKey, bubbles: true, cancelable: true });
+      fireEvent(target, event);
+      return event;
+    };
+
+    // jsdom needs an explicit -1 to model a browser-native, unlisted active element.
+    for (const shiftKey of [false, true]) {
+      internalStop.focus();
+      expect(internalStop).toHaveFocus();
+      expect(pressTab(internalStop, shiftKey).defaultPrevented).toBe(false);
+      expect(internalStop).toHaveFocus();
+    }
+
+    last.focus();
+    expect(pressTab(last).defaultPrevented).toBe(true);
+    expect(first).toHaveFocus();
+    expect(pressTab(first, true).defaultPrevented).toBe(true);
+    expect(last).toHaveFocus();
+
+    dialog.focus();
+    expect(pressTab(dialog).defaultPrevented).toBe(true);
+    expect(first).toHaveFocus();
+    dialog.focus();
+    expect(pressTab(dialog, true).defaultPrevented).toBe(true);
+    expect(last).toHaveFocus();
+  });
+
   it("restores focus when an opener survives and falls back when it is removed", async () => {
     const user = userEvent.setup();
 

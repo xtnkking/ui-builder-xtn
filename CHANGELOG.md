@@ -4,12 +4,15 @@
 
 ### Added
 
+- 按用户批准的变更影响方案新增独立 M8 sampled-impact 验收入口：保留 RC.8 登录与迁移的原始身份，只对五个受影响消费者补 30 格，明确列出 60 格未证明范围；机器核对新候选、安装源码、命令捕获与原始测量，不扩大旧完整验收或 assembler-only 合同。
 - 为受支持的显式公共属性调用提供完整 React Hook Form、受控/非受控和有限 `controlRef` 示例，并分开验证 TypeScript 合同与来源政策。类型正确的 JSX 属性展开仍按政策拒绝，不宣称两种门禁对所有 TypeScript 写法等价。
 - 官方 `DragDrop + FileUpload` 示例共用文件清单、类型拒绝和禁用状态；保留 accept 的 OR 语义，同名文件按稳定 ID 分别移除。`InfiniteScroll + LoadMore` 共用同步请求所有权、数据和游标；失败保留原记录并通过手动入口重试。低层组件的独立键盘能力不因此扩大。
 - 新增 M8 证据连续性 producer/validator（`personal-ui-m8-evidence-continuity` / `assembler-only-v1`）及测试接线：只允许 assembler、其具名测试源码和 CHANGELOG 的维护差异，保留旧消费者与迁移身份；M6/M7 等新增源码不在有限复用范围内。
 
 ### Changed
 
+- 模态浮层允许层内原生滚动停点继续双向 Tab 导航，保留首尾与入口圈定，修复 Firefox 长内容 Dialog 的关闭按钮与正文焦点循环。
+- CodeBlock 的可聚焦代码区域使用有效的命名 region 语义，保留本地化名称、完整代码和键盘滚动入口，修复命名 PRE 的 axe `aria-prohibited-attr` incomplete。
 - JS 来源校验器按独立静态 import 声明识别绑定，避免入口样式副作用导入吞掉后续 `App` 默认导入；保留多行、注释和类型成员，并排除字符串及正则中的伪 import。外部控件、深层/私有导入、裸控件和公开组件覆盖继续拒绝。
 - JSX 来源校验只检查公开组件自身的属性边界，避免把回调或选项中的业务对象展开、插槽内布局元素的 className 误认为父组件覆盖；正确跳过属性表达式内的正则字面量，仍拒绝真正的公开组件属性展开、视觉覆盖、裸 ref 和内部 ownership 注入，并检查插槽中的嵌套公开组件。
 - InfiniteScroll 浏览器回归先确认模拟观察器已经注册到已挂载的哨兵，再触发单次交叉事件，避免页面 load 早于 React 挂载时静默丢失事件；保留请求去重、游标推进和拒绝反馈的原断言，不改变组件运行时代码。

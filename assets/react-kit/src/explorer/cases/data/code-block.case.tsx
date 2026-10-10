@@ -8,7 +8,7 @@ const sample = `import { Button } from "./personal-ui";\n\nexport function SaveC
 const explorerCase = {
   id: "code-block/overview",
   label: "可复制代码",
-  summary: "代码块可限制高度、换行并通过组件自带按钮复制，避免页面自行实现复制反馈。",
+  summary: "代码块可限制高度和换行；代码正文是具有本地化名称的可聚焦区域，保留原生键盘滚动，复制使用组件自带按钮。",
   states: ["default", "longContent", "dark", "locale"],
   stateExamples: [
     { state: "default", exports: ["CodeBlock"], content: <CodeBlock code={sample} language="tsx" copyable wrap maxHeight={220} /> },

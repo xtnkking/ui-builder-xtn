@@ -2339,6 +2339,13 @@ def _m8_release_evidence_blocker(
         return "m8-acceptance-evidence-promotion-invalid"
     try:
         document = _load_json_file(path, "M8 evidence")
+        if document.get("kind") == "personal-ui-m8-impact-acceptance":
+            if __package__:
+                from .m8_impact_acceptance import validate_impact_file
+            else:
+                from m8_impact_acceptance import validate_impact_file
+            result = validate_impact_file(path, expected_plan=plan)
+            return None if result.accepted else f"m8-acceptance-evidence-{result.category}"
         if document.get("kind") == "personal-ui-m8-evidence-continuity":
             if __package__:
                 from .m8_evidence_continuity import validate_continuity_file

@@ -44,6 +44,55 @@ test("keeps nested modal focus, dismissal, inert, and scroll state coherent", as
   await expect(dialog).toBeHidden();
 });
 
+test("keeps native long-dialog scroll stops reachable in both Tab directions and traps boundaries", async ({ page, browserName }) => {
+  await page.setViewportSize({ width: 2560, height: 900 });
+  await page.goto("/#/components/dialog");
+  const dialogCase = await selectExplorerCase(page, "Dialog 与 ConfirmDialog预览");
+  await dialogCase.getByRole("tab", { name: "longContent · Dialog / ConfirmDialog", exact: true }).click();
+  const opener = dialogCase.getByRole("button", { name: "长内容弹窗", exact: true });
+  await opener.click();
+
+  const dialog = page.getByRole("dialog", { name: "项目配置详情", exact: true });
+  const body = dialog.locator(".pui-dialog__body");
+  const close = dialog.getByRole("button", { name: "关闭对话框", exact: true });
+  const bodyAction = dialog.getByRole("button", { name: "返回项目列表", exact: true });
+  const last = dialog.getByRole("button", { name: "完成查看", exact: true });
+  await expect(dialog).toBeVisible();
+  expect(await body.evaluate((element) => element.scrollHeight > element.clientHeight)).toBe(true);
+  await expect(body).not.toHaveAttribute("tabindex");
+  await expect(last).toBeFocused();
+
+  // Reach the first boundary through the real footer, without focusing a test target.
+  await page.keyboard.press("Tab");
+  await expect(close).toBeFocused();
+  await page.keyboard.press("Tab");
+  if (browserName === "firefox") await expect(body).toBeFocused();
+  if (await body.evaluate((element) => element === element.ownerDocument.activeElement)) {
+    expect(await body.evaluate((element) => (element as HTMLElement).tabIndex)).toBe(-1);
+    await page.keyboard.press("Tab");
+  }
+  await expect(bodyAction).toBeFocused();
+
+  await page.keyboard.press("Shift+Tab");
+  if (browserName === "firefox") await expect(body).toBeFocused();
+  if (await body.evaluate((element) => element === element.ownerDocument.activeElement)) {
+    await page.keyboard.press("Shift+Tab");
+  }
+  await expect(close).toBeFocused();
+  await page.keyboard.press("Shift+Tab");
+  await expect(last).toBeFocused();
+  await page.keyboard.press("Shift+Tab");
+  await expect(bodyAction).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(last).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(close).toBeFocused();
+
+  await page.keyboard.press("Escape");
+  await expect(dialog).toHaveCount(0);
+  await expect(opener).toBeFocused();
+});
+
 test("keeps Drawer modal state and focus restoration aligned with Dialog", async ({ page }) => {
   await page.goto("/#/components/data-table");
 

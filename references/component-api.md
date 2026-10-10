@@ -17826,7 +17826,24 @@ function FailedConfirmDialogExample() {
 function LongDialogs() {
   const [open, setOpen] = useState(false);
   const [confirming, setConfirming] = useState(false);
-  return <><Inline><Button onClick={() => setOpen(true)}>长内容弹窗</Button><Button onClick={() => setConfirming(true)}>长内容确认</Button></Inline><Dialog open={open} onOpenChange={setOpen} title="项目配置详情" description="此项目包含全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置，请在保存前确认所有关联配置均符合团队的实际使用要求。"><p>成员、权限和审计策略等详细内容由页面提供。</p></Dialog><ConfirmDialog open={confirming} onOpenChange={setConfirming} title="确认修改项目？" description="此操作将同步更新全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置，请确认所有配置均符合团队的实际使用要求后再继续。" onConfirm={() => undefined} /></>;
+  return (
+    <>
+      <Inline><Button onClick={() => setOpen(true)}>长内容弹窗</Button><Button onClick={() => setConfirming(true)}>长内容确认</Button></Inline>
+      <Dialog
+        open={open}
+        onOpenChange={setOpen}
+        title="项目配置详情"
+        description="此项目包含全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置，请在保存前确认所有关联配置均符合团队的实际使用要求。"
+        footer={<Button onClick={() => setOpen(false)}>完成查看</Button>}
+      >
+        <Button onClick={() => setOpen(false)}>返回项目列表</Button>
+        {Array.from({ length: 16 }, (_, index) => (
+          <p key={`policy-${index}`}>配置 {index + 1}：成员、权限和审计策略由项目维护者共同确认；保留每次调整的责任人、业务背景和生效范围，确保团队能够追溯所有变更。</p>
+        ))}
+      </Dialog>
+      <ConfirmDialog open={confirming} onOpenChange={setConfirming} title="确认修改项目？" description="此操作将同步更新全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置，请确认所有配置均符合团队的实际使用要求后再继续。" onConfirm={() => undefined} />
+    </>
+  );
 }
 
 function EnglishDialogs() {

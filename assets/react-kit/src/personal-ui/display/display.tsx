@@ -432,7 +432,7 @@ export function CodeBlock(rawProps: CodeBlockProps) {
           {copyable ? <ClipboardButton text={code} label={copyLabel} iconOnly /> : null}
         </div>
       ) : null}
-      <pre style={{ maxHeight }} tabIndex={0} aria-label={language ? message("code.labelWithLanguage", { language }) : message("code.label")}>
+      <pre role="region" style={{ maxHeight }} tabIndex={0} aria-label={language ? message("code.labelWithLanguage", { language }) : message("code.label")}>
         <code>{code}</code>
       </pre>
     </div>

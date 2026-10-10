@@ -65,7 +65,7 @@ Publication remains blocked unless all of the following are true:
 - the source is an immutable clean commit and all prepared bytes still match the reviewed plan;
 - the canonical `LICENSE` is the selected MIT text, package/lockfile/Skill metadata all equal `MIT`, and a valid `THIRD_PARTY_NOTICES.json` inventory exists;
 - verify completed successfully for the exact plan digest;
-- full M8 acceptance evidence or a valid `assembler-only-v1` continuity record covers the reviewed RC, while separately validated hosted CI binds to that RC's exact plan digest, source commit, and archive SHA-256;
+- full M8 acceptance evidence, a valid `assembler-only-v1` continuity record, or the explicitly approved sampled-impact record below covers the reviewed RC, while separately validated hosted CI binds to that RC's exact plan digest, source commit, and archive SHA-256;
 - explicit authorization equals the reviewed plan digest;
 - no existing version or tag would be reused;
 - the guarded Git/GitHub adapter passes its own safety preflight.
@@ -115,6 +115,14 @@ The complete canonical source path sets must agree, and the source digest for ea
 The producer command is `python scripts/m8_evidence_continuity.py create --repository <repository> --origin-candidate <verified-origin-rc> --target-candidate <verified-target-rc> --origin-acceptance <original-full-m8.json> --maintenance-review <actual-review.md> --output <new-report.json>`. Place the output under an evidence root containing the original acceptance reference. `python scripts/m8_evidence_continuity.py validate <report.json> --target-plan <target-rc>/release-plan.json` reopens the hash-bound proof material and recomputes both deltas. Release preflight accepts this record through `--m8-evidence` and validates its target against the reviewed RC; promoted stable resolves that RC from its validated promotion.
 
 The report keeps `consumerRunsSourceCommit` at the origin and limits `reuseScope` to `consumers`, `migration`, `quality`, and `origin-system-safari`. The six consumer runs, migration, browser results, Safari identity, historical deviations, and limitations retain their original attribution; no new target run is asserted. `hostedCIInherited` remains `false`, so target-source hosted CI is still mandatory for publication. Stable must also retain and independently pass its own formal verification. This is a local reuse record, not a new public release or an M8 completion declaration. The helper and documentation are maintained working tools separate from the frozen candidates; a tool edit alone does not require creating another RC.
+
+## Approved sampled-impact M8 acceptance
+
+The user approved change-impact acceptance on 2026-10-10 for the remaining R3 work. `scripts/m8_impact_acceptance.py` validates the distinct kind `personal-ui-m8-impact-acceptance` with policy `r3-sampled-impact-2026-10-10-v1`. It does not broaden the full-bundle or `assembler-only-v1` validators. Release preflight accepts it through the existing `--m8-evidence` argument and binds its target to the reviewed RC.
+
+This bounded policy permits only the two diagnosed managed-runtime changes in `display/display.tsx` and `internal/layer-kernel.tsx`, requires unchanged public API, retains the origin's complete family-login report and migration under their original identities, and requires actual target installation, typecheck, build, provenance, and browser evidence for five repaired consumers. Each uses Chromium, Firefox, and WebKit at two widths: member-crud/searchable-table at 1440 and 320; complex-form/detail-panel/nested-modal at 2560 and 320. The report lists the 30 new cells, 18 origin family cells, and 60 unproven cells explicitly. `fullMatrixProven` and `newBlindEvaluation` remain false; the origin migration is not represented as a target migration.
+
+All candidate/source deltas, command captures, installed source, raw behavior/axe/responsive measurements, screenshots, and execution-ledger provenance must validate. The original failures remain retained. New exact-source hosted CI and stable formal verification remain independent release requirements; sampled acceptance is not a claim that the original 108-cell matrix passed.
 
 ## Version policy
 

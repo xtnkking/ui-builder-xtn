@@ -9,6 +9,7 @@
 - 仅当前顶层模态可交互。真实页面背景和下层模态被设为 `inert`，关闭后恢复它们原有的 inert 状态。
 - 由当前模态通过 `aria-controls` 关联的 Select、Popover 等浮动 Portal，以及 Toast Portal，是合法交互分支，不得被误设为 inert。
 - 初始焦点、Tab/Shift+Tab 圈定、顶层 Escape、关闭后的焦点恢复均由内核处理。触发器失效时，焦点回到仍可用的相邻页面停点；不会把焦点送入已卸载或仍 inert 的节点。
+- Tab/Shift+Tab 只在实际首尾边界、panel 入口或层外焦点处圈定；Firefox 等浏览器在当前 owned layer 内生成的原生滚动停点保持双向默认导航，不因未列入静态停点列表而跳回边界。
 - 嵌套层只响应最上层 Escape。父层先卸载时，存活子层会重新挂接到上级，滚动锁和背景 inert 不泄漏。
 - Portal 主题同步由内核调用 M3 的逻辑源主题协议；服务端 render 不创建 Portal，也不在 render 阶段无条件访问浏览器全局对象。
 

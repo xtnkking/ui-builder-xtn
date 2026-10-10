@@ -963,6 +963,39 @@ class PrepareVerifyContracts(unittest.TestCase):
             self.assertEqual(retry_calls, [])
 
 
+class ImpactAcceptanceRoutingContracts(unittest.TestCase):
+    def _route(self, accepted: bool) -> tuple[str | None, mock.MagicMock]:
+        plan = {
+            "candidateVersion": "0.3.1-rc.9",
+            "planDigest": "a" * 64,
+            "source": {"commit": "b" * 40},
+            "artifacts": {"archive": {"sha256": "c" * 64}},
+        }
+        result = m8_validator.M8EvidenceValidation(
+            "accepted" if accepted else "binding-mismatch"
+        )
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / "impact.json"
+            path.write_bytes(json_bytes({"kind": "personal-ui-m8-impact-acceptance"}))
+            with mock.patch(
+                "m8_impact_acceptance.validate_impact_file", return_value=result
+            ) as validate, mock.patch.object(
+                release, "validate_m8_evidence_file"
+            ) as full_validate:
+                blocker = release._m8_release_evidence_blocker(path, plan=plan)
+                validate.assert_called_once_with(path, expected_plan=plan)
+                full_validate.assert_not_called()
+                return blocker, validate
+
+    def test_impact_kind_routes_to_target_plan_validator(self) -> None:
+        blocker, _ = self._route(True)
+        self.assertIsNone(blocker)
+
+    def test_impact_binding_rejection_remains_a_release_blocker(self) -> None:
+        blocker, _ = self._route(False)
+        self.assertEqual(blocker, "m8-acceptance-evidence-binding-mismatch")
+
+
 class PromotionContracts(unittest.TestCase):
     def _prepare_verified_rc(
         self,

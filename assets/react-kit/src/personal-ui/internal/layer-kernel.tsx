@@ -540,11 +540,15 @@ export function useLayerKernel({
       }
       const first = focusable[0];
       const last = focusable[focusable.length - 1];
-      const activeIndex = focusable.indexOf(ownerDocument.activeElement as HTMLElement);
-      if (event.shiftKey && activeIndex <= 0) {
+      const activeElement = ownerDocument.activeElement;
+      const enteringLayer = activeElement === panel
+        || !isOwnerElement(ownerDocument, activeElement)
+        || !layerContains(state, entry, activeElement);
+      // Native scroll-region stops can be inside the layer without matching getTabStops.
+      if (event.shiftKey && (activeElement === first || enteringLayer)) {
         event.preventDefault();
         last.focus({ preventScroll: true });
-      } else if (!event.shiftKey && (activeIndex === -1 || ownerDocument.activeElement === last)) {
+      } else if (!event.shiftKey && (activeElement === last || enteringLayer)) {
         event.preventDefault();
         first.focus({ preventScroll: true });
       }
