@@ -79,6 +79,8 @@ function PreviewFrame({ example, family, children }: { example: ExplorerCase; fa
 
 function CasePreviewExample({ example, family }: { example: ExplorerCase; family: ExplorerFamily }) {
   const [activeState, setActiveState] = useState("overview");
+  const stateCounts = new Map<string, number>();
+  for (const item of example.stateExamples ?? []) stateCounts.set(item.state, (stateCounts.get(item.state) ?? 0) + 1);
   const stateItems = [{
     id: "overview",
     label: "总览",
@@ -87,7 +89,9 @@ function CasePreviewExample({ example, family }: { example: ExplorerCase; family
       : null,
   }, ...(example.stateExamples ?? []).map((stateExample, index) => ({
     id: `state-${index}`,
-    label: formatStateLabel(stateExample.state),
+    label: (stateCounts.get(stateExample.state) ?? 0) > 1
+      ? `${formatStateLabel(stateExample.state)} · ${stateExample.exports.join(" / ")}`
+      : formatStateLabel(stateExample.state),
     content: activeState === `state-${index}` ? (
       <section data-state-example={stateExample.state} data-state-exports={stateExample.exports.join(",")}>
         <p className="demo-explorer-state-note">适用组件：{stateExample.exports.join(" / ")}{stateExample.instructions && <><br />{stateExample.instructions}</>}</p>

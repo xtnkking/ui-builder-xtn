@@ -173,4 +173,17 @@ test.describe("component explorer", () => {
     expect(rowHeights.every((height) => height <= 72)).toBe(true);
     await page.screenshot({ path: test.info().outputPath("table-selection.png") });
   });
+
+  test("distinguishes same-state examples for different public components", async ({ page }) => {
+    await page.goto("/#/components/select");
+    const searchable = page.getByRole("tab", { name: "禁用 · SearchableSelect / AsyncSelect", exact: true });
+    const basic = page.getByRole("tab", { name: "禁用 · Select", exact: true });
+    await searchable.click();
+    await expect(page.getByRole("combobox", { name: /^禁用国家搜索，当前值：/ })).toBeDisabled();
+    await basic.click();
+    await expect(basic).toHaveAttribute("aria-selected", "true");
+    await expect(page.getByRole("tab", { name: "默认", exact: true })).toHaveCount(1);
+    await page.setViewportSize({ width: 320, height: 720 });
+    await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth)).toBe(320);
+  });
 });
