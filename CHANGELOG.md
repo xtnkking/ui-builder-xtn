@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-10-10
+
 ### Added
 
 - 按用户批准的变更影响方案新增独立 M8 sampled-impact 验收入口：保留 RC.8 登录与迁移的原始身份，只对五个受影响消费者补 30 格，明确列出 60 格未证明范围；机器核对新候选、安装源码、命令捕获与原始测量，不扩大旧完整验收或 assembler-only 合同。
@@ -27,7 +29,8 @@
 
 ### Release status
 
-- 以上为本地新增源码，尚未公开发行。相对公开 `v0.3.0` 没有公共组件 API 变化；兼容报告相对历史 `v0.2.19` 的 breaking 结论继续保留。新修复必须取得自己的候选、CI 和 M8 证据。
+- Promoted from verified `0.3.1-rc.9` with reviewed RC plan `483a4f15a8a3959a61b74d0a4df3518f158262df85fd5e55827745b87a194948`.
+- Public availability is established only after exact stable-plan authorization, immutable tag verification, GitHub Release publication, and public reinstall checks.
 
 ## [0.3.0] - 2026-10-08
 

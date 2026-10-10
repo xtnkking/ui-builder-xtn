@@ -1,6 +1,6 @@
 {
   "schemaVersion": 3,
-  "kitVersion": "0.2.19",
+  "kitVersion": "0.3.1",
   "generatedFrom": [
     "assets/react-kit/component-manifest.json",
     "assets/react-kit/registry.json",
