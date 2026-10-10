@@ -94,7 +94,7 @@ function CasePreviewExample({ example, family }: { example: ExplorerCase; family
       : formatStateLabel(stateExample.state),
     content: activeState === `state-${index}` ? (
       <section data-state-example={stateExample.state} data-state-exports={stateExample.exports.join(",")}>
-        <p className="demo-explorer-state-note">适用组件：{stateExample.exports.join(" / ")}{stateExample.instructions && <><br />{stateExample.instructions}</>}</p>
+        <p className="demo-explorer-state-note">{stateExample.exports.length ? `适用组件：${stateExample.exports.join(" / ")}` : "基础规范演示"}{stateExample.instructions && <><br />{stateExample.instructions}</>}</p>
         <PreviewFrame example={example} family={family}>{stateExample.content}</PreviewFrame>
       </section>
     ) : null,
@@ -124,11 +124,11 @@ function FamilyCases({ family, cases }: { family: ExplorerFamily; cases?: readon
   const [activeCase, setActiveCase] = useState(`${cases?.[0]?.id ?? ""}-preview`);
   if (!cases?.length) {
     return (
-      <div className="demo-explorer-pending" data-example-status="pending-m6-03">
+      <div className="demo-explorer-pending" data-example-status="missing">
         <EmptyState
           icon={<SearchX aria-hidden="true" />}
-          title="案例将在 M6-03 补齐"
-          description="当前路由、公开导出和检索信息已经可用；这里不会用占位代码冒充真实组件案例。"
+          title="此目录缺少可运行案例"
+          description="该入口的案例未正确注册，请反馈此页面地址以便修复。"
         />
       </div>
     );

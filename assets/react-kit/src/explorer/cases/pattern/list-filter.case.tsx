@@ -1,6 +1,6 @@
 // @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"list-filter/overview","exports":["PageHeading","ListManagementPage","SearchFilterPage","MemberManagementPage"]}
 import { StatePreview } from "../state-preview";
-import { Button, EmptyState, FilterBar, ListManagementPage, MemberManagementPage, PageHeading, SearchFilterPage, SearchInput, Tabs } from "../../../personal-ui";
+import { Box, Button, EmptyState, FilterBar, ListManagementPage, MemberManagementPage, PageHeading, SearchFilterPage, SearchInput, Tabs } from "../../../personal-ui";
 import { useState } from "react";
 import type { MemberQuery, MemberResult } from "../../../personal-ui";
 import type { ExplorerCase } from "../types";
@@ -20,12 +20,22 @@ async function fetchFixtureMembers(query: MemberQuery): Promise<MemberResult> {
 const longDescription = "此页面管理全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置，请确认所有关联配置均符合团队的实际使用要求后执行操作。";
 
 function LongListPages() {
-  return <><PageHeading title="完整成员说明" description={longDescription} /><ListManagementPage title="项目" description={longDescription}><p>项目列表</p></ListManagementPage><SearchFilterPage title="审计" description={longDescription}><p>查询结果</p></SearchFilterPage><MemberManagementPage title={longDescription} fetchMembers={async () => ({ items: [{ id: "long", name: "此成员负责全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置，请确认所有关联配置均符合团队的实际使用要求。", email: "long@example.com", team: "平台", role: "editor", status: "joined", joinedAt: "2026-09-20" }], total: 1 })} /></>;
+  return <Box padding="medium"><Tabs ariaLabel="长内容列表页面案例" defaultValue="heading" items={[
+    { id: "heading", label: "页头", content: <PageHeading title="完整成员说明" description={longDescription} /> },
+    { id: "management", label: "列表管理", content: <ListManagementPage title="项目" description={longDescription}><p>项目列表</p></ListManagementPage> },
+    { id: "search", label: "搜索筛选", content: <SearchFilterPage title="审计" description={longDescription}><p>查询结果</p></SearchFilterPage> },
+    { id: "members", label: "成员工作流", content: <MemberManagementPage title={longDescription} fetchMembers={async () => ({ items: [{ id: "long", name: "此成员负责全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置，请确认所有关联配置均符合团队的实际使用要求。", email: "long@example.com", team: "平台", role: "editor", status: "joined", joinedAt: "2026-09-20" }], total: 1 })} /> },
+  ]} /></Box>;
 }
 
 function KeyboardListPages() {
   const [feedback, setFeedback] = useState("尚未执行返回");
-  return <><PageHeading title="成员" onBack={() => setFeedback("页头返回已触发")} /><ListManagementPage title="项目" onBack={() => setFeedback("列表页返回已触发")}><p>项目列表</p></ListManagementPage><SearchFilterPage title="审计" onBack={() => setFeedback("搜索页返回已触发")}><p>查询结果</p></SearchFilterPage><p role="status">{feedback}</p><MemberManagementPage fetchMembers={fetchFixtureMembers} roles={["编辑者"]} statuses={["已加入"]} /></>;
+  return <Box padding="medium"><Tabs ariaLabel="键盘操作列表页面案例" defaultValue="heading" items={[
+    { id: "heading", label: "页头", content: <><PageHeading title="成员" onBack={() => setFeedback("页头返回已触发")} /><p role="status">{feedback}</p></> },
+    { id: "management", label: "列表管理", content: <><ListManagementPage title="项目" onBack={() => setFeedback("列表页返回已触发")}><p>项目列表</p></ListManagementPage><p role="status">{feedback}</p></> },
+    { id: "search", label: "搜索筛选", content: <><SearchFilterPage title="审计" onBack={() => setFeedback("搜索页返回已触发")}><p>查询结果</p></SearchFilterPage><p role="status">{feedback}</p></> },
+    { id: "members", label: "成员工作流", content: <MemberManagementPage fetchMembers={fetchFixtureMembers} roles={["编辑者"]} statuses={["已加入"]} /> },
+  ]} /></Box>;
 }
 
 function DraftListPage({ kind }: { kind: "management" | "search" }) {
@@ -42,7 +52,7 @@ function DraftListPage({ kind }: { kind: "management" | "search" }) {
 function ListFilterExample() {
   const [feedback, setFeedback] = useState("");
   return (
-    <Tabs
+    <Box padding="medium"><Tabs
       ariaLabel="列表页面模式案例"
       defaultValue="management"
       items={[
@@ -63,7 +73,7 @@ function ListFilterExample() {
           content: <MemberManagementPage fetchMembers={fetchFixtureMembers} roles={["编辑者"]} statuses={["已加入"]} />,
         },
       ]}
-    />
+    /></Box>
   );
 }
 
@@ -85,6 +95,7 @@ const explorerCase: ExplorerCase = {
     { state: "locale", exports: ["PageHeading","ListManagementPage","SearchFilterPage","MemberManagementPage"], content: <StatePreview state="locale">{<ListFilterExample />}</StatePreview> },
   ],
   content: <ListFilterExample />,
+  previewLayout: "page",
   code: `import { MemberManagementPage } from "./personal-ui";
 
 <MemberManagementPage fetchMembers={fetchMembers} />`,

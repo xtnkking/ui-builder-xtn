@@ -22,6 +22,12 @@ function MultiSelectExample() {
   );
 }
 
+function ControlledMultiSelectExample() {
+  const [value, setValue] = useState<string[]>(["read"]);
+  const [query, setQuery] = useState("");
+  return <Field label="受控权限" htmlFor="explorer-multi-controlled"><MultiSelect id="explorer-multi-controlled" ariaLabel="受控权限" value={value} onValueChange={setValue} query={query} onQueryChange={setQuery} options={permissions} /></Field>;
+}
+
 const explorerCase = {
   id: "multi-select/overview",
   label: "多项搜索选择",
@@ -30,10 +36,10 @@ const explorerCase = {
   stateExamples: [
     { state: "validation", exports: ["MultiSelect"], content: <Field label="必选权限" htmlFor="explorer-multi-invalid" error="请至少选择一项权限。"><MultiSelect id="explorer-multi-invalid" ariaLabel="必选权限" defaultValue={[]} options={permissions} required /></Field> },
     { state: "longContent", exports: ["MultiSelect"], content: <MultiSelect ariaLabel="长权限名称" defaultValue={["international"]} options={[{ value: "international", label: "Manage international subscription platform security policies, cross-region settlement and enterprise member access" }, ...permissions]} /> },
-    { state: "default", exports: ["MultiSelect"], content: <MultiSelectExample /> },
-    { state: "disabled", exports: ["MultiSelect"], content: <MultiSelectExample /> },
-    { state: "controlled", exports: ["MultiSelect"], content: <MultiSelectExample /> },
-    { state: "uncontrolled", exports: ["MultiSelect"], content: <MultiSelectExample /> },
+    { state: "default", exports: ["MultiSelect"], content: <Field label="权限" htmlFor="explorer-multi-default-state"><MultiSelect id="explorer-multi-default-state" ariaLabel="权限" defaultValue={["read"]} options={permissions} /></Field> },
+    { state: "disabled", exports: ["MultiSelect"], content: <Field label="禁用权限" htmlFor="explorer-multi-disabled"><MultiSelect id="explorer-multi-disabled" ariaLabel="禁用权限" defaultValue={["read", "write"]} options={permissions} disabled /></Field> },
+    { state: "controlled", exports: ["MultiSelect"], content: <ControlledMultiSelectExample /> },
+    { state: "uncontrolled", exports: ["MultiSelect"], content: <Field label="默认通知" htmlFor="explorer-multi-default"><MultiSelect id="explorer-multi-default" ariaLabel="默认通知" defaultValue={["read"]} options={permissions} /></Field> },
     { state: "keyboard", exports: ["MultiSelect"], content: <MultiSelectExample />, instructions: "用 Tab 访问本例可用控件，使用 Enter、Space 和组件文档中的方向键操作。此项为人工操作案例，不是自动行为验收证书。" },
     { state: "overlay", exports: ["MultiSelect"], content: <StatePreview state="overlay">{<MultiSelectExample />}</StatePreview> },
     { state: "dark", exports: ["MultiSelect"], content: <StatePreview state="dark">{<MultiSelectExample />}</StatePreview> },

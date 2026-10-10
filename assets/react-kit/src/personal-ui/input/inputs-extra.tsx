@@ -2041,7 +2041,7 @@ export function Transfer(rawProps: TransferProps) {
   const movableTarget = targetSelection.filter((item) => target.some((option) => option.value === item && !option.disabled));
   return (
     <div data-pui-owner="Transfer" className={cx("pui-transfer", fieldInvalid && "is-invalid")} role="group" aria-label={ariaLabel} aria-disabled={disabled || undefined} aria-describedby={fieldState.describedBy} aria-invalid={fieldState.invalid}>
-      <label className="pui-transfer__panel"><span>{sourceTitle}<small>{source.length}</small></span><select ref={sourceSelectRef} id={fieldState.id} multiple value={sourceSelection} disabled={disabled} aria-label={sourceTitle} aria-describedby={fieldState.describedBy} aria-invalid={fieldState.invalid} aria-required={fieldState.required} onChange={(event) => setSourceSelection(readSelection(event))}>{source.map((option) => <option key={option.value} value={option.value} disabled={option.disabled}>{option.textValue ?? optionText(option.label, option.value)}</option>)}</select></label>
+      <label className="pui-transfer__panel"><span>{sourceTitle}<small>{source.length}</small></span><select ref={sourceSelectRef} id={fieldState.id} multiple value={sourceSelection} disabled={disabled} aria-label={sourceTitle} aria-describedby={fieldState.describedBy} aria-invalid={fieldState.invalid} aria-required={fieldState.required} onChange={(event) => setSourceSelection(readSelection(event))}>{source.map((option) => <option key={option.value} value={option.value} disabled={option.disabled} title={option.textValue ?? optionText(option.label, option.value)}>{option.textValue ?? optionText(option.label, option.value)}</option>)}</select></label>
       <div className="pui-transfer__actions">
         <IconButton aria-label={message("transfer.add")} icon={<ChevronRight />} disabled={disabled || !movableSource.length} onClick={() => {
           setSelectedValues([...selectedValues, ...movableSource]);
@@ -2056,7 +2056,7 @@ export function Transfer(rawProps: TransferProps) {
           sourceSelectRef.current?.focus();
         }} />
       </div>
-      <label className="pui-transfer__panel"><span>{targetTitle}<small>{target.length}</small></span><select ref={targetSelectRef} multiple value={targetSelection} disabled={disabled} aria-label={targetTitle} aria-describedby={fieldState.describedBy} aria-invalid={fieldState.invalid} onChange={(event) => setTargetSelection(readSelection(event))}>{target.map((option) => <option key={option.value} value={option.value} disabled={option.disabled}>{option.textValue ?? optionText(option.label, option.value)}</option>)}</select></label>
+      <label className="pui-transfer__panel"><span>{targetTitle}<small>{target.length}</small></span><select ref={targetSelectRef} multiple value={targetSelection} disabled={disabled} aria-label={targetTitle} aria-describedby={fieldState.describedBy} aria-invalid={fieldState.invalid} onChange={(event) => setTargetSelection(readSelection(event))}>{target.map((option) => <option key={option.value} value={option.value} disabled={option.disabled} title={option.textValue ?? optionText(option.label, option.value)}>{option.textValue ?? optionText(option.label, option.value)}</option>)}</select></label>
       <CompositeFormControl
         name={name}
         form={form}

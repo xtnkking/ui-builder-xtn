@@ -15,6 +15,11 @@ function NumberExample() {
   );
 }
 
+function ControlledNumberExample() {
+  const [value, setValue] = useState<number | "">(30);
+  return <Field label="超时时间（秒）" htmlFor="explorer-number-controlled"><NumberInput id="explorer-number-controlled" value={value} onValueChange={setValue} min={0} max={180} step={10} /></Field>;
+}
+
 function InvalidNumberExample() {
   const [value, setValue] = useState<number | "">(200);
   return <Field label="超时时间" htmlFor="explorer-number-invalid" error="超时时间必须在 0 至 180 秒之间。"><NumberInput id="explorer-number-invalid" value={value} onValueChange={setValue} min={0} max={180} invalid /></Field>;
@@ -32,10 +37,10 @@ const explorerCase = {
   states: ["default", "disabled", "readOnly", "controlled", "validation", "longContent", "keyboard", "overlay", "dark", "locale"] as const,
   content: <NumberExample />,
   stateExamples: [
-    { state: "default", exports: ["NumberInput"], content: <NumberExample /> },
-    { state: "disabled", exports: ["NumberInput"], content: <NumberExample /> },
-    { state: "readOnly", exports: ["NumberInput"], content: <NumberExample /> },
-    { state: "controlled", exports: ["NumberInput"], content: <NumberExample /> },
+    { state: "default", exports: ["NumberInput"], content: <ControlledNumberExample /> },
+    { state: "disabled", exports: ["NumberInput"], content: <Field label="禁用重试次数" htmlFor="explorer-number-disabled"><NumberInput id="explorer-number-disabled" value={3} onValueChange={() => undefined} disabled /></Field> },
+    { state: "readOnly", exports: ["NumberInput"], content: <Field label="只读配额" htmlFor="explorer-number-readonly"><NumberInput id="explorer-number-readonly" value={100} onValueChange={() => undefined} readOnly /></Field> },
+    { state: "controlled", exports: ["NumberInput"], content: <ControlledNumberExample /> },
     { state: "validation", exports: ["NumberInput"], content: <InvalidNumberExample /> },
     { state: "longContent", exports: ["NumberInput"], content: <LongNumberExample /> },
     { state: "keyboard", exports: ["NumberInput"], content: <NumberExample />, instructions: "Tab 聚焦数值与步进按钮，输入数值或按 Enter/Space 使用加减按钮，检查边界禁止继续递增。" },

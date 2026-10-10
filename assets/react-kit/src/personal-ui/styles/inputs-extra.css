@@ -729,6 +729,9 @@
   min-height: 34px;
   padding: 8px;
   border-radius: 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .pui-transfer__actions {
@@ -901,6 +904,8 @@
 }
 
 .pui-date-range {
+  container-name: pui-date-range;
+  container-type: inline-size;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: end;
@@ -927,6 +932,16 @@
   grid-column: 1 / -1;
   color: var(--pui-danger);
   font-size: 12px;
+}
+
+@container pui-date-range (max-width: 480px) {
+  .pui-date-range > label {
+    grid-column: 1 / -1;
+  }
+
+  .pui-date-range__separator {
+    display: none;
+  }
 }
 
 @media (max-width: 640px) {

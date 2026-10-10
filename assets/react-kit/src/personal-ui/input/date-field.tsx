@@ -91,7 +91,7 @@ export function DateField(rawProps: DateFieldProps) {
         min={min}
         max={max}
         placeholder={placeholder ?? (precision === "year" ? "YYYY" : undefined)}
-        startAdornment={<CalendarDays aria-hidden="true" />}
+        startAdornment={precision === "year" ? <CalendarDays aria-hidden="true" /> : undefined}
       />
     </InternalInputSlot>
   );

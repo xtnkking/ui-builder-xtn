@@ -124,6 +124,7 @@
     "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts",
     "assets/react-kit/tests/browser/composite-form-contracts.spec.ts",
     "assets/react-kit/tests/browser/d2-drag-upload.spec.ts",
+    "assets/react-kit/tests/browser/explorer-audit-findings.spec.ts",
     "assets/react-kit/tests/browser/infinite-scroll-composition.spec.ts",
     "assets/react-kit/tests/browser/legacy-regressions.spec.ts",
     "assets/react-kit/tests/browser/locale-contracts.spec.ts",
@@ -211,7 +212,7 @@
       "source": 142,
       "example": 142,
       "unit": 117,
-      "browser": 50,
+      "browser": 51,
       "keyboard": 100,
       "a11y": 120
     },
@@ -4454,6 +4455,7 @@
         "assets/react-kit/tests/components/m5-cascader-contracts.test.tsx"
       ],
       "browser": [
+        "assets/react-kit/tests/browser/explorer-audit-findings.spec.ts",
         "assets/react-kit/tests/browser/m5-cascader.spec.ts"
       ],
       "keyboard": [
@@ -7074,6 +7076,7 @@
         "assets/react-kit/tests/components/m5-date-field-range-contracts.test.tsx"
       ],
       "browser": [
+        "assets/react-kit/tests/browser/explorer-audit-findings.spec.ts",
         "assets/react-kit/tests/browser/m5-calendar-date.spec.ts"
       ],
       "keyboard": [
@@ -7300,7 +7303,9 @@
       "unit": [
         "assets/react-kit/tests/components/value-controls-contracts.test.tsx"
       ],
-      "browser": [],
+      "browser": [
+        "assets/react-kit/tests/browser/explorer-audit-findings.spec.ts"
+      ],
       "keyboard": [
         "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
       ],
@@ -11588,6 +11593,7 @@
         "assets/react-kit/tests/components/navigation-extra-contracts.test.tsx"
       ],
       "browser": [
+        "assets/react-kit/tests/browser/explorer-audit-findings.spec.ts",
         "assets/react-kit/tests/browser/infinite-scroll-composition.spec.ts",
         "assets/react-kit/tests/browser/m5-adjacent.spec.ts",
         "assets/react-kit/tests/browser/m5-standalone-infinite-scroll.spec.ts"

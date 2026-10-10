@@ -110,7 +110,7 @@
 .pui-stepper__indicator { display: grid; place-items: center; flex: 0 0 32px; width: 32px; height: 32px; border: 1px solid var(--pui-border-strong); border-radius: 50%; background: var(--pui-surface); color: var(--pui-muted); font-size: 12px; font-weight: 700; }
 .pui-stepper li[data-status="current"] .pui-stepper__indicator, .pui-stepper li[data-status="complete"] .pui-stepper__indicator { border-color: var(--pui-primary); background: var(--pui-primary); color: var(--pui-on-primary); }
 .pui-stepper li[data-status="error"] .pui-stepper__indicator { border-color: var(--pui-danger); background: var(--pui-danger-soft); color: var(--pui-danger); }
-.pui-stepper__copy { display: grid; min-width: 0; padding-top: 5px; }
+.pui-stepper__copy { position: relative; display: grid; min-width: 0; padding: 5px 6px 0 0; background: var(--pui-surface); }
 .pui-stepper__copy strong { overflow-wrap: anywhere; }
 .pui-stepper__copy span { color: var(--pui-muted); font-size: 12px; overflow-wrap: anywhere; }
 .pui-stepper--vertical ol { flex-direction: column; min-width: 0; }

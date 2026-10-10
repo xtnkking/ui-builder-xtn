@@ -53,7 +53,10 @@ function ValidationLoginExample() {
 
 function LongAuthenticationExample() {
   const [feedback, setFeedback] = useState("");
-  return <><AuthenticationPage company="Northstar" title="登录工作区" description="此认证页用于访问全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置，请确认所有关联配置均符合团队的实际使用要求。"><Button onClick={() => setFeedback("通用认证页继续操作已触发")}>继续</Button></AuthenticationPage><FamilyLoginPage companyName="Northstar" products={[{ id: "details", name: "完整配置", accent: "#1769d2", headline: "统一登录体验", description: "此产品包含全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置，请确认所有关联配置均符合团队的实际使用要求。", visual: <div aria-hidden="true">Docs</div> }]} onSubmit={() => setFeedback("完整配置登录已完成")} /><p role="status">{feedback}</p></>;
+  return <Tabs ariaLabel="长内容认证页面案例" defaultValue="generic" items={[
+    { id: "generic", label: "通用认证页", content: <AuthenticationPage company="Northstar" title="登录工作区" description="此认证页用于访问全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置，请确认所有关联配置均符合团队的实际使用要求。"><Button onClick={() => setFeedback("通用认证页继续操作已触发")}>继续</Button><p role="status">{feedback}</p></AuthenticationPage> },
+    { id: "family", label: "品牌家族登录", content: <><FamilyLoginPage companyName="Northstar" products={[{ id: "details", name: "完整配置", accent: "#1769d2", headline: "统一登录体验", description: "此产品包含全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置，请确认所有关联配置均符合团队的实际使用要求。", visual: <div aria-hidden="true">Docs</div> }]} onSubmit={() => setFeedback("完整配置登录已完成")} /><p role="status">{feedback}</p></> },
+  ]} />;
 }
 
 const explorerCase: ExplorerCase = {
@@ -75,6 +78,7 @@ const explorerCase: ExplorerCase = {
     { state: "locale", exports: ["AuthenticationPage","FamilyLoginPage"], content: <StatePreview state="locale">{<AuthenticationExample />}</StatePreview> },
   ],
   content: <AuthenticationExample />,
+  previewLayout: "page",
   code: `import { FamilyLoginPage } from "./personal-ui";
 
 <FamilyLoginPage companyName="Northstar" products={products} onSubmit={signIn} />`,

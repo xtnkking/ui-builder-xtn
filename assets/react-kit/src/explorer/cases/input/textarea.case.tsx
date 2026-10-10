@@ -7,7 +7,7 @@ import type { ExplorerCase } from "../types";
 function TextareaExample() {
   const [value, setValue] = useState("记录本次变更的原因、影响范围和回滚方式。");
   return (
-    <div className="demo-number-case__grid">
+    <div className="demo-number-case__grid" style={{ alignItems: "start" }}>
       <Field label="变更说明" htmlFor="explorer-textarea" hint={`${value.length}/300`}>
         <Textarea id="explorer-textarea" rows={4} maxLength={300} value={value} onChange={(event) => setValue(event.currentTarget.value)} />
       </Field>

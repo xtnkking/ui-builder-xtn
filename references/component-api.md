@@ -32,13 +32,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -48,7 +48,11 @@ export function StatePreview({ state, children }: {
   </>;
 }
 
-import { AspectRatio, Box } from "./personal-ui";
+import { AspectRatio } from "./personal-ui";
+
+function AspectExample() {
+  return <AspectRatio ratio="16 / 5"><div className="demo-aspect-specimen"><strong>16 : 5</strong><span>报表预览 · 内容区域始终保持宽高比</span></div></AspectRatio>;
+}
 
 export type PersonalUiExampleState = "longContent" | "default" | "mobile" | "dark" | "locale";
 export type PersonalUiExampleComponent = "AspectRatio";
@@ -59,18 +63,18 @@ export interface PersonalUiStateFixture {
   instructions?: string;
 }
 export const PersonalUiStateExamples: readonly PersonalUiStateFixture[] = [
-    { state: "longContent", exports: ["AspectRatio"], content: <AspectRatio ratio="3 / 2"><Box padding="large" surface="subtle">年度跨区域运营报表包含账户使用情况、成员权限变更、审核效率和通知偏好趋势；预览容器保持稳定宽高比，内容在内部自然换行。</Box></AspectRatio> },
-    { state: "default", exports: ["AspectRatio"], content: <AspectRatio ratio="16 / 5"><Box padding="large" surface="subtle">报表预览</Box></AspectRatio> },
-    { state: "mobile", exports: ["AspectRatio"], content: <StatePreview state="mobile">{<AspectRatio ratio="16 / 5"><Box padding="large" surface="subtle">报表预览</Box></AspectRatio>}</StatePreview> },
-    { state: "dark", exports: ["AspectRatio"], content: <StatePreview state="dark">{<AspectRatio ratio="16 / 5"><Box padding="large" surface="subtle">报表预览</Box></AspectRatio>}</StatePreview> },
-    { state: "locale", exports: ["AspectRatio"], content: <StatePreview state="locale">{<AspectRatio ratio="16 / 5"><Box padding="large" surface="subtle">报表预览</Box></AspectRatio>}</StatePreview> },
+    { state: "longContent", exports: ["AspectRatio"], content: <AspectRatio ratio="3 / 2"><div className="demo-aspect-specimen"><strong>3 : 2</strong><span>年度跨区域运营报表包含账户使用情况、成员权限变更、审核效率和通知偏好趋势；预览容器保持稳定宽高比，内容在内部自然换行。</span></div></AspectRatio> },
+    { state: "default", exports: ["AspectRatio"], content: <AspectExample /> },
+    { state: "mobile", exports: ["AspectRatio"], content: <StatePreview state="mobile"><AspectExample /></StatePreview> },
+    { state: "dark", exports: ["AspectRatio"], content: <StatePreview state="dark"><AspectExample /></StatePreview> },
+    { state: "locale", exports: ["AspectRatio"], content: <StatePreview state="locale"><AspectExample /></StatePreview> },
   ];
 
 export function PersonalUiExample({ state, component }: {
   state?: PersonalUiExampleState;
   component?: PersonalUiExampleComponent;
 } = {}) {
-  if (state === undefined) return (<AspectRatio ratio="16 / 5"><Box padding="large" surface="subtle">报表预览</Box></AspectRatio>);
+  if (state === undefined) return (<AspectExample />);
   const fixture = PersonalUiStateExamples.find((example) => example.state === state
     && (component === undefined || example.exports.some((name) => name === component)));
   if (!fixture) throw new RangeError(`No state fixture for ${component ?? "this family"}:${state}.`);
@@ -160,13 +164,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -289,13 +293,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -418,13 +422,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -553,13 +557,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -679,13 +683,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -935,13 +939,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -1479,13 +1483,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -1617,13 +1621,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -1757,13 +1761,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -1889,13 +1893,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -2288,13 +2292,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -2419,13 +2423,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -2550,13 +2554,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -2679,13 +2683,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -2828,13 +2832,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -2959,13 +2963,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -3101,13 +3105,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -3303,13 +3307,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -3454,13 +3458,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -3598,13 +3602,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -3732,13 +3736,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -3882,13 +3886,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -4024,13 +4028,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -4169,13 +4173,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -4300,13 +4304,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -4335,6 +4339,11 @@ function CascaderExample() {
   );
 }
 
+function ControlledCascaderExample() {
+  const [path, setPath] = useState<string[]>(["china", "guangdong", "shenzhen"]);
+  return <Field label="受控服务区域" group><Cascader ariaLabel="受控服务区域" value={path} onValueChange={setPath} options={regions} levelLabels={["国家", "省份", "城市"]} /></Field>;
+}
+
 export type PersonalUiExampleState = "validation" | "longContent" | "default" | "disabled" | "controlled" | "uncontrolled" | "keyboard" | "overlay" | "dark" | "locale";
 export type PersonalUiExampleComponent = "Cascader";
 export interface PersonalUiStateFixture {
@@ -4346,10 +4355,10 @@ export interface PersonalUiStateFixture {
 export const PersonalUiStateExamples: readonly PersonalUiStateFixture[] = [
     { state: "validation", exports: ["Cascader"], content: <Field label="必选服务区域" group error="请选择完整的服务区域路径。"><Cascader ariaLabel="必选服务区域" defaultValue={[]} options={regions} required submitValue="path" /></Field> },
     { state: "longContent", exports: ["Cascader"], content: <Cascader ariaLabel="长区域名称" defaultValue={["international", "settlement"]} options={[{ value: "international", label: "International subscription platform operations across enterprise security and regional billing workspaces", children: [{ value: "settlement", label: "Cross-region settlement engineering and compliance operations team workspace" }] }]} /> },
-    { state: "default", exports: ["Cascader"], content: <CascaderExample /> },
-    { state: "disabled", exports: ["Cascader"], content: <CascaderExample /> },
-    { state: "controlled", exports: ["Cascader"], content: <CascaderExample /> },
-    { state: "uncontrolled", exports: ["Cascader"], content: <CascaderExample /> },
+    { state: "default", exports: ["Cascader"], content: <Field label="服务区域" group><Cascader ariaLabel="服务区域" defaultValue={["china", "guangdong", "shenzhen"]} options={regions} levelLabels={["国家", "省份", "城市"]} /></Field> },
+    { state: "disabled", exports: ["Cascader"], content: <Field label="禁用区域" group><Cascader ariaLabel="禁用区域" defaultValue={["china", "guangdong", "shenzhen"]} options={regions} levelLabels={["国家", "省份", "城市"]} disabled /></Field> },
+    { state: "controlled", exports: ["Cascader"], content: <ControlledCascaderExample /> },
+    { state: "uncontrolled", exports: ["Cascader"], content: <Field label="默认服务区域" group><Cascader ariaLabel="默认服务区域" defaultValue={["uk", "london"]} options={regions} levelLabels={["国家", "城市"]} /></Field> },
     { state: "keyboard", exports: ["Cascader"], content: <CascaderExample />, instructions: "用 Tab 访问本例可用控件，使用 Enter、Space 和组件文档中的方向键操作。此项为人工操作案例，不是自动行为验收证书。" },
     { state: "overlay", exports: ["Cascader"], content: <StatePreview state="overlay">{<CascaderExample />}</StatePreview> },
     { state: "dark", exports: ["Cascader"], content: <StatePreview state="dark">{<CascaderExample />}</StatePreview> },
@@ -4477,13 +4486,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -4630,13 +4639,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -4799,13 +4808,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -4953,13 +4962,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -5236,13 +5245,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -5311,9 +5320,9 @@ export const PersonalUiStateExamples: readonly PersonalUiStateFixture[] = [
     { state: "validation", exports: ["DateField", "DateRangeField", "TimezoneSelect"], content: <InvalidDateTimeExample /> },
     { state: "longContent", exports: ["DateField", "DateRangeField", "TimezoneSelect"], content: <LongDateTimeExample /> },
     { state: "default", exports: ["DateField","DateRangeField","TimezoneSelect"], content: <DateTimeExample /> },
-    { state: "readOnly", exports: ["DateField"], content: <DateTimeExample /> },
+    { state: "readOnly", exports: ["DateField"], content: <Field label="只读时间" htmlFor="explorer-time-readonly"><DateField id="explorer-time-readonly" precision="time" defaultValue="09:30" readOnly /></Field> },
     { state: "controlled", exports: ["DateField","DateRangeField","TimezoneSelect"], content: <DateTimeExample /> },
-    { state: "uncontrolled", exports: ["DateField"], content: <DateTimeExample /> },
+    { state: "uncontrolled", exports: ["DateField"], content: <Field label="默认日期" htmlFor="explorer-date-uncontrolled"><DateField id="explorer-date-uncontrolled" precision="day" defaultValue="2026-10-09" /></Field> },
     { state: "keyboard", exports: ["DateField","DateRangeField","TimezoneSelect"], content: <DateTimeExample />, instructions: "用 Tab 访问本例可用控件，使用 Enter、Space 和组件文档中的方向键操作。此项为人工操作案例，不是自动行为验收证书。" },
     { state: "overlay", exports: ["DateField","DateRangeField","TimezoneSelect"], content: <StatePreview state="overlay">{<DateTimeExample />}</StatePreview> },
     { state: "dark", exports: ["DateField","DateRangeField","TimezoneSelect"], content: <StatePreview state="dark">{<DateTimeExample />}</StatePreview> },
@@ -5642,13 +5651,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -5829,13 +5838,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -5847,18 +5856,18 @@ export function StatePreview({ state, children }: {
 
 import { useState } from "react";
 
-import { Button, Field, Form, Input } from "./personal-ui";
+import { Button, Field, Form, Inline, Input } from "./personal-ui";
 
 function FormExample() {
   const [name, setName] = useState("");
   const [submitted, setSubmitted] = useState(false);
   return (
-    <div className="demo-number-case">
+    <div className="demo-form-example">
       <Form onSubmit={(event) => { event.preventDefault(); setSubmitted(true); }}>
         <Field label="项目名称" htmlFor="explorer-form-name" required error={submitted && !name ? "请输入项目名称" : undefined}>
           <Input id="explorer-form-name" name="name" value={name} required onChange={(event) => setName(event.currentTarget.value)} />
         </Field>
-        <Button type="submit" variant="primary">创建项目</Button>
+        <Inline><Button type="submit" variant="primary">创建项目</Button></Inline>
       </Form>
     </div>
   );
@@ -5870,7 +5879,7 @@ function InvalidFormExample() {
     <Field label="工作邮箱" htmlFor="explorer-form-invalid" error="服务器拒绝了邮箱格式，请修改邮箱后重新提交。">
       <Input id="explorer-form-invalid" value={email} onChange={(event) => setEmail(event.currentTarget.value)} aria-invalid />
     </Field>
-    <Button type="submit">重新提交</Button>
+    <Inline><Button type="submit">重新提交</Button></Inline>
   </Form>;
 }
 
@@ -5883,10 +5892,10 @@ export interface PersonalUiStateFixture {
   instructions?: string;
 }
 export const PersonalUiStateExamples: readonly PersonalUiStateFixture[] = [
-    { state: "loading", exports: ["Form"], content: <Form busy><Field label="正在保存的项目" htmlFor="explorer-form-busy"><Input id="explorer-form-busy" defaultValue="平台工程项目" disabled /></Field><Button type="submit" loading loadingLabel="保存中">保存</Button></Form> },
+    { state: "loading", exports: ["Form"], content: <Form busy><Field label="正在保存的项目" htmlFor="explorer-form-busy"><Input id="explorer-form-busy" defaultValue="平台工程项目" disabled /></Field><Inline><Button type="submit" loading loadingLabel="保存中">保存</Button></Inline></Form> },
     { state: "error", exports: ["Form"], content: <InvalidFormExample /> },
     { state: "validation", exports: ["Form"], content: <InvalidFormExample /> },
-    { state: "longContent", exports: ["Form"], content: <Form onSubmit={(event) => event.preventDefault()}><p>创建项目之前请确认跨区域结算工作区的成员访问范围、默认通知渠道和账单关联信息，长表单说明应完整换行显示，不遮挡输入和提交入口。</p><Field label="项目名称" htmlFor="explorer-form-long"><Input id="explorer-form-long" defaultValue="国际结算项目" /></Field><Button type="submit">创建项目</Button></Form> },
+    { state: "longContent", exports: ["Form"], content: <Form onSubmit={(event) => event.preventDefault()}><p>创建项目之前请确认跨区域结算工作区的成员访问范围、默认通知渠道和账单关联信息，长表单说明应完整换行显示，不遮挡输入和提交入口。</p><Field label="项目名称" htmlFor="explorer-form-long"><Input id="explorer-form-long" defaultValue="国际结算项目" /></Field><Inline><Button type="submit">创建项目</Button></Inline></Form> },
     { state: "default", exports: ["Form"], content: <FormExample /> },
     { state: "keyboard", exports: ["Form"], content: <FormExample />, instructions: "用 Tab 访问本例可用控件，使用 Enter、Space 和组件文档中的方向键操作。此项为人工操作案例，不是自动行为验收证书。" },
     { state: "mobile", exports: ["Form"], content: <StatePreview state="mobile">{<FormExample />}</StatePreview> },
@@ -5998,13 +6007,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -6179,13 +6188,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -6409,13 +6418,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -6447,6 +6456,12 @@ function MultiSelectExample() {
   );
 }
 
+function ControlledMultiSelectExample() {
+  const [value, setValue] = useState<string[]>(["read"]);
+  const [query, setQuery] = useState("");
+  return <Field label="受控权限" htmlFor="explorer-multi-controlled"><MultiSelect id="explorer-multi-controlled" ariaLabel="受控权限" value={value} onValueChange={setValue} query={query} onQueryChange={setQuery} options={permissions} /></Field>;
+}
+
 export type PersonalUiExampleState = "validation" | "longContent" | "default" | "disabled" | "controlled" | "uncontrolled" | "keyboard" | "overlay" | "dark" | "locale";
 export type PersonalUiExampleComponent = "MultiSelect";
 export interface PersonalUiStateFixture {
@@ -6458,10 +6473,10 @@ export interface PersonalUiStateFixture {
 export const PersonalUiStateExamples: readonly PersonalUiStateFixture[] = [
     { state: "validation", exports: ["MultiSelect"], content: <Field label="必选权限" htmlFor="explorer-multi-invalid" error="请至少选择一项权限。"><MultiSelect id="explorer-multi-invalid" ariaLabel="必选权限" defaultValue={[]} options={permissions} required /></Field> },
     { state: "longContent", exports: ["MultiSelect"], content: <MultiSelect ariaLabel="长权限名称" defaultValue={["international"]} options={[{ value: "international", label: "Manage international subscription platform security policies, cross-region settlement and enterprise member access" }, ...permissions]} /> },
-    { state: "default", exports: ["MultiSelect"], content: <MultiSelectExample /> },
-    { state: "disabled", exports: ["MultiSelect"], content: <MultiSelectExample /> },
-    { state: "controlled", exports: ["MultiSelect"], content: <MultiSelectExample /> },
-    { state: "uncontrolled", exports: ["MultiSelect"], content: <MultiSelectExample /> },
+    { state: "default", exports: ["MultiSelect"], content: <Field label="权限" htmlFor="explorer-multi-default-state"><MultiSelect id="explorer-multi-default-state" ariaLabel="权限" defaultValue={["read"]} options={permissions} /></Field> },
+    { state: "disabled", exports: ["MultiSelect"], content: <Field label="禁用权限" htmlFor="explorer-multi-disabled"><MultiSelect id="explorer-multi-disabled" ariaLabel="禁用权限" defaultValue={["read", "write"]} options={permissions} disabled /></Field> },
+    { state: "controlled", exports: ["MultiSelect"], content: <ControlledMultiSelectExample /> },
+    { state: "uncontrolled", exports: ["MultiSelect"], content: <Field label="默认通知" htmlFor="explorer-multi-default"><MultiSelect id="explorer-multi-default" ariaLabel="默认通知" defaultValue={["read"]} options={permissions} /></Field> },
     { state: "keyboard", exports: ["MultiSelect"], content: <MultiSelectExample />, instructions: "用 Tab 访问本例可用控件，使用 Enter、Space 和组件文档中的方向键操作。此项为人工操作案例，不是自动行为验收证书。" },
     { state: "overlay", exports: ["MultiSelect"], content: <StatePreview state="overlay">{<MultiSelectExample />}</StatePreview> },
     { state: "dark", exports: ["MultiSelect"], content: <StatePreview state="dark">{<MultiSelectExample />}</StatePreview> },
@@ -6594,13 +6609,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -6625,6 +6640,11 @@ function NumberExample() {
   );
 }
 
+function ControlledNumberExample() {
+  const [value, setValue] = useState<number | "">(30);
+  return <Field label="超时时间（秒）" htmlFor="explorer-number-controlled"><NumberInput id="explorer-number-controlled" value={value} onValueChange={setValue} min={0} max={180} step={10} /></Field>;
+}
+
 function InvalidNumberExample() {
   const [value, setValue] = useState<number | "">(200);
   return <Field label="超时时间" htmlFor="explorer-number-invalid" error="超时时间必须在 0 至 180 秒之间。"><NumberInput id="explorer-number-invalid" value={value} onValueChange={setValue} min={0} max={180} invalid /></Field>;
@@ -6644,10 +6664,10 @@ export interface PersonalUiStateFixture {
   instructions?: string;
 }
 export const PersonalUiStateExamples: readonly PersonalUiStateFixture[] = [
-    { state: "default", exports: ["NumberInput"], content: <NumberExample /> },
-    { state: "disabled", exports: ["NumberInput"], content: <NumberExample /> },
-    { state: "readOnly", exports: ["NumberInput"], content: <NumberExample /> },
-    { state: "controlled", exports: ["NumberInput"], content: <NumberExample /> },
+    { state: "default", exports: ["NumberInput"], content: <ControlledNumberExample /> },
+    { state: "disabled", exports: ["NumberInput"], content: <Field label="禁用重试次数" htmlFor="explorer-number-disabled"><NumberInput id="explorer-number-disabled" value={3} onValueChange={() => undefined} disabled /></Field> },
+    { state: "readOnly", exports: ["NumberInput"], content: <Field label="只读配额" htmlFor="explorer-number-readonly"><NumberInput id="explorer-number-readonly" value={100} onValueChange={() => undefined} readOnly /></Field> },
+    { state: "controlled", exports: ["NumberInput"], content: <ControlledNumberExample /> },
     { state: "validation", exports: ["NumberInput"], content: <InvalidNumberExample /> },
     { state: "longContent", exports: ["NumberInput"], content: <LongNumberExample /> },
     { state: "keyboard", exports: ["NumberInput"], content: <NumberExample />, instructions: "Tab 聚焦数值与步进按钮，输入数值或按 Enter/Space 使用加减按钮，检查边界禁止继续递增。" },
@@ -6765,13 +6785,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -6921,13 +6941,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -7078,13 +7098,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -7237,13 +7257,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -7412,13 +7432,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -7578,13 +7598,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -8000,13 +8020,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -8163,13 +8183,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -8316,13 +8336,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -8509,13 +8529,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -8820,13 +8840,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -8843,7 +8863,7 @@ import { Field, Textarea } from "./personal-ui";
 function TextareaExample() {
   const [value, setValue] = useState("记录本次变更的原因、影响范围和回滚方式。");
   return (
-    <div className="demo-number-case__grid">
+    <div className="demo-number-case__grid" style={{ alignItems: "start" }}>
       <Field label="变更说明" htmlFor="explorer-textarea" hint={`${value.length}/300`}>
         <Textarea id="explorer-textarea" rows={4} maxLength={300} value={value} onChange={(event) => setValue(event.currentTarget.value)} />
       </Field>
@@ -8990,13 +9010,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -9162,13 +9182,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -9197,6 +9217,11 @@ function TreeSelectExample() {
   );
 }
 
+function ControlledTreeSelectExample() {
+  const [value, setValue] = useState("platform");
+  return <Field label="受控组织节点" htmlFor="explorer-tree-controlled"><TreeSelect id="explorer-tree-controlled" ariaLabel="受控组织节点" value={value} onValueChange={setValue} options={organizations} /></Field>;
+}
+
 export type PersonalUiExampleState = "validation" | "longContent" | "default" | "disabled" | "controlled" | "uncontrolled" | "keyboard" | "overlay" | "dark" | "locale";
 export type PersonalUiExampleComponent = "TreeSelect";
 export interface PersonalUiStateFixture {
@@ -9208,10 +9233,10 @@ export interface PersonalUiStateFixture {
 export const PersonalUiStateExamples: readonly PersonalUiStateFixture[] = [
     { state: "validation", exports: ["TreeSelect"], content: <Field label="必选组织" htmlFor="explorer-tree-invalid" error="请选择组织节点。"><TreeSelect id="explorer-tree-invalid" ariaLabel="必选组织" defaultValue="" options={organizations} required /></Field> },
     { state: "longContent", exports: ["TreeSelect"], content: <TreeSelect ariaLabel="长组织名称" defaultValue="settlement" options={[{ value: "international", label: "International subscription platform operations and enterprise security engineering organization", children: [{ value: "settlement", label: "Cross-region settlement engineering and global enterprise account support operations team" }] }]} /> },
-    { state: "default", exports: ["TreeSelect"], content: <TreeSelectExample /> },
-    { state: "disabled", exports: ["TreeSelect"], content: <TreeSelectExample /> },
-    { state: "controlled", exports: ["TreeSelect"], content: <TreeSelectExample /> },
-    { state: "uncontrolled", exports: ["TreeSelect"], content: <TreeSelectExample /> },
+    { state: "default", exports: ["TreeSelect"], content: <Field label="组织节点" htmlFor="explorer-tree-default-state"><TreeSelect id="explorer-tree-default-state" ariaLabel="组织节点" defaultValue="platform" options={organizations} /></Field> },
+    { state: "disabled", exports: ["TreeSelect"], content: <Field label="禁用组织节点" htmlFor="explorer-tree-disabled"><TreeSelect id="explorer-tree-disabled" ariaLabel="禁用组织节点" defaultValue="platform" options={organizations} disabled /></Field> },
+    { state: "controlled", exports: ["TreeSelect"], content: <ControlledTreeSelectExample /> },
+    { state: "uncontrolled", exports: ["TreeSelect"], content: <Field label="默认组织" htmlFor="explorer-tree-default"><TreeSelect id="explorer-tree-default" ariaLabel="默认组织" defaultValue="east" options={organizations} /></Field> },
     { state: "keyboard", exports: ["TreeSelect"], content: <TreeSelectExample />, instructions: "用 Tab 访问本例可用控件，使用 Enter、Space 和组件文档中的方向键操作。此项为人工操作案例，不是自动行为验收证书。" },
     { state: "overlay", exports: ["TreeSelect"], content: <StatePreview state="overlay">{<TreeSelectExample />}</StatePreview> },
     { state: "dark", exports: ["TreeSelect"], content: <StatePreview state="dark">{<TreeSelectExample />}</StatePreview> },
@@ -9328,13 +9353,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -9591,13 +9616,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -9665,7 +9690,7 @@ export function PersonalUiExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled` |
 | Parameter type | `AnchorNavigationProps` |
-| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:578](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L578) |
+| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:580](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L580) |
 | Explorer / example | [#/components/anchor](../assets/react-kit/index.html#/components/anchor); [compiled family example](#family-anchor-compiled-example) (case `anchor/overview`, source [assets/react-kit/src/explorer/cases/navigation/anchor.case.tsx](../assets/react-kit/src/explorer/cases/navigation/anchor.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -9697,7 +9722,7 @@ export type AnchorNavigationProps = PublicControlProps<Omit<HTMLAttributes<HTMLE
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `ariaLabel` | `message("anchor.label")` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:581](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L581) |
+| `ariaLabel` | `message("anchor.label")` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:583](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L583) |
 
 #### Semantic Tokens
 
@@ -9744,13 +9769,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -9760,18 +9785,46 @@ export function StatePreview({ state, children }: {
   </>;
 }
 
-import { AppNavigation, BottomNavigation, SideNavigation, TopNavigation } from "./personal-ui";
+import { AppNavigation, BottomNavigation, SideNavigation, Stack, TopNavigation, type NavigationItem } from "./personal-ui";
 
-const items = [{ id: "home", label: "概览", active: true, onSelect: () => window.alert("当前页") }, { id: "projects", label: "项目", onSelect: () => window.alert("项目") }, { id: "billing", label: "账单", disabled: true }];
+const items: NavigationItem[] = [{ id: "home", label: "概览", active: true, onSelect: () => window.alert("当前页") }, { id: "projects", label: "项目", onSelect: () => window.alert("项目") }, { id: "billing", label: "账单", disabled: true }];
 
-const longItems = [{ id: "long", label: "跨区域基础设施迁移项目的全部成员权限与安全策略审核记录及发布检查", onSelect: () => undefined }];
+const longItems: NavigationItem[] = [{ id: "long", label: "跨区域基础设施迁移项目的全部成员权限与安全策略审核记录及发布检查", onSelect: () => undefined }];
 
 function NavigationExample() {
-  return <div className="demo-number-case__grid"><AppNavigation ariaLabel="应用导航" brand="Northstar" variant="top" items={items} /><TopNavigation ariaLabel="顶部导航" brand="Workspace" items={items} /><SideNavigation ariaLabel="侧边导航" items={items} /><BottomNavigation ariaLabel="底部导航" items={items} /></div>;
+  return <Stack gap="large">
+    <AppNavigation ariaLabel="应用导航" brand="Northstar" variant="top" items={items} />
+    <TopNavigation ariaLabel="顶部导航" brand="Workspace" items={items} />
+    <div style={{ maxWidth: 280 }}><SideNavigation ariaLabel="侧边导航" items={items} /></div>
+    <BottomNavigation ariaLabel="底部导航" items={items} />
+  </Stack>;
 }
 
-function LongNavigation() {
-  return <div className="demo-number-case__grid"><AppNavigation ariaLabel="长应用导航" variant="side" items={longItems} /><TopNavigation ariaLabel="长顶部导航" items={longItems} /><SideNavigation ariaLabel="长侧边导航" items={longItems} /><BottomNavigation ariaLabel="长底部导航" items={longItems} /></div>;
+function EmptyNavigationExample() {
+  return <Stack gap="large">
+    <AppNavigation ariaLabel="空应用导航" brand="Northstar" variant="top" items={[]} />
+    <TopNavigation ariaLabel="空顶部导航" brand="Workspace" items={[]} />
+    <div style={{ maxWidth: 280 }}><SideNavigation ariaLabel="空侧边导航" items={[]} /></div>
+    <BottomNavigation ariaLabel="空底部导航" items={[]} />
+  </Stack>;
+}
+
+function LongNavigationExample() {
+  return <Stack gap="large">
+    <AppNavigation ariaLabel="长应用导航" brand="Northstar" variant="top" items={longItems} />
+    <TopNavigation ariaLabel="长顶部导航" brand="Workspace" items={longItems} />
+    <div style={{ maxWidth: 280 }}><SideNavigation ariaLabel="长侧边导航" items={longItems} /></div>
+    <BottomNavigation ariaLabel="长底部导航" items={longItems} />
+  </Stack>;
+}
+
+function LocaleNavigationExample() {
+  return <Stack gap="large">
+    <AppNavigation ariaLabel="App navigation" brand="Northstar" variant="top" items={[{ id: "home", label: "Home" }]} />
+    <TopNavigation ariaLabel="Top navigation" brand="Workspace" items={[{ id: "home", label: "Home" }]} />
+    <div style={{ maxWidth: 280 }}><SideNavigation ariaLabel="Side navigation" items={[{ id: "home", label: "Home" }]} /></div>
+    <BottomNavigation ariaLabel="Bottom navigation" items={[{ id: "home", label: "Home" }]} />
+  </Stack>;
 }
 
 export type PersonalUiExampleState = "default" | "disabled" | "empty" | "longContent" | "keyboard" | "mobile" | "dark" | "locale";
@@ -9785,12 +9838,12 @@ export interface PersonalUiStateFixture {
 export const PersonalUiStateExamples: readonly PersonalUiStateFixture[] = [
     { state: "default", exports: ["AppNavigation", "TopNavigation", "SideNavigation", "BottomNavigation"], content: <NavigationExample /> },
     { state: "disabled", exports: ["AppNavigation", "TopNavigation", "SideNavigation", "BottomNavigation"], instructions: "四种导航的“账单”均禁用；Tab 不进入禁用按钮。", content: <NavigationExample /> },
-    { state: "empty", exports: ["AppNavigation", "TopNavigation", "SideNavigation", "BottomNavigation"], instructions: "空数据只保留导航框架，不创建占位菜单。", content: <div className="demo-number-case__grid"><AppNavigation ariaLabel="空应用导航" items={[]} /><TopNavigation ariaLabel="空顶部导航" items={[]} /><SideNavigation ariaLabel="空侧边导航" items={[]} /><BottomNavigation ariaLabel="空底部导航" items={[]} /></div> },
-    { state: "longContent", exports: ["AppNavigation", "TopNavigation", "SideNavigation", "BottomNavigation"], content: <LongNavigation /> },
+    { state: "empty", exports: ["AppNavigation", "TopNavigation", "SideNavigation", "BottomNavigation"], instructions: "空数据只保留导航框架，不创建占位菜单。", content: <EmptyNavigationExample /> },
+    { state: "longContent", exports: ["AppNavigation", "TopNavigation", "SideNavigation", "BottomNavigation"], content: <LongNavigationExample /> },
     { state: "keyboard", exports: ["AppNavigation", "TopNavigation", "SideNavigation", "BottomNavigation"], instructions: "Tab 访问各导航的可用项；Enter/Space 触发按钮，禁用项不可访问。", content: <NavigationExample /> },
     { state: "mobile", exports: ["AppNavigation", "TopNavigation", "SideNavigation", "BottomNavigation"], content: <StatePreview state="mobile"><NavigationExample /></StatePreview> },
     { state: "dark", exports: ["AppNavigation", "TopNavigation", "SideNavigation", "BottomNavigation"], content: <StatePreview state="dark"><NavigationExample /></StatePreview> },
-    { state: "locale", exports: ["AppNavigation", "TopNavigation", "SideNavigation", "BottomNavigation"], content: <StatePreview state="locale"><AppNavigation ariaLabel="App navigation" items={[{ id: "home", label: "Home" }]} /><TopNavigation ariaLabel="Top navigation" items={[{ id: "home", label: "Home" }]} /><SideNavigation ariaLabel="Side navigation" items={[{ id: "home", label: "Home" }]} /><BottomNavigation ariaLabel="Bottom navigation" items={[{ id: "home", label: "Home" }]} /></StatePreview> },
+    { state: "locale", exports: ["AppNavigation", "TopNavigation", "SideNavigation", "BottomNavigation"], content: <StatePreview state="locale"><LocaleNavigationExample /></StatePreview> },
   ];
 
 export function PersonalUiExample({ state, component }: {
@@ -10120,13 +10173,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -10260,13 +10313,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -10285,12 +10338,50 @@ const commands = [
   { id: "archive", label: "归档工作区", textValue: "归档工作区", disabled: true, onSelect: () => undefined },
 ];
 
-function CommandExample() {
+function useCommandControls() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const onOpen = useCallback(() => setOpen(true), []);
   useCommandPaletteShortcut({ onOpen });
+  return { open, setOpen, query, setQuery, onOpen };
+}
+
+function CommandExample() {
+  const { open, setOpen, query, setQuery, onOpen } = useCommandControls();
   return <><Button onClick={onOpen}>打开命令面板</Button><p>也可使用 Ctrl+K / Cmd+K。</p><CommandPalette open={open} onOpenChange={setOpen} query={query} onQueryChange={setQuery} commands={commands} /></>;
+}
+
+function DisabledCommandExample() {
+  const { open, setOpen, query, setQuery, onOpen } = useCommandControls();
+  return <><Button onClick={onOpen}>打开禁用项案例</Button><p>“归档工作区”保持禁用。</p><CommandPalette open={open} onOpenChange={setOpen} query={query} onQueryChange={setQuery} commands={[
+    { id: "create", label: "创建项目", textValue: "创建项目", onSelect: () => window.alert("创建项目") },
+    { id: "archive", label: "归档工作区", textValue: "归档工作区", disabled: true, onSelect: () => undefined },
+  ]} /></>;
+}
+
+function LoadingCommandExample() {
+  const { open, setOpen, query, setQuery, onOpen } = useCommandControls();
+  return <><Button onClick={onOpen}>打开加载案例</Button><p>打开后显示命令加载状态。</p><CommandPalette open={open} onOpenChange={setOpen} query={query} onQueryChange={setQuery} commands={commands} loading /></>;
+}
+
+function EmptyCommandExample() {
+  const { open, setOpen, query, setQuery, onOpen } = useCommandControls();
+  return <><Button onClick={onOpen}>打开空结果案例</Button><p>打开后显示明确空态。</p><CommandPalette open={open} onOpenChange={setOpen} query={query} onQueryChange={setQuery} commands={[]} emptyText="没有可用命令" /></>;
+}
+
+function LongCommandExample() {
+  const { open, setOpen, query, setQuery, onOpen } = useCommandControls();
+  return <><Button onClick={onOpen}>打开长内容案例</Button><p>打开后检查标题和命令名称换行。</p><CommandPalette open={open} onOpenChange={setOpen} query={query} onQueryChange={setQuery} title="跨区域基础设施迁移项目的全部成员权限与安全策略审核记录及发布操作" commands={[{ id: "long", label: "保存当前成员在全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置", textValue: "保存全部设置", onSelect: () => undefined }]} /></>;
+}
+
+function LocaleCommandExample() {
+  const { open, setOpen, query, setQuery, onOpen } = useCommandControls();
+  return <><Button onClick={onOpen}>Open command palette</Button><p>Ctrl+K / Cmd+K also opens it.</p><CommandPalette open={open} onOpenChange={setOpen} query={query} onQueryChange={setQuery} commands={[{ id: "new", label: "Create project", textValue: "Create project", onSelect: () => undefined }]} /></>;
+}
+
+function UncontrolledCommandExample() {
+  const [mounted, setMounted] = useState(false);
+  return <><Button onClick={() => setMounted(true)}>打开非受控命令面板</Button>{mounted ? <CommandPalette defaultOpen defaultQuery="" commands={commands} onOpenChange={(open) => { if (!open) setMounted(false); }} /> : null}</>;
 }
 
 export type PersonalUiExampleState = "default" | "disabled" | "controlled" | "uncontrolled" | "loading" | "empty" | "longContent" | "keyboard" | "overlay" | "dark" | "locale" | "usage";
@@ -10303,16 +10394,16 @@ export interface PersonalUiStateFixture {
 }
 export const PersonalUiStateExamples: readonly PersonalUiStateFixture[] = [
     { state: "default", exports: ["CommandPalette"], content: <CommandExample /> },
-    { state: "disabled", exports: ["CommandPalette"], instructions: "打开后“归档工作区”被禁用，不接受点击和键盘选择。", content: <CommandExample /> },
+    { state: "disabled", exports: ["CommandPalette"], instructions: "打开后“归档工作区”被禁用，不接受点击和键盘选择。", content: <DisabledCommandExample /> },
     { state: "controlled", exports: ["CommandPalette"], content: <CommandExample /> },
-    { state: "uncontrolled", exports: ["CommandPalette"], instructions: "该实例用 defaultOpen/defaultQuery，由组件内部维护开关与查询；Esc 关闭。", content: <CommandPalette defaultOpen defaultQuery="" commands={commands} /> },
-    { state: "loading", exports: ["CommandPalette"], content: <CommandPalette defaultOpen loading commands={commands} /> },
-    { state: "empty", exports: ["CommandPalette"], content: <CommandPalette defaultOpen commands={[]} emptyText="没有可用命令" /> },
-    { state: "longContent", exports: ["CommandPalette"], content: <CommandPalette defaultOpen title="跨区域基础设施迁移项目的全部成员权限与安全策略审核记录及发布操作" commands={[{ id: "long", label: "保存当前成员在全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置", textValue: "保存全部设置", onSelect: () => undefined }]} /> },
+    { state: "uncontrolled", exports: ["CommandPalette"], instructions: "点击触发器后挂载 defaultOpen/defaultQuery 实例，由组件内部维护开关与查询；Esc 关闭并卸载，以便再次打开。", content: <UncontrolledCommandExample /> },
+    { state: "loading", exports: ["CommandPalette"], content: <LoadingCommandExample /> },
+    { state: "empty", exports: ["CommandPalette"], content: <EmptyCommandExample /> },
+    { state: "longContent", exports: ["CommandPalette"], content: <LongCommandExample /> },
     { state: "keyboard", exports: ["CommandPalette", "useCommandPaletteShortcut"], instructions: "Ctrl+K/Cmd+K 打开；方向键、Home、End 移动命令，Enter 执行，Esc 关闭并返回原焦点。", content: <CommandExample /> },
     { state: "overlay", exports: ["CommandPalette"], content: <StatePreview state="overlay"><CommandExample /></StatePreview> },
     { state: "dark", exports: ["CommandPalette"], content: <StatePreview state="dark"><CommandExample /></StatePreview> },
-    { state: "locale", exports: ["CommandPalette"], content: <StatePreview state="locale"><CommandPalette defaultOpen commands={[{ id: "new", label: "Create project", textValue: "Create project", onSelect: () => undefined }]} /></StatePreview> },
+    { state: "locale", exports: ["CommandPalette"], content: <StatePreview state="locale"><LocaleCommandExample /></StatePreview> },
     { state: "usage", exports: ["useCommandPaletteShortcut"], instructions: "Hook 绑定当前实例的 onOpen；卸载场景会清理全局快捷键监听。", content: <CommandExample /> },
   ];
 
@@ -10340,7 +10431,7 @@ export function PersonalUiExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled-uncontrolled` |
 | Parameter type | `CommandPaletteProps` |
-| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:385](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L385) |
+| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:387](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L387) |
 | Explorer / example | [#/components/command](../assets/react-kit/index.html#/components/command); [compiled family example](#family-command-compiled-example) (case `command/overview`, source [assets/react-kit/src/explorer/cases/navigation/command.case.tsx](../assets/react-kit/src/explorer/cases/navigation/command.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -10390,10 +10481,10 @@ type CommandPaletteQueryProps = {
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `emptyText` | `message("command.empty")` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:403](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L403) |
-| `loading` | `false` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:401](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L401) |
-| `placeholder` | `message("command.search")` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:404](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L404) |
-| `title` | `message("command.title")` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:397](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L397) |
+| `emptyText` | `message("command.empty")` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:405](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L405) |
+| `loading` | `false` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:403](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L403) |
+| `placeholder` | `message("command.search")` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:406](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L406) |
+| `title` | `message("command.title")` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:399](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L399) |
 
 #### Semantic Tokens
 
@@ -10428,7 +10519,7 @@ No migration is required for the current public export.
 | Kind / stability | `non-visual` / `stable` |
 | State mode | `hook` |
 | Parameter type | `CommandPaletteShortcutOptions` |
-| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:548](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L548) |
+| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:550](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L550) |
 | Explorer / example | [#/components/command](../assets/react-kit/index.html#/components/command); [compiled family example](#family-command-compiled-example) (case `command/overview`, source [assets/react-kit/src/explorer/cases/navigation/command.case.tsx](../assets/react-kit/src/explorer/cases/navigation/command.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | none: This non-visual hook renders no ARIA semantics. |
@@ -10456,10 +10547,10 @@ export interface CommandPaletteShortcutOptions {
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `ctrlKey` | `true` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:548](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L548) |
-| `enabled` | `true` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:548](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L548) |
-| `key` | `"k"` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:548](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L548) |
-| `metaKey` | `true` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:548](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L548) |
+| `ctrlKey` | `true` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:550](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L550) |
+| `enabled` | `true` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:550](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L550) |
+| `key` | `"k"` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:550](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L550) |
+| `metaKey` | `true` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:550](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L550) |
 
 #### Semantic Tokens
 
@@ -10505,13 +10596,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -10765,13 +10856,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -10913,13 +11004,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -10929,26 +11020,46 @@ export function StatePreview({ state, children }: {
   </>;
 }
 
-import { ContextMenu, DropdownMenu, Menu } from "./personal-ui";
+import { ContextMenu, DropdownMenu, Menu, Stack, type NavigationItem } from "./personal-ui";
 
-const menuItems = [
+const menuItems: NavigationItem[] = [
   { id: "open", label: "打开", onSelect: () => window.alert("打开记录") },
   { id: "duplicate", label: "创建副本", onSelect: () => undefined },
   { id: "archive", label: "归档", onSelect: () => undefined, disabled: true },
 ];
 
-const longItems = [{ id: "long", label: "保存当前成员在全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置", onSelect: () => undefined }];
+const longItems: NavigationItem[] = [{ id: "long", label: "保存当前成员在全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置", onSelect: () => undefined }];
 
 function MenuExample() {
-  return <div className="demo-number-case__grid">
+  return <Stack gap="large" align="start">
     <Menu ariaLabel="导航菜单" items={menuItems} />
     <DropdownMenu label="更多操作" ariaLabel="下拉菜单" items={menuItems} />
     <ContextMenu ariaLabel="记录菜单" items={menuItems}><p>右键或 Shift+F10 打开菜单。</p></ContextMenu>
-  </div>;
+  </Stack>;
 }
 
-function LongMenus() {
-  return <div className="demo-number-case__grid"><Menu ariaLabel="长导航" items={longItems} /><DropdownMenu label="查看长操作" ariaLabel="长下拉菜单" items={longItems} /><ContextMenu ariaLabel="长右键菜单" items={longItems}><p>右键查看长操作名称。</p></ContextMenu></div>;
+function EmptyMenuExample() {
+  return <Stack gap="large" align="start">
+    <Menu ariaLabel="空导航" items={[]} />
+    <DropdownMenu label="空操作组" ariaLabel="空下拉菜单" items={[]} />
+    <ContextMenu ariaLabel="空右键菜单" items={[]}><p>没有可用操作。</p></ContextMenu>
+  </Stack>;
+}
+
+function LongMenuExample() {
+  return <Stack gap="large" align="start">
+    <Menu ariaLabel="长导航" items={longItems} />
+    <DropdownMenu label="查看长操作" ariaLabel="长下拉菜单" items={longItems} />
+    <ContextMenu ariaLabel="长右键菜单" items={longItems}><p>右键查看长操作名称。</p></ContextMenu>
+  </Stack>;
+}
+
+function LocaleMenuExample() {
+  return <Stack gap="large" align="start">
+    <Menu ariaLabel="Navigation" items={[{ id: "home", label: "Home" }]} />
+    <DropdownMenu label="Actions" ariaLabel="Actions" items={[{ id: "open", label: "Open", onSelect: () => undefined }]} />
+    <ContextMenu ariaLabel="Record actions" items={[{ id: "open", label: "Open", onSelect: () => undefined }]}><p>Right-click this record.</p></ContextMenu>
+  </Stack>;
 }
 
 export type PersonalUiExampleState = "default" | "disabled" | "empty" | "longContent" | "keyboard" | "overlay" | "dark" | "locale";
@@ -10962,12 +11073,12 @@ export interface PersonalUiStateFixture {
 export const PersonalUiStateExamples: readonly PersonalUiStateFixture[] = [
     { state: "default", exports: ["Menu", "DropdownMenu", "ContextMenu"], content: <MenuExample /> },
     { state: "disabled", exports: ["Menu", "DropdownMenu", "ContextMenu"], instructions: "打开菜单后“归档”不可激活；其他项保持可用。", content: <MenuExample /> },
-    { state: "empty", exports: ["Menu", "DropdownMenu", "ContextMenu"], instructions: "空数组不会自动生成空态消息；下拉和右键触发入口仍由各组件维护。", content: <div className="demo-number-case__grid"><Menu ariaLabel="空导航" items={[]} /><DropdownMenu label="空操作组" ariaLabel="空下拉菜单" items={[]} /><ContextMenu ariaLabel="空右键菜单" items={[]}><p>没有可用操作。</p></ContextMenu></div> },
-    { state: "longContent", exports: ["Menu", "DropdownMenu", "ContextMenu"], content: <LongMenus /> },
+    { state: "empty", exports: ["Menu", "DropdownMenu", "ContextMenu"], instructions: "空数组不会自动生成空态消息；下拉和右键触发入口仍由各组件维护。", content: <EmptyMenuExample /> },
+    { state: "longContent", exports: ["Menu", "DropdownMenu", "ContextMenu"], content: <LongMenuExample /> },
     { state: "keyboard", exports: ["Menu", "DropdownMenu", "ContextMenu"], instructions: "Tab 访问菜单；下拉用 Enter/方向键打开，右键菜单用 Shift+F10；打开后方向键移动、Esc 关闭并返回触发入口。", content: <MenuExample /> },
     { state: "overlay", exports: ["DropdownMenu", "ContextMenu"], content: <StatePreview state="overlay"><MenuExample /></StatePreview> },
     { state: "dark", exports: ["Menu", "DropdownMenu", "ContextMenu"], content: <StatePreview state="dark"><MenuExample /></StatePreview> },
-    { state: "locale", exports: ["Menu", "DropdownMenu", "ContextMenu"], content: <StatePreview state="locale"><Menu ariaLabel="Navigation" items={[{ id: "home", label: "Home" }]} /><DropdownMenu label="Actions" ariaLabel="Actions" items={[{ id: "open", label: "Open", onSelect: () => undefined }]} /><ContextMenu ariaLabel="Record actions" items={[{ id: "open", label: "Open", onSelect: () => undefined }]}><p>Right-click this record.</p></ContextMenu></StatePreview> },
+    { state: "locale", exports: ["Menu", "DropdownMenu", "ContextMenu"], content: <StatePreview state="locale"><LocaleMenuExample /></StatePreview> },
   ];
 
 export function PersonalUiExample({ state, component }: {
@@ -11212,13 +11323,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -11373,13 +11484,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -11447,7 +11558,7 @@ export function PersonalUiExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled` |
 | Parameter type | `StepperProps` |
-| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:311](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L311) |
+| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:313](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L313) |
 | Explorer / example | [#/components/stepper](../assets/react-kit/index.html#/components/stepper); [compiled family example](#family-stepper-compiled-example) (case `stepper/overview`, source [assets/react-kit/src/explorer/cases/navigation/stepper.case.tsx](../assets/react-kit/src/explorer/cases/navigation/stepper.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -11484,8 +11595,8 @@ export type StepperProps = PublicControlProps<Omit<HTMLAttributes<HTMLElement>, 
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `linear` | `true` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:318](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L318) |
-| `orientation` | `"responsive"` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:317](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L317) |
+| `linear` | `true` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:320](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L320) |
+| `orientation` | `"responsive"` | [assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx:319](../assets/react-kit/src/personal-ui/navigation/navigation-extra.tsx#L319) |
 
 #### Semantic Tokens
 
@@ -11533,13 +11644,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -11687,13 +11798,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -11935,13 +12046,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -12101,13 +12212,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -12324,13 +12435,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -12498,13 +12609,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -12662,13 +12773,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -12811,13 +12922,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -12968,13 +13079,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -13149,13 +13260,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -13285,13 +13396,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -13489,13 +13600,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -13940,13 +14051,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -14131,13 +14242,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -14335,13 +14446,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -14621,13 +14732,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -14804,13 +14915,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -14945,13 +15056,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -15177,13 +15288,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -15350,13 +15461,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -15518,13 +15629,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -15679,13 +15790,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -15830,13 +15941,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -16003,13 +16114,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -16177,13 +16288,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -16309,13 +16420,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -16441,13 +16552,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -16570,13 +16681,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -16586,7 +16697,19 @@ export function StatePreview({ state, children }: {
   </>;
 }
 
-import { Inline, Progress, ProgressRing } from "./personal-ui";
+import { Inline, Progress, ProgressRing, Stack } from "./personal-ui";
+
+function ProgressExample() {
+  return <div style={{ width: "100%", maxWidth: 560 }}>
+    <Stack gap="large">
+      <Progress value={68} label="导入成员" showValue />
+      <Inline gap="large" wrap>
+        <ProgressRing value={42} label="资料上传进度" />
+        <ProgressRing indeterminate label="正在检查文件" />
+      </Inline>
+    </Stack>
+  </div>;
+}
 
 export type PersonalUiExampleState = "default" | "longContent" | "dark" | "locale";
 export type PersonalUiExampleComponent = "Progress" | "ProgressRing";
@@ -16597,17 +16720,17 @@ export interface PersonalUiStateFixture {
   instructions?: string;
 }
 export const PersonalUiStateExamples: readonly PersonalUiStateFixture[] = [
-    { state: "default", exports: ["Progress","ProgressRing"], content: <Inline gap="large" wrap><Progress value={68} label="导入成员" showValue /><ProgressRing value={42} label="资料上传进度" /><ProgressRing indeterminate label="正在检查文件" /></Inline> },
-    { state: "longContent", exports: ["Progress","ProgressRing"], content: <Inline gap="large" wrap><Progress value={68} label="正在校验组织的全部访问策略以及关联产品的身份提供方配置，任务完成前请保留当前页面并等待结果。" /><ProgressRing value={42} label="正在校验组织的全部访问策略以及关联产品的身份提供方配置，任务完成前请保留当前页面并等待结果。" /></Inline> },
-    { state: "dark", exports: ["Progress","ProgressRing"], content: <StatePreview state="dark"><Inline gap="large" wrap><Progress value={68} label="导入成员" showValue /><ProgressRing value={42} label="资料上传进度" /><ProgressRing indeterminate label="正在检查文件" /></Inline></StatePreview> },
-    { state: "locale", exports: ["Progress","ProgressRing"], content: <StatePreview state="locale"><Inline gap="large" wrap><Progress value={68} label="导入成员" showValue /><ProgressRing value={42} label="资料上传进度" /><ProgressRing indeterminate label="正在检查文件" /></Inline></StatePreview> },
+    { state: "default", exports: ["Progress","ProgressRing"], content: <ProgressExample /> },
+    { state: "longContent", exports: ["Progress","ProgressRing"], content: <div style={{ width: "100%", maxWidth: 560 }}><Stack gap="large"><Progress value={68} label="正在校验组织的全部访问策略以及关联产品的身份提供方配置，任务完成前请保留当前页面并等待结果。" showValue /><Inline gap="large" wrap><ProgressRing value={42} label="正在校验组织的全部访问策略以及关联产品的身份提供方配置，任务完成前请保留当前页面并等待结果。" /><ProgressRing indeterminate label="正在检查文件" /></Inline></Stack></div> },
+    { state: "dark", exports: ["Progress","ProgressRing"], content: <StatePreview state="dark"><ProgressExample /></StatePreview> },
+    { state: "locale", exports: ["Progress","ProgressRing"], content: <StatePreview state="locale"><ProgressExample /></StatePreview> },
   ];
 
 export function PersonalUiExample({ state, component }: {
   state?: PersonalUiExampleState;
   component?: PersonalUiExampleComponent;
 } = {}) {
-  if (state === undefined) return (<Inline gap="large" wrap><Progress value={68} label="导入成员" showValue /><ProgressRing value={42} label="资料上传进度" /><ProgressRing indeterminate label="正在检查文件" /></Inline>);
+  if (state === undefined) return (<ProgressExample />);
   const fixture = PersonalUiStateExamples.find((example) => example.state === state
     && (component === undefined || example.exports.some((name) => name === component)));
   if (!fixture) throw new RangeError(`No state fixture for ${component ?? "this family"}:${state}.`);
@@ -16761,13 +16884,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -16779,13 +16902,13 @@ export function StatePreview({ state, children }: {
 
 import { useState } from "react";
 
-import { AsyncAction, EmptyState, ErrorState, InlineMessage, NoResults, RetryButton, Stack } from "./personal-ui";
+import { AsyncAction, EmptyState, ErrorState, Inline, InlineMessage, NoResults, RetryButton, Stack } from "./personal-ui";
 
 async function wait() { await new Promise<void>((resolve) => setTimeout(resolve, 1200)); }
 
 function AsyncFailure() {
   const [error, setError] = useState("");
-  return <Stack><AsyncAction onAction={async () => { throw new Error("保存失败，请检查网络。"); }} onActionError={(failure) => setError(failure instanceof Error ? failure.message : "保存失败")}>触发保存失败</AsyncAction>{error ? <InlineMessage tone="danger">{error}</InlineMessage> : null}</Stack>;
+  return <Stack><Inline><AsyncAction onAction={async () => { throw new Error("保存失败，请检查网络。"); }} onActionError={(failure) => setError(failure instanceof Error ? failure.message : "保存失败")}>触发保存失败</AsyncAction></Inline>{error ? <InlineMessage tone="danger">{error}</InlineMessage> : null}</Stack>;
 }
 
 export type PersonalUiExampleState = "default" | "empty" | "error" | "disabled" | "loading" | "longContent" | "keyboard" | "overlay" | "dark" | "locale";
@@ -16797,23 +16920,23 @@ export interface PersonalUiStateFixture {
   instructions?: string;
 }
 export const PersonalUiStateExamples: readonly PersonalUiStateFixture[] = [
-    { state: "default", exports: ["EmptyState","ErrorState","NoResults","RetryButton","AsyncAction"], content: <Stack gap="large"><EmptyState compact title="还没有成员" /><NoResults compact /><ErrorState compact onRetry={wait} /><RetryButton onRetry={() => undefined} /><AsyncAction onAction={wait}>保存更改</AsyncAction></Stack> },
+    { state: "default", exports: ["EmptyState","ErrorState","NoResults","RetryButton","AsyncAction"], content: <Stack gap="large"><EmptyState compact title="还没有成员" /><NoResults compact /><ErrorState compact onRetry={wait} /><Inline><RetryButton onRetry={() => undefined} /><AsyncAction onAction={wait}>保存更改</AsyncAction></Inline></Stack> },
     { state: "empty", exports: ["EmptyState","NoResults"], content: <Stack><EmptyState compact title="还没有成员" /><NoResults compact /></Stack> },
     { state: "error", exports: ["ErrorState","AsyncAction"], content: <Stack><ErrorState compact kind="offline" /><AsyncFailure /></Stack>, instructions: "点击触发保存失败，观察请求失败后的错误消息。" },
-    { state: "disabled", exports: ["RetryButton","AsyncAction"], content: <Stack><RetryButton disabled onRetry={() => undefined} /><AsyncAction disabled onAction={wait}>保存更改</AsyncAction></Stack> },
-    { state: "loading", exports: ["ErrorState","RetryButton","AsyncAction"], content: <Stack><ErrorState compact retryLoading onRetry={wait} /><RetryButton loading onRetry={() => undefined} /><AsyncAction loading onAction={wait}>保存更改</AsyncAction></Stack> },
-    { state: "longContent", exports: ["EmptyState","ErrorState","NoResults","RetryButton","AsyncAction"], content: <Stack><EmptyState compact title="还没有成员" description="成员目录查询暂时无法完成，请检查工作区权限、组织网络代理及身份提供方配置。修正这些设置之后重试，已经成功载入的数据将保留，不会重复提交操作。" /><NoResults compact description="成员目录查询暂时无法完成，请检查工作区权限、组织网络代理及身份提供方配置。修正这些设置之后重试，已经成功载入的数据将保留，不会重复提交操作。" /><ErrorState compact description="成员目录查询暂时无法完成，请检查工作区权限、组织网络代理及身份提供方配置。修正这些设置之后重试，已经成功载入的数据将保留，不会重复提交操作。" /><RetryButton label="成员目录查询暂时无法完成，请检查工作区权限、组织网络代理及身份提供方配置。修正这些设置之后重试，已经成功载入的数据将保留，不会重复提交操作。" onRetry={() => undefined} /><AsyncAction onAction={wait}>成员目录查询暂时无法完成，请检查工作区权限、组织网络代理及身份提供方配置。修正这些设置之后重试，已经成功载入的数据将保留，不会重复提交操作。</AsyncAction></Stack> },
-    { state: "keyboard", exports: ["ErrorState","RetryButton","AsyncAction"], content: <Stack gap="large"><EmptyState compact title="还没有成员" /><NoResults compact /><ErrorState compact onRetry={wait} /><RetryButton onRetry={() => undefined} /><AsyncAction onAction={wait}>保存更改</AsyncAction></Stack>, instructions: "用 Tab 聚焦本例操作按钮，用 Enter 或 Space 执行；关闭浮层后核对焦点返回。此处是人工操作入口，不是自动验收证书。" },
-    { state: "overlay", exports: ["RetryButton","AsyncAction"], content: <StatePreview state="overlay"><Stack><RetryButton onRetry={() => undefined} /><AsyncAction onAction={wait}>保存更改</AsyncAction></Stack></StatePreview> },
-    { state: "dark", exports: ["EmptyState","ErrorState","NoResults","RetryButton","AsyncAction"], content: <StatePreview state="dark"><Stack gap="large"><EmptyState compact title="还没有成员" /><NoResults compact /><ErrorState compact onRetry={wait} /><RetryButton onRetry={() => undefined} /><AsyncAction onAction={wait}>保存更改</AsyncAction></Stack></StatePreview> },
-    { state: "locale", exports: ["EmptyState","ErrorState","NoResults","RetryButton","AsyncAction"], content: <StatePreview state="locale"><Stack gap="large"><EmptyState compact title="还没有成员" /><NoResults compact /><ErrorState compact onRetry={wait} /><RetryButton onRetry={() => undefined} /><AsyncAction onAction={wait}>保存更改</AsyncAction></Stack></StatePreview> },
+    { state: "disabled", exports: ["RetryButton","AsyncAction"], content: <Inline><RetryButton disabled onRetry={() => undefined} /><AsyncAction disabled onAction={wait}>保存更改</AsyncAction></Inline> },
+    { state: "loading", exports: ["ErrorState","RetryButton","AsyncAction"], content: <Stack><ErrorState compact retryLoading onRetry={wait} /><Inline><RetryButton loading onRetry={() => undefined} /><AsyncAction loading onAction={wait}>保存更改</AsyncAction></Inline></Stack> },
+    { state: "longContent", exports: ["EmptyState","ErrorState","NoResults","RetryButton","AsyncAction"], content: <Stack><EmptyState compact title="还没有成员" description="成员目录查询暂时无法完成，请检查工作区权限、组织网络代理及身份提供方配置。修正这些设置之后重试，已经成功载入的数据将保留，不会重复提交操作。" /><NoResults compact description="成员目录查询暂时无法完成，请检查工作区权限、组织网络代理及身份提供方配置。修正这些设置之后重试，已经成功载入的数据将保留，不会重复提交操作。" /><ErrorState compact description="成员目录查询暂时无法完成，请检查工作区权限、组织网络代理及身份提供方配置。修正这些设置之后重试，已经成功载入的数据将保留，不会重复提交操作。" /><Inline><RetryButton label="成员目录查询暂时无法完成，请检查工作区权限、组织网络代理及身份提供方配置。修正这些设置之后重试，已经成功载入的数据将保留，不会重复提交操作。" onRetry={() => undefined} /><AsyncAction onAction={wait}>成员目录查询暂时无法完成，请检查工作区权限、组织网络代理及身份提供方配置。修正这些设置之后重试，已经成功载入的数据将保留，不会重复提交操作。</AsyncAction></Inline></Stack> },
+    { state: "keyboard", exports: ["ErrorState","RetryButton","AsyncAction"], content: <Stack gap="large"><EmptyState compact title="还没有成员" /><NoResults compact /><ErrorState compact onRetry={wait} /><Inline><RetryButton onRetry={() => undefined} /><AsyncAction onAction={wait}>保存更改</AsyncAction></Inline></Stack>, instructions: "用 Tab 聚焦本例操作按钮，用 Enter 或 Space 执行；关闭浮层后核对焦点返回。此处是人工操作入口，不是自动验收证书。" },
+    { state: "overlay", exports: ["RetryButton","AsyncAction"], content: <StatePreview state="overlay"><Inline><RetryButton onRetry={() => undefined} /><AsyncAction onAction={wait}>保存更改</AsyncAction></Inline></StatePreview> },
+    { state: "dark", exports: ["EmptyState","ErrorState","NoResults","RetryButton","AsyncAction"], content: <StatePreview state="dark"><Stack gap="large"><EmptyState compact title="还没有成员" /><NoResults compact /><ErrorState compact onRetry={wait} /><Inline><RetryButton onRetry={() => undefined} /><AsyncAction onAction={wait}>保存更改</AsyncAction></Inline></Stack></StatePreview> },
+    { state: "locale", exports: ["EmptyState","ErrorState","NoResults","RetryButton","AsyncAction"], content: <StatePreview state="locale"><Stack gap="large"><EmptyState compact title="还没有成员" /><NoResults compact /><ErrorState compact onRetry={wait} /><Inline><RetryButton onRetry={() => undefined} /><AsyncAction onAction={wait}>保存更改</AsyncAction></Inline></Stack></StatePreview> },
   ];
 
 export function PersonalUiExample({ state, component }: {
   state?: PersonalUiExampleState;
   component?: PersonalUiExampleComponent;
 } = {}) {
-  if (state === undefined) return (<Stack gap="large"><EmptyState compact title="还没有成员" /><NoResults compact /><ErrorState compact onRetry={wait} /><RetryButton onRetry={() => undefined} /><AsyncAction onAction={wait}>保存更改</AsyncAction></Stack>);
+  if (state === undefined) return (<Stack gap="large"><EmptyState compact title="还没有成员" /><NoResults compact /><ErrorState compact onRetry={wait} /><Inline><RetryButton onRetry={() => undefined} /><AsyncAction onAction={wait}>保存更改</AsyncAction></Inline></Stack>);
   const fixture = PersonalUiStateExamples.find((example) => example.state === state
     && (component === undefined || example.exports.some((name) => name === component)));
   if (!fixture) throw new RangeError(`No state fixture for ${component ?? "this family"}:${state}.`);
@@ -17154,13 +17277,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -17278,13 +17401,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -17403,13 +17526,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -17642,13 +17765,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -17779,13 +17902,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -18079,13 +18202,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -18262,13 +18385,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -18456,13 +18579,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -18636,13 +18759,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -18835,13 +18958,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -19029,13 +19152,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -19181,13 +19304,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -19367,13 +19490,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -19436,7 +19559,10 @@ function ValidationLoginExample() {
 
 function LongAuthenticationExample() {
   const [feedback, setFeedback] = useState("");
-  return <><AuthenticationPage company="Northstar" title="登录工作区" description="此认证页用于访问全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置，请确认所有关联配置均符合团队的实际使用要求。"><Button onClick={() => setFeedback("通用认证页继续操作已触发")}>继续</Button></AuthenticationPage><FamilyLoginPage companyName="Northstar" products={[{ id: "details", name: "完整配置", accent: "#1769d2", headline: "统一登录体验", description: "此产品包含全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置，请确认所有关联配置均符合团队的实际使用要求。", visual: <div aria-hidden="true">Docs</div> }]} onSubmit={() => setFeedback("完整配置登录已完成")} /><p role="status">{feedback}</p></>;
+  return <Tabs ariaLabel="长内容认证页面案例" defaultValue="generic" items={[
+    { id: "generic", label: "通用认证页", content: <AuthenticationPage company="Northstar" title="登录工作区" description="此认证页用于访问全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置，请确认所有关联配置均符合团队的实际使用要求。"><Button onClick={() => setFeedback("通用认证页继续操作已触发")}>继续</Button><p role="status">{feedback}</p></AuthenticationPage> },
+    { id: "family", label: "品牌家族登录", content: <><FamilyLoginPage companyName="Northstar" products={[{ id: "details", name: "完整配置", accent: "#1769d2", headline: "统一登录体验", description: "此产品包含全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置，请确认所有关联配置均符合团队的实际使用要求。", visual: <div aria-hidden="true">Docs</div> }]} onSubmit={() => setFeedback("完整配置登录已完成")} /><p role="status">{feedback}</p></> },
+  ]} />;
 }
 
 export type PersonalUiExampleState = "loading" | "empty" | "error" | "validation" | "longContent" | "default" | "keyboard" | "mobile" | "overlay" | "dark" | "locale";
@@ -19649,13 +19775,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -19819,13 +19945,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -19982,13 +20108,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -20148,13 +20274,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -20164,7 +20290,7 @@ export function StatePreview({ state, children }: {
   </>;
 }
 
-import { Button, EmptyState, FilterBar, ListManagementPage, MemberManagementPage, PageHeading, SearchFilterPage, SearchInput, Tabs } from "./personal-ui";
+import { Box, Button, EmptyState, FilterBar, ListManagementPage, MemberManagementPage, PageHeading, SearchFilterPage, SearchInput, Tabs } from "./personal-ui";
 
 import { useState } from "react";
 
@@ -20185,12 +20311,22 @@ async function fetchFixtureMembers(query: MemberQuery): Promise<MemberResult> {
 const longDescription = "此页面管理全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置，请确认所有关联配置均符合团队的实际使用要求后执行操作。";
 
 function LongListPages() {
-  return <><PageHeading title="完整成员说明" description={longDescription} /><ListManagementPage title="项目" description={longDescription}><p>项目列表</p></ListManagementPage><SearchFilterPage title="审计" description={longDescription}><p>查询结果</p></SearchFilterPage><MemberManagementPage title={longDescription} fetchMembers={async () => ({ items: [{ id: "long", name: "此成员负责全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置，请确认所有关联配置均符合团队的实际使用要求。", email: "long@example.com", team: "平台", role: "editor", status: "joined", joinedAt: "2026-09-20" }], total: 1 })} /></>;
+  return <Box padding="medium"><Tabs ariaLabel="长内容列表页面案例" defaultValue="heading" items={[
+    { id: "heading", label: "页头", content: <PageHeading title="完整成员说明" description={longDescription} /> },
+    { id: "management", label: "列表管理", content: <ListManagementPage title="项目" description={longDescription}><p>项目列表</p></ListManagementPage> },
+    { id: "search", label: "搜索筛选", content: <SearchFilterPage title="审计" description={longDescription}><p>查询结果</p></SearchFilterPage> },
+    { id: "members", label: "成员工作流", content: <MemberManagementPage title={longDescription} fetchMembers={async () => ({ items: [{ id: "long", name: "此成员负责全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置，请确认所有关联配置均符合团队的实际使用要求。", email: "long@example.com", team: "平台", role: "editor", status: "joined", joinedAt: "2026-09-20" }], total: 1 })} /> },
+  ]} /></Box>;
 }
 
 function KeyboardListPages() {
   const [feedback, setFeedback] = useState("尚未执行返回");
-  return <><PageHeading title="成员" onBack={() => setFeedback("页头返回已触发")} /><ListManagementPage title="项目" onBack={() => setFeedback("列表页返回已触发")}><p>项目列表</p></ListManagementPage><SearchFilterPage title="审计" onBack={() => setFeedback("搜索页返回已触发")}><p>查询结果</p></SearchFilterPage><p role="status">{feedback}</p><MemberManagementPage fetchMembers={fetchFixtureMembers} roles={["编辑者"]} statuses={["已加入"]} /></>;
+  return <Box padding="medium"><Tabs ariaLabel="键盘操作列表页面案例" defaultValue="heading" items={[
+    { id: "heading", label: "页头", content: <><PageHeading title="成员" onBack={() => setFeedback("页头返回已触发")} /><p role="status">{feedback}</p></> },
+    { id: "management", label: "列表管理", content: <><ListManagementPage title="项目" onBack={() => setFeedback("列表页返回已触发")}><p>项目列表</p></ListManagementPage><p role="status">{feedback}</p></> },
+    { id: "search", label: "搜索筛选", content: <><SearchFilterPage title="审计" onBack={() => setFeedback("搜索页返回已触发")}><p>查询结果</p></SearchFilterPage><p role="status">{feedback}</p></> },
+    { id: "members", label: "成员工作流", content: <MemberManagementPage fetchMembers={fetchFixtureMembers} roles={["编辑者"]} statuses={["已加入"]} /> },
+  ]} /></Box>;
 }
 
 function DraftListPage({ kind }: { kind: "management" | "search" }) {
@@ -20207,7 +20343,7 @@ function DraftListPage({ kind }: { kind: "management" | "search" }) {
 function ListFilterExample() {
   const [feedback, setFeedback] = useState("");
   return (
-    <Tabs
+    <Box padding="medium"><Tabs
       ariaLabel="列表页面模式案例"
       defaultValue="management"
       items={[
@@ -20228,7 +20364,7 @@ function ListFilterExample() {
           content: <MemberManagementPage fetchMembers={fetchFixtureMembers} roles={["编辑者"]} statuses={["已加入"]} />,
         },
       ]}
-    />
+    /></Box>
   );
 }
 
@@ -20591,13 +20727,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -20609,15 +20745,15 @@ export function StatePreview({ state, children }: {
 
 import { useState } from "react";
 
-import { Button, DescriptionList, MasterDetail, Stack } from "./personal-ui";
+import { Box, Button, DescriptionList, MasterDetail, Stack } from "./personal-ui";
 
 function MasterDetailExample() {
   const [selected, setSelected] = useState("northstar");
   return (
     <MasterDetail
       title="项目"
-      master={<Stack gap="small"><Button variant={selected === "northstar" ? "primary" : "secondary"} onClick={() => setSelected("northstar")}>Northstar</Button><Button variant={selected === "atlas" ? "primary" : "secondary"} onClick={() => setSelected("atlas")}>Atlas</Button></Stack>}
-      detail={<DescriptionList items={[{ id: "project", term: "项目", description: selected === "northstar" ? "Northstar" : "Atlas" }, { id: "status", term: "状态", description: "运行中" }]} />}
+      master={<Box padding="medium"><Stack gap="small"><Button variant={selected === "northstar" ? "primary" : "secondary"} onClick={() => setSelected("northstar")}>Northstar</Button><Button variant={selected === "atlas" ? "primary" : "secondary"} onClick={() => setSelected("atlas")}>Atlas</Button></Stack></Box>}
+      detail={<Box padding="medium"><DescriptionList items={[{ id: "project", term: "项目", description: selected === "northstar" ? "Northstar" : "Atlas" }, { id: "status", term: "状态", description: "运行中" }]} /></Box>}
     />
   );
 }
@@ -20631,8 +20767,8 @@ export interface PersonalUiStateFixture {
   instructions?: string;
 }
 export const PersonalUiStateExamples: readonly PersonalUiStateFixture[] = [
-    { state: "empty", exports: ["MasterDetail"], content: <MasterDetail title="选择项目" master={<p>项目列表</p>} detail={<p>项目详情</p>} detailOpen={false} emptyDetail={<p>请选择项目以查看详情。</p>} /> },
-    { state: "longContent", exports: ["MasterDetail"], content: <MasterDetail title="完整项目配置" description="此页面展示全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置，请确认所有关联配置均符合团队的实际使用要求。" master={<p>项目列表</p>} detail={<p>项目详情</p>} /> },
+    { state: "empty", exports: ["MasterDetail"], content: <MasterDetail title="选择项目" master={<Box padding="medium">项目列表</Box>} detail={<Box padding="medium">项目详情</Box>} detailOpen={false} emptyDetail={<Box padding="medium">请选择项目以查看详情。</Box>} /> },
+    { state: "longContent", exports: ["MasterDetail"], content: <MasterDetail title="完整项目配置" description="此页面展示全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置，请确认所有关联配置均符合团队的实际使用要求。" master={<Box padding="medium">项目列表</Box>} detail={<Box padding="medium">项目详情</Box>} /> },
     { state: "default", exports: ["MasterDetail"], content: <MasterDetailExample /> },
     { state: "keyboard", exports: ["MasterDetail"], content: <MasterDetailExample />, instructions: "用 Tab 访问本例可用控件，使用 Enter、Space 和组件文档中的方向键操作。此项为人工操作案例，不是自动行为验收证书。" },
     { state: "mobile", exports: ["MasterDetail"], content: <StatePreview state="mobile">{<MasterDetailExample />}</StatePreview> },
@@ -20717,9 +20853,12 @@ Derived from registered family CSS ([src/personal-ui/styles/extended.css](../ass
 #### Usage Excerpt
 
 ```tsx
-import { MasterDetail } from "./personal-ui";
+import { Box, MasterDetail } from "./personal-ui";
 
-<MasterDetail title="项目" master={projectList} detail={projectDetail} />
+<MasterDetail title="项目"
+  master={<Box padding="medium">{projectList}</Box>}
+  detail={<Box padding="medium">{projectDetail}</Box>}
+/>
 ```
 
 #### Migration
@@ -20750,13 +20889,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -20925,13 +21064,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>
@@ -21085,13 +21224,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>

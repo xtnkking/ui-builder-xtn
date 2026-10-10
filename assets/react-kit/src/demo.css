@@ -215,6 +215,35 @@ body {
   overflow-wrap: anywhere;
 }
 
+.demo-state-preview {
+  min-width: 0;
+  overflow: clip;
+  border-radius: var(--pui-radius-surface);
+}
+
+.demo-aspect-specimen {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 12px;
+  padding: 16px;
+  overflow: auto;
+  border: 1px dashed var(--pui-border-strong);
+  border-radius: var(--pui-radius-surface);
+  background: var(--pui-surface-subtle);
+  color: var(--pui-muted);
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.demo-form-example {
+  width: 100%;
+  max-width: 480px;
+  min-width: 0;
+}
+
 .demo-explorer-pending {
   min-height: 300px;
   display: grid;
@@ -238,6 +267,7 @@ body {
 
 .demo-number-case__grid {
   display: grid;
+  align-items: start;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
   gap: 20px;
   max-width: 1000px;

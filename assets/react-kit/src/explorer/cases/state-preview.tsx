@@ -8,13 +8,13 @@ export function StatePreview({ state, children }: {
 }) {
   const [open, setOpen] = useStateForPreview(false);
   if (state === "dark") {
-    return <PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider>;
+    return <div className="demo-state-preview"><PreviewThemeProvider mode="dark"><PreviewBox padding="medium" surface="default">{children}</PreviewBox></PreviewThemeProvider></div>;
   }
   if (state === "locale") {
     return <PreviewLocaleProvider locale="en-US"><PreviewBox lang="en" padding="medium" surface="default">{children}</PreviewBox></PreviewLocaleProvider>;
   }
   if (state === "mobile") {
-    return <div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div>;
+    return <div className="demo-narrow-preview"><p className="demo-explorer-state-note">此处限制容器宽度为 320px；实际响应式布局请缩小浏览器窗口查看。</p><div style={{ width: "min(320px, 100%)", minWidth: 0, overflow: "auto" }}>{children}</div></div>;
   }
   return <>
     <PreviewButton onClick={() => setOpen(true)}>在弹窗中查看此状态</PreviewButton>

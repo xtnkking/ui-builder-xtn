@@ -1,0 +1,114 @@
+/* Noninteractive foundation specimens only; canonical controls own their CSS. */
+.demo-foundation-caption {
+  color: var(--pui-muted);
+  font-size: 12px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.demo-foundation-note {
+  margin: 0;
+  color: var(--pui-muted);
+  font-size: 13px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.demo-foundation-type {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  color: var(--pui-text);
+  font-family: var(--pui-font);
+}
+
+.demo-foundation-type__heading {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.demo-foundation-type__body,
+.demo-foundation-type__numbers {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.demo-foundation-type__numbers {
+  font-variant-numeric: tabular-nums;
+}
+
+.demo-foundation-type__secondary {
+  margin: 0;
+  color: var(--pui-muted);
+  font-size: 12px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.demo-foundation-spacing-unit {
+  display: block;
+  flex: 0 0 40px;
+  height: 32px;
+  border: 1px solid var(--pui-primary);
+  border-radius: 4px;
+  background: var(--pui-primary-soft);
+}
+
+.demo-foundation-radius {
+  display: flex;
+  min-height: 100px;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px;
+  border: 1px solid var(--pui-primary);
+  background: var(--pui-primary-soft);
+  color: var(--pui-primary-ink);
+  font-size: 12px;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.demo-foundation-radius--surface { border-radius: var(--pui-radius-surface); }
+.demo-foundation-radius--control { border-radius: var(--pui-radius-control); }
+.demo-foundation-radius--table { border-radius: var(--pui-radius-table); }
+.demo-foundation-radius--pill { border-radius: 999px; }
+
+.demo-foundation-border {
+  display: grid;
+  min-width: 0;
+  gap: 8px;
+  padding: 20px;
+  border: 1px solid var(--pui-border);
+  border-radius: var(--pui-radius-surface);
+  background: var(--pui-surface);
+  color: var(--pui-text);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.demo-foundation-border--strong { border-color: var(--pui-border-strong); }
+
+.demo-foundation-layers {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding-inline-start: 24px;
+}
+
+.demo-foundation-layers__item {
+  padding-inline-start: 4px;
+  color: var(--pui-text);
+  font-size: 13px;
+  line-height: 2;
+  overflow-wrap: anywhere;
+}
+
+.demo-foundation-layer-description { margin-inline-start: 8px; }

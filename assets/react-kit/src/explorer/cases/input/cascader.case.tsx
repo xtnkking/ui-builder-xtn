@@ -19,6 +19,11 @@ function CascaderExample() {
   );
 }
 
+function ControlledCascaderExample() {
+  const [path, setPath] = useState<string[]>(["china", "guangdong", "shenzhen"]);
+  return <Field label="受控服务区域" group><Cascader ariaLabel="受控服务区域" value={path} onValueChange={setPath} options={regions} levelLabels={["国家", "省份", "城市"]} /></Field>;
+}
+
 const explorerCase = {
   id: "cascader/overview",
   label: "级联选择",
@@ -27,10 +32,10 @@ const explorerCase = {
   stateExamples: [
     { state: "validation", exports: ["Cascader"], content: <Field label="必选服务区域" group error="请选择完整的服务区域路径。"><Cascader ariaLabel="必选服务区域" defaultValue={[]} options={regions} required submitValue="path" /></Field> },
     { state: "longContent", exports: ["Cascader"], content: <Cascader ariaLabel="长区域名称" defaultValue={["international", "settlement"]} options={[{ value: "international", label: "International subscription platform operations across enterprise security and regional billing workspaces", children: [{ value: "settlement", label: "Cross-region settlement engineering and compliance operations team workspace" }] }]} /> },
-    { state: "default", exports: ["Cascader"], content: <CascaderExample /> },
-    { state: "disabled", exports: ["Cascader"], content: <CascaderExample /> },
-    { state: "controlled", exports: ["Cascader"], content: <CascaderExample /> },
-    { state: "uncontrolled", exports: ["Cascader"], content: <CascaderExample /> },
+    { state: "default", exports: ["Cascader"], content: <Field label="服务区域" group><Cascader ariaLabel="服务区域" defaultValue={["china", "guangdong", "shenzhen"]} options={regions} levelLabels={["国家", "省份", "城市"]} /></Field> },
+    { state: "disabled", exports: ["Cascader"], content: <Field label="禁用区域" group><Cascader ariaLabel="禁用区域" defaultValue={["china", "guangdong", "shenzhen"]} options={regions} levelLabels={["国家", "省份", "城市"]} disabled /></Field> },
+    { state: "controlled", exports: ["Cascader"], content: <ControlledCascaderExample /> },
+    { state: "uncontrolled", exports: ["Cascader"], content: <Field label="默认服务区域" group><Cascader ariaLabel="默认服务区域" defaultValue={["uk", "london"]} options={regions} levelLabels={["国家", "城市"]} /></Field> },
     { state: "keyboard", exports: ["Cascader"], content: <CascaderExample />, instructions: "用 Tab 访问本例可用控件，使用 Enter、Space 和组件文档中的方向键操作。此项为人工操作案例，不是自动行为验收证书。" },
     { state: "overlay", exports: ["Cascader"], content: <StatePreview state="overlay">{<CascaderExample />}</StatePreview> },
     { state: "dark", exports: ["Cascader"], content: <StatePreview state="dark">{<CascaderExample />}</StatePreview> },

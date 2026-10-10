@@ -19,6 +19,11 @@ function TreeSelectExample() {
   );
 }
 
+function ControlledTreeSelectExample() {
+  const [value, setValue] = useState("platform");
+  return <Field label="受控组织节点" htmlFor="explorer-tree-controlled"><TreeSelect id="explorer-tree-controlled" ariaLabel="受控组织节点" value={value} onValueChange={setValue} options={organizations} /></Field>;
+}
+
 const explorerCase = {
   id: "tree-select/overview",
   label: "树形选择",
@@ -27,10 +32,10 @@ const explorerCase = {
   stateExamples: [
     { state: "validation", exports: ["TreeSelect"], content: <Field label="必选组织" htmlFor="explorer-tree-invalid" error="请选择组织节点。"><TreeSelect id="explorer-tree-invalid" ariaLabel="必选组织" defaultValue="" options={organizations} required /></Field> },
     { state: "longContent", exports: ["TreeSelect"], content: <TreeSelect ariaLabel="长组织名称" defaultValue="settlement" options={[{ value: "international", label: "International subscription platform operations and enterprise security engineering organization", children: [{ value: "settlement", label: "Cross-region settlement engineering and global enterprise account support operations team" }] }]} /> },
-    { state: "default", exports: ["TreeSelect"], content: <TreeSelectExample /> },
-    { state: "disabled", exports: ["TreeSelect"], content: <TreeSelectExample /> },
-    { state: "controlled", exports: ["TreeSelect"], content: <TreeSelectExample /> },
-    { state: "uncontrolled", exports: ["TreeSelect"], content: <TreeSelectExample /> },
+    { state: "default", exports: ["TreeSelect"], content: <Field label="组织节点" htmlFor="explorer-tree-default-state"><TreeSelect id="explorer-tree-default-state" ariaLabel="组织节点" defaultValue="platform" options={organizations} /></Field> },
+    { state: "disabled", exports: ["TreeSelect"], content: <Field label="禁用组织节点" htmlFor="explorer-tree-disabled"><TreeSelect id="explorer-tree-disabled" ariaLabel="禁用组织节点" defaultValue="platform" options={organizations} disabled /></Field> },
+    { state: "controlled", exports: ["TreeSelect"], content: <ControlledTreeSelectExample /> },
+    { state: "uncontrolled", exports: ["TreeSelect"], content: <Field label="默认组织" htmlFor="explorer-tree-default"><TreeSelect id="explorer-tree-default" ariaLabel="默认组织" defaultValue="east" options={organizations} /></Field> },
     { state: "keyboard", exports: ["TreeSelect"], content: <TreeSelectExample />, instructions: "用 Tab 访问本例可用控件，使用 Enter、Space 和组件文档中的方向键操作。此项为人工操作案例，不是自动行为验收证书。" },
     { state: "overlay", exports: ["TreeSelect"], content: <StatePreview state="overlay">{<TreeSelectExample />}</StatePreview> },
     { state: "dark", exports: ["TreeSelect"], content: <StatePreview state="dark">{<TreeSelectExample />}</StatePreview> },

@@ -279,7 +279,9 @@ export function InfiniteScroll(rawProps: InfiniteScrollProps) {
       </div> : null}
       {failed ? <InlineMessage tone="danger">{errorLabel}</InlineMessage> : null}
       <div ref={sentinelRef} className="pui-infinite-scroll__sentinel" aria-live="polite">
-        {loading || requestPending ? <><LoaderCircle className="pui-spinner" aria-hidden="true" /><span>{loadingLabel}</span></> : null}
+        {loading || requestPending ? showLoadMoreButton
+          ? <span className="pui-sr-only">{loadingLabel}</span>
+          : <><LoaderCircle className="pui-spinner" aria-hidden="true" /><span>{loadingLabel}</span></> : null}
         {!hasMore ? <span>{endLabel}</span> : null}
       </div>
     </div>
