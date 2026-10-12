@@ -167,6 +167,8 @@ Use `controllerField` for a form-library binding, explicit `value` and the docum
 
 The complete [supported usage example](../assets/react-kit/tests/fixtures/supported-public-usage.tsx) includes its imports, state, form-library controller, options, focus handle and save callback. It is compiled by the type contracts and tested byte-for-byte (apart from its barrel import path) by `scripts/test_supported_usage_contracts.py`. The [type fixture](../assets/react-kit/tests/types/supported-usage-contracts.test-d.tsx) and focused provenance contracts cover accepted typed spreads alongside rejected wrong types, controlled-state omissions and hidden ownership escapes.
 
+`FilterBar` aligns labeled controls and same-row actions to the actual control row, independently of multiline labels, hints, or errors. Actions that wrap onto another row have no label offset. Use the official `Field` composition; do not add application padding to compensate for helper text. The Explorer overview includes a long-label/hint/error combination.
+
 ## Managed Source Boundary
 
 `src/personal-ui/` in a target project is generated, versioned source. Do not edit it, add files to it, or copy one of its implementation files elsewhere for customization. The verifier treats every missing, changed, or extra file as a release error; there is no local-extension allowance.

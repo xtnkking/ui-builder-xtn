@@ -1,7 +1,7 @@
 // @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"filter-bar/overview","exports":["FilterBar"]}
-import { useRef, useState, type FormEvent } from "react";
+import { useId, useRef, useState, type FormEvent } from "react";
 import { StatePreview } from "../state-preview";
-import { Button, FilterBar, SearchInput, Tag } from "../../../personal-ui";
+import { Button, Field, FilterBar, SearchInput, Select, Tag } from "../../../personal-ui";
 import type { ExplorerCase } from "../types";
 
 const members = ["林夏 lin.xia@example.com", "陈屿 chen.yu@example.com", "王宁 wang.ning@example.com"];
@@ -36,6 +36,32 @@ function EnglishFilterBarExample() {
   return <FilterBar ariaLabel="Member filters" onSubmit={(event) => { event.preventDefault(); setQuery(draft.trim()); }} actions={<Button type="submit" size="field" variant="primary" loadingLabel="Search">Search</Button>} activeFilters={query ? <Tag>Keyword: {query}</Tag> : null} status={`${results.length} results`}><SearchInput aria-label="Search members" placeholder="Name or email" value={draft} onChange={(event) => setDraft(event.currentTarget.value)} /></FilterBar>;
 }
 
+function FieldFilterBarExample() {
+  const id = useId();
+  const [draft, setDraft] = useState("");
+  const [authentication, setAuthentication] = useState("unverified");
+  const [applied, setApplied] = useState<{ query: string; authentication: string } | null>(null);
+  const authenticationOptions = [
+    { value: "all", label: "全部状态" },
+    { value: "verified", label: "已认证" },
+    { value: "unverified", label: "待认证" },
+  ];
+  const selectedLabel = authenticationOptions.find((option) => option.value === applied?.authentication)?.label;
+  return <FilterBar
+    ariaLabel="带提示的成员筛选"
+    onSubmit={(event) => { event.preventDefault(); setApplied({ query: draft.trim(), authentication }); }}
+    actions={<Button type="submit" size="field" variant="primary" loadingLabel="应用筛选">应用筛选</Button>}
+    status={applied ? `已应用筛选：${applied.query || "全部成员"}；${selectedLabel}` : "输入仅更新草稿，点击应用筛选或按 Enter 后应用。"}
+  >
+    <Field label="成员姓名或邮箱（支持跨区域团队成员与外部协作者的完整名称）" htmlFor={`${id}-name`} hint="仅编辑查询草稿，点击应用筛选或按 Enter 后更新结果；支持完整成员姓名与邮箱，长提示自然换行。">
+      <SearchInput id={`${id}-name`} aria-label="成员姓名" placeholder="姓名或邮箱" value={draft} onChange={(event) => setDraft(event.currentTarget.value)} onClear={() => setDraft("")} />
+    </Field>
+    <Field label="认证状态" htmlFor={`${id}-authentication`} error={authentication === "unverified" ? "此账号尚未完成认证，请核对状态。" : undefined}>
+      <Select id={`${id}-authentication`} ariaLabel="认证状态" value={authentication} onValueChange={setAuthentication} options={authenticationOptions} />
+    </Field>
+  </FilterBar>;
+}
+
 const explorerCase = {
   id: "filter-bar/overview",
   label: "筛选栏",
@@ -50,7 +76,7 @@ const explorerCase = {
     { state: "dark", exports: ["FilterBar"], content: <StatePreview state="dark"><FilterBarExample /></StatePreview> },
     { state: "locale", exports: ["FilterBar"], content: <StatePreview state="locale"><EnglishFilterBarExample /></StatePreview> },
   ],
-  content: <FilterBarExample simulateRequest />,
+  content: <div style={{ display: "grid", gap: 24 }}><FilterBarExample simulateRequest /><FieldFilterBarExample /></div>,
   code: `<FilterBar ariaLabel="成员筛选" onSubmit={applyFilters} actions={<Button type="submit" size="field" variant="primary" loading={querying} loadingLabel="查询">查询</Button>}>{fields}</FilterBar>`,
 } satisfies ExplorerCase;
 

@@ -335,7 +335,7 @@
   container-type: inline-size;
   display: flex;
   flex-wrap: wrap;
-  align-items: flex-end;
+  align-items: flex-start;
   gap: 12px;
   min-width: 0;
   padding: 0;
@@ -350,7 +350,7 @@
   display: flex;
   flex: 0 1 auto;
   flex-wrap: wrap;
-  align-items: flex-end;
+  align-items: flex-start;
   gap: 10px;
   min-width: 0;
   max-width: 100%;
@@ -362,6 +362,9 @@
   max-width: min(360px, 100%);
   overflow-wrap: anywhere;
 }
+.pui-filter-bar__fields > [data-pui-filter-aligned] {
+  margin-block-start: var(--_pui-filter-align-offset, 0px);
+}
 .pui-filter-bar__actions {
   display: flex;
   flex: 0 1 auto;
@@ -370,6 +373,8 @@
   gap: 8px;
   min-width: 0;
   max-width: 100%;
+  align-self: flex-start;
+  margin-block-start: var(--_pui-filter-action-offset, 0px);
 }
 .pui-filter-bar .pui-button--medium {
   min-height: var(--pui-control-height);
@@ -405,7 +410,7 @@
     width: 100%;
   }
   .pui-filter-bar__fields > * { flex: 1 1 240px; }
-  .pui-filter-bar__actions { justify-content: stretch; }
+  .pui-filter-bar__actions { justify-content: stretch; margin-block-start: 0; }
   .pui-filter-bar__actions > * { flex: 1 1 auto; }
 }
 

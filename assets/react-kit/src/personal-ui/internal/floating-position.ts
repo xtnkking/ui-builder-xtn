@@ -9,14 +9,19 @@ export function floatingPortalTarget(root: HTMLElement | null): HTMLElement {
   return root?.closest<HTMLElement>(".pui-overlay") ?? document.body;
 }
 
-function floatingViewportBounds() {
-  const viewportWidth = document.documentElement.clientWidth;
-  const viewportHeight = document.documentElement.clientHeight;
+export function floatingViewportBounds(ownerDocument: Document = document) {
+  const viewport = ownerDocument.defaultView?.visualViewport;
+  const viewportWidth = viewport?.width || ownerDocument.documentElement.clientWidth;
+  const viewportHeight = viewport?.height || ownerDocument.documentElement.clientHeight;
+  const offsetLeft = viewport?.offsetLeft ?? 0;
+  const offsetTop = viewport?.offsetTop ?? 0;
+  const left = offsetLeft + FLOATING_GUTTER;
+  const top = offsetTop + FLOATING_GUTTER;
   return {
-    left: FLOATING_GUTTER,
-    right: Math.max(FLOATING_GUTTER + 1, viewportWidth - FLOATING_GUTTER),
-    top: FLOATING_GUTTER,
-    bottom: Math.max(FLOATING_GUTTER + 1, viewportHeight - FLOATING_GUTTER),
+    left,
+    right: Math.max(left + 1, offsetLeft + viewportWidth - FLOATING_GUTTER),
+    top,
+    bottom: Math.max(top + 1, offsetTop + viewportHeight - FLOATING_GUTTER),
   };
 }
 
@@ -31,11 +36,13 @@ export function usePopoverPosition(
     const root = rootRef.current;
     const popover = popoverRef.current;
     if (!open || !root || !popover) return;
+    const ownerWindow = root.ownerDocument.defaultView ?? window;
+    const visualViewport = ownerWindow.visualViewport;
 
     let animationFrame = 0;
     let copiedTokens = new Set<string>();
     const update = () => {
-      const { left, right, top, bottom } = floatingViewportBounds();
+      const { left, right, top, bottom } = floatingViewportBounds(root.ownerDocument);
       const availableWidth = Math.max(1, Math.floor(right - left));
       const availableHeight = Math.max(1, Math.floor(bottom - top));
       copiedTokens = syncPersonalUiPortalTheme(root, popover, copiedTokens);
@@ -55,7 +62,7 @@ export function usePopoverPosition(
       const resolvedPlacement = initialRect.height - preferredRoom > 24 && alternateRoom - preferredRoom > 24
         ? placement === "bottom" ? "top" : "bottom"
         : placement;
-      const resolvedRoom = resolvedPlacement === "bottom" ? roomBelow : roomAbove;
+      const resolvedRoom = Math.min(availableHeight, resolvedPlacement === "bottom" ? roomBelow : roomAbove);
       popover.style.setProperty("--pui-floating-max-height", `${Math.max(1, Math.floor(resolvedRoom))}px`);
 
       const renderedRect = popover.getBoundingClientRect();
@@ -79,13 +86,15 @@ export function usePopoverPosition(
       popover.dataset.positioned = "true";
     };
     const scheduleUpdate = () => {
-      window.cancelAnimationFrame(animationFrame);
-      animationFrame = window.requestAnimationFrame(update);
+      ownerWindow.cancelAnimationFrame(animationFrame);
+      animationFrame = ownerWindow.requestAnimationFrame(update);
     };
 
     update();
-    window.addEventListener("resize", scheduleUpdate);
-    window.addEventListener("scroll", scheduleUpdate, true);
+    ownerWindow.addEventListener("resize", scheduleUpdate);
+    ownerWindow.addEventListener("scroll", scheduleUpdate, true);
+    visualViewport?.addEventListener("resize", scheduleUpdate);
+    visualViewport?.addEventListener("scroll", scheduleUpdate);
 
     const resizeObserver = typeof ResizeObserver === "function" ? new ResizeObserver(scheduleUpdate) : null;
     resizeObserver?.observe(popover);
@@ -97,9 +106,11 @@ export function usePopoverPosition(
     });
 
     return () => {
-      window.cancelAnimationFrame(animationFrame);
-      window.removeEventListener("resize", scheduleUpdate);
-      window.removeEventListener("scroll", scheduleUpdate, true);
+      ownerWindow.cancelAnimationFrame(animationFrame);
+      ownerWindow.removeEventListener("resize", scheduleUpdate);
+      ownerWindow.removeEventListener("scroll", scheduleUpdate, true);
+      visualViewport?.removeEventListener("resize", scheduleUpdate);
+      visualViewport?.removeEventListener("scroll", scheduleUpdate);
       resizeObserver?.disconnect();
       mutationObserver?.disconnect();
       stopObservingComputedStyles();

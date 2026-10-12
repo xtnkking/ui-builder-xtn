@@ -1012,9 +1012,13 @@ input[type="password"]::-ms-reveal {
 }
 
 .pui-select__option-label {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+@media (max-width: 640px), (pointer: coarse) {
+  .pui-select__option { min-height: 44px; }
 }
 
 .pui-select__option > svg {
@@ -1169,18 +1173,16 @@ input[type="password"]::-ms-reveal {
 }
 
 .pui-option__copy strong {
-  overflow: hidden;
   font-weight: 500;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
+  white-space: normal;
 }
 
 .pui-option__copy span {
-  overflow: hidden;
   color: var(--pui-muted);
   font-size: 12px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
+  white-space: normal;
 }
 
 .pui-option__check {
@@ -1447,6 +1449,8 @@ input[type="password"]::-ms-reveal {
   align-items: center;
   justify-content: center;
   gap: 7px;
+  min-width: 0;
+  max-inline-size: min(24ch, 100%);
   min-height: 42px;
   padding: 0 14px;
   border: 0;
@@ -1455,6 +1459,15 @@ input[type="password"]::-ms-reveal {
   color: var(--pui-muted);
   font-weight: 600;
   cursor: pointer;
+}
+
+.pui-tabs__label {
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .pui-tabs__list button svg {
@@ -1474,6 +1487,7 @@ input[type="password"]::-ms-reveal {
 
 .pui-tabs--fill .pui-tabs__list button {
   flex: 1 1 0;
+  max-inline-size: none;
 }
 
 .pui-tabs__panel {
@@ -1611,6 +1625,32 @@ input[type="password"]::-ms-reveal {
   overflow: hidden;
   color: var(--pui-muted);
   font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pui-pagination__mobile-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  max-width: 100%;
+  vertical-align: middle;
+}
+
+.pui-pagination__mobile-loading {
+  display: grid;
+  place-items: center;
+  flex: 0 0 14px;
+  width: 14px;
+  height: 14px;
+}
+
+.pui-pagination__mobile-loading svg { width: 14px; height: 14px; }
+
+.pui-pagination__mobile-page {
+  min-width: 0;
+  overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -2142,6 +2182,8 @@ input[type="password"]::-ms-reveal {
   flex: none;
   min-width: 0;
 }
+
+.pui-dialog__body > p { margin: 0; }
 
 .pui-dialog__body > :is(.pui-button, .pui-icon-button) {
   align-self: flex-start;

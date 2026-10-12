@@ -186,7 +186,9 @@ export function Tabs(rawProps: TabsProps) {
             }}
             title={typeof item.label === "string" || typeof item.label === "number" ? String(item.label) : undefined}
           >
-            {item.label}
+            {typeof item.label === "string" || typeof item.label === "number"
+              ? <span className="pui-tabs__label" title={String(item.label)}>{item.label}</span>
+              : item.label}
           </button>
         ))}
       </div>
@@ -455,7 +457,14 @@ export function Pagination(rawProps: PaginationProps) {
           ) : <span key={token} className="pui-pagination__ellipsis" aria-hidden="true">...</span>)}
         </div>
         <span className="pui-pagination__mobile-label" title={message("pagination.summaryPages", { page: normalizedPage, pages: normalizedCount })}>
-          {message("pagination.summaryPages", { page: normalizedPage, pages: normalizedCount })}
+          <span className="pui-pagination__mobile-status">
+            <span className="pui-pagination__mobile-loading" aria-hidden="true">
+              {changingPage && resolvedLoadingTarget === "page" ? <LoaderCircle className="pui-spinner" /> : null}
+            </span>
+            <span className="pui-pagination__mobile-page">
+              {message("pagination.summaryPages", { page: normalizedPage, pages: normalizedCount })}
+            </span>
+          </span>
         </span>
         <IconButton
           aria-label={message("pagination.next")}

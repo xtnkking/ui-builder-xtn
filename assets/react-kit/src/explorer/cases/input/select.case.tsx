@@ -80,7 +80,7 @@ const explorerCase = {
     { state: "validation", exports: ["Select", "SearchableSelect", "AsyncSelect"], content: <InvalidSelectExample /> },
     { state: "longContent", exports: ["Select", "SearchableSelect", "AsyncSelect"], content: <LongSelectExample /> },
     { state: "default", exports: ["Select","SearchableSelect","AsyncSelect"], content: <SelectExample /> },
-    { state: "disabled", exports: ["Select"], content: <SelectExample /> },
+    { state: "disabled", exports: ["Select"], content: <Field label="禁用角色" htmlFor="explorer-disabled-select"><Select id="explorer-disabled-select" ariaLabel="禁用角色" value="editor" onValueChange={() => undefined} options={[{ value: "admin", label: "管理员" }, { value: "editor", label: "编辑者" }, { value: "viewer", label: "查看者" }]} disabled /></Field> },
     { state: "controlled", exports: ["Select","SearchableSelect","AsyncSelect"], content: <SelectExample /> },
     { state: "keyboard", exports: ["Select","SearchableSelect","AsyncSelect"], content: <SelectExample />, instructions: "用 Tab 访问本例可用控件，使用 Enter、Space 和组件文档中的方向键操作。此项为人工操作案例，不是自动行为验收证书。" },
     { state: "overlay", exports: ["Select","SearchableSelect","AsyncSelect"], content: <StatePreview state="overlay">{<SelectExample />}</StatePreview> },

@@ -1,11 +1,13 @@
 import {
   useEffect,
+  useLayoutEffect,
   useRef,
   useState,
   type AnchorHTMLAttributes,
   type FormHTMLAttributes,
   type HTMLAttributes,
   type ReactNode,
+  type RefObject,
 } from "react";
 import { AlertCircle, Check, Copy, ExternalLink } from "lucide-react";
 import type { PublicControlProps } from "../foundation/contracts";
@@ -135,6 +137,105 @@ export type FilterBarProps = PublicControlProps<Omit<FormHTMLAttributes<HTMLForm
   status?: ReactNode;
 };
 
+const useClientLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
+const FILTER_CONTROL_ANCHOR = ".pui-input-shell, .pui-input:not(.pui-input--embedded), .pui-textarea, .pui-select, .pui-combobox__trigger";
+
+/** Align actual controls within each flex row without counting Field helper text. */
+function useFilterBarAlignment(
+  fieldsRef: RefObject<HTMLDivElement | null>,
+  actionsRef: RefObject<HTMLDivElement | null>,
+) {
+  useClientLayoutEffect(() => {
+    const fields = fieldsRef.current;
+    const actions = actionsRef.current;
+    const ownerWindow = fields?.ownerDocument.defaultView;
+    if (!fields || !actions || !ownerWindow) return;
+    const offsets = new Map<HTMLElement, number>();
+    const observed = new Set<Element>();
+    let frame = 0;
+    let disposed = false;
+    const setOffset = (element: HTMLElement, name: string, offset: number) => {
+      const value = `${Math.round(offset * 100) / 100}px`;
+      if (element.style.getPropertyValue(name) !== value) element.style.setProperty(name, value);
+    };
+    const clearField = (element: HTMLElement) => {
+      element.style.removeProperty("--_pui-filter-align-offset");
+      element.removeAttribute("data-pui-filter-aligned");
+      offsets.delete(element);
+    };
+    const measure = () => {
+      frame = 0;
+      if (disposed || fields.getBoundingClientRect().width === 0) return;
+      const current = new Set<HTMLElement>();
+      const rows: Array<{ top: number; lead: number; items: Array<{ element: HTMLElement; lead: number }> }> = [];
+      for (const child of Array.from(fields.children)) {
+        if (!(child instanceof ownerWindow.HTMLElement)) continue;
+        const control = child.matches(FILTER_CONTROL_ANCHOR)
+          ? child
+          : child.querySelector<HTMLElement>(FILTER_CONTROL_ANCHOR);
+        if (!control) continue;
+        const rect = child.getBoundingClientRect();
+        const controlRect = control.getBoundingClientRect();
+        if (!rect.width || !controlRect.height) continue;
+        current.add(child);
+        // Our margin moves the whole Field; subtract it to recover its flex-row origin.
+        const top = rect.top - (offsets.get(child) ?? 0);
+        const lead = Math.max(0, controlRect.top - rect.top);
+        let row = rows.find((candidate) => Math.abs(candidate.top - top) <= 1);
+        if (!row) {
+          row = { top, lead, items: [] };
+          rows.push(row);
+        }
+        row.lead = Math.max(row.lead, lead);
+        row.items.push({ element: child, lead });
+      }
+      const fieldsTop = fields.getBoundingClientRect().top;
+      const actionMargin = Number.parseFloat(ownerWindow.getComputedStyle(actions).marginBlockStart) || 0;
+      const actionRowTop = actions.getBoundingClientRect().top - actionMargin;
+      const firstRow = rows.reduce<typeof rows[number] | undefined>((first, row) => !first || row.top < first.top ? row : first, undefined);
+      const sharedRow = Math.abs(actionRowTop - fieldsTop) <= 1;
+      for (const element of offsets.keys()) if (!current.has(element)) clearField(element);
+      for (const row of rows) {
+        for (const { element, lead } of row.items) {
+          const offset = Math.max(0, row.lead - lead);
+          if (!element.hasAttribute("data-pui-filter-aligned")) element.setAttribute("data-pui-filter-aligned", "true");
+          offsets.set(element, Math.round(offset * 100) / 100);
+          setOffset(element, "--_pui-filter-align-offset", offset);
+        }
+      }
+      setOffset(actions, "--_pui-filter-action-offset", sharedRow && firstRow ? firstRow.top - fieldsTop + firstRow.lead : 0);
+    };
+    const schedule = () => {
+      if (!disposed && !frame) frame = ownerWindow.requestAnimationFrame(measure);
+    };
+    const resizeObserver = typeof ownerWindow.ResizeObserver === "function" ? new ownerWindow.ResizeObserver(schedule) : null;
+    const refreshObserved = () => {
+      const next = new Set<Element>([fields, actions, ...fields.children, ...fields.querySelectorAll(".pui-label")]);
+      for (const element of observed) {
+        if (!next.has(element)) { resizeObserver?.unobserve(element); observed.delete(element); }
+      }
+      for (const element of next) {
+        if (!observed.has(element)) { resizeObserver?.observe(element); observed.add(element); }
+      }
+    };
+    const mutationObserver = new ownerWindow.MutationObserver(() => { refreshObserved(); schedule(); });
+    mutationObserver.observe(fields, { childList: true, characterData: true, subtree: true });
+    refreshObserved();
+    measure();
+    ownerWindow.addEventListener("resize", schedule);
+    void fields.ownerDocument.fonts?.ready.then(schedule);
+    return () => {
+      disposed = true;
+      ownerWindow.cancelAnimationFrame(frame);
+      ownerWindow.removeEventListener("resize", schedule);
+      resizeObserver?.disconnect();
+      mutationObserver.disconnect();
+      for (const element of offsets.keys()) clearField(element);
+      actions.style.removeProperty("--_pui-filter-action-offset");
+    };
+  }, [fieldsRef, actionsRef]);
+}
+
 export function FilterBar(rawProps: FilterBarProps) {
   const safeProps = sanitizeFixedControlProps(rawProps);
   const {
@@ -146,10 +247,13 @@ export function FilterBar(rawProps: FilterBarProps) {
     status,
     ...props
   } = safeProps;
+  const fieldsRef = useRef<HTMLDivElement>(null);
+  const actionsRef = useRef<HTMLDivElement>(null);
+  useFilterBarAlignment(fieldsRef, actionsRef);
   return (
     <form {...props} data-pui-owner="FilterBar" data-density={density} className="pui-filter-bar" aria-label={ariaLabel}>
-      <div className="pui-filter-bar__fields">{children}</div>
-      <div className="pui-filter-bar__actions">{actions}</div>
+      <div ref={fieldsRef} className="pui-filter-bar__fields">{children}</div>
+      <div ref={actionsRef} className="pui-filter-bar__actions">{actions}</div>
       {activeFilters != null ? <div className="pui-filter-bar__active">{activeFilters}</div> : null}
       {status != null ? <div className="pui-filter-bar__status" role="status" aria-live="polite">{status}</div> : null}
     </form>

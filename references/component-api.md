@@ -2892,7 +2892,7 @@ export function PersonalUiExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `ButtonGroupProps` |
-| Implementation | [assets/react-kit/src/personal-ui/action/actions.tsx:73](../assets/react-kit/src/personal-ui/action/actions.tsx#L73) |
+| Implementation | [assets/react-kit/src/personal-ui/action/actions.tsx:75](../assets/react-kit/src/personal-ui/action/actions.tsx#L75) |
 | Explorer / example | [#/components/button-group](../assets/react-kit/index.html#/components/button-group); [compiled family example](#family-button-group-compiled-example) (case `button-group/overview`, source [assets/react-kit/src/explorer/cases/actions/button-group.case.tsx](../assets/react-kit/src/explorer/cases/actions/button-group.case.tsx)) |
 | Keyboard | none: This export has no independent keyboard interaction. |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -2918,8 +2918,8 @@ export type ButtonGroupProps = PublicControlProps<HTMLAttributes<HTMLDivElement>
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `attached` | `false` | [assets/react-kit/src/personal-ui/action/actions.tsx:77](../assets/react-kit/src/personal-ui/action/actions.tsx#L77) |
-| `orientation` | `"horizontal"` | [assets/react-kit/src/personal-ui/action/actions.tsx:78](../assets/react-kit/src/personal-ui/action/actions.tsx#L78) |
+| `attached` | `false` | [assets/react-kit/src/personal-ui/action/actions.tsx:79](../assets/react-kit/src/personal-ui/action/actions.tsx#L79) |
+| `orientation` | `"horizontal"` | [assets/react-kit/src/personal-ui/action/actions.tsx:80](../assets/react-kit/src/personal-ui/action/actions.tsx#L80) |
 
 #### Semantic Tokens
 
@@ -3024,7 +3024,7 @@ export function PersonalUiExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `ClipboardButtonProps` |
-| Implementation | [assets/react-kit/src/personal-ui/action/actions.tsx:292](../assets/react-kit/src/personal-ui/action/actions.tsx#L292) |
+| Implementation | [assets/react-kit/src/personal-ui/action/actions.tsx:396](../assets/react-kit/src/personal-ui/action/actions.tsx#L396) |
 | Explorer / example | [#/components/clipboard](../assets/react-kit/index.html#/components/clipboard); [compiled family example](#family-clipboard-compiled-example) (case `clipboard/overview`, source [assets/react-kit/src/explorer/cases/actions/clipboard.case.tsx](../assets/react-kit/src/explorer/cases/actions/clipboard.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -3056,12 +3056,12 @@ export type ClipboardButtonProps = PublicControlProps<Omit<ButtonProps, "childre
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `copiedLabel` | `message("copy.copied")` | [assets/react-kit/src/personal-ui/action/actions.tsx:299](../assets/react-kit/src/personal-ui/action/actions.tsx#L299) |
-| `copyingLabel` | `message("copy.copying")` | [assets/react-kit/src/personal-ui/action/actions.tsx:298](../assets/react-kit/src/personal-ui/action/actions.tsx#L298) |
-| `errorLabel` | `message("copy.failed")` | [assets/react-kit/src/personal-ui/action/actions.tsx:300](../assets/react-kit/src/personal-ui/action/actions.tsx#L300) |
-| `iconOnly` | `false` | [assets/react-kit/src/personal-ui/action/actions.tsx:301](../assets/react-kit/src/personal-ui/action/actions.tsx#L301) |
-| `label` | `message("copy.copy")` | [assets/react-kit/src/personal-ui/action/actions.tsx:297](../assets/react-kit/src/personal-ui/action/actions.tsx#L297) |
-| `resetAfter` | `1800` | [assets/react-kit/src/personal-ui/action/actions.tsx:302](../assets/react-kit/src/personal-ui/action/actions.tsx#L302) |
+| `copiedLabel` | `message("copy.copied")` | [assets/react-kit/src/personal-ui/action/actions.tsx:403](../assets/react-kit/src/personal-ui/action/actions.tsx#L403) |
+| `copyingLabel` | `message("copy.copying")` | [assets/react-kit/src/personal-ui/action/actions.tsx:402](../assets/react-kit/src/personal-ui/action/actions.tsx#L402) |
+| `errorLabel` | `message("copy.failed")` | [assets/react-kit/src/personal-ui/action/actions.tsx:404](../assets/react-kit/src/personal-ui/action/actions.tsx#L404) |
+| `iconOnly` | `false` | [assets/react-kit/src/personal-ui/action/actions.tsx:405](../assets/react-kit/src/personal-ui/action/actions.tsx#L405) |
+| `label` | `message("copy.copy")` | [assets/react-kit/src/personal-ui/action/actions.tsx:401](../assets/react-kit/src/personal-ui/action/actions.tsx#L401) |
+| `resetAfter` | `1800` | [assets/react-kit/src/personal-ui/action/actions.tsx:406](../assets/react-kit/src/personal-ui/action/actions.tsx#L406) |
 
 #### Semantic Tokens
 
@@ -3325,9 +3325,9 @@ export function StatePreview({ state, children }: {
   </>;
 }
 
-import { useRef, useState, type FormEvent } from "react";
+import { useId, useRef, useState, type FormEvent } from "react";
 
-import { Button, FilterBar, SearchInput, Tag } from "./personal-ui";
+import { Button, Field, FilterBar, SearchInput, Select, Tag } from "./personal-ui";
 
 const members = ["林夏 lin.xia@example.com", "陈屿 chen.yu@example.com", "王宁 wang.ning@example.com"];
 
@@ -3361,6 +3361,32 @@ function EnglishFilterBarExample() {
   return <FilterBar ariaLabel="Member filters" onSubmit={(event) => { event.preventDefault(); setQuery(draft.trim()); }} actions={<Button type="submit" size="field" variant="primary" loadingLabel="Search">Search</Button>} activeFilters={query ? <Tag>Keyword: {query}</Tag> : null} status={`${results.length} results`}><SearchInput aria-label="Search members" placeholder="Name or email" value={draft} onChange={(event) => setDraft(event.currentTarget.value)} /></FilterBar>;
 }
 
+function FieldFilterBarExample() {
+  const id = useId();
+  const [draft, setDraft] = useState("");
+  const [authentication, setAuthentication] = useState("unverified");
+  const [applied, setApplied] = useState<{ query: string; authentication: string } | null>(null);
+  const authenticationOptions = [
+    { value: "all", label: "全部状态" },
+    { value: "verified", label: "已认证" },
+    { value: "unverified", label: "待认证" },
+  ];
+  const selectedLabel = authenticationOptions.find((option) => option.value === applied?.authentication)?.label;
+  return <FilterBar
+    ariaLabel="带提示的成员筛选"
+    onSubmit={(event) => { event.preventDefault(); setApplied({ query: draft.trim(), authentication }); }}
+    actions={<Button type="submit" size="field" variant="primary" loadingLabel="应用筛选">应用筛选</Button>}
+    status={applied ? `已应用筛选：${applied.query || "全部成员"}；${selectedLabel}` : "输入仅更新草稿，点击应用筛选或按 Enter 后应用。"}
+  >
+    <Field label="成员姓名或邮箱（支持跨区域团队成员与外部协作者的完整名称）" htmlFor={`${id}-name`} hint="仅编辑查询草稿，点击应用筛选或按 Enter 后更新结果；支持完整成员姓名与邮箱，长提示自然换行。">
+      <SearchInput id={`${id}-name`} aria-label="成员姓名" placeholder="姓名或邮箱" value={draft} onChange={(event) => setDraft(event.currentTarget.value)} onClear={() => setDraft("")} />
+    </Field>
+    <Field label="认证状态" htmlFor={`${id}-authentication`} error={authentication === "unverified" ? "此账号尚未完成认证，请核对状态。" : undefined}>
+      <Select id={`${id}-authentication`} ariaLabel="认证状态" value={authentication} onValueChange={setAuthentication} options={authenticationOptions} />
+    </Field>
+  </FilterBar>;
+}
+
 export type PersonalUiExampleState = "default" | "longContent" | "keyboard" | "mobile" | "overlay" | "dark" | "locale";
 export type PersonalUiExampleComponent = "FilterBar";
 export interface PersonalUiStateFixture {
@@ -3383,7 +3409,7 @@ export function PersonalUiExample({ state, component }: {
   state?: PersonalUiExampleState;
   component?: PersonalUiExampleComponent;
 } = {}) {
-  if (state === undefined) return (<FilterBarExample simulateRequest />);
+  if (state === undefined) return (<div style={{ display: "grid", gap: 24 }}><FilterBarExample simulateRequest /><FieldFilterBarExample /></div>);
   const fixture = PersonalUiStateExamples.find((example) => example.state === state
     && (component === undefined || example.exports.some((name) => name === component)));
   if (!fixture) throw new RangeError(`No state fixture for ${component ?? "this family"}:${state}.`);
@@ -3403,7 +3429,7 @@ export function PersonalUiExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `composed` |
 | Parameter type | `FilterBarProps` |
-| Implementation | [assets/react-kit/src/personal-ui/action/actions.tsx:138](../assets/react-kit/src/personal-ui/action/actions.tsx#L138) |
+| Implementation | [assets/react-kit/src/personal-ui/action/actions.tsx:239](../assets/react-kit/src/personal-ui/action/actions.tsx#L239) |
 | Explorer / example | [#/components/filter-bar](../assets/react-kit/index.html#/components/filter-bar); [compiled family example](#family-filter-bar-compiled-example) (case `filter-bar/overview`, source [assets/react-kit/src/explorer/cases/actions/filter-bar.case.tsx](../assets/react-kit/src/explorer/cases/actions/filter-bar.case.tsx)) |
 | Keyboard | delegated: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | delegated: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -3432,7 +3458,7 @@ export type FilterBarProps = PublicControlProps<Omit<FormHTMLAttributes<HTMLForm
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `density` | `"compact"` | [assets/react-kit/src/personal-ui/action/actions.tsx:144](../assets/react-kit/src/personal-ui/action/actions.tsx#L144) |
+| `density` | `"compact"` | [assets/react-kit/src/personal-ui/action/actions.tsx:245](../assets/react-kit/src/personal-ui/action/actions.tsx#L245) |
 
 #### Semantic Tokens
 
@@ -3681,7 +3707,7 @@ export function PersonalUiExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `LinkProps` |
-| Implementation | [assets/react-kit/src/personal-ui/action/actions.tsx:30](../assets/react-kit/src/personal-ui/action/actions.tsx#L30) |
+| Implementation | [assets/react-kit/src/personal-ui/action/actions.tsx:32](../assets/react-kit/src/personal-ui/action/actions.tsx#L32) |
 | Explorer / example | [#/components/link](../assets/react-kit/index.html#/components/link); [compiled family example](#family-link-compiled-example) (case `link/overview`, source [assets/react-kit/src/explorer/cases/actions/link.case.tsx](../assets/react-kit/src/explorer/cases/actions/link.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -3709,9 +3735,9 @@ export type LinkProps = PublicControlProps<AnchorHTMLAttributes<HTMLAnchorElemen
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `external` | `false` | [assets/react-kit/src/personal-ui/action/actions.tsx:36](../assets/react-kit/src/personal-ui/action/actions.tsx#L36) |
-| `newTab` | `false` | [assets/react-kit/src/personal-ui/action/actions.tsx:37](../assets/react-kit/src/personal-ui/action/actions.tsx#L37) |
-| `variant` | `"default"` | [assets/react-kit/src/personal-ui/action/actions.tsx:33](../assets/react-kit/src/personal-ui/action/actions.tsx#L33) |
+| `external` | `false` | [assets/react-kit/src/personal-ui/action/actions.tsx:38](../assets/react-kit/src/personal-ui/action/actions.tsx#L38) |
+| `newTab` | `false` | [assets/react-kit/src/personal-ui/action/actions.tsx:39](../assets/react-kit/src/personal-ui/action/actions.tsx#L39) |
+| `variant` | `"default"` | [assets/react-kit/src/personal-ui/action/actions.tsx:35](../assets/react-kit/src/personal-ui/action/actions.tsx#L35) |
 
 #### Semantic Tokens
 
@@ -3977,7 +4003,7 @@ export function PersonalUiExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `SplitButtonProps` |
-| Implementation | [assets/react-kit/src/personal-ui/action/actions.tsx:165](../assets/react-kit/src/personal-ui/action/actions.tsx#L165) |
+| Implementation | [assets/react-kit/src/personal-ui/action/actions.tsx:269](../assets/react-kit/src/personal-ui/action/actions.tsx#L269) |
 | Explorer / example | [#/components/split-button](../assets/react-kit/index.html#/components/split-button); [compiled family example](#family-split-button-compiled-example) (case `split-button/overview`, source [assets/react-kit/src/explorer/cases/actions/split-button.case.tsx](../assets/react-kit/src/explorer/cases/actions/split-button.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -4003,7 +4029,7 @@ export type SplitButtonProps = PublicControlProps<Omit<ButtonProps, "trailingIco
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `menuAlign` | `"end"` | [assets/react-kit/src/personal-ui/action/actions.tsx:170](../assets/react-kit/src/personal-ui/action/actions.tsx#L170) |
+| `menuAlign` | `"end"` | [assets/react-kit/src/personal-ui/action/actions.tsx:274](../assets/react-kit/src/personal-ui/action/actions.tsx#L274) |
 
 #### Semantic Tokens
 
@@ -4119,7 +4145,7 @@ export function PersonalUiExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled-uncontrolled` |
 | Parameter type | `ToggleButtonProps` |
-| Implementation | [assets/react-kit/src/personal-ui/action/actions.tsx:214](../assets/react-kit/src/personal-ui/action/actions.tsx#L214) |
+| Implementation | [assets/react-kit/src/personal-ui/action/actions.tsx:318](../assets/react-kit/src/personal-ui/action/actions.tsx#L318) |
 | Explorer / example | [#/components/toggle-button](../assets/react-kit/index.html#/components/toggle-button); [compiled family example](#family-toggle-button-compiled-example) (case `toggle-button/overview`, source [assets/react-kit/src/explorer/cases/actions/toggle-button.case.tsx](../assets/react-kit/src/explorer/cases/actions/toggle-button.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -4252,7 +4278,7 @@ export function PersonalUiExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `ToolbarProps` |
-| Implementation | [assets/react-kit/src/personal-ui/action/actions.tsx:103](../assets/react-kit/src/personal-ui/action/actions.tsx#L103) |
+| Implementation | [assets/react-kit/src/personal-ui/action/actions.tsx:105](../assets/react-kit/src/personal-ui/action/actions.tsx#L105) |
 | Explorer / example | [#/components/toolbar](../assets/react-kit/index.html#/components/toolbar); [compiled family example](#family-toolbar-compiled-example) (case `toolbar/overview`, source [assets/react-kit/src/explorer/cases/actions/toolbar.case.tsx](../assets/react-kit/src/explorer/cases/actions/toolbar.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -4279,7 +4305,7 @@ export type ToolbarProps = PublicControlProps<HTMLAttributes<HTMLDivElement>> & 
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `wrap` | `true` | [assets/react-kit/src/personal-ui/action/actions.tsx:109](../assets/react-kit/src/personal-ui/action/actions.tsx#L109) |
+| `wrap` | `true` | [assets/react-kit/src/personal-ui/action/actions.tsx:111](../assets/react-kit/src/personal-ui/action/actions.tsx#L111) |
 
 #### Semantic Tokens
 
@@ -4582,7 +4608,7 @@ export function PersonalUiExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled-uncontrolled` |
 | Parameter type | `CheckboxProps` |
-| Implementation | [assets/react-kit/src/personal-ui/input/forms.tsx:1343](../assets/react-kit/src/personal-ui/input/forms.tsx#L1343) |
+| Implementation | [assets/react-kit/src/personal-ui/input/forms.tsx:1346](../assets/react-kit/src/personal-ui/input/forms.tsx#L1346) |
 | Explorer / example | [#/components/checkbox](../assets/react-kit/index.html#/components/checkbox); [compiled family example](#family-checkbox-compiled-example) (case `checkbox/overview`, source [assets/react-kit/src/explorer/cases/input/checkbox.case.tsx](../assets/react-kit/src/explorer/cases/input/checkbox.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -5170,7 +5196,7 @@ No migration is required for the current public export.
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled` |
 | Parameter type | `ComboboxProps` |
-| Implementation | [assets/react-kit/src/personal-ui/input/forms.tsx:1016](../assets/react-kit/src/personal-ui/input/forms.tsx#L1016) |
+| Implementation | [assets/react-kit/src/personal-ui/input/forms.tsx:1019](../assets/react-kit/src/personal-ui/input/forms.tsx#L1019) |
 | Explorer / example | [#/components/combobox](../assets/react-kit/index.html#/components/combobox); [compiled family example](#family-combobox-compiled-example) (case `combobox/overview`, source [assets/react-kit/src/explorer/cases/input/combobox.case.tsx](../assets/react-kit/src/explorer/cases/input/combobox.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -5215,10 +5241,10 @@ type FieldControlAriaProps = Pick<InputHTMLAttributes<HTMLInputElement>, "id" | 
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `emptyText` | `message("select.empty")` | [assets/react-kit/src/personal-ui/input/forms.tsx:1028](../assets/react-kit/src/personal-ui/input/forms.tsx#L1028) |
-| `placeholder` | `message("select.placeholder")` | [assets/react-kit/src/personal-ui/input/forms.tsx:1026](../assets/react-kit/src/personal-ui/input/forms.tsx#L1026) |
-| `placement` | `"bottom"` | [assets/react-kit/src/personal-ui/input/forms.tsx:1031](../assets/react-kit/src/personal-ui/input/forms.tsx#L1031) |
-| `searchPlaceholder` | `message("select.searchPlaceholder")` | [assets/react-kit/src/personal-ui/input/forms.tsx:1027](../assets/react-kit/src/personal-ui/input/forms.tsx#L1027) |
+| `emptyText` | `message("select.empty")` | [assets/react-kit/src/personal-ui/input/forms.tsx:1031](../assets/react-kit/src/personal-ui/input/forms.tsx#L1031) |
+| `placeholder` | `message("select.placeholder")` | [assets/react-kit/src/personal-ui/input/forms.tsx:1029](../assets/react-kit/src/personal-ui/input/forms.tsx#L1029) |
+| `placement` | `"bottom"` | [assets/react-kit/src/personal-ui/input/forms.tsx:1034](../assets/react-kit/src/personal-ui/input/forms.tsx#L1034) |
+| `searchPlaceholder` | `message("select.searchPlaceholder")` | [assets/react-kit/src/personal-ui/input/forms.tsx:1030](../assets/react-kit/src/personal-ui/input/forms.tsx#L1030) |
 
 #### Semantic Tokens
 
@@ -5916,7 +5942,7 @@ export const PersonalUiStateExamples: readonly PersonalUiStateFixture[] = [
     { state: "loading", exports: ["Form"], content: <Form busy><Field label="正在保存的项目" htmlFor="explorer-form-busy"><Input id="explorer-form-busy" defaultValue="平台工程项目" disabled /></Field><Inline><Button type="submit" loading loadingLabel="保存中">保存</Button></Inline></Form> },
     { state: "error", exports: ["Form"], content: <InvalidFormExample /> },
     { state: "validation", exports: ["Form"], content: <InvalidFormExample /> },
-    { state: "longContent", exports: ["Form"], content: <Form onSubmit={(event) => event.preventDefault()}><p>创建项目之前请确认跨区域结算工作区的成员访问范围、默认通知渠道和账单关联信息，长表单说明应完整换行显示，不遮挡输入和提交入口。</p><Field label="项目名称" htmlFor="explorer-form-long"><Input id="explorer-form-long" defaultValue="国际结算项目" /></Field><Inline><Button type="submit">创建项目</Button></Inline></Form> },
+    { state: "longContent", exports: ["Form"], content: <Form onSubmit={(event) => event.preventDefault()}><p style={{ margin: 0 }}>创建项目之前请确认跨区域结算工作区的成员访问范围、默认通知渠道和账单关联信息，长表单说明应完整换行显示，不遮挡输入和提交入口。</p><Field label="项目名称" htmlFor="explorer-form-long"><Input id="explorer-form-long" defaultValue="国际结算项目" /></Field><Inline><Button type="submit">创建项目</Button></Inline></Form> },
     { state: "default", exports: ["Form"], content: <FormExample /> },
     { state: "keyboard", exports: ["Form"], content: <FormExample />, instructions: "用 Tab 访问本例可用控件，使用 Enter、Space 和组件文档中的方向键操作。此项为人工操作案例，不是自动行为验收证书。" },
     { state: "mobile", exports: ["Form"], content: <StatePreview state="mobile">{<FormExample />}</StatePreview> },
@@ -7039,7 +7065,7 @@ export function PersonalUiExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled-uncontrolled` |
 | Parameter type | `RadioProps` |
-| Implementation | [assets/react-kit/src/personal-ui/input/forms.tsx:1414](../assets/react-kit/src/personal-ui/input/forms.tsx#L1414) |
+| Implementation | [assets/react-kit/src/personal-ui/input/forms.tsx:1417](../assets/react-kit/src/personal-ui/input/forms.tsx#L1417) |
 | Explorer / example | [#/components/radio](../assets/react-kit/index.html#/components/radio); [compiled family example](#family-radio-compiled-example) (case `radio/overview`, source [assets/react-kit/src/explorer/cases/input/radio.case.tsx](../assets/react-kit/src/explorer/cases/input/radio.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -7315,9 +7341,17 @@ function SearchInputExample() {
 function SearchState({ disabled = false, readOnly = false, invalid = false, long = false, english = false }: {
   disabled?: boolean; readOnly?: boolean; invalid?: boolean; long?: boolean; english?: boolean;
 }) {
-  const [query, setQuery] = useState(long ? "跨区域平台成员权限审核记录与生产环境通知偏好搜索条件" : "平台");
-  return <Field label={english ? "Search teams" : "搜索团队"} htmlFor="explorer-search-state" error={invalid ? "搜索条件包含不支持的字符。" : undefined}>
-    <SearchInput id="explorer-search-state" aria-label={english ? "Search teams" : "搜索团队"} value={query} onChange={(event) => setQuery(event.currentTarget.value)} onClear={() => setQuery("")} disabled={disabled} readOnly={readOnly} invalid={invalid} />
+  const [query, setQuery] = useState(long ? "跨区域平台成员权限审核记录与生产环境通知偏好搜索条件需要完整展示并测试编辑和清除动作" : "平台");
+  const label = english ? "Search teams" : long ? "长搜索条件" : "搜索团队";
+  return <Field label={label} htmlFor="explorer-search-state" error={invalid ? "搜索条件包含不支持的字符。" : undefined}>
+    <SearchInput id="explorer-search-state" aria-label={label} value={query} onChange={(event) => setQuery(event.currentTarget.value)} onClear={() => setQuery("")} disabled={disabled} readOnly={readOnly} invalid={invalid} />
+  </Field>;
+}
+
+function LongSearchExample() {
+  const [query, setQuery] = useState("跨区域平台成员权限审核记录与生产环境通知偏好搜索条件需要完整展示并测试编辑和清除动作");
+  return <Field label="长搜索条件" htmlFor="explorer-long-search" hint="本例使用跨区域平台成员权限审核记录与生产环境通知偏好的长搜索条件，支持光标编辑、键盘操作与清除，完整条件保留在输入值中。">
+    <SearchInput id="explorer-long-search" aria-label="长搜索条件" value={query} onChange={(event) => setQuery(event.currentTarget.value)} onClear={() => setQuery("")} />
   </Field>;
 }
 
@@ -7335,7 +7369,7 @@ export const PersonalUiStateExamples: readonly PersonalUiStateFixture[] = [
     { state: "readOnly", exports: ["SearchInput"], content: <SearchInput aria-label="只读搜索" value="平台" onChange={() => undefined} readOnly /> },
     { state: "controlled", exports: ["SearchInput"], content: <SearchState /> },
     { state: "validation", exports: ["SearchInput"], content: <Field label="校验失败的搜索" htmlFor="explorer-invalid-search" error="搜索条件包含不支持的字符。"><SearchInput id="explorer-invalid-search" aria-label="校验失败的搜索" value="@@" onChange={() => undefined} invalid /></Field> },
-    { state: "longContent", exports: ["SearchInput"], content: <SearchInput aria-label="长搜索条件" value="跨区域平台成员权限审核记录与生产环境通知偏好搜索条件需要完整展示并测试编辑和清除动作" onChange={() => undefined} readOnly /> },
+    { state: "longContent", exports: ["SearchInput"], content: <LongSearchExample /> },
     { state: "keyboard", exports: ["SearchInput"], instructions: "Tab 聚焦输入并输入查询；再按 Tab 到清除按钮，按 Enter 清除后焦点返回输入。", content: <SearchState /> },
     { state: "overlay", exports: ["SearchInput"], content: <StatePreview state="overlay">{<SearchState />}</StatePreview> },
     { state: "dark", exports: ["SearchInput"], content: <StatePreview state="dark">{<SearchState />}</StatePreview> },
@@ -7532,7 +7566,7 @@ export function PersonalUiExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled` |
 | Parameter type | `SegmentedControlProps<T>` |
-| Implementation | [assets/react-kit/src/personal-ui/input/forms.tsx:1580](../assets/react-kit/src/personal-ui/input/forms.tsx#L1580) |
+| Implementation | [assets/react-kit/src/personal-ui/input/forms.tsx:1583](../assets/react-kit/src/personal-ui/input/forms.tsx#L1583) |
 | Explorer / example | [#/components/segmented](../assets/react-kit/index.html#/components/segmented); [compiled family example](#family-segmented-compiled-example) (case `segmented/overview`, source [assets/react-kit/src/explorer/cases/input/segmented.case.tsx](../assets/react-kit/src/explorer/cases/input/segmented.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -7571,8 +7605,8 @@ export type SegmentedControlProps<T extends string> = PublicControlProps<Pick<Fi
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `disabled` | `false` | [assets/react-kit/src/personal-ui/input/forms.tsx:1590](../assets/react-kit/src/personal-ui/input/forms.tsx#L1590) |
-| `fill` | `false` | [assets/react-kit/src/personal-ui/input/forms.tsx:1591](../assets/react-kit/src/personal-ui/input/forms.tsx#L1591) |
+| `disabled` | `false` | [assets/react-kit/src/personal-ui/input/forms.tsx:1593](../assets/react-kit/src/personal-ui/input/forms.tsx#L1593) |
+| `fill` | `false` | [assets/react-kit/src/personal-ui/input/forms.tsx:1594](../assets/react-kit/src/personal-ui/input/forms.tsx#L1594) |
 
 #### Semantic Tokens
 
@@ -7719,7 +7753,7 @@ export const PersonalUiStateExamples: readonly PersonalUiStateFixture[] = [
     { state: "validation", exports: ["Select", "SearchableSelect", "AsyncSelect"], content: <InvalidSelectExample /> },
     { state: "longContent", exports: ["Select", "SearchableSelect", "AsyncSelect"], content: <LongSelectExample /> },
     { state: "default", exports: ["Select","SearchableSelect","AsyncSelect"], content: <SelectExample /> },
-    { state: "disabled", exports: ["Select"], content: <SelectExample /> },
+    { state: "disabled", exports: ["Select"], content: <Field label="禁用角色" htmlFor="explorer-disabled-select"><Select id="explorer-disabled-select" ariaLabel="禁用角色" value="editor" onValueChange={() => undefined} options={[{ value: "admin", label: "管理员" }, { value: "editor", label: "编辑者" }, { value: "viewer", label: "查看者" }]} disabled /></Field> },
     { state: "controlled", exports: ["Select","SearchableSelect","AsyncSelect"], content: <SelectExample /> },
     { state: "keyboard", exports: ["Select","SearchableSelect","AsyncSelect"], content: <SelectExample />, instructions: "用 Tab 访问本例可用控件，使用 Enter、Space 和组件文档中的方向键操作。此项为人工操作案例，不是自动行为验收证书。" },
     { state: "overlay", exports: ["Select","SearchableSelect","AsyncSelect"], content: <StatePreview state="overlay">{<SelectExample />}</StatePreview> },
@@ -8279,7 +8313,7 @@ export function PersonalUiExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled-uncontrolled` |
 | Parameter type | `SwitchProps` |
-| Implementation | [assets/react-kit/src/personal-ui/input/forms.tsx:1485](../assets/react-kit/src/personal-ui/input/forms.tsx#L1485) |
+| Implementation | [assets/react-kit/src/personal-ui/input/forms.tsx:1488](../assets/react-kit/src/personal-ui/input/forms.tsx#L1488) |
 | Explorer / example | [#/components/switch](../assets/react-kit/index.html#/components/switch); [compiled family example](#family-switch-compiled-example) (case `switch/overview`, source [assets/react-kit/src/explorer/cases/input/switch.case.tsx](../assets/react-kit/src/explorer/cases/input/switch.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -8419,7 +8453,7 @@ export const PersonalUiStateExamples: readonly PersonalUiStateFixture[] = [
     { state: "uncontrolled", exports: ["TagInput"], content: <Field label="内部管理技能标签" htmlFor="explorer-tag-default"><TagInput id="explorer-tag-default" ariaLabel="技能标签" defaultValue={["frontend"]} suggestions={suggestions} /></Field> },
     { state: "validation", exports: ["TagInput"], content: <Field label="标签校验" htmlFor="explorer-tag-invalid" error="标签至少需要两个字符。"><TagInput id="explorer-tag-invalid" ariaLabel="标签校验" defaultInputValue="x" validateValue={(value) => value.trim().length < 2 ? "标签至少需要两个字符" : undefined} /></Field> },
     { state: "longContent", exports: ["TagInput"], content: <LongTagInputExample />, instructions: "悬停省略文字查看原生全文提示；Tab 聚焦后辅助技术可读取完整文字，再访问删除按钮。原始 labels 值不因视觉省略改变。" },
-    { state: "keyboard", exports: ["TagInput"], content: <TagInputExample />, instructions: "Tab 聚焦输入框，输入标签后 Enter 添加；用方向键选建议，Backspace 删除空输入框前的标签，Esc 关闭建议。" },
+    { state: "keyboard", exports: ["TagInput"], content: <TagInputExample />, instructions: "Tab 访问输入框和标签移除按钮；输入标签后 Enter 添加，Backspace 删除空输入框前的标签，Esc 关闭建议。" },
     { state: "overlay", exports: ["TagInput"], content: <StatePreview state="overlay"><TagInputExample /></StatePreview> },
     { state: "dark", exports: ["TagInput"], content: <StatePreview state="dark"><TagInputExample /></StatePreview> },
     { state: "locale", exports: ["TagInput"], content: <StatePreview state="locale"><TagInputExample /></StatePreview> },
@@ -10266,7 +10300,7 @@ export function PersonalUiExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `BreadcrumbsProps` |
-| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation.tsx:224](../assets/react-kit/src/personal-ui/navigation/navigation.tsx#L224) |
+| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation.tsx:226](../assets/react-kit/src/personal-ui/navigation/navigation.tsx#L226) |
 | Explorer / example | [#/components/breadcrumb](../assets/react-kit/index.html#/components/breadcrumb); [compiled family example](#family-breadcrumb-compiled-example) (case `breadcrumb/overview`, source [assets/react-kit/src/explorer/cases/navigation/breadcrumb.case.tsx](../assets/react-kit/src/explorer/cases/navigation/breadcrumb.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -10297,7 +10331,7 @@ export type BreadcrumbsProps = PublicControlProps<Omit<HTMLAttributes<HTMLElemen
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `ariaLabel` | `message("navigation.breadcrumbs")` | [assets/react-kit/src/personal-ui/navigation/navigation.tsx:227](../assets/react-kit/src/personal-ui/navigation/navigation.tsx#L227) |
+| `ariaLabel` | `message("navigation.breadcrumbs")` | [assets/react-kit/src/personal-ui/navigation/navigation.tsx:229](../assets/react-kit/src/personal-ui/navigation/navigation.tsx#L229) |
 
 #### Semantic Tokens
 
@@ -11135,7 +11169,7 @@ export function PersonalUiExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `ContextMenuProps` |
-| Implementation | [assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx:413](../assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx#L413) |
+| Implementation | [assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx:420](../assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx#L420) |
 | Explorer / example | [#/components/menu](../assets/react-kit/index.html#/components/menu); [compiled family example](#family-menu-compiled-example) (case `menu/overview`, source [assets/react-kit/src/explorer/cases/navigation/menu.case.tsx](../assets/react-kit/src/explorer/cases/navigation/menu.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -11377,7 +11411,9 @@ function PaginationExample() {
   const [page, setPage] = useState(3);
   const [pageSize, setPageSize] = useState(20);
   const [loadingPage, setLoadingPage] = useState<number>();
-  return <Pagination page={page} pageCount={12} total={231} pageSize={pageSize} loadingPage={loadingPage} onPageChange={(next) => {
+  const total = 231;
+  const pageCount = Math.max(1, Math.ceil(total / pageSize));
+  return <Pagination page={page} pageCount={pageCount} total={total} pageSize={pageSize} loadingPage={loadingPage} onPageChange={(next) => {
     setLoadingPage(next); window.setTimeout(() => { setPage(next); setLoadingPage(undefined); }, 400);
   }} onPageSizeChange={(size) => { setPageSize(size); setPage(1); }} />;
 }
@@ -11428,7 +11464,7 @@ export function PersonalUiExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled` |
 | Parameter type | `PaginationProps` |
-| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation.tsx:299](../assets/react-kit/src/personal-ui/navigation/navigation.tsx#L299) |
+| Implementation | [assets/react-kit/src/personal-ui/navigation/navigation.tsx:301](../assets/react-kit/src/personal-ui/navigation/navigation.tsx#L301) |
 | Explorer / example | [#/components/pagination](../assets/react-kit/index.html#/components/pagination); [compiled family example](#family-pagination-compiled-example) (case `pagination/overview`, source [assets/react-kit/src/explorer/cases/navigation/pagination.case.tsx](../assets/react-kit/src/explorer/cases/navigation/pagination.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -11466,8 +11502,8 @@ export type PaginationProps = PublicControlProps<Omit<HTMLAttributes<HTMLElement
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `loadingTarget` | `"auto"` | [assets/react-kit/src/personal-ui/navigation/navigation.tsx:320](../assets/react-kit/src/personal-ui/navigation/navigation.tsx#L320) |
-| `pageSizeOptions` | `[10, 20, 50]` | [assets/react-kit/src/personal-ui/navigation/navigation.tsx:324](../assets/react-kit/src/personal-ui/navigation/navigation.tsx#L324) |
+| `loadingTarget` | `"auto"` | [assets/react-kit/src/personal-ui/navigation/navigation.tsx:322](../assets/react-kit/src/personal-ui/navigation/navigation.tsx#L322) |
+| `pageSizeOptions` | `[10, 20, 50]` | [assets/react-kit/src/personal-ui/navigation/navigation.tsx:326](../assets/react-kit/src/personal-ui/navigation/navigation.tsx#L326) |
 
 #### Semantic Tokens
 
@@ -13733,7 +13769,7 @@ function DataTableExample() {
   ];
   return (
     <div style={{ display: "grid", gap: 28 }}>
-      <FilterBar ariaLabel="账户筛选" actions={<Button size="field" onClick={() => { setAppliedQuery(query.trim()); setPage(1); }}>搜索</Button>}>
+      <FilterBar ariaLabel="账户筛选" onSubmit={(event) => { event.preventDefault(); setAppliedQuery(query.trim()); setPage(1); }} actions={<Button size="field" type="submit">搜索</Button>}>
         <Field label="账户、负责人或状态" htmlFor="explorer-table-search"><SearchInput id="explorer-table-search" value={query} onChange={(event) => setQuery(event.currentTarget.value)} onClear={() => setQuery("")} /></Field>
       </FilterBar>
       <DataTable
@@ -18089,7 +18125,7 @@ export function PersonalUiExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled` |
 | Parameter type | `ConfirmDialogProps` |
-| Implementation | [assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx:307](../assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx#L307) |
+| Implementation | [assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx:314](../assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx#L314) |
 | Explorer / example | [#/components/dialog](../assets/react-kit/index.html#/components/dialog); [compiled family example](#family-dialog-compiled-example) (case `dialog/overview`, source [assets/react-kit/src/explorer/cases/overlay/dialog.case.tsx](../assets/react-kit/src/explorer/cases/overlay/dialog.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -18121,11 +18157,11 @@ export type ConfirmDialogProps = ConfirmDialogBaseProps & ControlledOpenProps;
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `cancelLabel` | `message("common.cancel")` | [assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx:314](../assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx#L314) |
-| `closeOnBackdropClick` | `true` | [assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx:316](../assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx#L316) |
-| `confirmLabel` | `message("common.confirm")` | [assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx:313](../assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx#L313) |
-| `errorMessage` | `message("confirm.failed")` | [assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx:318](../assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx#L318) |
-| `tone` | `"primary"` | [assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx:315](../assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx#L315) |
+| `cancelLabel` | `message("common.cancel")` | [assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx:321](../assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx#L321) |
+| `closeOnBackdropClick` | `true` | [assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx:323](../assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx#L323) |
+| `confirmLabel` | `message("common.confirm")` | [assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx:320](../assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx#L320) |
+| `errorMessage` | `message("confirm.failed")` | [assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx:325](../assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx#L325) |
+| `tone` | `"primary"` | [assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx:322](../assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx#L322) |
 
 #### Semantic Tokens
 
@@ -18516,7 +18552,7 @@ export function PersonalUiExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled-uncontrolled` |
 | Parameter type | `HoverCardProps` |
-| Implementation | [assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx:285](../assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx#L285) |
+| Implementation | [assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx:292](../assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx#L292) |
 | Explorer / example | [#/components/hover-card](../assets/react-kit/index.html#/components/hover-card); [compiled family example](#family-hover-card-compiled-example) (case `hover-card/overview`, source [assets/react-kit/src/explorer/cases/overlay/hover-card.case.tsx](../assets/react-kit/src/explorer/cases/overlay/hover-card.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -18730,7 +18766,7 @@ export function PersonalUiExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled` |
 | Parameter type | `LightboxProps` |
-| Implementation | [assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx:692](../assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx#L692) |
+| Implementation | [assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx:699](../assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx#L699) |
 | Explorer / example | [#/components/lightbox](../assets/react-kit/index.html#/components/lightbox); [compiled family example](#family-lightbox-compiled-example) (case `lightbox/overview`, source [assets/react-kit/src/explorer/cases/overlay/lightbox.case.tsx](../assets/react-kit/src/explorer/cases/overlay/lightbox.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -18892,7 +18928,7 @@ export function PersonalUiExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `PopconfirmProps` |
-| Implementation | [assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx:382](../assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx#L382) |
+| Implementation | [assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx:389](../assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx#L389) |
 | Explorer / example | [#/components/popconfirm](../assets/react-kit/index.html#/components/popconfirm); [compiled family example](#family-popconfirm-compiled-example) (case `popconfirm/overview`, source [assets/react-kit/src/explorer/cases/overlay/popconfirm.case.tsx](../assets/react-kit/src/explorer/cases/overlay/popconfirm.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -18927,10 +18963,10 @@ export type PopconfirmProps = PublicControlProps<{
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `cancelLabel` | `message("common.cancel")` | [assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx:385](../assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx#L385) |
-| `confirmLabel` | `message("common.confirm")` | [assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx:385](../assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx#L385) |
-| `errorMessage` | `message("confirm.failed")` | [assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx:385](../assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx#L385) |
-| `tone` | `"danger"` | [assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx:385](../assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx#L385) |
+| `cancelLabel` | `message("common.cancel")` | [assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx:392](../assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx#L392) |
+| `confirmLabel` | `message("common.confirm")` | [assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx:392](../assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx#L392) |
+| `errorMessage` | `message("confirm.failed")` | [assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx:392](../assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx#L392) |
+| `tone` | `"danger"` | [assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx:392](../assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx#L392) |
 
 #### Semantic Tokens
 
@@ -19059,7 +19095,10 @@ export const PersonalUiStateExamples: readonly PersonalUiStateFixture[] = [
     { state: "disabled", exports: ["Popover"], content: <Popover disabled triggerLabel="摘要不可用" ariaLabel="不可用的摘要">不可打开的摘要</Popover> },
     { state: "controlled", exports: ["Popover"], content: <PopoverExample /> },
     { state: "uncontrolled", exports: ["Popover"], content: <Popover defaultOpen={false} triggerLabel="组件管理打开状态" ariaLabel="非受控筛选摘要">状态：启用；地区：中国大陆</Popover> },
-    { state: "longContent", exports: ["Popover"], content: <Popover triggerLabel="查看详细筛选说明" ariaLabel="详细筛选说明">当前筛选将查询全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置，请确认所有筛选条件均符合团队的实际使用要求。</Popover> },
+    { state: "longContent", exports: ["Popover"], content: <Stack gap="medium" align="start">
+      <Popover triggerLabel="查看详细筛选说明" ariaLabel="详细筛选说明">当前筛选将查询全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置，请确认所有筛选条件均符合团队的实际使用要求。</Popover>
+      <Popover matchTriggerWidth triggerLabel="查看全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置" ariaLabel="与触发器等宽的详细筛选说明">浮层至少与触发器等宽，但不会超过当前可见区域；缩小窗口或打开移动端键盘后，完整说明仍可在浮层中阅读。</Popover>
+    </Stack> },
     { state: "keyboard", exports: ["Popover"], instructions: "用 Tab 聚焦摘要按钮，Enter 打开；在浮层中用 Tab 聚焦完成，Esc 关闭并返回触发按钮。", content: <PopoverExample /> },
     { state: "overlay", exports: ["Popover"], content: <StatePreview state="overlay"><PopoverExample /></StatePreview> },
     { state: "dark", exports: ["Popover"], content: <StatePreview state="dark"><PopoverExample /></StatePreview> },
@@ -19090,7 +19129,7 @@ export function PersonalUiExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled-uncontrolled` |
 | Parameter type | `PopoverProps` |
-| Implementation | [assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx:275](../assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx#L275) |
+| Implementation | [assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx:282](../assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx#L282) |
 | Explorer / example | [#/components/popover](../assets/react-kit/index.html#/components/popover); [compiled family example](#family-popover-compiled-example) (case `popover/overview`, source [assets/react-kit/src/explorer/cases/overlay/popover.case.tsx](../assets/react-kit/src/explorer/cases/overlay/popover.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -19451,7 +19490,7 @@ export function PersonalUiExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled` |
 | Parameter type | `GuidedTourProps` |
-| Implementation | [assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx:948](../assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx#L948) |
+| Implementation | [assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx:955](../assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx#L955) |
 | Explorer / example | [#/components/tour](../assets/react-kit/index.html#/components/tour); [compiled family example](#family-tour-compiled-example) (case `tour/overview`, source [assets/react-kit/src/explorer/cases/overlay/tour.case.tsx](../assets/react-kit/src/explorer/cases/overlay/tour.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -19487,9 +19526,9 @@ export type GuidedTourProps = GuidedTourBaseProps & ControlledOpenProps;
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `finishLabel` | `message("tour.finish")` | [assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx:951](../assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx#L951) |
-| `nextLabel` | `message("tour.next")` | [assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx:951](../assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx#L951) |
-| `previousLabel` | `message("tour.previous")` | [assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx:951](../assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx#L951) |
+| `finishLabel` | `message("tour.finish")` | [assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx:958](../assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx#L958) |
+| `nextLabel` | `message("tour.next")` | [assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx:958](../assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx#L958) |
+| `previousLabel` | `message("tour.previous")` | [assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx:958](../assets/react-kit/src/personal-ui/overlay/overlays-extra.tsx#L958) |
 
 #### Semantic Tokens
 

@@ -12,6 +12,9 @@ const option = (name, fallback) => args.includes(name) ? args[args.indexOf(name)
 const baseURL = option("--url", "http://127.0.0.1:4187/");
 const output = path.resolve(option("--output", "explorer-visual-audit"));
 const only = option("--only", "").split(",").filter(Boolean);
+const stateNames = { overview: "总览", longContent: "长内容", dark: "深色模式" };
+const requestedStates = option("--states", "").split(",").filter(Boolean).map(state => stateNames[state] ?? state);
+const mobileState = stateNames[option("--mobile-state", "overview")] ?? option("--mobile-state", "总览");
 await mkdir(output, { recursive: true });
 const digest = createHash("sha256");
 async function hashTree(directory) {
@@ -28,6 +31,35 @@ const manifest = JSON.parse(await readFile(path.join(kit, "component-manifest.js
 let server;
 let browser;
 const result = { kind: "presentation-inventory", source, baseURL, startedAt: new Date().toISOString(), families: [], errors: [] };
+async function captureSurface(page, preview, id, state, basename) {
+  if (!args.includes("--open-surfaces")) return undefined;
+  const long = state.startsWith("长内容");
+  const entries = {
+    dialog: [long ? "长内容弹窗" : "编辑项目", ".pui-dialog:visible"],
+    drawer: [long ? "打开长内容详情" : "打开成员详情", ".pui-drawer:visible"],
+    popover: [long ? "详细筛选说明" : "筛选摘要", ".pui-popover__surface:visible"],
+    menu: [long ? "长下拉菜单" : "下拉菜单", ".pui-dropdown__menu:visible"],
+    toast: [long ? "长内容提示" : "右下错误胶囊", ".pui-toast:visible"],
+    lightbox: [long ? "预览长说明图片" : "预览图片", '[data-pui-owner="Lightbox"]:visible'],
+  };
+  let surface;
+  if (id === "select") {
+    await preview.getByRole("combobox", { name: long ? /^长选项/ : /^角色/ }).first().click();
+    surface = page.getByRole("listbox").last();
+  } else if (entries[id]) {
+    const [name, selector] = entries[id];
+    await preview.getByRole("button", { name, exact: true }).click();
+    surface = page.locator(selector).last();
+  } else return undefined;
+  await surface.waitFor({ state: "visible", timeout: 5000 });
+  const bounds = await surface.boundingBox();
+  const screenshot = `${basename}-surface.png`;
+  await surface.screenshot({ path: path.join(output, screenshot), animations: "disabled" });
+  if (id === "toast") await surface.locator(".pui-toast__close").click();
+  else await page.keyboard.press("Escape");
+  await surface.waitFor({ state: "hidden", timeout: 5000 });
+  return { screenshot, bounds };
+}
 try {
   if (args.includes("--serve")) {
     const address = new URL(baseURL);
@@ -50,6 +82,7 @@ try {
   await page.goto(baseURL, { waitUntil: "networkidle", timeout: 20_000 });
   const links = await page.locator('[data-testid="explorer-directory"]').first().locator("a[href]").evaluateAll(nodes => nodes.map(node => ({ href: node.getAttribute("href"), label: node.textContent })));
   if (links.length !== manifest.entries.length) throw new Error(`Directory has ${links.length}/${manifest.entries.length} entries`);
+  if (only.some(id => !links.some(link => link.href.split("/").at(-1) === id))) throw new Error("An explicitly requested family is missing from the directory");
   for (const link of links.filter(item => !only.length || only.includes(item.href.split("/").at(-1)))) {
     const id = link.href.split("/").at(-1);
     await page.evaluate(href => { window.location.hash = href; }, link.href);
@@ -60,9 +93,10 @@ try {
     result.families.push(family);
     const stateTabs = page.locator(".demo-explorer-case").first().getByRole("tab");
     const states = await stateTabs.allTextContents();
-    const selected = ["总览", ...states.filter(name => /^(深色模式|长内容)(?: ·|$)/.test(name))];
+    const selected = requestedStates.length ? states.filter(name => requestedStates.some(state => name === state || name.startsWith(`${state} ·`))) : ["总览", ...states.filter(name => /^(深色模式|长内容)(?: ·|$)/.test(name))];
+    if (!selected.length) throw new Error(`No requested desktop states matched ${id}`);
     for (const [index, state] of selected.entries()) {
-      if (index) await stateTabs.filter({ hasText: state }).first().click();
+      await stateTabs.filter({ hasText: state }).first().click();
       await page.evaluate(() => document.fonts.ready);
       const preview = page.locator("main .demo-explorer-preview").first();
       await preview.scrollIntoViewIfNeeded();
@@ -81,15 +115,18 @@ try {
       });
       const screenshot = `${id}-${index}.png`;
       await preview.screenshot({ path: path.join(output, screenshot), timeout: 10_000, animations: "disabled" });
-      family.views.push({ state, screenshot, ...metrics });
+      const surface = await captureSurface(page, preview, id, state, `${id}-${index}`);
+      family.views.push({ state, screenshot, ...metrics, surface });
     }
     // A narrow container is not a mobile viewport; inspect actual responsive media queries too.
-    if (states.includes("总览")) await stateTabs.filter({ hasText: "总览" }).first().click();
+    const mobileSelected = states.find(state => state === mobileState || state.startsWith(`${mobileState} ·`)) ?? "总览";
+    await stateTabs.filter({ hasText: mobileSelected }).first().click();
     await page.setViewportSize({ width: 320, height: 900 });
     const mobilePreview = page.locator("main .demo-explorer-preview").first();
     const mobileMetrics = await mobilePreview.evaluate(root => ({ width: root.getBoundingClientRect().width, height: root.getBoundingClientRect().height, documentOverflow: document.documentElement.scrollWidth - document.documentElement.clientWidth }));
     await mobilePreview.screenshot({ path: path.join(output, `${id}-mobile.png`), animations: "disabled" });
-    family.mobile = { screenshot: `${id}-mobile.png`, ...mobileMetrics };
+    const mobileSurface = await captureSurface(page, mobilePreview, id, mobileSelected, `${id}-mobile`);
+    family.mobile = { state: mobileSelected, screenshot: `${id}-mobile.png`, ...mobileMetrics, surface: mobileSurface };
     await page.setViewportSize({ width: 1440, height: 1100 });
     if (id === "button") {
       await stateTabs.filter({ hasText: "总览" }).first().click();

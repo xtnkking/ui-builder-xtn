@@ -125,6 +125,7 @@
     "assets/react-kit/tests/browser/auth-query-layout.spec.ts",
     "assets/react-kit/tests/browser/composite-form-contracts.spec.ts",
     "assets/react-kit/tests/browser/d2-drag-upload.spec.ts",
+    "assets/react-kit/tests/browser/detail-floating.spec.ts",
     "assets/react-kit/tests/browser/explorer-audit-findings.spec.ts",
     "assets/react-kit/tests/browser/explorer-responsive-followup.spec.ts",
     "assets/react-kit/tests/browser/infinite-scroll-composition.spec.ts",
@@ -16570,6 +16571,7 @@
         "assets/react-kit/tests/components/overlay-contracts.test.tsx"
       ],
       "browser": [
+        "assets/react-kit/tests/browser/detail-floating.spec.ts",
         "assets/react-kit/tests/browser/m4-overlay-extensions.spec.ts"
       ],
       "keyboard": [
@@ -19549,7 +19551,8 @@
         "assets/react-kit/tests/components/form-control-contracts.test.tsx"
       ],
       "browser": [
-        "assets/react-kit/tests/browser/composite-form-contracts.spec.ts"
+        "assets/react-kit/tests/browser/composite-form-contracts.spec.ts",
+        "assets/react-kit/tests/browser/detail-floating.spec.ts"
       ],
       "keyboard": [
         "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"

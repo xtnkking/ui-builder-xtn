@@ -778,6 +778,9 @@ export function Select(rawProps: SelectProps) {
 
   const openMenu = () => {
     if (unavailable) return;
+    // Safari does not focus buttons on pointer activation. The combobox owns
+    // aria-activedescendant and must retain focus for arrows and Escape.
+    triggerRef.current?.focus({ preventScroll: true });
     setActiveValue(preferredActiveValue);
     setOpen(true);
   };

@@ -8,7 +8,9 @@ function PaginationExample() {
   const [page, setPage] = useState(3);
   const [pageSize, setPageSize] = useState(20);
   const [loadingPage, setLoadingPage] = useState<number>();
-  return <Pagination page={page} pageCount={12} total={231} pageSize={pageSize} loadingPage={loadingPage} onPageChange={(next) => {
+  const total = 231;
+  const pageCount = Math.max(1, Math.ceil(total / pageSize));
+  return <Pagination page={page} pageCount={pageCount} total={total} pageSize={pageSize} loadingPage={loadingPage} onPageChange={(next) => {
     setLoadingPage(next); window.setTimeout(() => { setPage(next); setLoadingPage(undefined); }, 400);
   }} onPageSizeChange={(size) => { setPageSize(size); setPage(1); }} />;
 }

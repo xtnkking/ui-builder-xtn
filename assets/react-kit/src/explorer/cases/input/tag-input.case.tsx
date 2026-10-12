@@ -44,7 +44,7 @@ const explorerCase = {
     { state: "uncontrolled", exports: ["TagInput"], content: <Field label="内部管理技能标签" htmlFor="explorer-tag-default"><TagInput id="explorer-tag-default" ariaLabel="技能标签" defaultValue={["frontend"]} suggestions={suggestions} /></Field> },
     { state: "validation", exports: ["TagInput"], content: <Field label="标签校验" htmlFor="explorer-tag-invalid" error="标签至少需要两个字符。"><TagInput id="explorer-tag-invalid" ariaLabel="标签校验" defaultInputValue="x" validateValue={(value) => value.trim().length < 2 ? "标签至少需要两个字符" : undefined} /></Field> },
     { state: "longContent", exports: ["TagInput"], content: <LongTagInputExample />, instructions: "悬停省略文字查看原生全文提示；Tab 聚焦后辅助技术可读取完整文字，再访问删除按钮。原始 labels 值不因视觉省略改变。" },
-    { state: "keyboard", exports: ["TagInput"], content: <TagInputExample />, instructions: "Tab 聚焦输入框，输入标签后 Enter 添加；用方向键选建议，Backspace 删除空输入框前的标签，Esc 关闭建议。" },
+    { state: "keyboard", exports: ["TagInput"], content: <TagInputExample />, instructions: "Tab 访问输入框和标签移除按钮；输入标签后 Enter 添加，Backspace 删除空输入框前的标签，Esc 关闭建议。" },
     { state: "overlay", exports: ["TagInput"], content: <StatePreview state="overlay"><TagInputExample /></StatePreview> },
     { state: "dark", exports: ["TagInput"], content: <StatePreview state="dark"><TagInputExample /></StatePreview> },
     { state: "locale", exports: ["TagInput"], content: <StatePreview state="locale"><TagInputExample /></StatePreview> },

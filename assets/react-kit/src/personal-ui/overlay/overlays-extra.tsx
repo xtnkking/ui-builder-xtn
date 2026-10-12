@@ -17,7 +17,7 @@ import type {
 } from "../foundation/contracts";
 import { useControllableState } from "../internal/controllable-state";
 import { Alert } from "../feedback/feedback";
-import { floatingPortalTarget } from "../internal/floating-position";
+import { floatingPortalTarget, floatingViewportBounds } from "../internal/floating-position";
 import { InternalIconButtonSlot } from "../internal/button-slots";
 import { sanitizeFixedControlProps } from "../internal/fixed-control-props";
 import {
@@ -63,18 +63,21 @@ function useFloatingPosition(
     const trigger = triggerRef.current;
     const panel = panelRef.current;
     if (!trigger || !panel) return;
+    const ownerWindow = trigger.ownerDocument.defaultView ?? window;
+    const visualViewport = ownerWindow.visualViewport;
     const update = () => {
       const anchor = trigger.getBoundingClientRect();
+      const bounds = floatingViewportBounds(trigger.ownerDocument);
+      panel.style.setProperty("--pui-floating-anchor-width", `${Math.max(1, anchor.width)}px`);
+      panel.style.setProperty("--pui-floating-max-width", `${Math.max(1, Math.floor(bounds.right - bounds.left))}px`);
+      panel.style.setProperty("--pui-floating-max-height", `${Math.max(1, Math.floor(bounds.bottom - bounds.top))}px`);
       const surface = panel.getBoundingClientRect();
-      const gutter = 12;
       const gap = 8;
-      const viewportWidth = document.documentElement.clientWidth;
-      const viewportHeight = document.documentElement.clientHeight;
       let resolvedPlacement = placement;
-      if (placement === "bottom" && anchor.bottom + gap + surface.height > viewportHeight - gutter && anchor.top - gap - surface.height >= gutter) resolvedPlacement = "top";
-      if (placement === "top" && anchor.top - gap - surface.height < gutter && anchor.bottom + gap + surface.height <= viewportHeight - gutter) resolvedPlacement = "bottom";
-      if (placement === "right" && anchor.right + gap + surface.width > viewportWidth - gutter && anchor.left - gap - surface.width >= gutter) resolvedPlacement = "left";
-      if (placement === "left" && anchor.left - gap - surface.width < gutter && anchor.right + gap + surface.width <= viewportWidth - gutter) resolvedPlacement = "right";
+      if (placement === "bottom" && anchor.bottom + gap + surface.height > bounds.bottom && anchor.top - gap - surface.height >= bounds.top) resolvedPlacement = "top";
+      if (placement === "top" && anchor.top - gap - surface.height < bounds.top && anchor.bottom + gap + surface.height <= bounds.bottom) resolvedPlacement = "bottom";
+      if (placement === "right" && anchor.right + gap + surface.width > bounds.right && anchor.left - gap - surface.width >= bounds.left) resolvedPlacement = "left";
+      if (placement === "left" && anchor.left - gap - surface.width < bounds.left && anchor.right + gap + surface.width <= bounds.right) resolvedPlacement = "right";
       const horizontal = resolvedPlacement === "top" || resolvedPlacement === "bottom";
       let left = horizontal
         ? align === "start" ? anchor.left : align === "end" ? anchor.right - surface.width : anchor.left + (anchor.width - surface.width) / 2
@@ -82,22 +85,26 @@ function useFloatingPosition(
       let top = horizontal
         ? resolvedPlacement === "bottom" ? anchor.bottom + gap : anchor.top - surface.height - gap
         : align === "start" ? anchor.top : align === "end" ? anchor.bottom - surface.height : anchor.top + (anchor.height - surface.height) / 2;
-      left = Math.max(gutter, Math.min(left, viewportWidth - surface.width - gutter));
-      top = Math.max(gutter, Math.min(top, viewportHeight - surface.height - gutter));
+      left = Math.max(bounds.left, Math.min(left, bounds.right - surface.width));
+      top = Math.max(bounds.top, Math.min(top, bounds.bottom - surface.height));
       panel.style.left = `${Math.round(left)}px`;
       panel.style.top = `${Math.round(top)}px`;
       panel.dataset.placement = resolvedPlacement;
       panel.dataset.positioned = "true";
     };
     update();
-    window.addEventListener("resize", update);
-    window.addEventListener("scroll", update, true);
+    ownerWindow.addEventListener("resize", update);
+    ownerWindow.addEventListener("scroll", update, true);
+    visualViewport?.addEventListener("resize", update);
+    visualViewport?.addEventListener("scroll", update);
     const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(update);
     observer?.observe(trigger);
     observer?.observe(panel);
     return () => {
-      window.removeEventListener("resize", update);
-      window.removeEventListener("scroll", update, true);
+      ownerWindow.removeEventListener("resize", update);
+      ownerWindow.removeEventListener("scroll", update, true);
+      visualViewport?.removeEventListener("resize", update);
+      visualViewport?.removeEventListener("scroll", update);
       observer?.disconnect();
     };
   }, [align, open, panelRef, placement, triggerRef]);
@@ -252,7 +259,7 @@ function PopoverRoot(rawProps: PopoverRootProps) {
             data-pui-floating-root="true"
             role="dialog"
             aria-label={ariaLabel}
-            style={matchTriggerWidth ? { minWidth: triggerRef.current?.getBoundingClientRect().width } : undefined}
+            style={matchTriggerWidth ? { minWidth: "min(var(--pui-floating-anchor-width, 220px), var(--pui-floating-max-width, calc(100vw - 24px)))" } : undefined}
             onKeyDown={(event) => {
               if (event.key === "Escape") {
                 event.preventDefault();

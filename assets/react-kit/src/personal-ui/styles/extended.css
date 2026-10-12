@@ -231,7 +231,7 @@
 .pui-popover { display: inline-flex; max-width: 100%; }
 .pui-hover-card { max-width: 100%; }
 .pui-popover__trigger { display: inline-flex; max-width: 100%; padding: 0; border: 0; background: transparent; color: inherit; font: inherit; cursor: pointer; }
-.pui-popover__surface { position: fixed; z-index: 115; width: max-content; min-width: 220px; max-width: min(360px, calc(100vw - 24px)); max-height: min(460px, calc(100dvh - 24px)); padding: 14px; overflow: auto; border: 1px solid var(--pui-border); border-radius: var(--pui-radius-surface); background: var(--pui-surface); box-shadow: var(--pui-shadow-popover); color: var(--pui-text); opacity: 0; overflow-wrap: anywhere; }
+.pui-popover__surface { position: fixed; z-index: 115; width: max-content; min-width: min(220px, var(--pui-floating-max-width, calc(100vw - 24px))); max-width: min(360px, var(--pui-floating-max-width, calc(100vw - 24px))); max-height: min(460px, var(--pui-floating-max-height, calc(100dvh - 24px))); padding: 14px; overflow: auto; border: 1px solid var(--pui-border); border-radius: var(--pui-radius-surface); background: var(--pui-surface); box-shadow: var(--pui-shadow-popover); color: var(--pui-text); opacity: 0; overflow-wrap: anywhere; }
 .pui-popover__surface[data-positioned="true"] { opacity: 1; }
 .pui-popconfirm { display: grid; gap: 12px; max-width: 300px; }
 .pui-popconfirm__heading { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 9px; }
