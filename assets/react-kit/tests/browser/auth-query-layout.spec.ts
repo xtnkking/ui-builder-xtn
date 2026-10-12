@@ -80,10 +80,10 @@ test("query controls use compact aligned capsules and keep explicit draft submis
   const field = await bounds(input.locator(".."));
   const button = await bounds(action);
   expect(field.width).toBe(320);
-  expect(field.height).toBe(44);
-  expect(button.height).toBe(44);
-  expect(button.width).toBeGreaterThanOrEqual(80);
-  expect(button.width).toBeLessThanOrEqual(88);
+  expect(field.height).toBe(38);
+  expect(button.height).toBe(38);
+  expect(button.width).toBeGreaterThanOrEqual(74);
+  expect(button.width).toBeLessThanOrEqual(80);
   expect(Math.abs(button.y - field.y)).toBeLessThanOrEqual(1);
   expect(button.x - field.x - field.width).toBeGreaterThanOrEqual(10);
   expect(button.x - field.x - field.width).toBeLessThanOrEqual(12);
@@ -102,7 +102,23 @@ test("query controls use compact aligned capsules and keep explicit draft submis
   await listPreview.getByRole("tab", { name: "列表管理", exact: true }).click();
   const listAction = listPreview.getByRole("button", { name: "查询", exact: true });
   expect((await bounds(listAction)).width).toBeLessThanOrEqual(88);
+  expect((await bounds(listAction)).height).toBe(38);
   await noOverflow(page);
+  const keyboardPreview = await previewFor(page, "filter-bar", "键盘操作");
+  const keyboardInput = keyboardPreview.getByRole("searchbox", { name: "搜索成员", exact: true });
+  const keyboardAction = keyboardPreview.getByRole("button", { name: "查询", exact: true });
+  expect((await bounds(keyboardInput.locator(".."))).height).toBe(38);
+  expect((await bounds(keyboardAction)).height).toBe(38);
+  expect((await bounds(keyboardAction)).width).toBeLessThanOrEqual(80);
+  await keyboardInput.fill("lin");
+  await keyboardInput.press("Tab");
+  await expect(keyboardAction).toBeFocused();
+  await keyboardAction.press("Enter");
+  await expect(keyboardPreview.getByRole("status")).toContainText("共 1 条结果；林夏");
+  await capture(keyboardPreview, "compact-query-keyboard");
+  const comfortablePreview = await previewFor(page, "filter-bar", "长内容");
+  expect((await bounds(comfortablePreview.getByRole("searchbox", { name: "搜索成员", exact: true }).locator(".."))).height).toBe(44);
+  expect((await bounds(comfortablePreview.getByRole("button", { name: "查询", exact: true }))).height).toBe(44);
 });
 
 test("query pending state shows a spinner without resizing or accepting a second draft", async ({ page }) => {

@@ -330,6 +330,7 @@
 .pui-toolbar__end { flex: 0 1 auto; margin-inline-start: auto; }
 
 .pui-filter-bar {
+  --pui-control-height: 38px;
   container-name: pui-filter-bar;
   container-type: inline-size;
   display: flex;
@@ -341,6 +342,9 @@
   border: 0;
   border-radius: 0;
   background: transparent;
+}
+.pui-filter-bar[data-density="comfortable"] {
+  --pui-control-height: 44px;
 }
 .pui-filter-bar__fields {
   display: flex;
@@ -370,6 +374,9 @@
 .pui-filter-bar .pui-button--medium {
   min-height: var(--pui-control-height);
 }
+.pui-filter-bar__actions > .pui-button {
+  padding-inline: 12px;
+}
 .pui-filter-bar__active,
 .pui-filter-bar__status {
   flex: 1 0 100%;
@@ -393,12 +400,17 @@
 @container pui-filter-bar (max-width: 520px) {
   .pui-filter-bar__fields,
   .pui-filter-bar__actions {
+    --pui-control-height: 44px;
     flex-basis: 100%;
     width: 100%;
   }
   .pui-filter-bar__fields > * { flex: 1 1 240px; }
   .pui-filter-bar__actions { justify-content: stretch; }
   .pui-filter-bar__actions > * { flex: 1 1 auto; }
+}
+
+@media (max-width: 640px), (pointer: coarse) {
+  .pui-filter-bar { --pui-control-height: 44px; }
 }
 
 .pui-split-button {

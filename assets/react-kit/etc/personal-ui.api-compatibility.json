@@ -15,8 +15,8 @@
   "current": {
     "packageName": "personal-ui",
     "version": "0.3.1",
-    "apiDigest": "eb5d0a2b5f8bd798e9228d806ab4fe5ed79b4e690b9d402768e0cd14957e771c",
-    "compatibilityDigest": "c23366933b557915b8902cba7e6db9b8a132b11f39e8ce3bd8b5591756d51acf",
+    "apiDigest": "60f1fb3e9f65c1f5d20fc3d0f73fdc09a16c60f654ddb781261b4b498d46a4b9",
+    "compatibilityDigest": "0b085a044dc7e1ecb1cfd885e99f8bfd3978cdbceee0224d8f693ddb144621fc",
     "runtimeExports": 142,
     "typeOnlyExports": 228,
     "publicSignatures": 370
@@ -724,14 +724,14 @@
           "baselineKind": "runtime",
           "currentKind": "runtime",
           "baselineHash": "5b1d32742a73a5ee9e8dd83f278dcbfdd84036dab9eaf4dc05c097f7c34fabc0",
-          "currentHash": "d78adb55365596405182acd5979c95776609ea895c07b4eb21196f3abc0615f3"
+          "currentHash": "f03f36f3c307d1e305bfadecd78e7019269455fda57f32b67c1979231f23b56c"
         },
         {
           "id": "FilterBarProps",
           "baselineKind": "type",
           "currentKind": "type",
           "baselineHash": "c26beb124d039c474fd37c7c57064d61fc22bed4856209dbe87a45c6e03fa0db",
-          "currentHash": "efad40fa566747a90464d3cae42d61bad0d0f6c0be9086b0b2f0553a4e1246ad"
+          "currentHash": "57791bcc2739b22becb9965daf282f4af3eb889d2ef8ad2efbb9ef0b82133ac4"
         },
         {
           "id": "FocusTrap",

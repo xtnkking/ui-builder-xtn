@@ -116,7 +116,7 @@ import { Button, DataTable, Drawer, FilterBar, SearchInput, Select } from "./per
 
 ### Field-aligned query controls
 
-Buttons that share a row with the 44px input controls must declare `size="field"`. Keep the query command as a submit button so Enter and click use the same form path; `handleQuery` must call `event.preventDefault()` before starting the application request, and the button must use the bundled loading state while that request is in flight.
+Buttons that share a row with input controls must declare `size="field"`. In `FilterBar`, fields and actions default to a compact 38px desktop height with tighter action padding; `density="comfortable"` restores 44px. Narrow containers up to 520px, mobile viewports up to 640px, and coarse-pointer devices keep 44px targets. Outside FilterBar, the field height remains 44px. Keep the query command as a submit button so Enter and click use the same form path; `handleQuery` must call `event.preventDefault()` before starting the application request, and the button must use the bundled loading state while that request is in flight.
 
 ```tsx
 <FilterBar

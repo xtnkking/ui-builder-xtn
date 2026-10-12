@@ -533,6 +533,7 @@ export type FilterBarProps = PublicControlProps<Omit<FormHTMLAttributes<HTMLForm
     ariaLabel: string;
     children: ReactNode;
     actions: ReactNode;
+    density?: "compact" | "comfortable";
     activeFilters?: ReactNode;
     status?: ReactNode;
 };

@@ -130,6 +130,7 @@ export type FilterBarProps = PublicControlProps<Omit<FormHTMLAttributes<HTMLForm
   ariaLabel: string;
   children: ReactNode;
   actions: ReactNode;
+  density?: "compact" | "comfortable";
   activeFilters?: ReactNode;
   status?: ReactNode;
 };
@@ -140,12 +141,13 @@ export function FilterBar(rawProps: FilterBarProps) {
     ariaLabel,
     children,
     actions,
+    density = "compact",
     activeFilters,
     status,
     ...props
   } = safeProps;
   return (
-    <form {...props} data-pui-owner="FilterBar" className="pui-filter-bar" aria-label={ariaLabel}>
+    <form {...props} data-pui-owner="FilterBar" data-density={density} className="pui-filter-bar" aria-label={ariaLabel}>
       <div className="pui-filter-bar__fields">{children}</div>
       <div className="pui-filter-bar__actions">{actions}</div>
       {activeFilters != null ? <div className="pui-filter-bar__active">{activeFilters}</div> : null}

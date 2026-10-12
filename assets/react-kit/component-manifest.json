@@ -2181,7 +2181,7 @@
     ]
   },
   "sourceIntegrity": {
-    "action/actions.tsx": "40909ebc6671ce2403cf964c5fda0f400edec335c1f0c6a8f8c6f16fa023f9a8",
+    "action/actions.tsx": "498e03e6c6ecc82ab95456dcdebc1f0db0a52b338b89fe1326226684670f6942",
     "data/data-extra.tsx": "fab14d330f31a42aa1ecf640a4e7133d3978725758d531b166389a630e28ac03",
     "data/data-table.tsx": "3c48392d469228306935d0a14a80c94e453fd0a95ee8465cd4fc11b4d6bb4fc1",
     "display/display.tsx": "d9c0b164c633b73aa695311fc3027795e88752d78464bc3d76e6eed380b3a2e8",
@@ -2221,7 +2221,7 @@
     "patterns/standard-pages.tsx": "610835a9726521ea0c3904d49cfd70e6347c5aac4f50d0ee816f3a7467ca95f1",
     "styles/extended.css": "56b35e88abd43d4c3487450b5169a1936dc05d3e9ef587db7791a9fe93e2eecd",
     "styles/inputs-extra.css": "9dee5311fc0d57c1ca0f4db37dc3478001b8bb4618f686e3eefaa9bc997ce845",
-    "styles/layout-actions-display.css": "6e4eb89d4aa31fd7fbaef75b66bf49133415df01beaa35e4f3e628cc85c1b14f",
+    "styles/layout-actions-display.css": "e9ced58047193b35610968b087dd6c877c2760ee7e63b550027e2c2e472debb2",
     "styles.css": "a960949bcef2563c8232e5ec18105d162bb92c1395cd9441bb838448c3a86c4a"
   }
 }
