@@ -123,7 +123,7 @@ Buttons that share a row with the 44px input controls must declare `size="field"
   ariaLabel="成员筛选"
   onSubmit={handleQuery}
   actions={(
-    <Button size="field" type="submit" variant="primary" loading={querying} loadingLabel="查询中">
+    <Button size="field" type="submit" variant="primary" loading={querying} loadingLabel="查询">
       查询
     </Button>
   )}
@@ -133,7 +133,7 @@ Buttons that share a row with the 44px input controls must declare `size="field"
 </FilterBar>
 ```
 
-The same `size="field"` contract applies when a product intentionally composes the command beside a field inside `Inline`; do not recreate the 44px height with application CSS. Ordinary `Button` instances remain 38px and `size="small"` remains 32px.
+The same `size="field"` contract applies when a product intentionally composes the command beside a field inside `Inline`; do not recreate the 44px height with application CSS. For compact query actions, keep `loadingLabel` equal to the displayed action (for example, `查询`, `搜索`, or localized `Search`): the bundled spinner communicates loading while the button reserves one stable, compact width. Ordinary `Button` instances remain 38px and `size="small"` remains 32px.
 
 Do not deep-import an implementation file:
 

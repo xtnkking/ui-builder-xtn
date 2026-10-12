@@ -1,13 +1,36 @@
 // @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"authentication/overview","exports":["AuthenticationPage","FamilyLoginPage"]}
 import { StatePreview } from "../state-preview";
-import { useState } from "react";
-import { AuthenticationPage, Button, FamilyLoginPage, Field, Input, Tabs } from "../../../personal-ui";
+import { useId, useState } from "react";
+import { AuthenticationPage, Button, FamilyLoginPage, Field, Form, Input, Tabs } from "../../../personal-ui";
 import type { ExplorerCase } from "../types";
 
 const loginProducts = [{ id: "docs", name: "文档", accent: "#1769d2", headline: "团队内容保持清楚有序", description: "共享同一份准确上下文。", visual: <div aria-hidden="true">Docs</div> }];
+const authenticationVisual = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="640" height="560"><rect width="640" height="560" fill="#eaf2ff"/><rect x="100" y="115" width="440" height="330" rx="28" fill="white"/><rect x="140" y="160" width="150" height="16" rx="8" fill="#1769d2"/><rect x="140" y="210" width="360" height="50" rx="12" fill="#edf2f9"/><rect x="140" y="280" width="360" height="50" rx="12" fill="#edf2f9"/><rect x="140" y="355" width="150" height="42" rx="21" fill="#1769d2"/></svg>')}`;
+
+function AuthenticationFields() {
+  const emailId = useId();
+  const [email, setEmail] = useState("");
+  const [feedback, setFeedback] = useState("");
+  return <Form aria-label="工作区登录" noValidate onSubmit={(event) => { event.preventDefault(); setFeedback(email.trim() ? `已使用 ${email.trim()} 继续` : "请先输入邮箱"); }}>
+      <Field label="邮箱" htmlFor={emailId}>
+        <Input id={emailId} type="email" autoComplete="username" placeholder="name@example.com" value={email} onChange={(event) => setEmail(event.currentTarget.value)} />
+      </Field>
+      <Button type="submit" size="field" variant="primary" loadingLabel="继续">继续</Button>
+      {feedback ? <p role="status">{feedback}</p> : null}
+    </Form>;
+}
+
+function GenericAuthenticationExample({ withVisual = false }: { withVisual?: boolean }) {
+  return <AuthenticationPage
+    company="Northstar" product="Admin" title="登录工作区" layout="embedded"
+    description="使用组织账户继续。"
+    visual={withVisual ? <img src={authenticationVisual} alt="统一账户登录插画" /> : undefined}
+  >
+    <AuthenticationFields />
+  </AuthenticationPage>;
+}
 
 function AuthenticationExample() {
-  const [email, setEmail] = useState("");
   const [feedback, setFeedback] = useState("");
   return (
     <Tabs
@@ -31,16 +54,9 @@ function AuthenticationExample() {
         {
           id: "generic",
           label: "通用认证页",
-          content: (
-            <AuthenticationPage company="Northstar" product="Admin" title="登录工作区" description="使用组织账户继续。">
-              <Field label="邮箱" htmlFor="explorer-auth-email">
-                <Input id="explorer-auth-email" value={email} onChange={(event) => setEmail(event.currentTarget.value)} />
-              </Field>
-              <Button variant="primary" onClick={() => setFeedback(email.trim() ? `已使用 ${email.trim()} 继续` : "请先输入邮箱")}>继续</Button>
-              <p role="status">{feedback}</p>
-            </AuthenticationPage>
-          ),
+          content: <GenericAuthenticationExample />,
         },
+        { id: "generic-visual", label: "带插画认证页", content: <GenericAuthenticationExample withVisual /> },
       ]}
     />
   );
@@ -54,7 +70,7 @@ function ValidationLoginExample() {
 function LongAuthenticationExample() {
   const [feedback, setFeedback] = useState("");
   return <Tabs ariaLabel="长内容认证页面案例" defaultValue="generic" items={[
-    { id: "generic", label: "通用认证页", content: <AuthenticationPage company="Northstar" title="登录工作区" description="此认证页用于访问全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置，请确认所有关联配置均符合团队的实际使用要求。"><Button onClick={() => setFeedback("通用认证页继续操作已触发")}>继续</Button><p role="status">{feedback}</p></AuthenticationPage> },
+    { id: "generic", label: "通用认证页", content: <AuthenticationPage company="Northstar" product="Admin" title="登录工作区" layout="embedded" description="此认证页用于访问全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置，请确认所有关联配置均符合团队的实际使用要求。"><AuthenticationFields /></AuthenticationPage> },
     { id: "family", label: "品牌家族登录", content: <><FamilyLoginPage companyName="Northstar" products={[{ id: "details", name: "完整配置", accent: "#1769d2", headline: "统一登录体验", description: "此产品包含全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置，请确认所有关联配置均符合团队的实际使用要求。", visual: <div aria-hidden="true">Docs</div> }]} onSubmit={() => setFeedback("完整配置登录已完成")} /><p role="status">{feedback}</p></> },
   ]} />;
 }

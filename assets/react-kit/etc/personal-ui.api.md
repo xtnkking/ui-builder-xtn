@@ -2224,11 +2224,13 @@ export interface AuthenticationPageProps {
     company: ReactNode;
     product?: ReactNode;
     visual?: ReactNode;
+    /** Full viewport page by default; embedded surfaces use a bounded minimum height. */
+    layout?: "page" | "embedded";
     title: ReactNode;
     description?: ReactNode;
     children: ReactNode;
     footer?: ReactNode;
     className?: string;
 }
-export declare function AuthenticationPage({ company, product, visual, title, description, children, footer, className }: AuthenticationPageProps): import("react").JSX.Element;
+export declare function AuthenticationPage({ company, product, visual, layout, title, description, children, footer, className }: AuthenticationPageProps): import("react").JSX.Element;
 ```

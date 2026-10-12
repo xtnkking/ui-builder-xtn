@@ -22,6 +22,8 @@ Do not copy a pattern's JSX into a local variant. Compose its slots with other p
 
 ## Family login
 
+`AuthenticationPage` defaults to `layout="page"` and fills at least the viewport height. Use `layout="embedded"` in a preview, tab or other bounded surface; its minimum height is capped while long content can still grow. Without a `visual`, the form is a single centered column with a maximum content width of 420px. With a visual, it uses two columns above 760px of **component container** width, and hides the visual below that width. Compose the form body with the official `Form` and `Field`; submit through the Form so click and Enter share one path. Do not patch page geometry with application CSS.
+
 `FamilyLoginPage` intentionally keeps one company identity and one credential form across products. Vary each product through stable `id`, name, accent tokens, headline, supporting copy, and `visual`. Do not fork the form markup for each product or override input/button geometry in application CSS.
 
 The pattern owns validation focus, password visibility, pending submission, duplicate-submit prevention, and component fallback text. The caller owns authentication, account links, legal copy, and errors returned by the business service. Product accents must retain readable control states; visual media must describe the actual product rather than serve as generic decoration. The runnable example is `#/patterns/authentication`.
@@ -43,4 +45,3 @@ Keep IDs stable and unique for detail sections, settings sections, and wizard st
 Use page patterns as the base surface and public overlays for transient work. Drawer and modal dismissal, focus, nesting, and Portal behavior are defined by the [overlay contract](overlay-contract.md). Component fallback and ARIA text follow the nearest locale provider; business page titles and field labels remain explicit consumer props as described by the [locale contract](locale-contract.md).
 
 Before handoff, exercise the pattern's applicable loading, error, empty, validation, long-content, keyboard, and narrow-screen states. Inspect the Explorer pattern route rather than the archived static HTML preview.
-

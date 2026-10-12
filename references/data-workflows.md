@@ -29,6 +29,8 @@ Keep editable filter values separate from the last applied query. Typing and opt
 - Keep loading, ready, empty, error, and retry transitions in the same `DataTable` frame. Do not swap the table for a differently sized page-level placeholder.
 - Business query values, API errors, and row data remain caller-owned. Locale only owns component fallback and ARIA text; machine values do not change with display language.
 
+Pair query commands with fields using `Button size="field"` (44px). For a compact two-character action, pass `loadingLabel="查询"` or `loadingLabel="搜索"` to match its visible label; use the same localized action in other languages. The official spinner then appears beside that label without reserving extra width for the generic processing text, and idle/loading dimensions stay identical. The `FilterBar` Explorer's default example demonstrates an explicit, duplicate-blocked 800ms request while preserving the last applied results; the action's loading state belongs to Button.
+
 ## DataTable configuration
 
 Column and row identities are data contracts: every `column.id` and `rowKey` result must be stable, unique, and non-empty. Developers configure visibility, width, and pinning; end users do not receive freeze controls unless the product explicitly requires them.

@@ -255,6 +255,8 @@ export interface AuthenticationPageProps {
   company: ReactNode;
   product?: ReactNode;
   visual?: ReactNode;
+  /** Full viewport page by default; embedded surfaces use a bounded minimum height. */
+  layout?: "page" | "embedded";
   title: ReactNode;
   description?: ReactNode;
   children: ReactNode;
@@ -262,15 +264,19 @@ export interface AuthenticationPageProps {
   className?: string;
 }
 
-export function AuthenticationPage({ company, product, visual, title, description, children, footer, className }: AuthenticationPageProps) {
+export function AuthenticationPage({ company, product, visual, layout = "page", title, description, children, footer, className }: AuthenticationPageProps) {
   return (
-    <main className={cx("pui-auth-page", className)} data-pui-owner="AuthenticationPage">
-      {visual != null ? <section className="pui-auth-page__visual">{visual}</section> : null}
-      <section className="pui-auth-page__form">
-        <header><div className="pui-auth-page__identity">{company}{product != null ? <span>{product}</span> : null}</div><h1>{title}</h1>{description != null ? <p>{description}</p> : null}</header>
-        <div>{children}</div>
-        {footer != null ? <footer>{footer}</footer> : null}
-      </section>
+    <main className={cx("pui-auth-page", className)} data-pui-owner="AuthenticationPage" data-layout={layout} data-has-visual={visual != null || undefined}>
+      <div className="pui-auth-page__layout">
+        {visual != null ? <section className="pui-auth-page__visual">{visual}</section> : null}
+        <section className="pui-auth-page__form">
+          <div className="pui-auth-page__content">
+            <header><div className="pui-auth-page__identity">{company}{product != null ? <span>{product}</span> : null}</div><h1>{title}</h1>{description != null ? <p>{description}</p> : null}</header>
+            <div className="pui-auth-page__fields">{children}</div>
+            {footer != null ? <footer>{footer}</footer> : null}
+          </div>
+        </section>
+      </div>
     </main>
   );
 }

@@ -318,14 +318,25 @@
 .pui-import-export-page__grid header svg { width: 19px; color: var(--pui-primary); }
 .pui-status-page > .pui-empty { min-height: 360px; }
 
-.pui-auth-page { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(360px, .9fr); min-height: 100dvh; background: var(--pui-bg); }
-.pui-auth-page__visual { min-width: 0; overflow: hidden; background: var(--pui-primary-soft); }
-.pui-auth-page__form { display: grid; align-content: center; gap: 22px; min-width: 0; padding: clamp(24px, 6vw, 72px); background: var(--pui-surface); }
-.pui-auth-page__form > header { display: grid; gap: 6px; }
+.pui-auth-page { container: pui-auth-page / inline-size; display: grid; width: 100%; min-width: 0; min-height: 100dvh; background: var(--pui-surface); }
+.pui-auth-page[data-layout="embedded"] { min-height: min(560px, 80dvh); }
+.pui-auth-page__layout { display: grid; grid-template-columns: minmax(0, 1fr); min-width: 0; }
+.pui-auth-page[data-has-visual] > .pui-auth-page__layout { grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); }
+.pui-auth-page__visual { display: grid; place-items: center; min-width: 0; overflow: hidden; background: var(--pui-primary-soft); }
+.pui-auth-page__visual > :is(img, svg, video) { display: block; width: 100%; max-height: 100%; object-fit: contain; }
+.pui-auth-page__form { display: grid; place-items: center; min-width: 0; padding: clamp(24px, 6cqw, 72px); background: var(--pui-surface); }
+.pui-auth-page__content { display: grid; gap: 22px; width: min(420px, 100%); min-width: 0; overflow-wrap: anywhere; }
+.pui-auth-page__content > header { display: grid; gap: 6px; }
+.pui-auth-page__fields { display: grid; gap: 16px; min-width: 0; }
 .pui-auth-page__form h1 { margin: 0; font-size: 28px; letter-spacing: 0; }
 .pui-auth-page__form p { margin: 0; color: var(--pui-muted); }
 .pui-auth-page__identity { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-weight: 750; }
 .pui-auth-page__identity span { color: var(--pui-primary); font-size: 12px; }
+
+@container pui-auth-page (max-width: 760px) {
+  .pui-auth-page[data-has-visual] > .pui-auth-page__layout { grid-template-columns: minmax(0, 1fr); }
+  .pui-auth-page__visual { display: none; }
+}
 
 @media (max-width: 760px) {
   .pui-app-nav--top { flex-wrap: wrap; gap: 8px; }
@@ -340,8 +351,6 @@
   .pui-master-detail__detail { display: none; }
   .pui-master-detail__layout[data-detail-open] .pui-master-detail__master { display: none; }
   .pui-master-detail__layout[data-detail-open] .pui-master-detail__detail { display: block; }
-  .pui-auth-page { grid-template-columns: minmax(0, 1fr); }
-  .pui-auth-page__visual { display: none; }
 }
 
 @media (max-width: 520px) {

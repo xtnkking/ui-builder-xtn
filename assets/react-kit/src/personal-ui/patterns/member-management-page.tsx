@@ -484,7 +484,7 @@ export function MemberManagementPage({
             variant="primary"
             icon={<Search aria-hidden="true" />}
             loading={requesting && requestAction === "query"}
-            loadingLabel={message("member.querying")}
+            loadingLabel={message("member.query")}
             aria-disabled={requesting || undefined}
             data-pending={pending || undefined}
           >

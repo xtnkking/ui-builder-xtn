@@ -15,8 +15,8 @@
   "current": {
     "packageName": "personal-ui",
     "version": "0.3.1",
-    "apiDigest": "c171ad2d0ac942eed567dd881c97c6aa4621f6930fa981e702b3a4e0346a9812",
-    "compatibilityDigest": "2d2d91e26ac73419e2d0e065727d9320faa28102b3f7998a2cf168b0bbae9a15",
+    "apiDigest": "eb5d0a2b5f8bd798e9228d806ab4fe5ed79b4e690b9d402768e0cd14957e771c",
+    "compatibilityDigest": "c23366933b557915b8902cba7e6db9b8a132b11f39e8ce3bd8b5591756d51acf",
     "runtimeExports": 142,
     "typeOnlyExports": 228,
     "publicSignatures": 370
@@ -207,6 +207,20 @@
           "currentKind": "type",
           "baselineHash": "983acb72004fe1973f47c34af3c877de484a4d0f014019de036aefba8f6c7949",
           "currentHash": "6116a7d4f4e3962fdb27f240150f6616126a47dfeb064843c7f8b3912eea6334"
+        },
+        {
+          "id": "AuthenticationPage",
+          "baselineKind": "runtime",
+          "currentKind": "runtime",
+          "baselineHash": "f0fb4b3215dc5ba8449cf75073d03bc352cb886fe1a377efacd3f43d4f92db92",
+          "currentHash": "8a407c3af38b5eaf3e6842b34eb84c8eb3590318b6d1ba405bfbcc1f8ad2cebd"
+        },
+        {
+          "id": "AuthenticationPageProps",
+          "baselineKind": "type",
+          "currentKind": "type",
+          "baselineHash": "495f8596815eed44754b96d4cf2ae9953da4b236ecd53e1b78b21ecf44501620",
+          "currentHash": "3635da0a530eda15fccee8e1d7d883f647ef22d6e196ab52b19d69e8eb7e34d0"
         },
         {
           "id": "Autocomplete",

@@ -122,6 +122,7 @@
     "assets/react-kit/src/explorer/cases/pattern/status-page.case.tsx",
     "assets/react-kit/src/explorer/cases/pattern/wizard.case.tsx",
     "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts",
+    "assets/react-kit/tests/browser/auth-query-layout.spec.ts",
     "assets/react-kit/tests/browser/composite-form-contracts.spec.ts",
     "assets/react-kit/tests/browser/d2-drag-upload.spec.ts",
     "assets/react-kit/tests/browser/explorer-audit-findings.spec.ts",
@@ -214,7 +215,7 @@
       "source": 142,
       "example": 142,
       "unit": 117,
-      "browser": 58,
+      "browser": 60,
       "keyboard": 100,
       "a11y": 120
     },
@@ -668,7 +669,6 @@
             "src/personal-ui/styles/extended.css"
           ],
           "tokens": [
-            "--pui-bg",
             "--pui-border",
             "--pui-border-strong",
             "--pui-danger",
@@ -845,7 +845,6 @@
             "src/personal-ui/styles/extended.css"
           ],
           "tokens": [
-            "--pui-bg",
             "--pui-border",
             "--pui-border-strong",
             "--pui-danger",
@@ -1904,7 +1903,9 @@
         "assets/react-kit/src/explorer/cases/pattern/authentication.case.tsx"
       ],
       "unit": [],
-      "browser": [],
+      "browser": [
+        "assets/react-kit/tests/browser/auth-query-layout.spec.ts"
+      ],
       "keyboard": [
         "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
       ],
@@ -2662,7 +2663,6 @@
             "src/personal-ui/styles/extended.css"
           ],
           "tokens": [
-            "--pui-bg",
             "--pui-border",
             "--pui-border-strong",
             "--pui-danger",
@@ -2817,7 +2817,6 @@
             "src/personal-ui/styles/extended.css"
           ],
           "tokens": [
-            "--pui-bg",
             "--pui-border",
             "--pui-border-strong",
             "--pui-danger",
@@ -2976,7 +2975,6 @@
             "src/personal-ui/styles/extended.css"
           ],
           "tokens": [
-            "--pui-bg",
             "--pui-border",
             "--pui-border-strong",
             "--pui-danger",
@@ -3578,7 +3576,9 @@
         "assets/react-kit/tests/components/button-contracts.test.tsx",
         "assets/react-kit/tests/components/core-contracts.test.tsx"
       ],
-      "browser": [],
+      "browser": [
+        "assets/react-kit/tests/browser/auth-query-layout.spec.ts"
+      ],
       "keyboard": [
         "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
       ],
@@ -3818,7 +3818,6 @@
             "src/personal-ui/styles/extended.css"
           ],
           "tokens": [
-            "--pui-bg",
             "--pui-border",
             "--pui-border-strong",
             "--pui-danger",
@@ -4147,7 +4146,6 @@
             "src/personal-ui/styles/extended.css"
           ],
           "tokens": [
-            "--pui-bg",
             "--pui-border",
             "--pui-border-strong",
             "--pui-danger",
@@ -5895,7 +5893,6 @@
             "src/personal-ui/styles/extended.css"
           ],
           "tokens": [
-            "--pui-bg",
             "--pui-border",
             "--pui-border-strong",
             "--pui-danger",
@@ -6523,7 +6520,6 @@
             "src/personal-ui/styles/extended.css"
           ],
           "tokens": [
-            "--pui-bg",
             "--pui-border",
             "--pui-border-strong",
             "--pui-danger",
@@ -7645,7 +7641,6 @@
             "src/personal-ui/styles/extended.css"
           ],
           "tokens": [
-            "--pui-bg",
             "--pui-border",
             "--pui-border-strong",
             "--pui-danger",
@@ -8156,7 +8151,6 @@
             "src/personal-ui/styles/extended.css"
           ],
           "tokens": [
-            "--pui-bg",
             "--pui-border",
             "--pui-border-strong",
             "--pui-danger",
@@ -9961,6 +9955,7 @@
         "assets/react-kit/tests/components/actions-contracts.test.tsx"
       ],
       "browser": [
+        "assets/react-kit/tests/browser/auth-query-layout.spec.ts",
         "assets/react-kit/tests/browser/explorer-responsive-followup.spec.ts",
         "assets/react-kit/tests/browser/legacy-regressions.spec.ts"
       ],
@@ -10744,7 +10739,6 @@
             "src/personal-ui/styles/extended.css"
           ],
           "tokens": [
-            "--pui-bg",
             "--pui-border",
             "--pui-border-strong",
             "--pui-danger",
@@ -10938,7 +10932,6 @@
             "src/personal-ui/styles/extended.css"
           ],
           "tokens": [
-            "--pui-bg",
             "--pui-border",
             "--pui-border-strong",
             "--pui-danger",
@@ -11307,7 +11300,6 @@
             "src/personal-ui/styles/extended.css"
           ],
           "tokens": [
-            "--pui-bg",
             "--pui-border",
             "--pui-border-strong",
             "--pui-danger",
@@ -11491,7 +11483,6 @@
             "src/personal-ui/styles/extended.css"
           ],
           "tokens": [
-            "--pui-bg",
             "--pui-border",
             "--pui-border-strong",
             "--pui-danger",
@@ -12055,7 +12046,6 @@
             "src/personal-ui/styles/extended.css"
           ],
           "tokens": [
-            "--pui-bg",
             "--pui-border",
             "--pui-border-strong",
             "--pui-danger",
@@ -12584,7 +12574,6 @@
             "src/personal-ui/styles/extended.css"
           ],
           "tokens": [
-            "--pui-bg",
             "--pui-border",
             "--pui-border-strong",
             "--pui-danger",
@@ -13290,7 +13279,6 @@
             "src/personal-ui/styles/extended.css"
           ],
           "tokens": [
-            "--pui-bg",
             "--pui-border",
             "--pui-border-strong",
             "--pui-danger",
@@ -13802,7 +13790,6 @@
             "src/personal-ui/styles/extended.css"
           ],
           "tokens": [
-            "--pui-bg",
             "--pui-border",
             "--pui-border-strong",
             "--pui-danger",
@@ -16277,7 +16264,6 @@
             "src/personal-ui/styles/extended.css"
           ],
           "tokens": [
-            "--pui-bg",
             "--pui-border",
             "--pui-border-strong",
             "--pui-danger",
@@ -16477,7 +16463,6 @@
             "src/personal-ui/styles/extended.css"
           ],
           "tokens": [
-            "--pui-bg",
             "--pui-border",
             "--pui-border-strong",
             "--pui-danger",
@@ -17542,7 +17527,6 @@
             "src/personal-ui/styles/extended.css"
           ],
           "tokens": [
-            "--pui-bg",
             "--pui-border",
             "--pui-border-strong",
             "--pui-danger",
@@ -18287,7 +18271,6 @@
             "src/personal-ui/styles/extended.css"
           ],
           "tokens": [
-            "--pui-bg",
             "--pui-border",
             "--pui-border-strong",
             "--pui-danger",
@@ -19655,7 +19638,6 @@
             "src/personal-ui/styles/extended.css"
           ],
           "tokens": [
-            "--pui-bg",
             "--pui-border",
             "--pui-border-strong",
             "--pui-danger",
@@ -19854,7 +19836,6 @@
             "src/personal-ui/styles/extended.css"
           ],
           "tokens": [
-            "--pui-bg",
             "--pui-border",
             "--pui-border-strong",
             "--pui-danger",
@@ -20375,7 +20356,6 @@
             "src/personal-ui/styles/extended.css"
           ],
           "tokens": [
-            "--pui-bg",
             "--pui-border",
             "--pui-border-strong",
             "--pui-danger",
@@ -21370,7 +21350,6 @@
             "src/personal-ui/styles/extended.css"
           ],
           "tokens": [
-            "--pui-bg",
             "--pui-border",
             "--pui-border-strong",
             "--pui-danger",
@@ -21565,7 +21544,6 @@
             "src/personal-ui/styles/extended.css"
           ],
           "tokens": [
-            "--pui-bg",
             "--pui-border",
             "--pui-border-strong",
             "--pui-danger",
@@ -24194,7 +24172,6 @@
             "src/personal-ui/styles/extended.css"
           ],
           "tokens": [
-            "--pui-bg",
             "--pui-border",
             "--pui-border-strong",
             "--pui-danger",
@@ -24583,7 +24560,6 @@
             "src/personal-ui/styles/extended.css"
           ],
           "tokens": [
-            "--pui-bg",
             "--pui-border",
             "--pui-border-strong",
             "--pui-danger",
@@ -25525,7 +25501,6 @@
             "src/personal-ui/styles/extended.css"
           ],
           "tokens": [
-            "--pui-bg",
             "--pui-border",
             "--pui-border-strong",
             "--pui-danger",
@@ -26023,7 +25998,6 @@
             "src/personal-ui/styles/extended.css"
           ],
           "tokens": [
-            "--pui-bg",
             "--pui-border",
             "--pui-border-strong",
             "--pui-danger",

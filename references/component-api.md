@@ -1723,7 +1723,7 @@ export type ResizablePanelsProps = PublicControlProps<Omit<HTMLAttributes<HTMLDi
 
 Derived from registered family CSS ([src/personal-ui/styles/extended.css](../assets/react-kit/src/personal-ui/styles/extended.css)).
 
-`--pui-bg`, `--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
+`--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
 
 #### Limits
 
@@ -3267,7 +3267,7 @@ export type DragDropProps = PublicControlProps<Omit<HTMLAttributes<HTMLDivElemen
 
 Derived from registered family CSS ([src/personal-ui/styles/extended.css](../assets/react-kit/src/personal-ui/styles/extended.css)).
 
-`--pui-bg`, `--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
+`--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
 
 #### Limits
 
@@ -3325,24 +3325,40 @@ export function StatePreview({ state, children }: {
   </>;
 }
 
-import { useState } from "react";
+import { useRef, useState, type FormEvent } from "react";
 
 import { Button, FilterBar, SearchInput, Tag } from "./personal-ui";
 
 const members = ["林夏 lin.xia@example.com", "陈屿 chen.yu@example.com", "王宁 wang.ning@example.com"];
 
-function FilterBarExample({ longContent = false }: { longContent?: boolean }) {
+function FilterBarExample({ longContent = false, simulateRequest = false }: { longContent?: boolean; simulateRequest?: boolean }) {
   const [draft, setDraft] = useState("");
   const [query, setQuery] = useState("");
+  const [loading, setLoading] = useState(false);
+  const requestPending = useRef(false);
   const results = members.filter((member) => member.toLocaleLowerCase().includes(query.toLocaleLowerCase()));
-  return <FilterBar ariaLabel={longContent ? "完整成员筛选说明" : "成员筛选"} onSubmit={(event) => { event.preventDefault(); setQuery(draft.trim()); }} actions={<Button type="submit" variant="primary">查询</Button>} activeFilters={query ? <Tag tone="blue">关键词：{query}</Tag> : null} status={`共 ${results.length} 条结果；${results.join("；") || "没有匹配成员"}`}><SearchInput aria-label="搜索成员" placeholder="姓名或邮箱" value={draft} onChange={(event) => setDraft(event.currentTarget.value)} />{longContent ? <span>此筛选覆盖全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置，请确认所有关联配置均符合团队的实际使用要求。</span> : null}</FilterBar>;
+  const applyQuery = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (requestPending.current) return;
+    const nextQuery = draft.trim();
+    requestPending.current = true;
+    setLoading(simulateRequest);
+    try {
+      if (simulateRequest) await new Promise<void>((resolve) => setTimeout(resolve, 800));
+      setQuery(nextQuery);
+    } finally {
+      requestPending.current = false;
+      setLoading(false);
+    }
+  };
+  return <FilterBar ariaLabel={longContent ? "完整成员筛选说明" : "成员筛选"} onSubmit={applyQuery} actions={<Button type="submit" size="field" variant="primary" loading={loading} loadingLabel="查询">查询</Button>} activeFilters={query ? <Tag tone="blue">关键词：{query}</Tag> : null} status={`${loading ? "正在查询；" : ""}共 ${results.length} 条结果；${results.join("；") || "没有匹配成员"}`}><SearchInput aria-label="搜索成员" placeholder="姓名或邮箱" value={draft} onChange={(event) => setDraft(event.currentTarget.value)} />{longContent ? <span>此筛选覆盖全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置，请确认所有关联配置均符合团队的实际使用要求。</span> : null}</FilterBar>;
 }
 
 function EnglishFilterBarExample() {
   const [draft, setDraft] = useState("");
   const [query, setQuery] = useState("");
   const results = members.filter((member) => member.toLocaleLowerCase().includes(query.toLocaleLowerCase()));
-  return <FilterBar ariaLabel="Member filters" onSubmit={(event) => { event.preventDefault(); setQuery(draft.trim()); }} actions={<Button type="submit" variant="primary">Search</Button>} activeFilters={query ? <Tag>Keyword: {query}</Tag> : null} status={`${results.length} results`}><SearchInput aria-label="Search members" placeholder="Name or email" value={draft} onChange={(event) => setDraft(event.currentTarget.value)} /></FilterBar>;
+  return <FilterBar ariaLabel="Member filters" onSubmit={(event) => { event.preventDefault(); setQuery(draft.trim()); }} actions={<Button type="submit" size="field" variant="primary" loadingLabel="Search">Search</Button>} activeFilters={query ? <Tag>Keyword: {query}</Tag> : null} status={`${results.length} results`}><SearchInput aria-label="Search members" placeholder="Name or email" value={draft} onChange={(event) => setDraft(event.currentTarget.value)} /></FilterBar>;
 }
 
 export type PersonalUiExampleState = "default" | "longContent" | "keyboard" | "mobile" | "overlay" | "dark" | "locale";
@@ -3354,7 +3370,7 @@ export interface PersonalUiStateFixture {
   instructions?: string;
 }
 export const PersonalUiStateExamples: readonly PersonalUiStateFixture[] = [
-    { state: "default", exports: ["FilterBar"], content: <FilterBarExample /> },
+    { state: "default", exports: ["FilterBar"], instructions: "输入 lin 后点击查询或按 Enter，模拟 800ms 请求；动作按钮保留查询文字并显示转圈，保持高度和宽度，重复提交不会启动新请求，完成后显示林夏。加载由 Button 拥有，FilterBar 仅组合字段、动作与结果。", content: <FilterBarExample simulateRequest /> },
     { state: "longContent", exports: ["FilterBar"], content: <FilterBarExample longContent /> },
     { state: "keyboard", exports: ["FilterBar"], instructions: "输入 lin，再用 Tab 和 Enter 激活查询，或在搜索框按 Enter 提交；输入期间结果不变，提交后结果变为林夏。", content: <FilterBarExample /> },
     { state: "mobile", exports: ["FilterBar"], instructions: "此 320px 容器在桌面视口内也会纵排字段和动作；搜索框保持原高度，输入不会自动提交。", content: <StatePreview state="mobile"><FilterBarExample /></StatePreview> },
@@ -3367,7 +3383,7 @@ export function PersonalUiExample({ state, component }: {
   state?: PersonalUiExampleState;
   component?: PersonalUiExampleComponent;
 } = {}) {
-  if (state === undefined) return (<FilterBarExample />);
+  if (state === undefined) return (<FilterBarExample simulateRequest />);
   const fixture = PersonalUiStateExamples.find((example) => example.state === state
     && (component === undefined || example.exports.some((name) => name === component)));
   if (!fixture) throw new RangeError(`No state fixture for ${component ?? "this family"}:${state}.`);
@@ -3429,7 +3445,7 @@ Derived from registered family CSS ([src/personal-ui/styles/layout-actions-displ
 #### Usage Excerpt
 
 ```tsx
-<FilterBar ariaLabel="成员筛选" onSubmit={applyFilters} actions={<Button type="submit">查询</Button>}>{fields}</FilterBar>
+<FilterBar ariaLabel="成员筛选" onSubmit={applyFilters} actions={<Button type="submit" size="field" variant="primary" loading={querying} loadingLabel="查询">查询</Button>}>{fields}</FilterBar>
 ```
 
 #### Migration
@@ -3846,7 +3862,7 @@ export type SortableListProps<T> = PublicControlProps<Omit<HTMLAttributes<HTMLOL
 
 Derived from registered family CSS ([src/personal-ui/styles/extended.css](../assets/react-kit/src/personal-ui/styles/extended.css)).
 
-`--pui-bg`, `--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
+`--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
 
 #### Limits
 
@@ -9739,7 +9755,7 @@ export type AnchorNavigationProps = PublicControlProps<Omit<HTMLAttributes<HTMLE
 
 Derived from registered family CSS ([src/personal-ui/styles/extended.css](../assets/react-kit/src/personal-ui/styles/extended.css)).
 
-`--pui-bg`, `--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
+`--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
 
 #### Limits
 
@@ -9925,7 +9941,7 @@ No public prop initializer is declared by this export. Required props, browser b
 
 Derived from registered family CSS ([src/personal-ui/styles/extended.css](../assets/react-kit/src/personal-ui/styles/extended.css)).
 
-`--pui-bg`, `--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
+`--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
 
 #### Limits
 
@@ -9997,7 +10013,7 @@ No public prop initializer is declared by this export. Required props, browser b
 
 Derived from registered family CSS ([src/personal-ui/styles/extended.css](../assets/react-kit/src/personal-ui/styles/extended.css)).
 
-`--pui-bg`, `--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
+`--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
 
 #### Limits
 
@@ -10069,7 +10085,7 @@ No public prop initializer is declared by this export. Required props, browser b
 
 Derived from registered family CSS ([src/personal-ui/styles/extended.css](../assets/react-kit/src/personal-ui/styles/extended.css)).
 
-`--pui-bg`, `--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
+`--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
 
 #### Limits
 
@@ -10141,7 +10157,7 @@ No public prop initializer is declared by this export. Required props, browser b
 
 Derived from registered family CSS ([src/personal-ui/styles/extended.css](../assets/react-kit/src/personal-ui/styles/extended.css)).
 
-`--pui-bg`, `--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
+`--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
 
 #### Limits
 
@@ -10501,7 +10517,7 @@ type CommandPaletteQueryProps = {
 
 Derived from registered family CSS ([src/personal-ui/styles/extended.css](../assets/react-kit/src/personal-ui/styles/extended.css)).
 
-`--pui-bg`, `--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
+`--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
 
 #### Limits
 
@@ -10794,7 +10810,7 @@ export type InfiniteScrollProps = PublicControlProps<Omit<HTMLAttributes<HTMLDiv
 
 Derived from registered family CSS ([src/personal-ui/styles/extended.css](../assets/react-kit/src/personal-ui/styles/extended.css)).
 
-`--pui-bg`, `--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
+`--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
 
 #### Limits
 
@@ -10975,7 +10991,7 @@ export type LoadMoreProps = PublicControlProps<Omit<HTMLAttributes<HTMLElement>,
 
 Derived from registered family CSS ([src/personal-ui/styles/extended.css](../assets/react-kit/src/personal-ui/styles/extended.css)).
 
-`--pui-bg`, `--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
+`--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
 
 #### Limits
 
@@ -11613,7 +11629,7 @@ export type StepperProps = PublicControlProps<Omit<HTMLAttributes<HTMLElement>, 
 
 Derived from registered family CSS ([src/personal-ui/styles/extended.css](../assets/react-kit/src/personal-ui/styles/extended.css)).
 
-`--pui-bg`, `--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
+`--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
 
 #### Limits
 
@@ -12744,7 +12760,7 @@ export type CalendarProps = CalendarBaseProps & ControllableValueProps<Date>;
 
 Derived from registered family CSS ([src/personal-ui/styles/extended.css](../assets/react-kit/src/personal-ui/styles/extended.css)).
 
-`--pui-bg`, `--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
+`--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
 
 #### Limits
 
@@ -13050,7 +13066,7 @@ export type CarouselProps = CarouselBaseProps & ControllableValueProps<string>;
 
 Derived from registered family CSS ([src/personal-ui/styles/extended.css](../assets/react-kit/src/personal-ui/styles/extended.css)).
 
-`--pui-bg`, `--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
+`--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
 
 #### Limits
 
@@ -13231,7 +13247,7 @@ export type BarChartProps = PublicControlProps<Omit<HTMLAttributes<HTMLElement>,
 
 Derived from registered family CSS ([src/personal-ui/styles/extended.css](../assets/react-kit/src/personal-ui/styles/extended.css)).
 
-`--pui-bg`, `--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
+`--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
 
 #### Limits
 
@@ -15431,7 +15447,7 @@ No public prop initializer is declared by this export. Required props, browser b
 
 Derived from registered family CSS ([src/personal-ui/styles/extended.css](../assets/react-kit/src/personal-ui/styles/extended.css)).
 
-`--pui-bg`, `--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
+`--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
 
 #### Limits
 
@@ -16275,7 +16291,7 @@ No public prop initializer is declared by this export. Required props, browser b
 
 Derived from registered family CSS ([src/personal-ui/styles/extended.css](../assets/react-kit/src/personal-ui/styles/extended.css)).
 
-`--pui-bg`, `--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
+`--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
 
 #### Limits
 
@@ -16539,7 +16555,7 @@ export type BannerProps = PublicControlProps<Omit<HTMLAttributes<HTMLDivElement>
 
 Derived from registered family CSS ([src/personal-ui/styles/extended.css](../assets/react-kit/src/personal-ui/styles/extended.css)).
 
-`--pui-bg`, `--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
+`--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
 
 #### Limits
 
@@ -16669,7 +16685,7 @@ export type InlineMessageProps = PublicControlProps<Omit<HTMLAttributes<HTMLSpan
 
 Derived from registered family CSS ([src/personal-ui/styles/extended.css](../assets/react-kit/src/personal-ui/styles/extended.css)).
 
-`--pui-bg`, `--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
+`--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
 
 #### Limits
 
@@ -17890,7 +17906,7 @@ export type ValidationSummaryProps = PublicControlProps<Omit<HTMLAttributes<HTML
 
 Derived from registered family CSS ([src/personal-ui/styles/extended.css](../assets/react-kit/src/personal-ui/styles/extended.css)).
 
-`--pui-bg`, `--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
+`--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
 
 #### Limits
 
@@ -18539,7 +18555,7 @@ No public prop initializer is declared by this export. Required props, browser b
 
 Derived from registered family CSS ([src/personal-ui/styles/extended.css](../assets/react-kit/src/personal-ui/styles/extended.css)).
 
-`--pui-bg`, `--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
+`--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
 
 #### Limits
 
@@ -18746,7 +18762,7 @@ No public prop initializer is declared by this export. Required props, browser b
 
 Derived from registered family CSS ([src/personal-ui/styles/extended.css](../assets/react-kit/src/personal-ui/styles/extended.css)).
 
-`--pui-bg`, `--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
+`--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
 
 #### Limits
 
@@ -18917,7 +18933,7 @@ export type PopconfirmProps = PublicControlProps<{
 
 Derived from registered family CSS ([src/personal-ui/styles/extended.css](../assets/react-kit/src/personal-ui/styles/extended.css)).
 
-`--pui-bg`, `--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
+`--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
 
 #### Limits
 
@@ -19109,7 +19125,7 @@ No public prop initializer is declared by this export. Required props, browser b
 
 Derived from registered family CSS ([src/personal-ui/styles/extended.css](../assets/react-kit/src/personal-ui/styles/extended.css)).
 
-`--pui-bg`, `--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
+`--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
 
 #### Limits
 
@@ -19476,7 +19492,7 @@ export type GuidedTourProps = GuidedTourBaseProps & ControlledOpenProps;
 
 Derived from registered family CSS ([src/personal-ui/styles/extended.css](../assets/react-kit/src/personal-ui/styles/extended.css)).
 
-`--pui-bg`, `--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
+`--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
 
 #### Limits
 
@@ -19536,14 +19552,38 @@ export function StatePreview({ state, children }: {
   </>;
 }
 
-import { useState } from "react";
+import { useId, useState } from "react";
 
-import { AuthenticationPage, Button, FamilyLoginPage, Field, Input, Tabs } from "./personal-ui";
+import { AuthenticationPage, Button, FamilyLoginPage, Field, Form, Input, Tabs } from "./personal-ui";
 
 const loginProducts = [{ id: "docs", name: "文档", accent: "#1769d2", headline: "团队内容保持清楚有序", description: "共享同一份准确上下文。", visual: <div aria-hidden="true">Docs</div> }];
 
-function AuthenticationExample() {
+const authenticationVisual = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="640" height="560"><rect width="640" height="560" fill="#eaf2ff"/><rect x="100" y="115" width="440" height="330" rx="28" fill="white"/><rect x="140" y="160" width="150" height="16" rx="8" fill="#1769d2"/><rect x="140" y="210" width="360" height="50" rx="12" fill="#edf2f9"/><rect x="140" y="280" width="360" height="50" rx="12" fill="#edf2f9"/><rect x="140" y="355" width="150" height="42" rx="21" fill="#1769d2"/></svg>')}`;
+
+function AuthenticationFields() {
+  const emailId = useId();
   const [email, setEmail] = useState("");
+  const [feedback, setFeedback] = useState("");
+  return <Form aria-label="工作区登录" noValidate onSubmit={(event) => { event.preventDefault(); setFeedback(email.trim() ? `已使用 ${email.trim()} 继续` : "请先输入邮箱"); }}>
+      <Field label="邮箱" htmlFor={emailId}>
+        <Input id={emailId} type="email" autoComplete="username" placeholder="name@example.com" value={email} onChange={(event) => setEmail(event.currentTarget.value)} />
+      </Field>
+      <Button type="submit" size="field" variant="primary" loadingLabel="继续">继续</Button>
+      {feedback ? <p role="status">{feedback}</p> : null}
+    </Form>;
+}
+
+function GenericAuthenticationExample({ withVisual = false }: { withVisual?: boolean }) {
+  return <AuthenticationPage
+    company="Northstar" product="Admin" title="登录工作区" layout="embedded"
+    description="使用组织账户继续。"
+    visual={withVisual ? <img src={authenticationVisual} alt="统一账户登录插画" /> : undefined}
+  >
+    <AuthenticationFields />
+  </AuthenticationPage>;
+}
+
+function AuthenticationExample() {
   const [feedback, setFeedback] = useState("");
   return (
     <Tabs
@@ -19567,16 +19607,9 @@ function AuthenticationExample() {
         {
           id: "generic",
           label: "通用认证页",
-          content: (
-            <AuthenticationPage company="Northstar" product="Admin" title="登录工作区" description="使用组织账户继续。">
-              <Field label="邮箱" htmlFor="explorer-auth-email">
-                <Input id="explorer-auth-email" value={email} onChange={(event) => setEmail(event.currentTarget.value)} />
-              </Field>
-              <Button variant="primary" onClick={() => setFeedback(email.trim() ? `已使用 ${email.trim()} 继续` : "请先输入邮箱")}>继续</Button>
-              <p role="status">{feedback}</p>
-            </AuthenticationPage>
-          ),
+          content: <GenericAuthenticationExample />,
         },
+        { id: "generic-visual", label: "带插画认证页", content: <GenericAuthenticationExample withVisual /> },
       ]}
     />
   );
@@ -19590,7 +19623,7 @@ function ValidationLoginExample() {
 function LongAuthenticationExample() {
   const [feedback, setFeedback] = useState("");
   return <Tabs ariaLabel="长内容认证页面案例" defaultValue="generic" items={[
-    { id: "generic", label: "通用认证页", content: <AuthenticationPage company="Northstar" title="登录工作区" description="此认证页用于访问全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置，请确认所有关联配置均符合团队的实际使用要求。"><Button onClick={() => setFeedback("通用认证页继续操作已触发")}>继续</Button><p role="status">{feedback}</p></AuthenticationPage> },
+    { id: "generic", label: "通用认证页", content: <AuthenticationPage company="Northstar" product="Admin" title="登录工作区" layout="embedded" description="此认证页用于访问全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置，请确认所有关联配置均符合团队的实际使用要求。"><AuthenticationFields /></AuthenticationPage> },
     { id: "family", label: "品牌家族登录", content: <><FamilyLoginPage companyName="Northstar" products={[{ id: "details", name: "完整配置", accent: "#1769d2", headline: "统一登录体验", description: "此产品包含全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置，请确认所有关联配置均符合团队的实际使用要求。", visual: <div aria-hidden="true">Docs</div> }]} onSubmit={() => setFeedback("完整配置登录已完成")} /><p role="status">{feedback}</p></> },
   ]} />;
 }
@@ -19641,7 +19674,7 @@ export function PersonalUiExample({ state, component }: {
 | Kind / stability | `pattern` / `stable` |
 | State mode | `composed` |
 | Parameter type | `AuthenticationPageProps` |
-| Implementation | [assets/react-kit/src/personal-ui/patterns/standard-pages.tsx:265](../assets/react-kit/src/personal-ui/patterns/standard-pages.tsx#L265) |
+| Implementation | [assets/react-kit/src/personal-ui/patterns/standard-pages.tsx:267](../assets/react-kit/src/personal-ui/patterns/standard-pages.tsx#L267) |
 | Explorer / example | [#/patterns/authentication](../assets/react-kit/index.html#/patterns/authentication); [compiled family example](#family-authentication-compiled-example) (case `authentication/overview`, source [assets/react-kit/src/explorer/cases/pattern/authentication.case.tsx](../assets/react-kit/src/explorer/cases/pattern/authentication.case.tsx)) |
 | Keyboard | delegated: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | delegated: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -19655,11 +19688,13 @@ Select one fixture from the complete family module with `<PersonalUiExample stat
 #### Public TypeScript
 
 ```ts
-export declare function AuthenticationPage({ company, product, visual, title, description, children, footer, className }: AuthenticationPageProps): import("react").JSX.Element;
+export declare function AuthenticationPage({ company, product, visual, layout, title, description, children, footer, className }: AuthenticationPageProps): import("react").JSX.Element;
 export interface AuthenticationPageProps {
     company: ReactNode;
     product?: ReactNode;
     visual?: ReactNode;
+    /** Full viewport page by default; embedded surfaces use a bounded minimum height. */
+    layout?: "page" | "embedded";
     title: ReactNode;
     description?: ReactNode;
     children: ReactNode;
@@ -19670,7 +19705,9 @@ export interface AuthenticationPageProps {
 
 #### Runtime Defaults
 
-No public prop initializer is declared by this export. Required props, browser behavior, or composed child defaults apply. Source ownership: `src/personal-ui/patterns/family-login-page.tsx`, `src/personal-ui/patterns/standard-pages.tsx`.
+| Prop | Runtime initializer | Source |
+| --- | --- | --- |
+| `layout` | `"page"` | [assets/react-kit/src/personal-ui/patterns/standard-pages.tsx:267](../assets/react-kit/src/personal-ui/patterns/standard-pages.tsx#L267) |
 
 #### Semantic Tokens
 
@@ -19932,7 +19969,7 @@ No public prop initializer is declared by this export. Required props, browser b
 
 Derived from registered family CSS ([src/personal-ui/styles/extended.css](../assets/react-kit/src/personal-ui/styles/extended.css)).
 
-`--pui-bg`, `--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
+`--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
 
 #### Limits
 
@@ -20095,7 +20132,7 @@ No public prop initializer is declared by this export. Required props, browser b
 
 Derived from registered family CSS ([src/personal-ui/styles/extended.css](../assets/react-kit/src/personal-ui/styles/extended.css)).
 
-`--pui-bg`, `--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
+`--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
 
 #### Limits
 
@@ -20261,7 +20298,7 @@ No public prop initializer is declared by this export. Required props, browser b
 
 Derived from registered family CSS ([src/personal-ui/styles/extended.css](../assets/react-kit/src/personal-ui/styles/extended.css)).
 
-`--pui-bg`, `--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
+`--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
 
 #### Limits
 
@@ -20365,7 +20402,7 @@ function DraftListPage({ kind }: { kind: "management" | "search" }) {
   const [submissions, setSubmissions] = useState(0);
   const rows = kind === "management" ? ["文档协作项目", "数据平台项目", "林夏的客户项目"] : ["林夏：更新角色权限", "陈屿：导出审计记录", "林夏：创建工作区"];
   const matched = rows.filter((row) => row.toLocaleLowerCase().includes(query.toLocaleLowerCase()));
-  const filters = <FilterBar ariaLabel={kind === "management" ? "项目筛选" : "审计筛选"} onSubmit={(event) => { event.preventDefault(); setQuery(draft.trim()); setSubmissions((count) => count + 1); }} actions={<Button type="submit" size="field" variant="primary">{kind === "management" ? "查询" : "搜索"}</Button>} status={submissions ? `第 ${submissions} 次查询：${matched.length} 条结果` : "输入仅更新草稿；提交后更新结果"}><SearchInput aria-label={kind === "management" ? "项目名称" : "操作者"} placeholder={kind === "management" ? "搜索项目名称" : "搜索操作者"} value={draft} onChange={(event) => setDraft(event.currentTarget.value)} /></FilterBar>;
+  const filters = <FilterBar ariaLabel={kind === "management" ? "项目筛选" : "审计筛选"} onSubmit={(event) => { event.preventDefault(); setQuery(draft.trim()); setSubmissions((count) => count + 1); }} actions={<Button type="submit" size="field" variant="primary" loadingLabel={kind === "management" ? "查询" : "搜索"}>{kind === "management" ? "查询" : "搜索"}</Button>} status={submissions ? `第 ${submissions} 次查询：${matched.length} 条结果` : "输入仅更新草稿；提交后更新结果"}><SearchInput aria-label={kind === "management" ? "项目名称" : "操作者"} placeholder={kind === "management" ? "搜索项目名称" : "搜索操作者"} value={draft} onChange={(event) => setDraft(event.currentTarget.value)} /></FilterBar>;
   const content = matched.length ? <ul>{matched.map((row) => <li key={row}>{row}</li>)}</ul> : <EmptyState compact title="没有匹配结果" description="修改搜索条件并再次提交。" />;
   return kind === "management" ? <ListManagementPage title="项目" description="显式查询并保持结果区域稳定。" filters={filters}>{content}</ListManagementPage> : <SearchFilterPage title="审计记录" filters={filters}>{content}</SearchFilterPage>;
 }
@@ -20873,7 +20910,7 @@ export interface PageHeadingProps {
 
 Derived from registered family CSS ([src/personal-ui/styles/extended.css](../assets/react-kit/src/personal-ui/styles/extended.css)).
 
-`--pui-bg`, `--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
+`--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
 
 #### Limits
 
@@ -21051,7 +21088,7 @@ No public prop initializer is declared by this export. Required props, browser b
 
 Derived from registered family CSS ([src/personal-ui/styles/extended.css](../assets/react-kit/src/personal-ui/styles/extended.css)).
 
-`--pui-bg`, `--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
+`--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
 
 #### Limits
 
@@ -21211,7 +21248,7 @@ export interface StatusPageProps extends PageHeadingProps {
 
 Derived from registered family CSS ([src/personal-ui/styles/extended.css](../assets/react-kit/src/personal-ui/styles/extended.css)).
 
-`--pui-bg`, `--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
+`--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
 
 #### Limits
 
@@ -21388,7 +21425,7 @@ No public prop initializer is declared by this export. Required props, browser b
 
 Derived from registered family CSS ([src/personal-ui/styles/extended.css](../assets/react-kit/src/personal-ui/styles/extended.css)).
 
-`--pui-bg`, `--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
+`--pui-border`, `--pui-border-strong`, `--pui-danger`, `--pui-danger-soft`, `--pui-focus-ring`, `--pui-muted`, `--pui-on-primary`, `--pui-primary`, `--pui-primary-ink`, `--pui-primary-soft`, `--pui-success`, `--pui-surface`, `--pui-surface-subtle`, `--pui-text`, `--pui-warning`
 
 #### Limits
 

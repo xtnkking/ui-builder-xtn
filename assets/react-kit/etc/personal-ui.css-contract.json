@@ -199,11 +199,23 @@
       "file": "src/personal-ui/styles/extended.css"
     },
     {
+      "selector": ".pui-auth-page__content",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-auth-page__fields",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
       "selector": ".pui-auth-page__form",
       "file": "src/personal-ui/styles/extended.css"
     },
     {
       "selector": ".pui-auth-page__identity",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-auth-page__layout",
       "file": "src/personal-ui/styles/extended.css"
     },
     {
@@ -3909,5 +3921,5 @@
       ]
     }
   ],
-  "selectorCount": 1133
+  "selectorCount": 1139
 }
