@@ -4,7 +4,8 @@ import { Button, Lightbox } from "../../../personal-ui";
 import { StatePreview } from "../state-preview";
 import type { ExplorerCase } from "../types";
 
-const image = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="960" height="640"><rect width="960" height="640" fill="#1769d2"/><rect x="120" y="110" width="720" height="420" rx="24" fill="#ffffff"/><text x="480" y="335" text-anchor="middle" font-family="Arial" font-size="54" fill="#172033">Personal UI</text></svg>')}`;
+const image = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="960" height="640"><rect width="960" height="640" fill="#1769d2"/><rect x="120" y="110" width="720" height="420" rx="24" fill="#ffffff"/><text x="480" y="290" text-anchor="middle" font-family="Arial" font-size="96" font-weight="700" fill="#1769d2">01</text><text x="480" y="380" text-anchor="middle" font-family="Arial" font-size="54" fill="#172033">Personal UI</text></svg>')}`;
+const secondImage = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="960" height="640"><rect width="960" height="640" fill="#103f83"/><rect x="150" y="90" width="660" height="460" rx="24" fill="#eaf2ff"/><text x="480" y="290" text-anchor="middle" font-family="Arial" font-size="96" font-weight="700" fill="#103f83">02</text><text x="480" y="380" text-anchor="middle" font-family="Arial" font-size="54" fill="#172033">Workspace</text><path d="M330 450h300" stroke="#1769d2" stroke-width="12" stroke-linecap="round"/></svg>')}`;
 
 function LightboxExample() {
   const [open, setOpen] = useState(false);
@@ -19,7 +20,7 @@ function LightboxExample() {
         onValueChange={setValue}
         items={[
           { id: "one", src: image, alt: "蓝色 Personal UI 示例图", caption: "第一张" },
-          { id: "two", src: image, alt: "第二张 Personal UI 示例图", caption: "第二张" },
+          { id: "two", src: secondImage, alt: "深蓝色 Workspace 第二张示例图", caption: "第二张" },
         ]}
       />
     </>
@@ -39,7 +40,7 @@ function LongLightboxExample() {
 function EnglishLightboxExample() {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("one");
-  return <><Button onClick={() => setOpen(true)}>Preview images</Button><Lightbox open={open} onOpenChange={setOpen} value={value} onValueChange={setValue} items={[{ id: "one", src: image, alt: "Product configuration preview", caption: "First image" }, { id: "two", src: image, alt: "Another product preview", caption: "Second image" }]} /></>;
+  return <><Button onClick={() => setOpen(true)}>Preview images</Button><Lightbox open={open} onOpenChange={setOpen} value={value} onValueChange={setValue} items={[{ id: "one", src: image, alt: "Blue Personal UI image 01", caption: "First image" }, { id: "two", src: secondImage, alt: "Dark blue Workspace image 02", caption: "Second image" }]} /></>;
 }
 
 const explorerCase: ExplorerCase = {
@@ -49,8 +50,8 @@ const explorerCase: ExplorerCase = {
   states: ["default", "controlled", "empty", "error", "longContent", "keyboard", "overlay", "dark", "locale"],
   content: <LightboxExample />,
   stateExamples: [
-    { state: "default", exports: ["Lightbox"], content: <LightboxExample /> },
-    { state: "controlled", exports: ["Lightbox"], instructions: "打开查看器并切换图片；当前项和打开状态均由示例状态回调管理。", content: <LightboxExample /> },
+    { state: "default", exports: ["Lightbox"], instructions: "打开后可见两张不同的 01 / 02 示例图；点击左右箭头或使用键盘方向键切换。点击 ×、按 Esc 或点击图片和说明以外的空白遮罩关闭。", content: <LightboxExample /> },
+    { state: "controlled", exports: ["Lightbox"], instructions: "打开查看器并切换 01 / 02 图片；当前项和打开状态均由示例状态回调管理，图片、说明和页码同步变化。", content: <LightboxExample /> },
     { state: "empty", exports: ["Lightbox"], instructions: "items 为空时不会显示查看器面板，页面应自行显示没有图片的说明。", content: <><Lightbox open onOpenChange={() => undefined} value="" onValueChange={() => undefined} items={[]} /><p>当前没有可预览的图片，查看器保持不可见。</p></> },
     { state: "error", exports: ["Lightbox"], instructions: "打开查看器；无效的内联 PNG 无法解码，将触发组件的图片错误回退。", content: <FailedLightboxExample /> },
     { state: "longContent", exports: ["Lightbox"], instructions: "打开单图查看器；长说明在有界区域内滚动，不会把图片挤出可读区域。也请在 320px 浏览器视口打开，查看真实窄屏效果。", content: <LongLightboxExample /> },

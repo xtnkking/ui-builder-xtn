@@ -755,6 +755,10 @@
       "file": "src/personal-ui/styles/extended.css"
     },
     {
+      "selector": ".pui-drag-drop__native",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
       "selector": ".pui-drawer",
       "file": "src/personal-ui/styles.css"
     },
@@ -1096,6 +1100,10 @@
     },
     {
       "selector": ".pui-lightbox",
+      "file": "src/personal-ui/styles/extended.css"
+    },
+    {
+      "selector": ".pui-lightbox__caption",
       "file": "src/personal-ui/styles/extended.css"
     },
     {
@@ -1620,10 +1628,6 @@
     },
     {
       "selector": ".pui-split-button__menu",
-      "file": "src/personal-ui/styles/layout-actions-display.css"
-    },
-    {
-      "selector": ".pui-split-button__primary",
       "file": "src/personal-ui/styles/layout-actions-display.css"
     },
     {
@@ -2453,7 +2457,7 @@
         {
           "file": "src/personal-ui/styles.css",
           "layer": "pui.components",
-          "line": 2466
+          "line": 2486
         }
       ]
     },
@@ -2500,23 +2504,73 @@
       ]
     },
     {
-      "token": "--_pui-input-autofill-background",
+      "token": "--_pui-icon-button-background",
       "kind": "internal-component",
       "declarations": [
         {
-          "file": "src/personal-ui/styles.css",
+          "file": "src/personal-ui/styles/extended.css",
           "layer": "pui.components",
-          "line": 660
-        },
-        {
-          "file": "src/personal-ui/styles.css",
-          "layer": "pui.components",
-          "line": 703
+          "line": 262
         }
       ]
     },
     {
-      "token": "--_pui-input-autofill-state-shadow",
+      "token": "--_pui-icon-button-border",
+      "kind": "internal-component",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles/extended.css",
+          "layer": "pui.components",
+          "line": 263
+        }
+      ]
+    },
+    {
+      "token": "--_pui-icon-button-glyph-size",
+      "kind": "internal-component",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles/extended.css",
+          "layer": "pui.components",
+          "line": 266
+        }
+      ]
+    },
+    {
+      "token": "--_pui-icon-button-hover-background",
+      "kind": "internal-component",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles/extended.css",
+          "layer": "pui.components",
+          "line": 265
+        }
+      ]
+    },
+    {
+      "token": "--_pui-icon-button-hover-ink",
+      "kind": "internal-component",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles/extended.css",
+          "layer": "pui.components",
+          "line": 264
+        }
+      ]
+    },
+    {
+      "token": "--_pui-icon-button-ink",
+      "kind": "internal-component",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles/extended.css",
+          "layer": "pui.components",
+          "line": 261
+        }
+      ]
+    },
+    {
+      "token": "--_pui-input-autofill-background",
       "kind": "internal-component",
       "declarations": [
         {
@@ -2527,7 +2581,23 @@
         {
           "file": "src/personal-ui/styles.css",
           "layer": "pui.components",
-          "line": 756
+          "line": 705
+        }
+      ]
+    },
+    {
+      "token": "--_pui-input-autofill-state-shadow",
+      "kind": "internal-component",
+      "declarations": [
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.components",
+          "line": 664
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.components",
+          "line": 758
         }
       ]
     },
@@ -2538,12 +2608,12 @@
         {
           "file": "src/personal-ui/styles.css",
           "layer": "pui.components",
-          "line": 661
+          "line": 663
         },
         {
           "file": "src/personal-ui/styles.css",
           "layer": "pui.components",
-          "line": 704
+          "line": 706
         }
       ]
     },
@@ -3100,22 +3170,22 @@
         {
           "file": "src/personal-ui/styles/layout-actions-display.css",
           "layer": "pui.components",
-          "line": 531
+          "line": 571
         },
         {
           "file": "src/personal-ui/styles/layout-actions-display.css",
           "layer": "pui.components",
-          "line": 532
+          "line": 572
         },
         {
           "file": "src/personal-ui/styles/layout-actions-display.css",
           "layer": "pui.components",
-          "line": 533
+          "line": 573
         },
         {
           "file": "src/personal-ui/styles/layout-actions-display.css",
           "layer": "pui.components",
-          "line": 534
+          "line": 574
         }
       ]
     },
@@ -3126,22 +3196,22 @@
         {
           "file": "src/personal-ui/styles/layout-actions-display.css",
           "layer": "pui.components",
-          "line": 531
+          "line": 571
         },
         {
           "file": "src/personal-ui/styles/layout-actions-display.css",
           "layer": "pui.components",
-          "line": 532
+          "line": 572
         },
         {
           "file": "src/personal-ui/styles/layout-actions-display.css",
           "layer": "pui.components",
-          "line": 533
+          "line": 573
         },
         {
           "file": "src/personal-ui/styles/layout-actions-display.css",
           "layer": "pui.components",
-          "line": 534
+          "line": 574
         }
       ]
     },
@@ -3221,6 +3291,11 @@
           "file": "src/personal-ui/styles.css",
           "layer": "pui.tokens",
           "line": 10
+        },
+        {
+          "file": "src/personal-ui/styles.css",
+          "layer": "pui.components",
+          "line": 1562
         }
       ]
     },
@@ -3283,27 +3358,27 @@
         {
           "file": "src/personal-ui/styles/layout-actions-display.css",
           "layer": "pui.components",
-          "line": 442
+          "line": 482
         },
         {
           "file": "src/personal-ui/styles/layout-actions-display.css",
           "layer": "pui.components",
-          "line": 443
+          "line": 483
         },
         {
           "file": "src/personal-ui/styles/layout-actions-display.css",
           "layer": "pui.components",
-          "line": 444
+          "line": 484
         },
         {
           "file": "src/personal-ui/styles/layout-actions-display.css",
           "layer": "pui.components",
-          "line": 971
+          "line": 1011
         },
         {
           "file": "src/personal-ui/styles/layout-actions-display.css",
           "layer": "pui.components",
-          "line": 996
+          "line": 1033
         }
       ]
     },
@@ -3366,12 +3441,12 @@
         {
           "file": "src/personal-ui/styles/layout-actions-display.css",
           "layer": "pui.components",
-          "line": 972
+          "line": 1012
         },
         {
           "file": "src/personal-ui/styles/layout-actions-display.css",
           "layer": "pui.components",
-          "line": 1008
+          "line": 1045
         }
       ]
     },
@@ -3392,22 +3467,22 @@
         {
           "file": "src/personal-ui/styles/layout-actions-display.css",
           "layer": "pui.components",
-          "line": 839
+          "line": 879
         },
         {
           "file": "src/personal-ui/styles/layout-actions-display.css",
           "layer": "pui.components",
-          "line": 844
+          "line": 884
         },
         {
           "file": "src/personal-ui/styles/layout-actions-display.css",
           "layer": "pui.components",
-          "line": 845
+          "line": 885
         },
         {
           "file": "src/personal-ui/styles/layout-actions-display.css",
           "layer": "pui.components",
-          "line": 846
+          "line": 886
         }
       ]
     },
@@ -3834,5 +3909,5 @@
       ]
     }
   ],
-  "selectorCount": 1117
+  "selectorCount": 1133
 }

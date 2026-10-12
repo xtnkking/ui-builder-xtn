@@ -257,9 +257,21 @@
 .pui-lightbox__caption { display: block; max-width: 100%; max-height: min(6rem, 18dvh); overflow: auto; overscroll-behavior: contain; scrollbar-gutter: stable; }
 .pui-lightbox__position { font-size: 12px; font-variant-numeric: tabular-nums; opacity: .82; }
 .pui-lightbox__image-error { display: grid; place-items: center; align-self: stretch; width: min(720px, 100%); min-height: min(320px, 100%); max-height: 100%; padding: 24px; overflow: auto; border: 1px solid var(--pui-border-strong); border-radius: var(--pui-radius-surface); color: var(--_pui-lightbox-text); text-align: center; overflow-wrap: anywhere; }
-.pui-lightbox__close { position: absolute; top: 16px; right: 16px; color: var(--_pui-lightbox-text); }
-.pui-lightbox__previous { grid-area: previous; color: var(--_pui-lightbox-text); }
-.pui-lightbox__next { grid-area: next; color: var(--_pui-lightbox-text); }
+.pui-lightbox > .pui-icon-button {
+  --_pui-icon-button-ink: var(--_pui-lightbox-text);
+  --_pui-icon-button-background: color-mix(in srgb, var(--_pui-lightbox-text) 12%, transparent);
+  --_pui-icon-button-border: color-mix(in srgb, var(--_pui-lightbox-text) 32%, transparent);
+  --_pui-icon-button-hover-ink: var(--_pui-lightbox-text);
+  --_pui-icon-button-hover-background: color-mix(in srgb, var(--_pui-lightbox-text) 24%, transparent);
+  --_pui-icon-button-glyph-size: 22px;
+  flex-basis: 44px;
+  width: 44px;
+  height: 44px;
+}
+.pui-lightbox > .pui-icon-button:focus-visible { outline: 2px solid var(--_pui-lightbox-text); outline-offset: 3px; }
+.pui-lightbox__close { position: absolute; top: 16px; right: 16px; }
+.pui-lightbox__previous { grid-area: previous; }
+.pui-lightbox__next { grid-area: next; }
 
 .pui-tour { position: fixed; z-index: 140; inset: 0; display: grid; place-items: center; padding: 20px; overflow: hidden; }
 .pui-tour__scrim { position: absolute; inset: 0; background: var(--_pui-tour-backdrop); }
@@ -338,7 +350,7 @@
   .pui-page-heading__actions { grid-column: 1 / -1; justify-content: stretch; }
   .pui-page-heading__actions > * { flex: 1 1 auto; }
   .pui-scheduler__agenda li { grid-template-columns: 72px minmax(0, 1fr); }
-  .pui-lightbox { grid-template-columns: 36px minmax(0, 1fr) 36px; padding: 48px 6px 12px; }
+  .pui-lightbox { grid-template-columns: 44px minmax(0, 1fr) 44px; padding: 68px 6px 12px; }
   .pui-lightbox[data-single] { grid-template-columns: minmax(0, 1fr); }
   .pui-command__shortcut { display: none; }
 }

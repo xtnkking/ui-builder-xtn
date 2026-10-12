@@ -505,23 +505,23 @@
   width: 36px;
   height: 36px;
   padding: 0;
-  border: 1px solid transparent;
+  border: 1px solid var(--_pui-icon-button-border, transparent);
   border-radius: 50%;
-  background: transparent;
-  color: var(--pui-muted);
+  background: var(--_pui-icon-button-background, transparent);
+  color: var(--_pui-icon-button-ink, var(--pui-muted));
   cursor: pointer;
 }
 
 .pui-icon-button:hover:not(:disabled):not([aria-disabled="true"]) {
-  background: var(--pui-primary-soft);
-  color: var(--pui-primary-ink);
+  background: var(--_pui-icon-button-hover-background, var(--pui-primary-soft));
+  color: var(--_pui-icon-button-hover-ink, var(--pui-primary-ink));
 }
 
 .pui-icon-button__icon {
   display: grid;
   place-items: center;
-  width: 16px;
-  height: 16px;
+  width: var(--_pui-icon-button-glyph-size, 16px);
+  height: var(--_pui-icon-button-glyph-size, 16px);
   overflow: hidden;
 }
 
@@ -2304,12 +2304,16 @@ input[type="password"]::-ms-reveal {
 
 .pui-button__icon > *,
 .pui-button__trailing > *,
-.pui-icon-button__icon > *,
 .pui-input-shell__start > *,
 .pui-input-shell__end > :not(.pui-input-action):not(.pui-number-input__steps),
 .pui-dropdown__item-icon > * {
   width: 16px !important;
   height: 16px !important;
+}
+
+.pui-icon-button__icon > * {
+  width: var(--_pui-icon-button-glyph-size, 16px) !important;
+  height: var(--_pui-icon-button-glyph-size, 16px) !important;
 }
 
 .pui-option__leading > * {

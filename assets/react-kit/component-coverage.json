@@ -128,6 +128,7 @@
     "assets/react-kit/tests/browser/explorer-responsive-followup.spec.ts",
     "assets/react-kit/tests/browser/infinite-scroll-composition.spec.ts",
     "assets/react-kit/tests/browser/legacy-regressions.spec.ts",
+    "assets/react-kit/tests/browser/lightbox-interaction.spec.ts",
     "assets/react-kit/tests/browser/locale-contracts.spec.ts",
     "assets/react-kit/tests/browser/m4-overlay-extensions.spec.ts",
     "assets/react-kit/tests/browser/m5-accordion.spec.ts",
@@ -12695,6 +12696,7 @@
       ],
       "browser": [
         "assets/react-kit/tests/browser/explorer-responsive-followup.spec.ts",
+        "assets/react-kit/tests/browser/lightbox-interaction.spec.ts",
         "assets/react-kit/tests/browser/m4-overlay-extensions.spec.ts"
       ],
       "keyboard": [

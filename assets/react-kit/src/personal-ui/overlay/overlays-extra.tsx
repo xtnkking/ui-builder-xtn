@@ -724,9 +724,11 @@ export function Lightbox(rawProps: LightboxProps) {
   const resolvedIndex = currentIndex >= 0 ? currentIndex : 0;
   const current = items[resolvedIndex];
   const [failedImageKey, setFailedImageKey] = useState<string | null>(null);
+  const backdropPressRef = useRef<{ pointerId: number; target: EventTarget; x: number; y: number } | null>(null);
   const currentImageKey = current ? `${current.id}\u0000${current.src}` : null;
   useEffect(() => {
     setFailedImageKey(null);
+    backdropPressRef.current = null;
   }, [currentImageKey, open]);
   const layer = useLayerKernel({
     active: open && current !== undefined && portalTarget !== null,
@@ -767,8 +769,26 @@ export function Lightbox(rawProps: LightboxProps) {
             aria-label={message("lightbox.label")}
             onFocusCapture={layer.captureRestoreFocus}
             onKeyDown={handleKeyboardNavigation}
-            onMouseDown={(event) => {
-              if (event.target === event.currentTarget && layer.isTopLayer()) {
+            onPointerDown={(event) => {
+              const backdrop = event.target === event.currentTarget
+                || event.target === event.currentTarget.querySelector(":scope > figure");
+              backdropPressRef.current = event.isPrimary && event.button === 0 && backdrop && layer.isTopLayer()
+                ? { pointerId: event.pointerId, target: event.target, x: event.clientX, y: event.clientY }
+                : null;
+            }}
+            onPointerMove={(event) => {
+              const press = backdropPressRef.current;
+              if (press && event.pointerId === press.pointerId
+                && Math.hypot(event.clientX - press.x, event.clientY - press.y) > 8) backdropPressRef.current = null;
+            }}
+            onPointerCancel={() => { backdropPressRef.current = null; }}
+            onPointerUp={(event) => {
+              const press = backdropPressRef.current;
+              backdropPressRef.current = null;
+              const releaseTarget = event.currentTarget.ownerDocument.elementFromPoint?.(event.clientX, event.clientY);
+              if (press && event.pointerId === press.pointerId && event.target === press.target
+                && (releaseTarget === undefined || releaseTarget === press.target)
+                && Math.hypot(event.clientX - press.x, event.clientY - press.y) <= 8 && layer.isTopLayer()) {
                 event.preventDefault();
                 layer.dismiss("backdrop");
               }

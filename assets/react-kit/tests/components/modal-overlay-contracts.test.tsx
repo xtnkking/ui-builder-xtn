@@ -203,7 +203,7 @@ describe("modal overlay public contracts", () => {
     );
     await user.click(screen.getByRole("button", { name: "下一张" }));
     expect(onValueChange).toHaveBeenCalledWith("second");
-    fireEvent.mouseDown(screen.getByRole("dialog", { name: "图片预览" }));
+    await user.click(screen.getByRole("dialog", { name: "图片预览" }));
     expect(onLightboxOpenChange).toHaveBeenCalledWith(false);
     lightbox.unmount();
 
