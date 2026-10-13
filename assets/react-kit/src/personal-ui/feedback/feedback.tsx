@@ -430,10 +430,10 @@ function ToastItem({
         try {
           await action.onError(error);
         } catch (handlerError) {
-          console.error("Personal UI Toast action error handler failed.", handlerError);
+          console.error("Toast action error handler failed.", handlerError);
         }
       } else {
-        console.error("Personal UI Toast action failed.", error);
+        console.error("Toast action failed.", error);
       }
     } finally {
       actionRunning.current = false;

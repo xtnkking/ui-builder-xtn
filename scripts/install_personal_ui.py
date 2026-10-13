@@ -38,6 +38,7 @@ from validate_component_manifest import validate_component_manifest
 SKILL_ROOT = Path(__file__).resolve().parent.parent
 ASSET_ROOT = SKILL_ROOT / "assets" / "react-kit"
 SOURCE_KIT = ASSET_ROOT / "src" / "personal-ui"
+CONSUMER_STARTER_ROOT = SKILL_ROOT / "assets" / "consumer-starter"
 REGISTRY_PATH = ASSET_ROOT / "registry.json"
 COMPONENT_MANIFEST_PATH = ASSET_ROOT / "component-manifest.json"
 PROVENANCE_TOOL_PATH = ASSET_ROOT / "tools" / "personal-ui" / "verify-provenance.mjs"
@@ -58,14 +59,18 @@ SEMVER = re.compile(
 RUNTIME_EXPORT = re.compile(r"^[A-Za-z_$][\w$]*$")
 SOURCE_IGNORED_PARTS = {"node_modules", "dist", ".git", "__pycache__"}
 STARTER_ROOT_FILES = {
-    "component-docs.json",
     "component-manifest.json",
-    "index.html",
     "package-lock.json",
     "package.json",
     "tsconfig.json",
-    "vite.config.ts",
 }
+STARTER_TEMPLATE_FILES = (
+    Path("index.html"),
+    Path("vite.config.ts"),
+    Path("src/App.tsx"),
+    Path("src/main.tsx"),
+)
+LEGACY_STARTER_ROOT_FILES = {"component-docs.json"}
 LEGACY_VERIFY_COMMANDS = {
     "node tools/personal-ui/verify-provenance.mjs --target . "
     "--source-root src/personal-ui --manifest tools/personal-ui/component-manifest.json",
@@ -558,11 +563,46 @@ def starter_payload() -> dict[Path, bytes]:
         if not path.is_file() or is_link_like(path):
             raise ValueError(f"starter payload file is missing or link-like: {path}")
         payload[Path(name)] = path.read_bytes()
-    for relative, content in source_file_map(ASSET_ROOT / "src").items():
-        payload[Path("src") / relative] = content
+    if is_link_like(CONSUMER_STARTER_ROOT):
+        raise ValueError(f"starter template is link-like: {CONSUMER_STARTER_ROOT}")
+    for relative in STARTER_TEMPLATE_FILES:
+        path = CONSUMER_STARTER_ROOT / relative
+        if not path.is_file() or is_link_like(path) or is_link_like(path.parent):
+            raise ValueError(f"starter template file is missing or link-like: {path}")
+        payload[relative] = path.read_bytes()
+    for relative, content in source_file_map(SOURCE_KIT).items():
+        payload[DEFAULT_SOURCE_ROOT / relative] = content
     payload[DEFAULT_SOURCE_ROOT / "registry.json"] = REGISTRY_PATH.read_bytes()
     payload.update(support_file_map())
+
+    package = json.loads(payload[Path("package.json")])
+    scripts = package.get("scripts") if isinstance(package, dict) else None
+    if not isinstance(scripts, dict):
+        raise ValueError("starter package.json scripts must be an object")
+    package["name"] = "web-app"
+    package["scripts"] = {
+        name: scripts[name] for name in ("dev", "build", "preview") if name in scripts
+    }
+    payload[Path("package.json")] = canonical_json(package)
+
+    lock = json.loads(payload[Path("package-lock.json")])
+    packages = lock.get("packages") if isinstance(lock, dict) else None
+    root_package = packages.get("") if isinstance(packages, dict) else None
+    if not isinstance(root_package, dict):
+        raise ValueError("starter package-lock.json must contain a root package")
+    lock["name"] = "web-app"
+    root_package["name"] = "web-app"
+    payload[Path("package-lock.json")] = canonical_json(lock)
     return payload
+
+
+def legacy_starter_owned_paths() -> set[str]:
+    paths = set(LEGACY_STARTER_ROOT_FILES)
+    paths.update(
+        (Path("src") / relative).as_posix()
+        for relative in source_file_map(ASSET_ROOT / "src")
+    )
+    return paths
 
 
 def plan_dependencies(
@@ -1590,7 +1630,9 @@ def install_starter(
             context,
             state,
             mode="starter",
-            starter_allowlist={path.as_posix() for path in payload},
+            starter_allowlist=(
+                {path.as_posix() for path in payload} | legacy_starter_owned_paths()
+            ),
         )
         if state
         else legacy_owned_files(context)

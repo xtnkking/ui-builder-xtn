@@ -604,7 +604,7 @@ function formatTemplate(
 ): string {
   return template.replace(/\{([A-Za-z][A-Za-z0-9]*)\}/g, (_match, name: string) => {
     if (!(name in values)) {
-      throw new Error(`Personal UI locale message is missing the "${name}" placeholder value.`);
+      throw new Error(`Locale message is missing the "${name}" placeholder value.`);
     }
     const value = values[name];
     return typeof value === "number" ? numberFormatter.format(value) : value;

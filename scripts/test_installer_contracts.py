@@ -571,25 +571,148 @@ class InstallerContracts(unittest.TestCase):
                 root, registry=self.registry, force=False, dry_run=False
             )
             state_path = root / STATE_RELATIVE
-            state = json.loads(state_path.read_text(encoding="utf-8"))
-            readme = root / "README.md"
-            readme.write_text("consumer documentation\n", encoding="utf-8")
-            state["ownedFiles"]["README.md"] = installer.sha256_file(readme)
-            write_json(state_path, state)
-            with self.assertRaisesRegex(
-                ValueError, "outside the starter ownership allowlist"
-            ):
-                installer.install_starter(
-                    root, registry=self.registry, force=True, dry_run=True
+            clean_state = json.loads(state_path.read_text(encoding="utf-8"))
+            for relative in ("README.md", "src/custom.ts"):
+                with self.subTest(relative=relative):
+                    path = root / relative
+                    path.parent.mkdir(parents=True, exist_ok=True)
+                    path.write_text("consumer-owned\n", encoding="utf-8")
+                    state = json.loads(json.dumps(clean_state))
+                    state["ownedFiles"][relative] = installer.sha256_file(path)
+                    write_json(state_path, state)
+                    with self.assertRaisesRegex(
+                        ValueError, "outside the starter ownership allowlist"
+                    ):
+                        installer.install_starter(
+                            root, registry=self.registry, force=True, dry_run=True
+                        )
+                    self.assertEqual(path.read_text(encoding="utf-8"), "consumer-owned\n")
+            write_json(state_path, clean_state)
+
+    def test_starter_install_is_neutral_and_repeatable(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="pui-neutral-starter-") as temporary:
+            root = Path(temporary)
+            installed = installer.install_starter(
+                root, registry=self.registry, force=False, dry_run=False
+            )
+            self.assertEqual(installed["operation"], "install")
+            package = json.loads((root / "package.json").read_text(encoding="utf-8"))
+            lock = json.loads((root / "package-lock.json").read_text(encoding="utf-8"))
+            self.assertEqual(package["name"], "web-app")
+            self.assertEqual(lock["name"], "web-app")
+            self.assertEqual(lock["packages"][""]["name"], "web-app")
+            self.assertEqual(package["license"], "MIT")
+            self.assertEqual(
+                set(package["scripts"]), {"dev", "build", "preview", "verify:personal-ui"}
+            )
+            self.assertTrue(
+                package["scripts"]["build"].startswith(
+                    package["scripts"]["verify:personal-ui"] + " && "
                 )
-            self.assertEqual(readme.read_text(encoding="utf-8"), "consumer documentation\n")
+            )
+            self.assertFalse((root / "src/explorer").exists())
+            self.assertFalse((root / "src/demo.css").exists())
+            self.assertFalse((root / "component-docs.json").exists())
+            self.assertTrue((root / "src/personal-ui/index.ts").is_file())
+            self.assertEqual(
+                installer.install_starter(
+                    root, registry=self.registry, force=False, dry_run=False
+                )["operation"],
+                "noop",
+            )
+
+    def test_starter_upgrade_retires_owned_legacy_demo_files(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="pui-legacy-starter-") as temporary:
+            root = Path(temporary)
+            installer.install_starter(
+                root, registry=self.registry, force=False, dry_run=False
+            )
+            state_path = root / STATE_RELATIVE
+            state = json.loads(state_path.read_text(encoding="utf-8"))
+            legacy = {
+                "component-docs.json": installer.ASSET_ROOT / "component-docs.json",
+                "index.html": installer.ASSET_ROOT / "index.html",
+                "vite.config.ts": installer.ASSET_ROOT / "vite.config.ts",
+                "src/App.tsx": installer.ASSET_ROOT / "src/App.tsx",
+                "src/main.tsx": installer.ASSET_ROOT / "src/main.tsx",
+                "src/demo.css": installer.ASSET_ROOT / "src/demo.css",
+                "src/explorer/registry.ts": installer.ASSET_ROOT / "src/explorer/registry.ts",
+            }
+            for relative, source in legacy.items():
+                path = root / relative
+                path.parent.mkdir(parents=True, exist_ok=True)
+                content = source.read_bytes()
+                path.write_bytes(content)
+                state["ownedFiles"][relative] = installer.sha256_bytes(content)
+            write_json(state_path, state)
+
+            report = installer.install_starter(
+                root, registry=self.registry, force=False, dry_run=False
+            )
+            self.assertEqual(report["operation"], "upgrade")
+            self.assertEqual(
+                set(report["plan"]["delete"]),
+                {"component-docs.json", "src/demo.css", "src/explorer/registry.ts"},
+            )
+            for relative in report["plan"]["delete"]:
+                self.assertFalse((root / relative).exists())
+            for relative in ("index.html", "vite.config.ts", "src/App.tsx", "src/main.tsx"):
+                self.assertEqual(
+                    (root / relative).read_bytes(),
+                    (installer.CONSUMER_STARTER_ROOT / relative).read_bytes(),
+                )
+
+    def test_modified_legacy_starter_file_requires_explicit_force(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="pui-modified-legacy-") as temporary:
+            root = Path(temporary)
+            installer.install_starter(
+                root, registry=self.registry, force=False, dry_run=False
+            )
+            relative = "src/demo.css"
+            legacy = installer.ASSET_ROOT / relative
+            path = root / relative
+            original = legacy.read_bytes()
+            path.write_bytes(original + b"\n/* consumer edit */\n")
+            state_path = root / STATE_RELATIVE
+            state = json.loads(state_path.read_text(encoding="utf-8"))
+            state["ownedFiles"][relative] = installer.sha256_bytes(original)
+            write_json(state_path, state)
+            with self.assertRaises(installer.InstallationConflict) as raised:
+                installer.install_starter(
+                    root, registry=self.registry, force=False, dry_run=True
+                )
+            self.assertTrue(
+                any(
+                    item["path"] == relative and item["reason"] == "modified-owned-file"
+                    for item in raised.exception.report["plan"]["conflicts"]
+                )
+            )
+            forced = installer.install_starter(
+                root, registry=self.registry, force=True, dry_run=True
+            )
+            self.assertEqual(forced["plan"]["delete"], [relative])
+            self.assertTrue(forced["plan"]["files"]["delete"][0]["forced"])
+            self.assertTrue(path.exists())
 
     def test_starter_payload_is_allowlisted(self) -> None:
-        paths = {path.as_posix() for path in installer.starter_payload()}
+        payload = installer.starter_payload()
+        paths = {path.as_posix() for path in payload}
         self.assertFalse(any("test-results" in path for path in paths))
         self.assertFalse(any(path.startswith("tests/") for path in paths))
         self.assertIn("component-manifest.json", paths)
         self.assertIn("tools/personal-ui/component-manifest.json", paths)
+        self.assertIn("src/personal-ui/index.ts", paths)
+        self.assertEqual(
+            {path for path in paths if path.startswith("src/") and not path.startswith("src/personal-ui/")},
+            {"src/App.tsx", "src/main.tsx"},
+        )
+        self.assertNotIn("component-docs.json", paths)
+        self.assertNotIn("src/demo.css", paths)
+        self.assertNotIn("src/explorer/registry.ts", paths)
+        self.assertEqual(
+            payload[Path("src/App.tsx")],
+            (installer.CONSUMER_STARTER_ROOT / "src/App.tsx").read_bytes(),
+        )
 
 
 if __name__ == "__main__":

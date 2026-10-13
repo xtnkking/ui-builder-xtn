@@ -14,7 +14,7 @@ Build the requested interface from the bundled Personal UI implementation. This 
 2. Read the [integration guide](references/integration.md), then use `scripts/install_personal_ui.py` in `starter` or `integrate` mode. Never copy isolated snippets or use the archived `personal-ui-library-preview.html` as application source.
 3. Find the needed family in the generated [component catalog](references/component-catalog.md), then read its exact Props, defaults, behavior, example, and migration notes in the generated [component API](references/component-api.md). Inspect the matching runnable Explorer route when appearance or interaction matters.
 4. Import runtime components and patterns only from the installed `src/personal-ui/index.ts` barrel, normally through `./personal-ui` or its project alias. Compose business data, callbacks, copy, product media, approved tokens, and non-interactive layout around those exports.
-5. Run the target build, tests, and `python scripts/verify_personal_ui.py --target <project-path>` before handoff. Report the public exports used and any canonical capability added.
+5. Run the target build, relevant tests, and `python scripts/verify_personal_ui.py --target <project-path>` before handoff. Check the browser deployment directory with `python scripts/check_consumer_output.py --output <public-output-path>` for direct project branding and source maps. Report the public exports used and any canonical capability added.
 
 ## Enforced ownership
 
@@ -26,6 +26,7 @@ The canonical implementation is `assets/react-kit/src/personal-ui/`; `assets/rea
 - Use public props and pass both TypeScript and provenance checks. Typed JSX spreads must resolve to safe public properties; unknown/opaque objects and protected overrides fail closed. Use the official `controllerField` adapter for form-library fields; see the supported syntax and compiler requirements in [supported usage](references/integration.md#supported-public-usage).
 - Use Lucide icons through component props. Keep option, tab, menu-item, product, table-column, and row identities stable, unique, and non-empty within their owner.
 - Keep business copy and machine values consumer-owned. Built-in fallback and ARIA text use the locale contract; product data must not be silently translated or reformatted for submission.
+- Keep consumer applications free of Skill/repository promotion: use the neutral consumer starter, never copy the Explorer, demo code, repository links, attribution UI, generator metadata or development paths into a product. Set product titles and branding from the user's business requirements. Keep source maps private in production; retain required legal notices outside rendered UI. Internal component names and styles are not a guarantee that implementation origin cannot be inferred.
 
 If a requested capability has no registered public export, stop that part of page composition. Add the reusable source and styles to the canonical kit, export it from the public barrel, register it in the Manifest and docs metadata, add a compiled Explorer case and focused tests, refresh integrity/API/coverage artifacts, and only then reinstall it. Never patch an installed `src/personal-ui/` as a local extension or bypass the verifier.
 

@@ -398,7 +398,7 @@ export function FocusTrap({
   ...props
 }: FocusTrapProps) {
   const rootRef = useRef<HTMLDivElement>(null);
-  const trapIdRef = useRef(Symbol("personal-ui-focus-trap"));
+  const trapIdRef = useRef(Symbol("focus-trap"));
   const latestContainersRef = useRef(additionalContainers);
   const lastFocusedRef = useRef<HTMLElement | null>(null);
   latestContainersRef.current = additionalContainers;

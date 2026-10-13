@@ -32,9 +32,23 @@ python scripts/install_personal_ui.py --mode starter --target <destination>
 python scripts/install_personal_ui.py --mode starter --target <destination> --force --dry-run
 ```
 
-This copies the allowlisted runnable Vite starter and the complete Personal UI source. The installed runtime registry lives at `src/personal-ui/registry.json`; enforcement support and installation state live under `tools/personal-ui/`. Replace the demo composition in `src/App.tsx`, but keep every UI control and reusable pattern imported from `src/personal-ui`.
+This copies the neutral runnable consumer starter and the complete managed component source. The installed runtime registry lives at `src/personal-ui/registry.json`; enforcement support and installation state live under `tools/personal-ui/`. The starter shows a product-owned placeholder title, not the component Explorer, documentation, fixtures or demo branding. Build the requested product in `src/App.tsx`, keeping every UI control and reusable pattern imported from `src/personal-ui`.
 
-The starter includes a dependency lockfile. The installer does not run npm or write `node_modules`; run the install and build commands returned in `plan.commands` after the transaction commits. Regenerate the lockfile only as a deliberate dependency upgrade followed by the complete build and browser verification gate.
+The starter includes a dependency lockfile and uses the neutral package name `web-app`, matching the lockfile's root package. It enables only development, production build, preview and the enforced provenance check; repository-only release/test/documentation scripts are not copied into the product. Production source maps are disabled in its Vite config. The installer does not run npm or write `node_modules`; run the install and build commands returned in `plan.commands` after the transaction commits. Regenerate the lockfile only as a deliberate dependency upgrade followed by the complete build and browser verification gate.
+
+### Consumer branding and deployment
+
+Consumer pages, titles, metadata, links and assets belong to the product. Do not copy Skill names, the project repository URL, Explorer code, generator tags or attribution banners into a business page. Runtime diagnostics use component-level descriptions without library promotion. The integrated mode preserves existing application titles, entrypoints and framework configuration; review the product's production output and keep source maps private there as well.
+
+Managed component identifiers (`personal-ui`, `pui-*`, owner markers and public type names) remain technical implementation details used by imports, styling and validation; removing them inconsistently would break behavior or weaken enforcement. No claim is made that an observer cannot identify a shared implementation from its code or styles. Preserve required copyright and license notices in distribution/legal files; they do not require a promotional footer or generator metadata in HTML. Existing installations update only when their owner runs the installer; a repository change does not silently rewrite deployed applications. Old starter demo files may be retired only within the installer-owned allowlist and normal conflict rules.
+
+After the product build, inspect the directory actually deployed to browsers:
+
+```powershell
+python scripts/check_consumer_output.py --output <application-root>/dist
+```
+
+The checker rejects direct Skill/repository branding, shipped `.map` files and `sourceMappingURL` comments. It permits required license files and technical component identifiers. It does not rewrite assets or prove that shared code cannot be recognized. For another framework, target only its public browser artifacts, not server bundles or private source maps. The project's public Explorer is documentation and intentionally retains its own branding.
 
 ### Existing React and TypeScript application
 
@@ -228,7 +242,7 @@ python scripts/install_personal_ui.py --mode integrate --target <application-roo
 
 For a workspace, use the same `--project-root` and `--package-root` values for both tools. The verifier reads a previously installed custom `sourceRoot` from install state when `--source-root` is omitted. If the plan reports a user-modified owned file that you intentionally want to replace, rerun dry-run with `--force`, inspect the exact forced paths, and only then apply with `--force`. Unowned conflicts remain non-forceable.
 
-Do not rerun starter mode to upgrade a customized application. Starter mode also owns `src/App.tsx`, `src/main.tsx`, `src/demo.css`, and build configuration, so its force mode is for deliberately resetting those starter-owned paths.
+Do not rerun starter mode to upgrade a customized application. Starter mode also owns `src/App.tsx`, `src/main.tsx`, and build configuration, so its force mode is for deliberately resetting those starter-owned paths. Older starter installations also recorded demo files; a deliberate starter migration retires unchanged owned demo files, while modified files remain conflicts until explicitly approved with `--force`.
 
 After installation, run the install and build arrays reported in `plan.commands`, test the application, and then run the verifier again. For a standalone npm package this is typically:
 
