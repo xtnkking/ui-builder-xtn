@@ -1416,6 +1416,46 @@ input[type="password"]::-ms-reveal {
   outline-offset: -2px;
 }
 
+.pui-tag__flag {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 20px;
+  width: 20px;
+  height: 14px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: var(--pui-bg);
+}
+
+.pui-tag__flag > img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.pui-tag__flag > svg {
+  width: 13px;
+  height: 13px;
+}
+
+.pui-tag__country {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.pui-tag__country-code,
+.pui-tag__calling-code {
+  flex: 0 0 auto;
+}
+
+.pui-tag__country-name {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .pui-tag__remove {
   display: grid;
   place-items: center;

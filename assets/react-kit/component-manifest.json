@@ -2190,7 +2190,7 @@
     "foundation/contracts.ts": "2c371c177b75eeeb8a3697ca19db954b2e3d15b50d152fdd0d822170046df8c1",
     "foundation/layout.tsx": "41653e6713fdce3e65222cdc32272fa1ed89bd11c7061b6545ca68b37dd63804",
     "foundation/locale.tsx": "53c43e41f69387f670cf064058d7661e435a347c246cdc40a70c0b00e94904ab",
-    "foundation/primitives.tsx": "e980846a6dd95558db71d7f277e466d2f14fbc0eec51c95e4edab888f745ffd5",
+    "foundation/primitives.tsx": "7ebe9b6249866a5f58ef97d2c17c40aba6542dabaef7f9c242fe734027117927",
     "index.ts": "c4e969166235ca22e5bea849e4f160e17d2f37451e3fe65a5aa9999c394a5610",
     "input/date-field.tsx": "e97e7c2acafa3fa12a30a4637b821772d76131fcd7402d67a030f33fa4aa2ab4",
     "input/forms.tsx": "57bd20300e3c4d17e9a5c631858143ec57d67be11b13bc60794288656fb4099e",
@@ -2222,6 +2222,6 @@
     "styles/extended.css": "15e990f23402543e62e1df1da59644c47e780334a2c28eb2274522ac8614761e",
     "styles/inputs-extra.css": "9dee5311fc0d57c1ca0f4db37dc3478001b8bb4618f686e3eefaa9bc997ce845",
     "styles/layout-actions-display.css": "0a1088d0be3052237ab4687647a8fe42029b2f864b9bb6f13ec9006e06afc8c1",
-    "styles.css": "3451def6b73133ce31cc9841d220e34e8b08f82b52a79c744bfa46c8a8be6969"
+    "styles.css": "5e7072d68b74cb4360c0149389f63284d8d1217ad0f56b05518e29f324ef74eb"
   }
 }

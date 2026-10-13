@@ -1795,6 +1795,26 @@
       "file": "src/personal-ui/styles.css"
     },
     {
+      "selector": ".pui-tag__calling-code",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-tag__country",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-tag__country-code",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-tag__country-name",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
+      "selector": ".pui-tag__flag",
+      "file": "src/personal-ui/styles.css"
+    },
+    {
       "selector": ".pui-tag__label",
       "file": "src/personal-ui/styles.css"
     },
@@ -2485,7 +2505,7 @@
         {
           "file": "src/personal-ui/styles.css",
           "layer": "pui.components",
-          "line": 2528
+          "line": 2568
         }
       ]
     },
@@ -3333,7 +3353,7 @@
         {
           "file": "src/personal-ui/styles.css",
           "layer": "pui.components",
-          "line": 1576
+          "line": 1616
         },
         {
           "file": "src/personal-ui/styles/layout-actions-display.css",
@@ -3967,5 +3987,5 @@
       ]
     }
   ],
-  "selectorCount": 1150
+  "selectorCount": 1156
 }

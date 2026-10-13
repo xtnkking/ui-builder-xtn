@@ -8,7 +8,7 @@ import {
   type HTMLAttributes,
   type ReactNode,
 } from "react";
-import { LoaderCircle, X } from "lucide-react";
+import { Flag, LoaderCircle, X } from "lucide-react";
 import type { ControlHandle, ControlRef, PublicControlProps } from "./contracts";
 import {
   InternalControlSlotBoundary,
@@ -289,13 +289,43 @@ function captureTagRemovalFocus(removeButton: HTMLButtonElement): (() => void) |
   };
 }
 
-export type TagProps = PublicControlProps<Omit<HTMLAttributes<HTMLSpanElement>, "onClick">> & {
+export interface CountryTagData {
+  /** ISO 3166-1 alpha-2 code; rendered uppercase. */
+  code: string;
+  /** Consumer-owned country/territory name; only this segment truncates. */
+  name: string;
+  /** Optional consumer-owned dialing code, e.g. +44 or +1 684. */
+  callingCode?: string;
+  /** Defaults to https://flagcdn.com/w40/{lowercase code}.png. */
+  flagSrc?: string;
+}
+
+export type TagProps = PublicControlProps<Omit<HTMLAttributes<HTMLSpanElement>, "onClick" | "children">> & {
   tone?: TagTone;
-  leading?: ReactNode;
   selected?: boolean;
   onRemove?: () => void;
   removeLabel?: string;
-};
+} & (
+  | { country: CountryTagData; children?: never; leading?: never }
+  | { country?: never; children?: ReactNode; leading?: ReactNode }
+);
+
+function CountryTagFlag({ src }: { src: string }) {
+  const [status, setStatus] = useState<"loading" | "loaded" | "error">("loading");
+  return (
+    <span className="pui-tag__flag" aria-hidden="true" data-flag-state={status}>
+      {status !== "loaded" ? <Flag /> : null}
+      <img
+        src={src}
+        alt=""
+        draggable={false}
+        hidden={status !== "loaded"}
+        onLoad={() => setStatus("loaded")}
+        onError={() => setStatus("error")}
+      />
+    </span>
+  );
+}
 
 export function Tag({
   tone = "neutral",
@@ -305,17 +335,29 @@ export function Tag({
   removeLabel,
   title,
   children,
+  country,
   ...props
 }: TagProps) {
   const { message } = usePersonalUILocale();
   const rootProps = sanitizeFixedControlProps(props);
   const labelRef = useRef<HTMLSpanElement>(null);
+  const countryNameRef = useRef<HTMLSpanElement>(null);
   const [labelOverflowing, setLabelOverflowing] = useState(false);
-  const textLabel = typeof children === "string" || typeof children === "number"
+  const code = country?.code.trim().toUpperCase();
+  if (country && (!code || !/^[A-Z]{2}$/.test(code) || !country.name.trim())) {
+    throw new Error("Tag country requires a two-letter country code and a non-empty name.");
+  }
+  if (country && (children !== undefined || leading !== undefined)) {
+    throw new Error("Tag country cannot be combined with children or leading.");
+  }
+  const flagSrc = country?.flagSrc ?? (code ? `https://flagcdn.com/w40/${code.toLowerCase()}.png` : "");
+  const textLabel = country
+    ? [code, country.name, country.callingCode].filter(Boolean).join(" ")
+    : typeof children === "string" || typeof children === "number"
     ? String(children)
     : undefined;
   useEffect(() => {
-    const element = labelRef.current;
+    const element = countryNameRef.current ?? labelRef.current;
     if (!element) return;
     const measure = () => {
       const overflowing = textLabel !== undefined && element.scrollWidth > element.clientWidth + 1;
@@ -324,33 +366,36 @@ export function Tag({
     measure();
     return observeComputedStyleChanges(element, measure, { observeAncestors: false });
   }, [textLabel]);
-  const contentTitle = title ?? (
-    typeof children === "string" || typeof children === "number"
-      ? String(children)
-      : undefined
-  );
+  const contentTitle = title ?? textLabel;
   const resolvedRemoveLabel = removeLabel ?? (
-    typeof children === "string" || typeof children === "number"
-      ? message("tag.removeNamed", { name: String(children) })
+    textLabel !== undefined
+      ? message("tag.removeNamed", { name: textLabel })
       : message("tag.remove")
   );
   return (
     <span
       {...rootProps}
       title={contentTitle}
-      className={cx("pui-tag", `pui-tag--${tone}`, selected && "is-selected")}
+      className={cx("pui-tag", `pui-tag--${tone}`, country && "pui-tag--country", selected && "is-selected")}
       data-selected={selected || undefined}
       data-pui-owner="Tag"
     >
       {leading ? <span className="pui-tag__leading" aria-hidden="true">{leading}</span> : null}
+      {country ? <CountryTagFlag key={flagSrc} src={flagSrc} /> : null}
       <span
         ref={labelRef}
-        className="pui-tag__label"
+        className={cx("pui-tag__label", country && "pui-tag__country")}
         tabIndex={labelOverflowing ? 0 : undefined}
         role={labelOverflowing ? "group" : undefined}
         aria-label={labelOverflowing ? textLabel : undefined}
       >
-        {children}
+        {country ? (
+          <>
+            <span className="pui-tag__country-code">{code}</span>
+            <span ref={countryNameRef} className="pui-tag__country-name">{country.name}</span>
+            {country.callingCode ? <span className="pui-tag__calling-code">{country.callingCode}</span> : null}
+          </>
+        ) : children}
       </span>
       {selected ? <span className="pui-sr-only">{message("tag.selected")}</span> : null}
       {onRemove ? (

@@ -19,6 +19,25 @@ Use this reference for searchable lists, server-backed filters, asynchronous opt
 
 Do not rebuild these controls with native interactive markup, a third-party command menu, or application-owned `.pui-*` styles. Import them from the installed `personal-ui` barrel.
 
+## Country capsule tags
+
+Use the official `Tag` country variant for a flag, uppercase two-letter country code, country/territory name and optional calling code:
+
+```tsx
+import { Tag } from "./personal-ui";
+
+<Tag country={{ code: "GB", name: "英国", callingCode: "+44" }} />;
+<Tag tone="blue" selected country={{ code: "DE", name: "德国", callingCode: "+49" }} />;
+<Tag country={{ code: "AS", name: "美属萨摩亚", callingCode: "+1 684" }}
+     onRemove={removeTerritory} removeLabel="移除美属萨摩亚" />;
+```
+
+`country.code` is trimmed and rendered uppercase; the default decorative flag URL is `https://flagcdn.com/w40/{lowercase code}.png`. Pass `country.flagSrc` for local or alternative flag hosting. The fixed 20×14 flag slot preserves the image's proportions and shows a neutral fallback while loading or after failure. No flag request is needed for ordinary tags.
+
+The name and optional calling code belong to the caller; the component does not infer, translate, or validate geographic telephone mappings. GB uses +44; +49 belongs to DE. Supplied flag URL inventories are not calling-code authorities.
+
+Country tags share the ordinary Tag capsule, tone, selected and removal styles. Only the country name truncates within the available width (up to the normal 20rem tag bound); the flag, code, calling code and remove action retain their slots. The full label is available on hover, and an overflowing label becomes a named keyboard focus target. Selected state adds no visual icon or width. `country` cannot be combined with `children` or `leading`; use ordinary Tag for unrelated content. See [Tag API](component-api.md#tag) and the Explorer's Tag page for default, long-content, keyboard, dark and locale examples.
+
 ## Request state
 
 Keep editable filter values separate from the last applied query. Typing and option changes update draft state only; submit from the `FilterBar`, its query button, or Enter starts the request. Sorting and pagination are also explicit requests.

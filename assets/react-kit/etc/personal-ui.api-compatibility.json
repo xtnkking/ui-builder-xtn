@@ -15,11 +15,11 @@
   "current": {
     "packageName": "personal-ui",
     "version": "0.3.1",
-    "apiDigest": "60f1fb3e9f65c1f5d20fc3d0f73fdc09a16c60f654ddb781261b4b498d46a4b9",
-    "compatibilityDigest": "0b085a044dc7e1ecb1cfd885e99f8bfd3978cdbceee0224d8f693ddb144621fc",
+    "apiDigest": "f35840ed40fb37d922ec39c2ec465495fa990b2d2d3cd352299d17ddb83e6bf8",
+    "compatibilityDigest": "757cd9e7545cb58f2a1c8044c93c19b167dac55416e96086b21401fa68c07415",
     "runtimeExports": 142,
-    "typeOnlyExports": 228,
-    "publicSignatures": 370
+    "typeOnlyExports": 229,
+    "publicSignatures": 371
   },
   "classification": "breaking",
   "versionPolicy": {
@@ -51,6 +51,7 @@
         "ControlledOpenProps",
         "ControlledValueProps",
         "ControllerFieldBinding",
+        "CountryTagData",
         "FormControlHandle",
         "LocaleMessageKey",
         "LocalePluralKey",
@@ -85,6 +86,7 @@
         "ControlledOpenProps",
         "ControlledValueProps",
         "ControllerFieldBinding",
+        "CountryTagData",
         "FormControlHandle",
         "LocaleMessageKey",
         "LocalePluralKey",
@@ -1417,7 +1419,7 @@
           "baselineKind": "runtime",
           "currentKind": "runtime",
           "baselineHash": "c6d8418cf3bcdbd9157c02a10206fab78d853e75b2ca7259cbc0c7703b6c87ac",
-          "currentHash": "6f2cbcfa232ff70da9f411e6e2223362d2c64f190ee8c4e52dca7e0976f0533a"
+          "currentHash": "fa3d27156885c6aa5f560daa2573200f736f9ae1d652c6067bf10f40e1071daa"
         },
         {
           "id": "TagInput",
@@ -1438,7 +1440,7 @@
           "baselineKind": "type",
           "currentKind": "type",
           "baselineHash": "6a674e89d68d85635658a9def7c2dbe833a0b3910ee62fc87a38e412385bb565",
-          "currentHash": "94081bf5f37b46f93f4ccdf59826914d861381ca43b9d6af6ff27a8ebb3df3a1"
+          "currentHash": "a1411b8ae7f5326c238003f6ea7e6566a0ae1c831b8ca75e190755b093f52290"
         },
         {
           "id": "Textarea",

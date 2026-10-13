@@ -124,6 +124,7 @@
     "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts",
     "assets/react-kit/tests/browser/auth-query-layout.spec.ts",
     "assets/react-kit/tests/browser/composite-form-contracts.spec.ts",
+    "assets/react-kit/tests/browser/country-tag.spec.ts",
     "assets/react-kit/tests/browser/d2-drag-upload.spec.ts",
     "assets/react-kit/tests/browser/detail-floating.spec.ts",
     "assets/react-kit/tests/browser/explorer-audit-findings.spec.ts",
@@ -22414,6 +22415,7 @@
         "assets/react-kit/tests/components/simple-fixed-controls.test.tsx"
       ],
       "browser": [
+        "assets/react-kit/tests/browser/country-tag.spec.ts",
         "assets/react-kit/tests/browser/explorer-responsive-followup.spec.ts"
       ],
       "keyboard": [

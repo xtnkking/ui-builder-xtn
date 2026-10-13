@@ -3,7 +3,7 @@
 
 - Entry point: `src/personal-ui/index.ts`
 - Runtime exports: 142
-- Type-only exports: 228
+- Type-only exports: 229
 - Declaration modules: 20
 
 ## Runtime export inventory
@@ -12,7 +12,7 @@
 
 ## Type-only export inventory
 
-`AccordionItem`, `AccordionProps`, `AlertProps`, `AnchorItem`, `AnchorNavigationProps`, `AppNavigationProps`, `AspectRatioProps`, `AsyncActionProps`, `AsyncSelectOption`, `AsyncSelectProps`, `AsyncSelectSource`, `AttachmentProps`, `AuthenticationPageProps`, `AutocompleteOption`, `AutocompleteProps`, `AvatarGroupProps`, `AvatarProps`, `AvatarSize`, `BadgeProps`, `BadgeTone`, `BannerProps`, `BarChartProps`, `BoxProps`, `BoxSurface`, `BreadcrumbItem`, `BreadcrumbsProps`, `ButtonGroupProps`, `ButtonProps`, `ButtonSize`, `ButtonVariant`, `CalendarProps`, `CardProps`, `CarouselProps`, `CarouselSlide`, `CascaderOption`, `CascaderProps`, `ChartDatum`, `CheckboxProps`, `ClipboardButtonProps`, `CodeBlockProps`, `CodeEditorProps`, `CollapseProps`, `ColorPickerProps`, `ComboboxOption`, `ComboboxProps`, `CommandItem`, `CommandPaletteProps`, `CommandPaletteShortcutOptions`, `ConfirmDialogProps`, `ContextMenuProps`, `ControlHandle`, `ControlRef`, `ControllableOpenProps`, `ControllableValueProps`, `ControlledOpenProps`, `ControlledValueProps`, `ControllerFieldBinding`, `CreateEditPageProps`, `DataColumn`, `DataSort`, `DataTableProps`, `DataTableState`, `DateFieldProps`, `DatePrecision`, `DateRangeFieldProps`, `DateRangeValue`, `DescriptionListItem`, `DescriptionListProps`, `DetailPageProps`, `DetailSection`, `DialogProps`, `DividerProps`, `DragDropProps`, `DrawerProps`, `DropdownMenuProps`, `EmptyStateProps`, `ErrorStateProps`, `ExpandableTextProps`, `FamilyLoginPageProps`, `FeedbackTone`, `FieldProps`, `FileUploadItem`, `FileUploadProps`, `FileUploadRejection`, `FileUploadStatus`, `FilterBarProps`, `FocusTrapProps`, `FormControlHandle`, `FormProps`, `GalleryItem`, `GalleryProps`, `GridProps`, `GuidedTourProps`, `HoverCardProps`, `IconButtonProps`, `ImportExportPageProps`, `InfiniteScrollProps`, `InlineEditProps`, `InlineMessageProps`, `InlineProps`, `InputProps`, `KeyboardShortcutProps`, `LayoutSpace`, `LightboxItem`, `LightboxProps`, `LinkProps`, `ListManagementPageProps`, `ListProps`, `LoadMoreProps`, `LocaleMessageKey`, `LocalePluralKey`, `LocaleProviderProps`, `LoginCredentials`, `LoginProduct`, `MarkdownEditorProps`, `MasterDetailProps`, `MediaProps`, `MemberFilters`, `MemberManagementPageProps`, `MemberQuery`, `MemberRecord`, `MemberResult`, `MenuItem`, `MenuProps`, `MeterProps`, `MeterTone`, `MultiSelectOption`, `MultiSelectProps`, `NavigationItem`, `NavigationVariantProps`, `NoResultsProps`, `NumberInputProps`, `OtpInputProps`, `OverflowTextProps`, `PageHeadingProps`, `PaginationLoadingTarget`, `PaginationPageTrigger`, `PaginationProps`, `PasswordInputProps`, `PersonalUILocale`, `PersonalUILocaleContext`, `PopconfirmProps`, `PopoverProps`, `PortalProps`, `ProgressProps`, `ProgressRingProps`, `ProtectedControlProp`, `PublicControlProps`, `RadioProps`, `RatingProps`, `ResizablePanelsProps`, `ResponsiveVisibilityMode`, `ResponsiveVisibilityProps`, `RetryButtonProps`, `RichTextEditorProps`, `SchedulerEvent`, `SchedulerProps`, `ScrollAreaProps`, `SearchFilterPageProps`, `SearchInputProps`, `SearchableSelectProps`, `SegmentedControlProps`, `SegmentedOption`, `SelectOption`, `SelectProps`, `SettingsPageProps`, `SettingsSection`, `SkeletonProps`, `SliderProps`, `SliderValue`, `SortDirection`, `SortableItem`, `SortableListProps`, `SpinnerProps`, `SplitButtonProps`, `StackProps`, `StatisticProps`, `StatisticTrend`, `StatusIndicatorProps`, `StatusPageProps`, `StepStatus`, `StepperItem`, `StepperProps`, `StickyHeaderActionBarProps`, `SwitchProps`, `TabItem`, `TabsProps`, `TagInputProps`, `TagProps`, `TagSuggestion`, `TagTone`, `TextControlHandle`, `TextareaProps`, `ThemeMode`, `ThemeProviderProps`, `ThemeTokens`, `TimelineItem`, `TimelineProps`, `TimezoneOption`, `TimezoneSelectProps`, `ToastAction`, `ToastApi`, `ToastOptions`, `ToastPosition`, `ToastProviderProps`, `ToastShape`, `ToggleButtonProps`, `ToolbarProps`, `TooltipProps`, `TourStep`, `TransferOption`, `TransferProps`, `TreeNode`, `TreeProps`, `TreeSelectOption`, `TreeSelectProps`, `TreeTableColumn`, `TreeTableNode`, `TreeTableProps`, `UncontrolledOpenProps`, `UncontrolledValueProps`, `ValidationIssue`, `ValidationSummaryProps`, `ValidityControlHandle`, `VirtualListProps`, `VirtualListRenderMeta`, `VisuallyHiddenProps`, `WizardFlowProps`
+`AccordionItem`, `AccordionProps`, `AlertProps`, `AnchorItem`, `AnchorNavigationProps`, `AppNavigationProps`, `AspectRatioProps`, `AsyncActionProps`, `AsyncSelectOption`, `AsyncSelectProps`, `AsyncSelectSource`, `AttachmentProps`, `AuthenticationPageProps`, `AutocompleteOption`, `AutocompleteProps`, `AvatarGroupProps`, `AvatarProps`, `AvatarSize`, `BadgeProps`, `BadgeTone`, `BannerProps`, `BarChartProps`, `BoxProps`, `BoxSurface`, `BreadcrumbItem`, `BreadcrumbsProps`, `ButtonGroupProps`, `ButtonProps`, `ButtonSize`, `ButtonVariant`, `CalendarProps`, `CardProps`, `CarouselProps`, `CarouselSlide`, `CascaderOption`, `CascaderProps`, `ChartDatum`, `CheckboxProps`, `ClipboardButtonProps`, `CodeBlockProps`, `CodeEditorProps`, `CollapseProps`, `ColorPickerProps`, `ComboboxOption`, `ComboboxProps`, `CommandItem`, `CommandPaletteProps`, `CommandPaletteShortcutOptions`, `ConfirmDialogProps`, `ContextMenuProps`, `ControlHandle`, `ControlRef`, `ControllableOpenProps`, `ControllableValueProps`, `ControlledOpenProps`, `ControlledValueProps`, `ControllerFieldBinding`, `CountryTagData`, `CreateEditPageProps`, `DataColumn`, `DataSort`, `DataTableProps`, `DataTableState`, `DateFieldProps`, `DatePrecision`, `DateRangeFieldProps`, `DateRangeValue`, `DescriptionListItem`, `DescriptionListProps`, `DetailPageProps`, `DetailSection`, `DialogProps`, `DividerProps`, `DragDropProps`, `DrawerProps`, `DropdownMenuProps`, `EmptyStateProps`, `ErrorStateProps`, `ExpandableTextProps`, `FamilyLoginPageProps`, `FeedbackTone`, `FieldProps`, `FileUploadItem`, `FileUploadProps`, `FileUploadRejection`, `FileUploadStatus`, `FilterBarProps`, `FocusTrapProps`, `FormControlHandle`, `FormProps`, `GalleryItem`, `GalleryProps`, `GridProps`, `GuidedTourProps`, `HoverCardProps`, `IconButtonProps`, `ImportExportPageProps`, `InfiniteScrollProps`, `InlineEditProps`, `InlineMessageProps`, `InlineProps`, `InputProps`, `KeyboardShortcutProps`, `LayoutSpace`, `LightboxItem`, `LightboxProps`, `LinkProps`, `ListManagementPageProps`, `ListProps`, `LoadMoreProps`, `LocaleMessageKey`, `LocalePluralKey`, `LocaleProviderProps`, `LoginCredentials`, `LoginProduct`, `MarkdownEditorProps`, `MasterDetailProps`, `MediaProps`, `MemberFilters`, `MemberManagementPageProps`, `MemberQuery`, `MemberRecord`, `MemberResult`, `MenuItem`, `MenuProps`, `MeterProps`, `MeterTone`, `MultiSelectOption`, `MultiSelectProps`, `NavigationItem`, `NavigationVariantProps`, `NoResultsProps`, `NumberInputProps`, `OtpInputProps`, `OverflowTextProps`, `PageHeadingProps`, `PaginationLoadingTarget`, `PaginationPageTrigger`, `PaginationProps`, `PasswordInputProps`, `PersonalUILocale`, `PersonalUILocaleContext`, `PopconfirmProps`, `PopoverProps`, `PortalProps`, `ProgressProps`, `ProgressRingProps`, `ProtectedControlProp`, `PublicControlProps`, `RadioProps`, `RatingProps`, `ResizablePanelsProps`, `ResponsiveVisibilityMode`, `ResponsiveVisibilityProps`, `RetryButtonProps`, `RichTextEditorProps`, `SchedulerEvent`, `SchedulerProps`, `ScrollAreaProps`, `SearchFilterPageProps`, `SearchInputProps`, `SearchableSelectProps`, `SegmentedControlProps`, `SegmentedOption`, `SelectOption`, `SelectProps`, `SettingsPageProps`, `SettingsSection`, `SkeletonProps`, `SliderProps`, `SliderValue`, `SortDirection`, `SortableItem`, `SortableListProps`, `SpinnerProps`, `SplitButtonProps`, `StackProps`, `StatisticProps`, `StatisticTrend`, `StatusIndicatorProps`, `StatusPageProps`, `StepStatus`, `StepperItem`, `StepperProps`, `StickyHeaderActionBarProps`, `SwitchProps`, `TabItem`, `TabsProps`, `TagInputProps`, `TagProps`, `TagSuggestion`, `TagTone`, `TextControlHandle`, `TextareaProps`, `ThemeMode`, `ThemeProviderProps`, `ThemeTokens`, `TimelineItem`, `TimelineProps`, `TimezoneOption`, `TimezoneSelectProps`, `ToastAction`, `ToastApi`, `ToastOptions`, `ToastPosition`, `ToastProviderProps`, `ToastShape`, `ToggleButtonProps`, `ToolbarProps`, `TooltipProps`, `TourStep`, `TransferOption`, `TransferProps`, `TreeNode`, `TreeProps`, `TreeSelectOption`, `TreeSelectProps`, `TreeTableColumn`, `TreeTableNode`, `TreeTableProps`, `UncontrolledOpenProps`, `UncontrolledValueProps`, `ValidationIssue`, `ValidationSummaryProps`, `ValidityControlHandle`, `VirtualListProps`, `VirtualListRenderMeta`, `VisuallyHiddenProps`, `WizardFlowProps`
 
 ## `./foundation/primitives`
 
@@ -48,14 +48,31 @@ export type SkeletonProps = PublicControlProps<Omit<HTMLAttributes<HTMLSpanEleme
 };
 export declare function Skeleton({ width, ...props }: SkeletonProps): import("react").JSX.Element;
 export type TagTone = "neutral" | "blue" | "success" | "warning" | "danger";
-export type TagProps = PublicControlProps<Omit<HTMLAttributes<HTMLSpanElement>, "onClick">> & {
+export interface CountryTagData {
+    /** ISO 3166-1 alpha-2 code; rendered uppercase. */
+    code: string;
+    /** Consumer-owned country/territory name; only this segment truncates. */
+    name: string;
+    /** Optional consumer-owned dialing code, e.g. +44 or +1 684. */
+    callingCode?: string;
+    /** Defaults to https://flagcdn.com/w40/{lowercase code}.png. */
+    flagSrc?: string;
+}
+export type TagProps = PublicControlProps<Omit<HTMLAttributes<HTMLSpanElement>, "onClick" | "children">> & {
     tone?: TagTone;
-    leading?: ReactNode;
     selected?: boolean;
     onRemove?: () => void;
     removeLabel?: string;
-};
-export declare function Tag({ tone, leading, selected, onRemove, removeLabel, title, children, ...props }: TagProps): import("react").JSX.Element;
+} & ({
+    country: CountryTagData;
+    children?: never;
+    leading?: never;
+} | {
+    country?: never;
+    children?: ReactNode;
+    leading?: ReactNode;
+});
+export declare function Tag({ tone, leading, selected, onRemove, removeLabel, title, children, country, ...props }: TagProps): import("react").JSX.Element;
 ```
 
 ## `./foundation/contracts`
