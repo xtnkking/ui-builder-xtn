@@ -28,6 +28,7 @@ import {
   type ExplorerFamily,
 } from "./registry";
 import { formatStateLabel } from "./labels";
+import { businessExamples } from "./business/registry";
 
 export type { ExplorerCase, ExplorerCases } from "./cases";
 
@@ -48,6 +49,12 @@ function Directory({ families, activeFamilyId, onNavigate }: {
 }) {
   return (
     <div className="demo-explorer-directory" data-testid="explorer-directory">
+      <section className="demo-explorer-directory__group business-component-directory">
+        <h2>真实业务案例 <small>Examples</small></h2>
+        <AppNavigation variant="side" ariaLabel="真实业务案例入口" items={[
+          ...businessExamples.map((example) => ({ id: `example-${example.id}`, label: <span className="demo-explorer-directory__label"><span>{example.label}</span><small>{example.english}</small></span>, href: `#/examples/${example.id}`, onSelect: onNavigate })),
+        ]} />
+      </section>
       {explorerCategories.map((category) => {
         const categoryFamilies = families.filter((family) => family.category === category.id);
         if (categoryFamilies.length === 0) return null;
@@ -172,6 +179,7 @@ export function ComponentExplorer({ cases: additionalCases = {} }: { cases?: Exp
 
   useEffect(() => {
     const synchronizeRoute = () => {
+      if (window.location.hash === "#/examples" || window.location.hash.startsWith("#/examples/")) return;
       const nextFamily = explorerFamilyFromHash(window.location.hash);
       if (nextFamily) {
         setFamily(nextFamily);

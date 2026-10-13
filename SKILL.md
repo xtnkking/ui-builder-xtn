@@ -39,6 +39,7 @@ If a requested capability has no registered public export, stop that part of pag
 - Dialog, Drawer, ConfirmDialog, nested layers, dismissal, focus, Portal, and scroll lock: [overlay contract](references/overlay-contract.md).
 - Toast / Snackbar visibility limits, queueing, deduplication, dismissal, duration, progress and seconds display: [toast contract](references/toast-contract.md).
 - Login, CRUD/list, create/edit, detail, settings, wizard, import/export, and status shells: [page pattern routing](references/page-patterns.md).
+- One complete storefront project with home, catalog, product details, favorites, cart, checkout, login/registration, account, addresses and customer orders: [business examples](references/business-examples.md). Reuse its shared business state and public-component composition after installation; replace mock services and use your product branding and router. Do not copy the Explorer shell into a product.
 - Built-in text, `zh-CN`/`en-US`, nested providers, Portal inheritance, SSR, dates, numbers, and plurals: [locale contract](references/locale-contract.md).
 - Public API changes and upgrade action: [v0.3.0 migrations](references/v0.3.0-migrations.md).
 - Canonical source and generated-copy policy: [source authority](references/source-authority.md).

@@ -1,0 +1,35 @@
+.storefront-shell { color: var(--ui-text); min-height: 100vh; background: var(--ui-surface); }
+.storefront-announcement { padding: 9px 16px; text-align: center; color: var(--ui-primary); background: var(--ui-primary-soft); font-size: 12px; line-height: 1.6; }
+.storefront-header { border-bottom: 1px solid var(--ui-border); background: var(--ui-surface); }
+.storefront-header-main { display: grid; grid-template-columns: 180px minmax(0, 420px) auto; align-items: center; justify-content: space-between; gap: 24px; max-width: 1240px; margin: auto; padding: 24px 32px 12px; }
+.storefront-brand { display: flex; align-items: baseline; gap: 12px; font-size: 26px; font-weight: 650; letter-spacing: .04em; }
+.storefront-brand-english { font-size: 11px; color: var(--ui-muted); letter-spacing: .16em; font-weight: 500; }
+.storefront-header-search { min-width: 0; }
+.storefront-search-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 8px; }
+.storefront-account-actions { display: flex; flex-wrap: wrap; justify-content: end; gap: 16px; min-width: 0; font-size: 13px; }
+.storefront-navigation { max-width: 1240px; margin: auto; padding: 0 32px 10px; }
+.storefront-main { width: 100%; max-width: 1240px; margin: auto; padding: 32px 32px 64px; box-sizing: border-box; min-width: 0; min-height: 55vh; }
+.storefront-footer { border-top: 1px solid var(--ui-border); background: var(--ui-surface-subtle); }
+.storefront-footer-main { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 24px; max-width: 1240px; margin: auto; padding: 32px; }
+.storefront-footer-story strong { font-size: 18px; }
+.storefront-footer-story p { color: var(--ui-muted); margin: 8px 0 0; line-height: 1.8; font-size: 13px; }
+.storefront-demo-tools { display: flex; align-items: center; flex-wrap: wrap; justify-content: space-between; gap: 16px; max-width: 1240px; margin: auto; padding: 16px 32px; border-top: 1px solid var(--ui-border); font-size: 12px; }
+.storefront-demo-tools p { margin: 0; line-height: 1.7; color: var(--ui-muted); }
+.storefront-service-copy { margin: 0; line-height: 1.9; overflow-wrap: anywhere; }
+.business-component-directory { border-bottom: 1px solid var(--ui-border); padding-block: 8px; }
+@media (max-width: 850px) {
+  .storefront-header-main { grid-template-columns: 1fr auto; gap: 16px; padding: 20px 20px 12px; }
+  .storefront-header-search { grid-column: 1 / -1; grid-row: 2; }
+  .storefront-navigation { padding-inline: 16px; }
+  .storefront-main { padding: 24px 20px 40px; }
+}
+@media (max-width: 480px) {
+  .storefront-header-main { padding: 16px 12px 8px; gap: 12px; }
+  .storefront-brand { font-size: 22px; gap: 8px; }
+  .storefront-brand-english { font-size: 9px; }
+  .storefront-account-actions { gap: 6px 12px; font-size: 12px; max-width: 160px; }
+  .storefront-navigation { padding: 0 8px 8px; }
+  .storefront-main { padding: 20px 12px 32px; }
+  .storefront-footer-main { padding: 24px 12px; gap: 16px; }
+  .storefront-demo-tools { padding: 16px 12px; }
+}

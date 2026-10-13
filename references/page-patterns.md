@@ -4,6 +4,8 @@ Use a bundled page pattern when the requested workflow matches one below. Patter
 
 ## Pattern selection
 
+For a complete application composition, see the [青屿商城 / storefront example](business-examples.md). Its home route `#/examples` connects catalog, product detail, favorites, cart, checkout, orders, account/address book and login/registration under `#/examples/shop/...`, with one shared storefront navigation and in-memory business state. The footer source Drawer exposes actual page composition through the same public patterns and controls. The example demonstrates a local frontend workflow; production services, account authorization and data isolation remain application responsibilities.
+
 | Workflow | Public pattern | Consumer-owned content |
 | --- | --- | --- |
 | Product-family sign-in | `FamilyLoginPage` | Company/product identity, accents, visual, links, submit callback |

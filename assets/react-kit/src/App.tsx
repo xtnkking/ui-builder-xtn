@@ -34,6 +34,8 @@ import {
   type MemberResult,
 } from "./ui";
 import { ComponentExplorer, type ExplorerCases } from "./explorer/ComponentExplorer";
+import { BusinessExamples } from "./explorer/business/BusinessExamples";
+import { CommerceProvider } from "./explorer/business/commerce-store";
 
 type Scenario = "success" | "empty" | "error";
 
@@ -629,5 +631,12 @@ function DemoContent() {
 }
 
 export function App() {
-  return <ToastProvider><DemoContent /></ToastProvider>;
+  const [hash, setHash] = useState(() => window.location.hash);
+  useEffect(() => {
+    const synchronize = () => setHash(window.location.hash);
+    window.addEventListener("hashchange", synchronize);
+    return () => window.removeEventListener("hashchange", synchronize);
+  }, []);
+  return <ToastProvider><CommerceProvider>{hash === "#/examples" || hash.startsWith("#/examples/")
+    ? <BusinessExamples hash={hash} /> : <DemoContent />}</CommerceProvider></ToastProvider>;
 }

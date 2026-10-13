@@ -1,0 +1,343 @@
+import { mkdir } from "node:fs/promises";
+import { expect, test, type Page } from "@playwright/test";
+
+test.setTimeout(45_000);
+const screenshotDirectory = "D:/m8-official-144235a/_organizer/storefront-project-screenshots";
+const shopRoot = "#/examples/shop";
+
+async function capture(page: Page, name: string) {
+  await mkdir(screenshotDirectory, { recursive: true });
+  const path = `${screenshotDirectory}/${name}.png`;
+  await page.screenshot({ path, fullPage: true, animations: "disabled" });
+  await test.info().attach(name, { path, contentType: "image/png" });
+}
+
+async function choose(page: Page, label: string, option: string) {
+  await page.getByRole("combobox", { name: new RegExp(`^${label}`) }).click();
+  await page.getByRole("option", { name: option, exact: true }).click();
+}
+
+// Hash navigation exercises the same mounted shop session, unlike page.goto/reload.
+async function navigate(page: Page, route: string) {
+  await page.evaluate((hash) => { window.location.hash = hash; }, route);
+  await expect.poll(() => page.evaluate(() => window.location.hash)).toBe(route);
+}
+
+async function expectNoPageOverflow(page: Page) {
+  await expect.poll(() => page.evaluate(() => (
+    document.documentElement.scrollWidth - document.documentElement.clientWidth
+  ))).toBeLessThanOrEqual(1);
+}
+
+function authForm(page: Page) {
+  return page.locator(".business-auth-root form").filter({ has: page.getByLabel(/^邮箱/) });
+}
+
+test("Storefront order history owns status tabs, search, pagination and pending-order cancellation", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto(`/${shopRoot}/orders`);
+  const shopOrders = page.locator(".shop-orders");
+  const cards = shopOrders.getByRole("article");
+  await expect(page.getByRole("heading", { name: "我的订单", exact: true })).toBeVisible();
+  await expect(cards).toHaveCount(5);
+  const pagination = shopOrders.getByRole("navigation", { name: "数据分页", exact: true });
+  await pagination.getByRole("button", { name: "下一页", exact: true }).click();
+  await expect(cards).toHaveCount(3);
+  await expect(pagination).toContainText("6-8");
+  await choose(page, "每页数量", "10 条");
+  await expect(cards).toHaveCount(8);
+  await page.getByRole("tab", { name: "待付款 1", exact: true }).click();
+  await expect(cards).toHaveCount(1);
+  await page.getByRole("searchbox", { name: "搜索我的订单", exact: true }).fill("不存在的订单");
+  await expect(cards).toContainText("QY20261013001");
+  await page.getByRole("searchbox", { name: "搜索我的订单", exact: true }).press("Enter");
+  await expect(shopOrders.getByRole("tabpanel").getByText("这里还没有订单", { exact: true })).toBeVisible();
+  await page.getByRole("searchbox", { name: "搜索我的订单", exact: true }).fill("QY20261013001");
+  await shopOrders.getByRole("button", { name: "搜索", exact: true }).click();
+  await expect(cards).toContainText("QY20261013001");
+  await cards.getByRole("button", { name: "查看详情", exact: true }).click();
+  await expect(page).toHaveURL(/#\/examples\/shop\/orders\/QY20261013001$/);
+  await page.getByRole("button", { name: "取消订单", exact: true }).click();
+  const confirmation = page.getByRole("dialog", { name: "取消这笔订单？", exact: true });
+  await expect(confirmation).toBeVisible();
+  await page.locator(".ui-overlay").click({ position: { x: 4, y: 4 } });
+  await expect(confirmation).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(confirmation).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "去付款", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "取消订单", exact: true }).click();
+  await confirmation.getByRole("button", { name: "确认取消", exact: true }).click();
+  await expect(confirmation).toHaveCount(0);
+  await expect(shopOrders.getByText("已取消", { exact: true })).toBeVisible();
+  await expect(shopOrders.getByText("订单已取消，预留库存已释放", { exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "去付款", exact: true })).toHaveCount(0);
+  await page.getByRole("link", { name: "返回我的订单", exact: true }).click();
+  await page.getByRole("searchbox", { name: "搜索我的订单", exact: true }).fill("");
+  await page.getByRole("searchbox", { name: "搜索我的订单", exact: true }).press("Enter");
+  await expect(shopOrders.getByRole("button", { name: "搜索", exact: true })).not.toHaveAttribute("aria-disabled", "true");
+  await page.getByRole("tab", { name: "已取消 2", exact: true }).click();
+  await expect(cards).toHaveCount(2);
+  await expectNoPageOverflow(page);
+  await capture(page, "orders-cancelled-desktop");
+});
+
+test("Storefront registration shares account and a full address book across shop routes", async ({ page }) => {
+  await page.goto(`/${shopRoot}/login`);
+  await page.getByRole("group", { name: "登录或注册", exact: true }).getByRole("button", { name: "注册", exact: true }).click();
+  const form = authForm(page);
+  await page.getByLabel(/^姓名/).fill("顾小满");
+  await page.getByLabel(/^邮箱/).fill("guxiaoman@qingyu.example");
+  await page.getByLabel(/^密码/).fill("Qingyu2027!");
+  await page.getByLabel(/^确认密码/).fill("wrong-password");
+  await form.getByRole("button", { name: "创建账户", exact: true }).click();
+  await expect(page.getByText("两次输入的密码需要一致。", { exact: true })).toBeVisible();
+  await expect(page.getByText("请先阅读并同意演示服务条款。", { exact: true })).toBeVisible();
+  await expect(page.getByLabel(/^确认密码/)).toBeFocused();
+  await page.getByLabel(/^确认密码/).fill("Qingyu2027!");
+  await page.getByRole("button", { name: "查看服务条款", exact: true }).click();
+  const terms = page.getByRole("dialog", { name: "演示服务条款", exact: true });
+  await terms.getByRole("button", { name: "同意并返回注册", exact: true }).click();
+  await form.getByRole("button", { name: "创建账户", exact: true }).click();
+  await expect(page.getByText(/账户已创建，请使用刚设置的密码登录/)).toBeVisible();
+  await page.getByLabel(/^密码/).fill("Qingyu2027!");
+  await form.getByRole("button", { name: "登录", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "你好，顾小满", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "去逛逛商品", exact: true }).click();
+  await expect(page).toHaveURL(/#\/examples\/shop\/products$/);
+  await navigate(page, `${shopRoot}/account`);
+  const account = page.locator(".shop-account-page");
+  await expect(account).toContainText("顾小满");
+  await expect(account).toContainText("guxiaoman@qingyu.example");
+  await page.getByRole("button", { name: "新增地址", exact: true }).click();
+  const address = page.getByRole("dialog", { name: "新增收货地址", exact: true });
+  await address.getByRole("button", { name: "保存地址", exact: true }).click();
+  await expect(address.getByText("请输入有效的联系电话，可包含国家区号。", { exact: true })).toBeVisible();
+  await address.getByLabel(/^收货人/).fill("顾小满");
+  await address.getByLabel(/^联系电话/).fill("13900139000");
+  await address.getByLabel(/^详细地址/).fill("浙江省杭州市西湖区青屿路 28 号 3 层");
+  await address.getByRole("checkbox", { name: "设为默认收货地址", exact: true }).check();
+  await address.getByRole("button", { name: "保存地址", exact: true }).click();
+  await expect(address).toHaveCount(0);
+  const saved = account.getByRole("article", { name: "顾小满的收货地址", exact: true });
+  await expect(saved).toContainText("默认地址");
+  await saved.getByRole("button", { name: "编辑顾小满的收货地址", exact: true }).click();
+  const edit = page.getByRole("dialog", { name: "编辑收货地址", exact: true });
+  await edit.getByLabel(/^详细地址/).fill("浙江省杭州市西湖区青屿路 28 号 5 层");
+  await edit.getByRole("button", { name: "保存地址", exact: true }).click();
+  await expect(edit).toHaveCount(0);
+  await expect(saved).toContainText("5 层");
+  await capture(page, "account-addresses-desktop");
+  await saved.getByRole("button", { name: "删除顾小满的收货地址", exact: true }).click();
+  const remove = page.getByRole("dialog", { name: "删除收货地址？", exact: true });
+  await remove.getByRole("button", { name: "确认删除", exact: true }).click();
+  await expect(saved).toHaveCount(0);
+  await expect(account.getByText("默认地址", { exact: true })).toHaveCount(1);
+  await account.getByRole("button", { name: "退出登录", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "欢迎回来", exact: true })).toBeVisible();
+  await page.getByLabel(/^邮箱/).fill("guxiaoman@qingyu.example");
+  await page.getByLabel(/^密码/).fill("Qingyu2027!");
+  await authForm(page).getByRole("button", { name: "登录", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "你好，顾小满", exact: true })).toBeVisible();
+});
+
+test("Storefront login validates credentials and completes the password-reset interaction", async ({ page }) => {
+  await page.goto(`/${shopRoot}/login`);
+  const form = authForm(page);
+  await form.getByRole("button", { name: "登录", exact: true }).click();
+  await expect(page.getByText("请输入有效的邮箱地址。", { exact: true })).toBeVisible();
+  await expect(page.getByText("请输入密码。", { exact: true })).toBeVisible();
+  await expect(page.getByLabel(/^邮箱/)).toBeFocused();
+  await page.getByRole("button", { name: "忘记密码？", exact: true }).click();
+  const reset = page.getByRole("dialog", { name: "找回密码", exact: true });
+  await reset.getByRole("button", { name: "发送重置链接", exact: true }).click();
+  await expect(reset.getByText("请输入有效的邮箱地址。", { exact: true })).toBeVisible();
+  await reset.getByLabel(/^账户邮箱/).fill("demo@qingyu.example");
+  await reset.getByRole("button", { name: "发送重置链接", exact: true }).click();
+  await expect(reset.getByText("重置请求已模拟完成", { exact: true })).toBeVisible();
+  await reset.getByRole("button", { name: "返回登录", exact: true }).click();
+  await page.getByLabel(/^邮箱/).fill("demo@qingyu.example");
+  await page.getByLabel(/^密码/).fill("incorrect-password");
+  await form.getByRole("button", { name: "登录", exact: true }).click();
+  await expect(page.getByRole("alert")).toContainText("邮箱或密码不匹配");
+  await page.getByLabel(/^密码/).fill("Qingyu2026!");
+  await form.getByRole("button", { name: "登录", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "你好，林小夏", exact: true })).toBeVisible();
+  await navigate(page, `${shopRoot}/account`);
+  await expect(page.locator(".shop-account-page")).toContainText("demo@qingyu.example");
+  await expectNoPageOverflow(page);
+});
+
+test("Storefront purchase connects product images, cart, coupon and delivery totals to automatic fulfillment", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto("/#/examples");
+  await expect(page.getByRole("heading", { name: /把喜欢的日常/ })).toBeVisible();
+  await page.getByRole("button", { name: "发现本期精选", exact: true }).click();
+  await expect(page).toHaveURL(/#\/examples\/shop\/product\/p-headphones$/);
+  const purchase = page.locator(".shop-product__purchase");
+  await expect(purchase.getByRole("heading", { name: "云感无线耳机", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "放大查看", exact: true }).click();
+  const lightbox = page.getByRole("dialog", { name: "图片预览", exact: true });
+  await lightbox.getByRole("button", { name: "下一张", exact: true }).click();
+  await expect(lightbox.getByRole("img", { name: "云感无线耳机补充展示图", exact: true })).toBeVisible();
+  await lightbox.getByRole("button", { name: "关闭预览", exact: true }).click();
+  await purchase.getByRole("button", { name: "加入购物车", exact: true }).click();
+  await expect(purchase.getByRole("button", { name: "加入购物车", exact: true })).toHaveAttribute("aria-disabled", "true");
+  await expect(purchase.getByText("还可添加 17 件", { exact: true })).toBeVisible();
+  await purchase.getByRole("button", { name: "去购物车", exact: true }).click();
+  const cart = page.locator(".shop-checkout");
+  await expect(cart.getByRole("heading", { name: "购物车", exact: true })).toBeVisible();
+  await cart.getByRole("spinbutton", { name: "云感无线耳机数量", exact: true }).fill("2");
+  await expect(cart.getByRole("article", { name: "订单预估", exact: true })).toContainText("¥798.00");
+  await cart.getByRole("spinbutton", { name: "云感无线耳机数量", exact: true }).fill("1");
+  await cart.getByRole("button", { name: "去结算", exact: true }).click();
+  const checkout = page.locator(".shop-checkout");
+  await expect(checkout.getByRole("heading", { name: "确认订单", exact: true })).toBeVisible();
+  await checkout.getByLabel(/^联系电话/).fill("123");
+  await checkout.getByRole("button", { name: "提交订单", exact: true }).click();
+  await expect(checkout.getByText("请填写有效的联系电话，支持国家区号。", { exact: true })).toBeVisible();
+  await expect(checkout.getByLabel(/^联系电话/)).toBeFocused();
+  await checkout.getByLabel(/^联系电话/).fill("13800138000");
+  await checkout.getByLabel(/^收货人/).fill("叶舒");
+  await checkout.getByLabel(/^订单备注/).fill("工作日送到前台");
+  await checkout.getByLabel(/^输入优惠码/).fill("WRONG");
+  await checkout.getByRole("button", { name: "应用优惠", exact: true }).click();
+  await expect(checkout.getByText(/此优惠码不可用/)).toBeVisible();
+  await checkout.getByLabel(/^输入优惠码/).fill("QINGYU20");
+  await checkout.getByRole("button", { name: "应用优惠", exact: true }).click();
+  await expect(checkout.getByText("QINGYU20 已应用", { exact: true })).toBeVisible();
+  const summary = checkout.getByRole("article", { name: "订单金额", exact: true });
+  await expect(summary).toContainText("−¥20.00");
+  await expect(summary).toContainText("免运费");
+  await expect(summary).toContainText("¥379.00");
+  await choose(page, "配送方式", "快递配送 · ¥20");
+  await expect(summary.locator("dt").filter({ hasText: /^配送费用$/ }).locator("..").locator("dd")).toHaveText("¥20.00");
+  await expect(summary.locator(".shop-checkout__total")).toContainText("¥399.00");
+  await capture(page, "checkout-desktop");
+  await checkout.getByRole("button", { name: "提交订单", exact: true }).click();
+  await expect(checkout.getByRole("button", { name: "提交订单", exact: true })).toHaveAttribute("aria-disabled", "true");
+  await expect(page).toHaveURL(/#\/examples\/shop\/orders\/QY\d+$/);
+  const order = page.locator(".shop-orders");
+  await expect(order.getByText("待付款", { exact: true })).toBeVisible();
+  await expect(order).toContainText("叶舒");
+  await expect(order).toContainText("工作日送到前台");
+  await expect(order).toContainText("QINGYU20");
+  await order.getByRole("button", { name: "去付款", exact: true }).click();
+  const payment = page.getByRole("dialog", { name: "订单支付", exact: true });
+  await choose(page, "付款方式", "支付宝（演示）");
+  await expect(payment).toContainText("不会连接支付平台");
+  await payment.getByRole("button", { name: "确认模拟付款", exact: true }).click();
+  await expect(payment.getByRole("button", { name: "确认模拟付款", exact: true })).toHaveAttribute("aria-disabled", "true");
+  await expect(payment).toHaveCount(0);
+  await expect(order.getByText("待发货", { exact: true })).toBeVisible();
+  await expect(order.getByRole("button", { name: "模拟发货", exact: true })).toHaveCount(0);
+  await expect(order.getByRole("button", { name: "确认收货", exact: true })).toBeVisible({ timeout: 8_000 });
+  await expect(order.getByText("已交付快递，正在运输", { exact: true })).toBeVisible();
+  await order.getByRole("button", { name: "确认收货", exact: true }).click();
+  await expect(order.getByText("已完成", { exact: true })).toBeVisible();
+  await expect(order.getByText("已签收，订单完成", { exact: true })).toBeVisible();
+  await expectNoPageOverflow(page);
+  await capture(page, "completed-order-desktop");
+  await page.getByRole("navigation", { name: "商城导航", exact: true }).getByRole("link", { name: "全部商品", exact: true }).click();
+  await page.getByRole("article", { name: "云感无线耳机", exact: true }).getByRole("link", { name: "云感无线耳机", exact: true }).click();
+  await expect(page.locator(".shop-product__purchase")).toContainText("17 件可售");
+});
+
+test("Storefront home leads into a categorized catalog with explicit search, sorting, favorites and sold-out details", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto("/#/examples");
+  await expect(page.locator(".business-directory")).toHaveCount(0);
+  await expect(page.getByRole("navigation", { name: "商城导航", exact: true })).toBeVisible();
+  await capture(page, "storefront-home-desktop");
+  await page.getByRole("article", { name: "桌面办公", exact: true }).getByRole("button", { name: "去看看", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "桌面办公", exact: true })).toBeVisible();
+  const catalog = page.locator(".shop-catalog");
+  const results = catalog.getByRole("region", { name: "商品列表", exact: true });
+  await expect(results.getByRole("article")).toHaveCount(3);
+  await choose(page, "商品排序", "价格从低到高");
+  await expect(results.getByRole("article").first()).toHaveAttribute("aria-label", "轻触机械键盘");
+  await catalog.getByRole("button", { name: "搜索", exact: true }).click();
+  await expect(results.getByRole("article").first()).toHaveAttribute("aria-label", "纸间笔记套装");
+  await catalog.getByRole("searchbox", { name: "搜索好物", exact: true }).fill("机械");
+  await expect(results.getByRole("article")).toHaveCount(3);
+  await catalog.getByRole("searchbox", { name: "搜索好物", exact: true }).press("Enter");
+  await expect(results.getByRole("article")).toHaveCount(1);
+  const keyboard = results.getByRole("article", { name: "轻触机械键盘", exact: true });
+  await keyboard.getByRole("button", { name: "收藏轻触机械键盘", exact: true }).click();
+  const nav = page.getByRole("navigation", { name: "商城导航", exact: true });
+  await nav.getByRole("link", { name: "我的收藏", exact: true }).click();
+  await expect(page.getByRole("region", { name: "收藏商品", exact: true }).getByRole("article")).toHaveCount(1);
+  await page.getByRole("button", { name: "取消收藏轻触机械键盘", exact: true }).click();
+  await expect(page.getByText("还没有收藏好物", { exact: true })).toBeVisible();
+  await nav.getByRole("link", { name: "全部商品", exact: true }).click();
+  await expect(results.getByRole("article")).toHaveCount(12);
+  await catalog.getByRole("searchbox", { name: "搜索好物", exact: true }).fill("没有这样的商品");
+  await catalog.getByRole("button", { name: "搜索", exact: true }).click();
+  await expect(page.getByText("暂时没有找到相关商品", { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "清除筛选", exact: true }).click();
+  await expect(results.getByRole("article")).toHaveCount(12);
+  await catalog.getByRole("checkbox", { name: "仅看有货", exact: true }).check();
+  await catalog.getByRole("button", { name: "搜索", exact: true }).click();
+  await expect(results.getByRole("article")).toHaveCount(11);
+  await page.getByRole("searchbox", { name: "搜索商城商品", exact: true }).fill("日常运动手表");
+  await page.locator(".storefront-header-search").getByRole("button", { name: "搜索", exact: true }).click();
+  await expect(results.getByRole("article")).toHaveCount(1);
+  await results.getByRole("link", { name: "日常运动手表", exact: true }).click();
+  const purchase = page.locator(".shop-product__purchase");
+  await expect(purchase.getByRole("heading", { name: "日常运动手表", exact: true })).toBeVisible();
+  await expect(purchase.getByRole("button", { name: "暂时售罄", exact: true })).toBeDisabled();
+  await page.getByRole("tab", { name: "规格参数", exact: true }).click();
+  await expect(page.getByRole("tabpanel", { name: "规格参数", exact: true })).toContainText("约 10 天");
+  await page.getByRole("tab", { name: "商品评价（3）", exact: true }).click();
+  await expect(page.getByRole("tabpanel", { name: "商品评价（3）", exact: true }).getByRole("article")).toHaveCount(3);
+  await expectNoPageOverflow(page);
+});
+
+test("Storefront stays usable at 320px across home, product, cart, checkout, order and account surfaces", async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 720 });
+  const runtimeErrors: string[] = [];
+  page.on("pageerror", (error) => runtimeErrors.push(error.message));
+  await page.goto("/#/examples");
+  await expect(page.getByRole("heading", { name: /把喜欢的日常/ })).toBeVisible();
+  await expectNoPageOverflow(page);
+  const mobileNavigation = page.getByRole("navigation", { name: "商城导航", exact: true });
+  for (const name of ["首页", "商品", "收藏", "订单"]) {
+    const link = mobileNavigation.getByRole("link", { name, exact: true });
+    await expect(link).toBeVisible();
+    expect(await link.locator("span").evaluate((label) => label.scrollWidth - label.clientWidth)).toBeLessThanOrEqual(1);
+  }
+  await capture(page, "storefront-home-mobile-320");
+  await page.getByRole("button", { name: "发现本期精选", exact: true }).click();
+  await expect(page.locator(".shop-product__purchase").getByRole("heading", { name: "云感无线耳机", exact: true })).toBeVisible();
+  await expectNoPageOverflow(page);
+  const purchase = page.locator(".shop-product__purchase");
+  await purchase.getByRole("button", { name: "加入购物车", exact: true }).click();
+  await expect(purchase.getByText("还可添加 17 件", { exact: true })).toBeVisible();
+  await purchase.getByRole("button", { name: "去购物车", exact: true }).click();
+  await expect(page.locator(".shop-checkout").getByRole("heading", { name: "购物车", exact: true })).toBeVisible();
+  await expectNoPageOverflow(page);
+  await page.getByRole("button", { name: "去结算", exact: true }).click();
+  await expect(page.getByLabel(/^收货人/)).toHaveValue("陈沐");
+  await expect(page.getByLabel(/^联系电话/)).toHaveValue("13800138000");
+  await expectNoPageOverflow(page);
+  await capture(page, "checkout-mobile-320");
+  await page.getByRole("button", { name: "提交订单", exact: true }).click();
+  await expect(page.locator(".shop-orders").getByText("待付款", { exact: true })).toBeVisible();
+  await expectNoPageOverflow(page);
+  await page.getByRole("link", { name: "返回我的订单", exact: true }).click();
+  await expect(page.getByRole("navigation", { name: "数据分页", exact: true })).toBeVisible();
+  await expectNoPageOverflow(page);
+  await page.locator(".storefront-account-actions").getByRole("link", { name: "我的账户", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "个人中心", exact: true })).toBeVisible();
+  await expectNoPageOverflow(page);
+  await page.getByRole("button", { name: "登录 / 注册", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "欢迎回来", exact: true })).toBeVisible();
+  await expectNoPageOverflow(page);
+  await page.getByRole("button", { name: "项目源码", exact: true }).click();
+  const source = page.getByRole("dialog", { name: "青屿商城 · 项目源码", exact: true });
+  await expect(source.getByRole("tabpanel", { name: "首页与商品", exact: true })).toContainText('from "../../ui"');
+  await source.getByRole("tab", { name: "共享数据", exact: true }).click();
+  await expect(source.getByRole("tabpanel", { name: "共享数据", exact: true })).toContainText("CommerceProvider");
+  await page.keyboard.press("Escape");
+  await expect(source).toHaveCount(0);
+  expect(runtimeErrors).toEqual([]);
+});

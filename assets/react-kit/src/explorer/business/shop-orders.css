@@ -1,0 +1,17 @@
+.shop-orders { min-width: 0; color: var(--ui-text); }
+.shop-orders__muted { margin: 0; color: var(--ui-muted); font-size: 13px; line-height: 1.75; overflow-wrap: anywhere; }
+.shop-orders__item { display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; align-items: center; gap: 14px; min-width: 0; }
+.shop-orders__image { width: 64px; min-width: 0; }
+.shop-orders__item-copy { display: grid; gap: 5px; min-width: 0; }
+.shop-orders__item-total { font-variant-numeric: tabular-nums; line-height: 1.6; }
+.shop-orders__amount { font-size: 13px; color: var(--ui-muted); line-height: 1.7; }
+.shop-orders__amount strong { color: var(--ui-text); font-size: 19px; font-variant-numeric: tabular-nums; }
+.shop-orders__price { color: var(--ui-primary-ink); font-size: 23px; line-height: 1.5; font-variant-numeric: tabular-nums; }
+.shop-orders__status-copy { margin: 0; line-height: 1.8; overflow-wrap: anywhere; }
+.shop-orders__back { margin: 12px 0 4px; }
+@media (max-width: 580px) {
+  .shop-orders__item { grid-template-columns: 48px minmax(0, 1fr); gap: 8px 10px; }
+  .shop-orders__image { width: 48px; grid-row: 1 / 3; }
+  .shop-orders__item-total { grid-column: 2; }
+  .shop-orders__price { font-size: 21px; }
+}

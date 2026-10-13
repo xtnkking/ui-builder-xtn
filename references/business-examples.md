@@ -1,0 +1,51 @@
+# 青屿商城完整项目 / Storefront example
+
+青屿商城是一个可以连续使用的前端商城项目。入口为 `#/examples`：先浏览首页，再查看分类、商品详情、收藏、购物车、结算、订单和个人中心。各页面共用商城顶部导航、购物车数量、账户会话和业务数据，中文优先；页面切换沿用当前浏览状态。
+
+全部控件组合本 Skill 的公开组件代码。实现位于 [src/explorer/business](../assets/react-kit/src/explorer/business/)，运行时控件从 `../../ui` 导入；业务 CSS 只处理非交互布局，不覆盖组件皮肤或几何。页面底部的「完整源码」通过官方 `Drawer` 展示页面 TSX、布局 CSS 和共享数据，方便检查真实组合方式。
+
+## 页面与路由
+
+| 页面 | 路由 | 可体验的业务 |
+| --- | --- | --- |
+| 商城首页 / Home | `#/examples` | 品牌入口、分类与精选商品，进入完整购物流程 |
+| 商品列表 / Products | `#/examples/shop/products` | 12 件商品、4 个分类、手动搜索与筛选、排序、收藏、库存与加入购物车 |
+| 商品详情 / Product | `#/examples/shop/product/ID` | 商品图片、双图放大切换、规格、评价、库存、购买数量与收藏；`ID` 使用实际商品标识，如 `p-headphones` |
+| 我的收藏 / Favorites | `#/examples/shop/favorites` | 收藏商品、取消收藏、查看商品详情与继续选购 |
+| 购物车 / Cart | `#/examples/shop/cart` | 查看商品、修改数量、移除商品、价格合计与前往结算 |
+| 确认订单 / Checkout | `#/examples/shop/checkout` | 选择或填写收货信息、配送方式、优惠码、备注、价格明细与提交订单 |
+| 我的订单 / Orders | `#/examples/shop/orders` | 买家订单卡片、查询与状态筛选、官方分页、详情入口、付款与取消 |
+| 订单详情 / Order | `#/examples/shop/orders/ID` | 商品与收货信息、金额明细、进度、模拟支付与确认收货；`ID` 使用列表中的真实订单编号 |
+| 个人中心 / Account | `#/examples/shop/account` | 账户资料、订单与收藏入口、地址新增、编辑、删除确认与默认地址 |
+| 登录与注册 / Authentication | `#/examples/shop/login` | 登录、注册校验、服务条款、找回密码、共享会话与退出；体验账号帮助默认折叠 |
+
+登录的体验账号为 `demo@qingyu.example`，密码为 `Qingyu2026!`，姓名为林小夏。也可以注册临时账户；注册后需使用刚设置的密码登录。账户与会话在本次页面运行期间保留，切换商城页面不会丢失，刷新后重置。找回密码演示提交与反馈，不发送邮件或更改密码。请勿输入真实凭据。
+
+## 一次完整购物流程
+
+1. 从首页或商品列表进入详情，查看图片、规格与评价。
+2. 选择数量并加入购物车；继续选购或调整购物车数量。
+3. 前往结算，选择地址簿中的地址或填写收货人、电话与完整地址，选择配送方式。
+4. 按需要填写优惠码，核对商品合计、优惠、运费及实付金额后提交。
+5. 订单进入待付款状态，清空购物车并预留库存；可以付款或取消，取消未付款订单会恢复库存。
+6. 模拟付款后先进入待发货，约 4 秒后自动模拟发货并进入待收货；在订单详情确认收货后完成订单。
+
+普通配送按商品合计计算：满 ¥199 免运费，不足时运费 ¥10；快递配送运费 ¥20。优惠码 `QINGYU20` 在商品合计满 ¥199 时减 ¥20。优惠与运费由 [commerce-store.tsx](../assets/react-kit/src/explorer/business/commerce-store.tsx) 的统一金额函数计算，购物车、结算和订单复用同一份金额逻辑。商品使用确定的内联 SVG 示意图，无外部图片请求；当前商品为单一标准款，不模拟多 SKU。
+
+## 组件与业务的边界
+
+[authentication.tsx](../assets/react-kit/src/explorer/business/authentication.tsx) 组合 `AuthenticationPage`、`Form`、`Field`、`PasswordInput`、`SegmentedControl`、`Accordion` 和 `Dialog`；页面校验、业务提交与内存账户注册由商城处理，密码可见性、控件外观与浮层行为由组件处理。
+
+[shop-catalog.tsx](../assets/react-kit/src/explorer/business/shop-catalog.tsx) 负责首页、商品目录和详情；[shop-checkout.tsx](../assets/react-kit/src/explorer/business/shop-checkout.tsx) 负责收货信息、配送、优惠与订单确认；[shop-orders.tsx](../assets/react-kit/src/explorer/business/shop-orders.tsx) 负责买家订单列表与详情；[shop-account.tsx](../assets/react-kit/src/explorer/business/shop-account.tsx) 负责资料与地址簿。搜索、表单、按钮、分页、提示、媒体与弹层均通过公开导出组合，业务层持有草稿、已应用查询、请求状态及错误反馈。异步命令使用官方加载属性，防止重复提交并保留已有成功结果。
+
+`CommerceProvider` 挂在商城共同上层，统一管理商品库存、收藏、购物车、地址、账户会话和订单状态。演示请求使用短延迟，付款后的发货使用内存计时器；离开某个页面会清理该页的待处理请求，跨页面业务状态继续由 Provider 持有。刷新页面后全部恢复为初始数据。
+
+## 在使用者项目中参考
+
+先按照 [integration](integration.md) 安装完整组件源码，再参考商城页面组合，将 `../../ui` 改为目标项目的公开 `ui` 路径。应用持有自己的产品品牌、页面路由与服务接口；示例中的 `onContinue`、`onOrders`、`onFavorites`、`onLogin` 等回调由应用路由接管。业务数据可替换为自己的状态层和请求服务，公开组件继续负责控件与交互结构。
+
+源码预览 `Drawer`、组件目录入口和文档导航只属于本仓库的预览设施，不应复制进使用者的产品。保留页面的业务组成，使用自己的名称、图片、账户系统和地址规范；无需新建另一套同样的按钮、输入框或弹层。
+
+这是单店前端演示，数据来自同一份内存集合。账户会话用于展示注册与登录流程，不构成真实用户授权、租户隔离或服务端数据访问边界。当前没有后端、持久化、邮件、真实支付、真实物流或库存并发控制，不发生真实扣款，也不声称生产可用。接入实际业务时需要实现这些服务，并保留请求身份、防重复提交、错误反馈、缓存、服务端金额与库存校验。
+
+需要新能力时优先组合现有官方组件。公开 API 确实缺少可复用能力，才按照 Skill 的 canonical 扩展流程补齐组件代码、公开 API、示例和定向验证。
