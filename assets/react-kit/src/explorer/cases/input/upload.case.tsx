@@ -1,7 +1,7 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"upload/overview","exports":["FileUpload"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"upload/overview","exports":["FileUpload"]}
 import { StatePreview } from "../state-preview";
 import { useRef, useState } from "react";
-import { Field, FileUpload, type FileUploadItem } from "../../../personal-ui";
+import { Field, FileUpload, type FileUploadItem } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 const initialItems: FileUploadItem[] = [

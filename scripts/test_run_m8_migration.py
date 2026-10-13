@@ -63,7 +63,7 @@ class TemplateContracts(unittest.TestCase):
         self.assertTrue(report["coverage"]["valid"])
 
     def test_packaged_manifest_rejects_a_coverage_owner_mismatch(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-coverage-tamper-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-coverage-tamper-") as temporary:
             coverage_path = Path(temporary) / "coverage.json"
             coverage = json.loads(
                 (SKILL_ROOT / "assets/react-kit/component-coverage.json").read_text("utf-8")
@@ -153,7 +153,7 @@ class BaselineContracts(unittest.TestCase):
         )
         write_json(
             repository / "assets/react-kit/registry.json",
-            {"name": "personal-ui", "version": "0.2.19"},
+            {"name": "ui", "version": "0.2.19"},
         )
         (repository / "README.md").write_text("baseline\n", encoding="utf-8")
         run(["git", "add", "."], cwd=repository)
@@ -177,7 +177,7 @@ class BaselineContracts(unittest.TestCase):
         }
 
     def test_canonical_annotated_tag_is_bound_and_exported_by_exact_commit(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-baseline-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-baseline-") as temporary:
             root = Path(temporary)
             repository, commit, tag_object = self.make_repository(root)
             with (
@@ -214,7 +214,7 @@ class BaselineContracts(unittest.TestCase):
         self.assertEqual(baseline["tagObject"], migration.CANONICAL_BASELINE_TAG_OBJECT)
 
     def test_lookalike_annotated_tag_is_not_accepted_as_the_baseline(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-baseline-mismatch-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-baseline-mismatch-") as temporary:
             repository, commit, _ = self.make_repository(Path(temporary))
             with self.assertRaisesRegex(
                 migration.MigrationError, "canonical annotated baseline"
@@ -222,7 +222,7 @@ class BaselineContracts(unittest.TestCase):
                 migration.resolve_baseline(repository, self.candidate_files(commit))
 
     def test_lightweight_tag_is_rejected_even_when_the_commit_matches(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-baseline-lightweight-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-baseline-lightweight-") as temporary:
             repository, commit, _ = self.make_repository(Path(temporary))
             run(["git", "tag", "--delete", "v0.2.19"], cwd=repository)
             run(["git", "tag", "v0.2.19", commit], cwd=repository)
@@ -249,7 +249,7 @@ class EvidenceContracts(unittest.TestCase):
             migration.executable_argv(["node", "--version"], platform="nt"),
             ["node", "--version"],
         )
-        with tempfile.TemporaryDirectory(prefix="pui-m8-npm-argv-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-npm-argv-") as temporary:
             root = Path(temporary)
             artifacts = root / "artifacts"
             artifacts.mkdir()
@@ -299,13 +299,13 @@ class EvidenceContracts(unittest.TestCase):
         return root / "artifact-inventory.json"
 
     def test_inventory_exactly_binds_real_artifacts(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-inventory-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-inventory-") as temporary:
             path = self.make_evidence(Path(temporary))
             inventory = migration.validate_artifact_inventory(path)
             self.assertEqual(inventory["artifactCount"], 2)
 
     def test_tampered_artifact_is_rejected(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-inventory-tamper-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-inventory-tamper-") as temporary:
             root = Path(temporary)
             path = self.make_evidence(root)
             (root / "artifacts/result.log").write_text("changed\n", encoding="utf-8")
@@ -313,7 +313,7 @@ class EvidenceContracts(unittest.TestCase):
                 migration.validate_artifact_inventory(path)
 
     def test_uninventoried_artifact_is_rejected(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-inventory-extra-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-inventory-extra-") as temporary:
             root = Path(temporary)
             path = self.make_evidence(root)
             (root / "artifacts/extra.log").write_text("extra\n", encoding="utf-8")
@@ -321,7 +321,7 @@ class EvidenceContracts(unittest.TestCase):
                 migration.validate_artifact_inventory(path)
 
     def test_inventory_candidate_binding_must_match_the_hashed_report(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-inventory-binding-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-inventory-binding-") as temporary:
             path = self.make_evidence(Path(temporary))
             inventory = json.loads(path.read_text("utf-8"))
             inventory["candidate"]["version"] = "0.3.0-rc.2"
@@ -330,7 +330,7 @@ class EvidenceContracts(unittest.TestCase):
                 migration.validate_artifact_inventory(path)
 
     def test_command_records_nonzero_expected_result_and_scrubs_paths(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-command-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-command-") as temporary:
             root = Path(temporary)
             artifacts = root / "artifacts"
             artifacts.mkdir()
@@ -374,7 +374,7 @@ class EvidenceContracts(unittest.TestCase):
 
 class FilesystemBoundaryContracts(unittest.TestCase):
     def test_output_cannot_overlap_repository_or_candidate(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-boundary-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-boundary-") as temporary:
             root = Path(temporary)
             repository = root / "repository"
             candidate = root / "candidate"
@@ -389,7 +389,7 @@ class FilesystemBoundaryContracts(unittest.TestCase):
                     )
 
     def test_project_snapshot_excludes_generated_dependencies_and_builds(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-snapshot-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-snapshot-") as temporary:
             root = Path(temporary)
             (root / "src").mkdir()
             (root / "src/App.tsx").write_text("export {};\n", encoding="utf-8")
@@ -401,11 +401,11 @@ class FilesystemBoundaryContracts(unittest.TestCase):
             self.assertEqual(set(files), {"src/App.tsx"})
 
     def test_materialized_candidate_uses_only_the_verified_file_map(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-candidate-snapshot-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-candidate-snapshot-") as temporary:
             root = Path(temporary) / "candidate"
             expected = {
                 "SKILL.md": b"# Frozen candidate\n",
-                "scripts/install_personal_ui.py": b"print('verified')\n",
+                "scripts/install_ui.py": b"print('verified')\n",
             }
             actual = migration.materialize_verified_file_map(
                 expected,
@@ -414,7 +414,7 @@ class FilesystemBoundaryContracts(unittest.TestCase):
             )
             self.assertEqual(actual, expected)
 
-            (root / "scripts/install_personal_ui.py").write_bytes(b"print('changed')\n")
+            (root / "scripts/install_ui.py").write_bytes(b"print('changed')\n")
             with self.assertRaisesRegex(migration.MigrationError, "verified bytes"):
                 migration.verify_materialized_file_map(
                     root,

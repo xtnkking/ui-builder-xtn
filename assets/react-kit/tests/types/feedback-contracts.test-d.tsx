@@ -24,7 +24,7 @@ import {
   type RetryButtonProps,
   type ToastProviderProps,
   type ValidationSummaryProps,
-} from "../../src/personal-ui";
+} from "../../src/ui";
 
 type EscapeHatch =
   | "className"
@@ -34,9 +34,9 @@ type EscapeHatch =
   | "tw"
   | "ref"
   | "dangerouslySetInnerHTML"
-  | "data-pui-owner"
-  | "data-pui-slot"
-  | "data-pui-private";
+  | "data-ui-owner"
+  | "data-ui-slot"
+  | "data-ui-private";
 
 type EscapeValue<Props, Key extends PropertyKey> = Key extends keyof Props
   ? Exclude<Props[Key], undefined>
@@ -96,7 +96,7 @@ const allowedUsage = (
 );
 void allowedUsage;
 
-// @ts-expect-error Alert styling is owned by Personal UI
+// @ts-expect-error Alert styling is owned by ui-builder-xtn
 const alertClassName = <Alert className="foreign">Notice</Alert>;
 // @ts-expect-error EmptyState does not expose inline styling
 const emptyStyle = <EmptyState title="Empty" style={{ color: "red" }} />;
@@ -113,17 +113,17 @@ const inlineRef = <InlineMessage ref={createRef<HTMLSpanElement>()}>Hint</Inline
 // @ts-expect-error Banner does not expose raw HTML injection
 const bannerHtml = <Banner dangerouslySetInnerHTML={{ __html: "unsafe" }}>Notice</Banner>;
 // @ts-expect-error ValidationSummary does not expose internal ownership markers
-const validationOwner = <ValidationSummary issues={[]} data-pui-owner="Consumer" />;
+const validationOwner = <ValidationSummary issues={[]} data-ui-owner="Consumer" />;
 // @ts-expect-error ErrorState styling is fixed
 const errorClassName = <ErrorState className="foreign" />;
 // @ts-expect-error NoResults styling is fixed
 const noResultsStyle = <NoResults style={{ color: "red" }} />;
 // @ts-expect-error ProgressRing does not expose internal slot markers
-const ringSlot = <ProgressRing label="Loading" data-pui-slot="foreign" />;
+const ringSlot = <ProgressRing label="Loading" data-ui-slot="foreign" />;
 // @ts-expect-error AsyncAction does not expose a raw DOM ref
 const asyncRef = <AsyncAction ref={createRef<HTMLButtonElement>()} onAction={() => undefined}>Save</AsyncAction>;
-// @ts-expect-error arbitrary data-pui attributes are rejected in Props objects
-const privateAlertData: AlertProps = { children: "Notice", "data-pui-private": "foreign" };
+// @ts-expect-error arbitrary data-ui attributes are rejected in Props objects
+const privateAlertData: AlertProps = { children: "Notice", "data-ui-private": "foreign" };
 
 void alertClassName;
 void emptyStyle;

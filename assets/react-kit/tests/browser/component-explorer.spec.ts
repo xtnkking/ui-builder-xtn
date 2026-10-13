@@ -59,7 +59,7 @@ test.describe("component explorer", () => {
     await expect(resultStatus).toHaveText("1 个结果");
     await expect(directory.getByRole("link", { name: /认证与品牌登录/ })).toBeVisible();
 
-    await search.fill("not-a-personal-ui-family");
+    await search.fill("not-a-ui-family");
     await expect(resultStatus).toHaveText("0 个结果");
     await expect(directory.getByText("没有匹配的组件", { exact: true })).toBeVisible();
 

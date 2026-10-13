@@ -1,4 +1,4 @@
-// @personal-ui-coverage {"kind":"browser","runner":"browser","exports":["Cascader"]}
+// @ui-coverage {"kind":"browser","runner":"browser","exports":["Cascader"]}
 import { expect, test } from "@playwright/test";
 
 test("Cascader requires an enabled leaf and supports keyboard navigation at each level", async ({ page }) => {

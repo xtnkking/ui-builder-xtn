@@ -1,7 +1,7 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"filter-bar/overview","exports":["FilterBar"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"filter-bar/overview","exports":["FilterBar"]}
 import { useId, useRef, useState, type FormEvent } from "react";
 import { StatePreview } from "../state-preview";
-import { Button, Field, FilterBar, SearchInput, Select, Tag } from "../../../personal-ui";
+import { Button, Field, FilterBar, SearchInput, Select, Tag } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 const members = ["林夏 lin.xia@example.com", "陈屿 chen.yu@example.com", "王宁 wang.ning@example.com"];

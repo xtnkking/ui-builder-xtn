@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"inline-message/overview","exports":["InlineMessage"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"inline-message/overview","exports":["InlineMessage"]}
 import { StatePreview } from "../state-preview";
-import { InlineMessage } from "../../../personal-ui";
+import { InlineMessage } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 

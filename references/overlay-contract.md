@@ -1,6 +1,6 @@
-# Personal UI 浮层内核契约
+# ui-builder-xtn 浮层内核契约
 
-本契约适用于 `v0.3.0` M4 之后的模态浮层。公开组件不得各自实现焦点圈定、Escape、背景 inert 或页面滚动锁；这些行为由 `assets/react-kit/src/personal-ui/internal/layer-kernel.tsx` 统一拥有。
+本契约适用于 `v0.3.0` M4 之后的模态浮层。公开组件不得各自实现焦点圈定、Escape、背景 inert 或页面滚动锁；这些行为由 `assets/react-kit/src/ui/internal/layer-kernel.tsx` 统一拥有。
 
 ## 1. 内核职责
 

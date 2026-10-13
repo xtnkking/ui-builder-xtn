@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"timeline/overview","exports":["Timeline"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"timeline/overview","exports":["Timeline"]}
 import { StatePreview } from "../state-preview";
-import { Timeline } from "../../../personal-ui";
+import { Timeline } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 const explorerCase = {

@@ -1,4 +1,4 @@
-# Personal UI data workflow contract
+# ui-builder-xtn data workflow contract
 
 Use this reference for searchable lists, server-backed filters, asynchronous option data, tables, sorting, selection, pagination, and retry behavior. Public signatures and defaults are generated in the [component API](component-api.md); the [component catalog](component-catalog.md) is the family index.
 
@@ -17,14 +17,14 @@ Use this reference for searchable lists, server-backed filters, asynchronous opt
 | File drop with a keyboard selection command | `DragDrop` (built-in browse); optional `FileUpload` for a file queue |
 | Continuous observation with a keyboard load/retry command | `InfiniteScroll` (built-in manual load/retry); optional coordinated `LoadMore` |
 
-Do not rebuild these controls with native interactive markup, a third-party command menu, or application-owned `.pui-*` styles. Import them from the installed `personal-ui` barrel.
+Do not rebuild these controls with native interactive markup, a third-party command menu, or application-owned `.ui-*` styles. Import them from the installed `ui` barrel.
 
 ## Country capsule tags
 
 Use the official `Tag` country variant for a flag, uppercase two-letter country code, country/territory name and optional calling code:
 
 ```tsx
-import { Tag } from "./personal-ui";
+import { Tag } from "./ui";
 
 <Tag country={{ code: "GB", name: "英国", callingCode: "+44" }} />;
 <Tag tone="blue" selected country={{ code: "DE", name: "德国", callingCode: "+49" }} />;

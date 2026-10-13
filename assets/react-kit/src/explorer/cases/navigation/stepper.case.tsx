@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"stepper/overview","exports":["Stepper"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"stepper/overview","exports":["Stepper"]}
 import { useState } from "react";
-import { Stepper } from "../../../personal-ui";
+import { Stepper } from "../../../ui";
 import { StatePreview } from "../state-preview";
 import type { ExplorerCase } from "../types";
 

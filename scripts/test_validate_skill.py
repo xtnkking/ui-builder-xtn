@@ -25,13 +25,13 @@ Use the sample.
 
 class SkillValidationContractTests(unittest.TestCase):
     def validate_text(self, content: str) -> tuple[bool, str]:
-        with tempfile.TemporaryDirectory(prefix="personal-ui-skill-validation-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-skill-validation-") as temporary:
             root = Path(temporary)
             (root / "SKILL.md").write_text(content, encoding="utf-8")
             return validate_skill(root)
 
     def validate_tree(self, files: dict[str, str]) -> tuple[bool, str]:
-        with tempfile.TemporaryDirectory(prefix="personal-ui-skill-validation-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-skill-validation-") as temporary:
             root = Path(temporary)
             for relative_path, content in files.items():
                 target = root / relative_path
@@ -304,7 +304,7 @@ class SkillValidationContractTests(unittest.TestCase):
         repository_root = Path(__file__).resolve().parent.parent
         skill_content = (repository_root / "SKILL.md").read_text(encoding="utf-8")
         skill_content = skill_content.replace(
-            "assets/react-kit/src/personal-ui/",
+            "assets/react-kit/src/ui/",
             "the canonical component directory",
         )
         valid, message = self.validate_tree(self.ui_builder_fixture(skill_content))
@@ -315,8 +315,8 @@ class SkillValidationContractTests(unittest.TestCase):
         repository_root = Path(__file__).resolve().parent.parent
         skill_content = (repository_root / "SKILL.md").read_text(encoding="utf-8")
         skill_content = skill_content.replace(
-            "assets/react-kit/src/personal-ui/",
-            "<!-- assets/react-kit/src/personal-ui/ -->the canonical component directory",
+            "assets/react-kit/src/ui/",
+            "<!-- assets/react-kit/src/ui/ -->the canonical component directory",
         )
         valid, message = self.validate_tree(self.ui_builder_fixture(skill_content))
         self.assertFalse(valid)

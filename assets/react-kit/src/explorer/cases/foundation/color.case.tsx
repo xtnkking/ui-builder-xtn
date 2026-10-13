@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"color/overview","exports":["ThemeProvider"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"color/overview","exports":["ThemeProvider"]}
 import { StatePreview } from "../state-preview";
-import { Stack, Tag, ThemeProvider } from "../../../personal-ui";
+import { Stack, Tag, ThemeProvider } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 const explorerCase = {

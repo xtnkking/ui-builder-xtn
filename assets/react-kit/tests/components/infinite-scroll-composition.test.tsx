@@ -1,8 +1,8 @@
-// @personal-ui-coverage {"kind":"unit","runner":"components","exports":["InfiniteScroll","LoadMore"]}
+// @ui-coverage {"kind":"unit","runner":"components","exports":["InfiniteScroll","LoadMore"]}
 import { useState } from "react";
 import { act, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { InfiniteScroll, LoadMore } from "../../src/personal-ui";
+import { InfiniteScroll, LoadMore } from "../../src/ui";
 import { InfiniteScrollExample, type InfinitePageExample } from "../../src/explorer/cases/navigation/infinite-scroll.case";
 
 function deferred<T>() {
@@ -107,7 +107,7 @@ describe("InfiniteScroll and LoadMore request composition", () => {
       expect(request).toHaveBeenLastCalledWith(2);
       await act(async () => { failed.reject(new Error("服务器暂不可用")); });
       expect(screen.getByRole("alert")).toHaveTextContent("服务器暂不可用");
-      expect(screen.getByRole("alert")).toHaveAttribute("data-pui-owner", "Alert");
+      expect(screen.getByRole("alert")).toHaveAttribute("data-ui-owner", "Alert");
       expect(screen.getAllByRole("listitem")).toHaveLength(2);
       expect(screen.getByRole("status", { name: "加载状态" })).toHaveTextContent("cursor 2");
       const manual = screen.getByRole("button", { name: "手动加载下一页" });

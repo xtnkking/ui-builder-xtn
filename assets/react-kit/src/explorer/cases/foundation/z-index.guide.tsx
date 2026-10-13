@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Dialog, Inline, Popover, Select, Stack, Tag } from "../../../personal-ui";
+import { Button, Dialog, Inline, Popover, Select, Stack, Tag } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 function LayerExample() {

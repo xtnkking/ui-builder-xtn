@@ -6,7 +6,7 @@ import {
   Slider,
   TimezoneSelect,
   type ValidityControlHandle,
-} from "../../src/personal-ui";
+} from "../../src/ui";
 
 const validityControlRef = createRef<ValidityControlHandle>();
 
@@ -55,7 +55,7 @@ const colorMissingChange = <ColorPicker value="#1769d2" ariaLabel="Accent" />;
 // @ts-expect-error ColorPicker cannot be controlled and uncontrolled simultaneously
 const colorContradictory = <ColorPicker value="#1769d2" defaultValue="#137a43" onValueChange={() => undefined} ariaLabel="Accent" />;
 // @ts-expect-error fixed controls do not expose internal ownership markers
-const colorOwner = <ColorPicker defaultValue="#1769d2" ariaLabel="Accent" data-pui-owner="Consumer" />;
+const colorOwner = <ColorPicker defaultValue="#1769d2" ariaLabel="Accent" data-ui-owner="Consumer" />;
 
 // @ts-expect-error controlled DateRangeField requires onValueChange
 const rangeMissingChange = <DateRangeField value={{ start: "", end: "" }} />;
@@ -69,7 +69,7 @@ const timezoneMissingChange = <TimezoneSelect value="UTC" />;
 // @ts-expect-error TimezoneSelect cannot be controlled and uncontrolled simultaneously
 const timezoneContradictory = <TimezoneSelect value="UTC" defaultValue="Asia/Shanghai" onValueChange={() => undefined} />;
 // @ts-expect-error fixed controls do not expose reserved slot attributes
-const timezoneSlot = <TimezoneSelect defaultValue="UTC" data-pui-slot="foreign" />;
+const timezoneSlot = <TimezoneSelect defaultValue="UTC" data-ui-slot="foreign" />;
 
 void sliderMissingChange;
 void sliderContradictory;

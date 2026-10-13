@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { isPersonalUiRegressionMain, runPersonalUiRegression } from "./browser-test-harness.mjs";
+import { isUIRegressionMain, runUIRegression } from "./browser-test-harness.mjs";
 import { legacyExplorerCaseTabs, selectExplorerCase } from "./browser-explorer-case.mjs";
 
 export async function runDataTableFocusRegression({ page, baseURL }) {
@@ -8,14 +8,14 @@ export async function runDataTableFocusRegression({ page, baseURL }) {
     await page.setViewportSize({ width, height: 900 });
     await page.goto(`${baseURL}/?regressionWidth=${width}#/components/data-table`);
       const casePanel = await selectExplorerCase(page, legacyExplorerCaseTabs.dataTable);
-      const action = casePanel.locator(".pui-data-table tbody tr .pui-data-table__cell--pin-end .pui-icon-button").first();
+      const action = casePanel.locator(".ui-data-table tbody tr .ui-data-table__cell--pin-end .ui-icon-button").first();
       await action.waitFor();
       for (let index = 0; index < 80 && !await action.evaluate((button) => document.activeElement === button); index += 1) {
         await page.keyboard.press("Tab");
       }
       assert.equal(await action.evaluate((button) => document.activeElement === button), true, `button not reachable by Tab at ${width}px`);
       const geometry = await action.evaluate((button) => {
-        const content = button.closest(".pui-data-table__cell-content");
+        const content = button.closest(".ui-data-table__cell-content");
         const cell = button.closest("td");
         const buttonBox = button.getBoundingClientRect();
         const cellBox = cell.getBoundingClientRect();
@@ -40,13 +40,13 @@ export async function runDataTableFocusRegression({ page, baseURL }) {
       assert.ok(geometry.buttonLeft - focusGutter >= geometry.cellLeft, `focus ring clipped on the left at ${width}px`);
       assert.ok(geometry.buttonRight + focusGutter <= geometry.cellRight, `focus ring clipped on the right at ${width}px`);
       assert.ok(geometry.documentWidth <= geometry.viewportWidth, `horizontal overflow at ${width}px`);
-      if (process.env.PERSONAL_UI_TABLE_FOCUS_SCREENSHOT_PREFIX) {
-        await page.screenshot({ path: `${process.env.PERSONAL_UI_TABLE_FOCUS_SCREENSHOT_PREFIX}-${width}.png` });
+      if (process.env.UI_TABLE_FOCUS_SCREENSHOT_PREFIX) {
+        await page.screenshot({ path: `${process.env.UI_TABLE_FOCUS_SCREENSHOT_PREFIX}-${width}.png` });
       }
   }
   console.log("DataTable action focus regression passed at 2560, 1440, 1024, and 736px.");
 }
 
-if (isPersonalUiRegressionMain(import.meta.url)) {
-  await runPersonalUiRegression(runDataTableFocusRegression);
+if (isUIRegressionMain(import.meta.url)) {
+  await runUIRegression(runDataTableFocusRegression);
 }

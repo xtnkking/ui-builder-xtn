@@ -1,4 +1,4 @@
-// @personal-ui-coverage {"kind":"browser","runner":"browser","exports":["Lightbox"]}
+// @ui-coverage {"kind":"browser","runner":"browser","exports":["Lightbox"]}
 import { expect, test, type Locator, type Page } from "@playwright/test";
 
 async function example(page: Page, state = "默认") {
@@ -6,7 +6,7 @@ async function example(page: Page, state = "默认") {
   await page.getByRole("tab", { name: state, exact: true }).click();
   return page.getByRole("tabpanel", { name: state, exact: true });
 }
-const viewerFor = (page: Page) => page.locator('[data-pui-owner="Lightbox"]');
+const viewerFor = (page: Page) => page.locator('[data-ui-owner="Lightbox"]');
 async function blankFigurePoint(viewer: Locator) {
   return viewer.locator(":scope > figure").evaluate(node => {
     const rect = node.getBoundingClientRect();
@@ -46,14 +46,14 @@ for (const width of [1440, 320]) {
     await next.hover();
     await expect(next).toHaveCSS("color", "rgb(255, 255, 255)");
     await next.click();
-    await expect(viewer.locator(".pui-lightbox__position")).toHaveText("2 / 2");
+    await expect(viewer.locator(".ui-lightbox__position")).toHaveText("2 / 2");
     await expect(image).not.toHaveAttribute("src", firstSrc!);
     await expect(image).toHaveAttribute("alt", "深蓝色 Workspace 第二张示例图");
     await capture(viewer, `multi-${width}`);
     await viewer.getByRole("button", { name: "上一张", exact: true }).click();
     await expect(image).toHaveAttribute("src", firstSrc!);
     await page.keyboard.press("ArrowLeft");
-    await expect(viewer.locator(".pui-lightbox__position")).toHaveText("2 / 2");
+    await expect(viewer.locator(".ui-lightbox__position")).toHaveText("2 / 2");
     await page.keyboard.press("Home");
     await expect(image).toHaveAttribute("src", firstSrc!);
     await page.keyboard.press("End");
@@ -70,8 +70,8 @@ test("blank figure and outer shadow close while image, caption and dragging stay
   const viewer = viewerFor(page);
   const image = viewer.locator("figure > img");
   await image.click();
-  await viewer.locator(".pui-lightbox__caption").click();
-  await viewer.locator(".pui-lightbox__position").click();
+  await viewer.locator(".ui-lightbox__caption").click();
+  await viewer.locator(".ui-lightbox__position").click();
   await expect(viewer).toBeVisible();
   const blank = await blankFigurePoint(viewer);
   const imageBox = (await image.boundingBox())!;
@@ -80,7 +80,7 @@ test("blank figure and outer shadow close while image, caption and dragging stay
   await page.mouse.move(blank.x, blank.y, { steps: 5 });
   await page.mouse.up();
   await expect(viewer).toBeVisible();
-  const captionBox = (await viewer.locator(".pui-lightbox__caption").boundingBox())!;
+  const captionBox = (await viewer.locator(".ui-lightbox__caption").boundingBox())!;
   await page.mouse.move(captionBox.x + 5, captionBox.y + 5);
   await page.mouse.down();
   await page.mouse.move(blank.x, blank.y, { steps: 5 });
@@ -119,7 +119,7 @@ test("close control and Escape work after reopening, including single and failed
     const viewer = viewerFor(page);
     await trigger.click();
     await expect(viewer).toBeVisible();
-    if (state === "错误") await expect(viewer.locator(".pui-lightbox__image-error")).toBeVisible();
+    if (state === "错误") await expect(viewer.locator(".ui-lightbox__image-error")).toBeVisible();
     await viewer.getByRole("button", { name: "关闭预览", exact: true }).click();
     await expect(viewer).toBeHidden();
     await expect(trigger).toBeFocused();
@@ -152,7 +152,7 @@ test("dark controls keep contrast and shadow closes only the nested preview", as
   await page.keyboard.press("Escape");
   panel = await example(page, "浮层交互");
   await panel.getByRole("button", { name: "在弹窗中查看此状态", exact: true }).click();
-  const outer = page.locator('[data-pui-owner="Dialog"]');
+  const outer = page.locator('[data-ui-owner="Dialog"]');
   const trigger = outer.getByRole("button", { name: "预览图片", exact: true });
   for (const method of ["shadow", "close", "escape"]) {
     await trigger.click();

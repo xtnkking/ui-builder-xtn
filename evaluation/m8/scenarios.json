@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "kind": "personal-ui-m8-scenarios",
+  "kind": "ui-m8-scenarios",
   "scenarios": [
     {
       "id": "family-login",

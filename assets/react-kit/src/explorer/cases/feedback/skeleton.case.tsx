@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"skeleton/overview","exports":["Skeleton"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"skeleton/overview","exports":["Skeleton"]}
 import { StatePreview } from "../state-preview";
-import { Skeleton, Stack } from "../../../personal-ui";
+import { Skeleton, Stack } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 

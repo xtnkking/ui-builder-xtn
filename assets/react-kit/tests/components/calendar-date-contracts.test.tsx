@@ -1,9 +1,9 @@
-// @personal-ui-coverage {"kind":"unit","runner":"components","exports":["Calendar","DateField"]}
+// @ui-coverage {"kind":"unit","runner":"components","exports":["Calendar","DateField"]}
 import { useState } from "react";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
-import { Calendar, DateField } from "../../src/personal-ui";
+import { Calendar, DateField } from "../../src/ui";
 
 function DateGrid() {
   const [month, setMonth] = useState(new Date(2024, 1, 1));

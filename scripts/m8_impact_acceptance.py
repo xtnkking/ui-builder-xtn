@@ -17,13 +17,13 @@ from pathlib import Path, PurePosixPath
 from typing import Any, Mapping, Sequence
 
 import m8_evidence_continuity as continuity
-import release_personal_ui as release
+import release_ui as release
 import run_m8_migration as migration
 import run_m8_quality as quality
 import validate_m8_evidence as m8
 
 
-KIND = "personal-ui-m8-impact-acceptance"
+KIND = "ui-m8-impact-acceptance"
 POLICY = "r3-sampled-impact-2026-10-10-v1"
 ORIGIN_COMMIT = "9580f396d3e089775b64bee996f03e3ba78b8855"
 SCENARIOS = tuple(item for item in m8.M8_SCENARIOS if item != "family-login")
@@ -33,8 +33,8 @@ SOURCE_CHANGED = frozenset({
     "assets/react-kit/package.json",
     "assets/react-kit/src/explorer/cases/data/code-block.case.tsx",
     "assets/react-kit/src/explorer/cases/overlay/dialog.case.tsx",
-    "assets/react-kit/src/personal-ui/display/display.tsx",
-    "assets/react-kit/src/personal-ui/internal/layer-kernel.tsx",
+    "assets/react-kit/src/ui/display/display.tsx",
+    "assets/react-kit/src/ui/internal/layer-kernel.tsx",
     "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts",
     "assets/react-kit/tests/browser/modal-layer-kernel.spec.ts",
     "assets/react-kit/tests/components/display-contracts.test.tsx",
@@ -43,14 +43,14 @@ SOURCE_CHANGED = frozenset({
     "references/m5-keyboard-contracts.md",
     "references/overlay-contract.md",
     "references/release-process.md",
-    "scripts/release_personal_ui.py",
-    "scripts/test_release_personal_ui.py",
+    "scripts/release_ui.py",
+    "scripts/test_release_ui.py",
     "scripts/m8_impact_acceptance.py",
     "scripts/test_m8_impact_acceptance.py",
 })
 MANAGED_CHANGED = frozenset({
-    "assets/react-kit/src/personal-ui/display/display.tsx",
-    "assets/react-kit/src/personal-ui/internal/layer-kernel.tsx",
+    "assets/react-kit/src/ui/display/display.tsx",
+    "assets/react-kit/src/ui/internal/layer-kernel.tsx",
 })
 CHECKS = ("install", "typecheck", "build", "verifier")
 SHA256 = re.compile(r"[0-9a-f]{64}\Z")
@@ -171,17 +171,17 @@ def _source_policy(source_delta: Sequence[Mapping[str, object]], native_delta: S
     _require(additions == {"scripts/m8_impact_acceptance.py", "scripts/test_m8_impact_acceptance.py"}, "impact tool additions differ from reviewed repair")
     managed = {
         str(item["path"]) for item in source_delta
-        if str(item["path"]).startswith("assets/react-kit/src/personal-ui/")
+        if str(item["path"]).startswith("assets/react-kit/src/ui/")
     }
     _require(managed == MANAGED_CHANGED, "impact managed source delta is not the two reviewed repairs")
-    old_api = json.loads(old["assets/react-kit/etc/personal-ui.api-compatibility.json"])
-    new_api = json.loads(new["assets/react-kit/etc/personal-ui.api-compatibility.json"])
+    old_api = json.loads(old["assets/react-kit/etc/ui.api-compatibility.json"])
+    new_api = json.loads(new["assets/react-kit/etc/ui.api-compatibility.json"])
     for field in ("apiDigest", "compatibilityDigest", "runtimeExports", "typeOnlyExports", "publicSignatures"):
         _require(old_api["current"][field] == new_api["current"][field], f"public API {field} changed")
     _require(old_api["changes"] == new_api["changes"], "public API changes differ")
     native_managed = {
         str(item["path"]) for item in native_delta
-        if str(item["path"]).startswith("assets/react-kit/src/personal-ui/")
+        if str(item["path"]).startswith("assets/react-kit/src/ui/")
     }
     _require(native_managed == MANAGED_CHANGED, "packaged managed delta differs from reviewed source")
 
@@ -213,7 +213,7 @@ def _origin_evidence(record: Mapping[str, object], origin_plan: Mapping[str, obj
     original = [row for row in history if isinstance(row, dict) and row.get("id") == original_id] if isinstance(history, list) else []
     _require(
         receipt.get("schemaVersion") == 1
-        and receipt.get("kind") == "personal-ui-m8-family-quality-evidence-recovery"
+        and receipt.get("kind") == "ui-m8-family-quality-evidence-recovery"
         and receipt.get("result") == "passed"
         and receipt.get("candidate") == expected
         and receipt.get("scenarioId") == "family-login"
@@ -317,7 +317,7 @@ def _capture(workspace: Path, record_path: object, run_started: dt.datetime, pro
 
 
 def _installed_target(project: Path, native: Mapping[str, bytes], version: str) -> dict[str, Any]:
-    states = [path for path in project.rglob("install-state.json") if path.parts[-3:] == ("tools", "personal-ui", "install-state.json")]
+    states = [path for path in project.rglob("install-state.json") if path.parts[-3:] == ("tools", "ui", "install-state.json")]
     _require(len(states) == 1, "target consumer needs exactly one install-state")
     state_path = states[0]
     state = _json(state_path, "target install-state")
@@ -329,8 +329,8 @@ def _installed_target(project: Path, native: Mapping[str, bytes], version: str) 
     source = package_root.joinpath(*source_root.parts)
     _require(_same_or_inside(source, project), "installed source is outside consumer project")
     expected = {
-        name.removeprefix("assets/react-kit/src/personal-ui/"): content
-        for name, content in native.items() if name.startswith("assets/react-kit/src/personal-ui/")
+        name.removeprefix("assets/react-kit/src/ui/"): content
+        for name, content in native.items() if name.startswith("assets/react-kit/src/ui/")
     }
     _require(expected, "target candidate has no managed kit")
     for relative, content in expected.items():
@@ -373,7 +373,7 @@ def _consumer(item: Mapping[str, object], plan: Mapping[str, object], native: Ma
     manifest = _json(workspace / "visible-inputs.json", f"{scenario} visible inputs")
     start = _json(workspace / "evidence" / "run-start.json", f"{scenario} run-start")
     run = manifest.get("run")
-    _require(manifest.get("kind") == "personal-ui-m8-evaluator-inputs" and manifest.get("candidate") == {
+    _require(manifest.get("kind") == "ui-m8-evaluator-inputs" and manifest.get("candidate") == {
         "version": plan["candidateVersion"], "planDigest": plan["planDigest"],
         "sourceCommit": plan["source"]["commit"], "sourceContentDigest": plan["source"]["contentDigest"],
         "sourceDateEpoch": plan["source"]["sourceDateEpoch"], "candidateContentDigest": plan["candidateContentDigest"],
@@ -398,8 +398,8 @@ def _consumer(item: Mapping[str, object], plan: Mapping[str, object], native: Ma
         record, ended = _capture(workspace, captures[name], last, project, f"{scenario} {name}", ledger, ledger_path)
         records[name] = record
         last = ended
-    installer = [Path(arg) for arg in records["install"]["argv"] if isinstance(arg, str) and arg.endswith("install_personal_ui.py")]
-    _require(len(installer) == 1 and _path(str(installer[0]), "target installer").read_bytes() == native["scripts/install_personal_ui.py"], f"{scenario} installer is not from target")
+    installer = [Path(arg) for arg in records["install"]["argv"] if isinstance(arg, str) and arg.endswith("install_ui.py")]
+    _require(len(installer) == 1 and _path(str(installer[0]), "target installer").read_bytes() == native["scripts/install_ui.py"], f"{scenario} installer is not from target")
     install_argv = records["install"]["argv"]
     _require(
         len(install_argv) == 14 and install_argv[1] == str(installer[0])
@@ -413,8 +413,8 @@ def _consumer(item: Mapping[str, object], plan: Mapping[str, object], native: Ma
         ],
         f"{scenario} installer command did not target its recorded project and package",
     )
-    verifier = [Path(arg) for arg in records["verifier"]["argv"] if isinstance(arg, str) and arg.endswith("verify_personal_ui.py")]
-    _require(len(verifier) == 1 and _path(str(verifier[0]), "target verifier").read_bytes() == native["scripts/verify_personal_ui.py"], f"{scenario} verifier is not from target")
+    verifier = [Path(arg) for arg in records["verifier"]["argv"] if isinstance(arg, str) and arg.endswith("verify_ui.py")]
+    _require(len(verifier) == 1 and _path(str(verifier[0]), "target verifier").read_bytes() == native["scripts/verify_ui.py"], f"{scenario} verifier is not from target")
     commands = plan_doc.get("commands")
     _require(isinstance(commands, dict) and all(records[name]["argv"] == commands.get(name) for name in ("typecheck", "build", "verifier")), f"{scenario} static captures differ from quality plan")
     output_relative = quality._safe_relative(item.get("qualityRoot"), label=f"{scenario} qualityRoot")

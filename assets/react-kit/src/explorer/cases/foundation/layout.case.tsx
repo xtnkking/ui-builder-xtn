@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"layout/overview","exports":["Box","Stack","Inline"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"layout/overview","exports":["Box","Stack","Inline"]}
 import { StatePreview } from "../state-preview";
-import { Box, Button, Inline, Stack, Tag } from "../../../personal-ui";
+import { Box, Button, Inline, Stack, Tag } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 const explorerCase = {

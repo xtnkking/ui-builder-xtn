@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"switch/overview","exports":["Switch"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"switch/overview","exports":["Switch"]}
 import { useState } from "react";
-import { Field, Switch } from "../../../personal-ui";
+import { Field, Switch } from "../../../ui";
 import type { ExplorerCase } from "../types";
 import { StatePreview } from "../state-preview";
 

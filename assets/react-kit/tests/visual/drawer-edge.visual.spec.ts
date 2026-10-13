@@ -1,4 +1,4 @@
-// @personal-ui-coverage {"kind":"browser","runner":"visual","exports":["Drawer"]}
+// @ui-coverage {"kind":"browser","runner":"visual","exports":["Drawer"]}
 import { expect, test } from "@playwright/test";
 
 test.use({ viewport: { width: 1280, height: 800 } });

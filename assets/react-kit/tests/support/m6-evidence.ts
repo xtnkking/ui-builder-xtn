@@ -82,7 +82,7 @@ const focusableSelector = [
 ].join(",");
 
 function ownerSelector(exportName: string, scope: "preview" | "page" = "preview") {
-  const selector = `[data-pui-owner="${exportName}"]`;
+  const selector = `[data-ui-owner="${exportName}"]`;
   return scope === "page" ? selector : `.demo-explorer-preview ${selector}`;
 }
 
@@ -165,7 +165,7 @@ async function keyboardState(page: Page, owner: Locator, target: Locator) {
     const active = document.activeElement as HTMLElement | null;
     const control = targetElement as HTMLInputElement;
     return JSON.stringify({
-      activeOwner: active?.closest<HTMLElement>("[data-pui-owner]")?.dataset.puiOwner ?? null,
+      activeOwner: active?.closest<HTMLElement>("[data-ui-owner]")?.dataset.uiOwner ?? null,
       activeRole: active?.getAttribute("role") ?? active?.tagName ?? null,
       activeText: active?.textContent?.trim().slice(0, 80) ?? null,
       checked: "checked" in control ? control.checked : null,
@@ -223,7 +223,7 @@ export function registerKeyboardEvidence(cases: readonly KeyboardEvidenceCase[])
       const preparedTarget = await prepareEvidence(page, evidence);
 
       if (evidence.strategy === "shortcut") {
-        const commandOwners = page.locator('[data-pui-owner="CommandPalette"]');
+        const commandOwners = page.locator('[data-ui-owner="CommandPalette"]');
         await expect(commandOwners).toHaveCount(1);
         const { owner } = await findOwner(page, { ...evidence, ownerName: evidence.ownerName ?? "CommandPalette", ownerScope: "page" });
         await expect(owner).toBeVisible();
@@ -236,7 +236,7 @@ export function registerKeyboardEvidence(cases: readonly KeyboardEvidenceCase[])
       const { owner } = await findOwner(page, evidence);
       if (evidence.strategy === "modal-escape") {
         const commandOwners = evidence.exportName === "CommandPalette"
-          ? page.locator('[data-pui-owner="CommandPalette"]') : undefined;
+          ? page.locator('[data-ui-owner="CommandPalette"]') : undefined;
         if (commandOwners) await expect(commandOwners).toHaveCount(1);
         await expect(owner).toBeVisible();
         await page.keyboard.press("Escape");

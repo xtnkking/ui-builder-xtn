@@ -1,9 +1,9 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"code-block/overview","exports":["CodeBlock"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"code-block/overview","exports":["CodeBlock"]}
 import { StatePreview } from "../state-preview";
-import { CodeBlock } from "../../../personal-ui";
+import { CodeBlock } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
-const sample = `import { Button } from "./personal-ui";\n\nexport function SaveCommand() {\n  return <Button onClick={save}>保存</Button>;\n}`;
+const sample = `import { Button } from "./ui";\n\nexport function SaveCommand() {\n  return <Button onClick={save}>保存</Button>;\n}`;
 
 const explorerCase = {
   id: "code-block/overview",

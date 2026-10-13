@@ -12,9 +12,9 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-import release_personal_ui as release
+import release_ui as release
 import release_publish_adapter as publisher
-import test_release_personal_ui as fixtures
+import test_release_ui as fixtures
 
 
 def run_git(root: Path, *args: str) -> str:

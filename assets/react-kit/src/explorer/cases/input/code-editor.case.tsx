@@ -1,7 +1,7 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"code-editor/overview","exports":["CodeEditor"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"code-editor/overview","exports":["CodeEditor"]}
 import { StatePreview } from "../state-preview";
 import { useState } from "react";
-import { CodeEditor, Field } from "../../../personal-ui";
+import { CodeEditor, Field } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 function CodeEditorExample() {

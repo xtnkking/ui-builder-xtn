@@ -1,5 +1,5 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"toggle-button/overview","exports":["ToggleButton"]}
-import { Inline, ToggleButton } from "../../../personal-ui";
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"toggle-button/overview","exports":["ToggleButton"]}
+import { Inline, ToggleButton } from "../../../ui";
 import { useState } from "react";
 import { StatePreview } from "../state-preview";
 import type { ExplorerCase } from "../types";

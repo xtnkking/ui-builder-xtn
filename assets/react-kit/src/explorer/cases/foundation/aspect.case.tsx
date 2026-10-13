@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"aspect/overview","exports":["AspectRatio"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"aspect/overview","exports":["AspectRatio"]}
 import { StatePreview } from "../state-preview";
-import { AspectRatio } from "../../../personal-ui";
+import { AspectRatio } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 function AspectExample() {

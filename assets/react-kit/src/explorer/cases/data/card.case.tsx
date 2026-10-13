@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"card/overview","exports":["Card"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"card/overview","exports":["Card"]}
 import { StatePreview } from "../state-preview";
-import { Card, StatusIndicator } from "../../../personal-ui";
+import { Card, StatusIndicator } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 const explorerCase = {

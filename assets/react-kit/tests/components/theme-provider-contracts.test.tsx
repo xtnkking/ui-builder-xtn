@@ -1,11 +1,11 @@
-// @personal-ui-coverage {"kind":"unit","runner":"components","exports":["ThemeProvider"]}
+// @ui-coverage {"kind":"unit","runner":"components","exports":["ThemeProvider"]}
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import {
   ThemeProvider,
   type ThemeProviderProps,
   type ThemeTokens,
-} from "../../src/personal-ui";
+} from "../../src/ui";
 
 describe("ThemeProvider contracts", () => {
   it("represents light, dark, system, and true inherited modes without local mode drift", () => {
@@ -34,9 +34,9 @@ describe("ThemeProvider contracts", () => {
         <ThemeProvider
           data-testid="inner"
           tokens={{
-            "--pui-primary": "#246bfe",
-            "--pui-on-primary": "#ffffff",
-            "--pui-focus-ring": "#77a3ff",
+            "--ui-primary": "#246bfe",
+            "--ui-on-primary": "#ffffff",
+            "--ui-focus-ring": "#77a3ff",
           }}
         >
           Nested content
@@ -47,9 +47,9 @@ describe("ThemeProvider contracts", () => {
     expect(screen.getByTestId("outer")).toHaveAttribute("data-color-scheme", "dark");
     const inner = screen.getByTestId("inner");
     expect(inner).not.toHaveAttribute("data-color-scheme");
-    expect(inner.style.getPropertyValue("--pui-primary")).toBe("#246bfe");
-    expect(inner.style.getPropertyValue("--pui-on-primary")).toBe("#ffffff");
-    expect(inner.style.getPropertyValue("--pui-focus-ring")).toBe("#77a3ff");
+    expect(inner.style.getPropertyValue("--ui-primary")).toBe("#246bfe");
+    expect(inner.style.getPropertyValue("--ui-on-primary")).toBe("#ffffff");
+    expect(inner.style.getPropertyValue("--ui-focus-ring")).toBe("#77a3ff");
   });
 
   it("rejects unknown, geometric, and invalid semantic token values at runtime", () => {
@@ -57,27 +57,27 @@ describe("ThemeProvider contracts", () => {
 
     expect(() => render(
       <ThemeProvider
-        tokens={{ "--pui-radius-control": "999px" } as unknown as ThemeTokens}
+        tokens={{ "--ui-radius-control": "999px" } as unknown as ThemeTokens}
       >
         Invalid geometry
       </ThemeProvider>,
-    )).toThrow(/unsupported theme token "--pui-radius-control"/);
+    )).toThrow(/unsupported theme token "--ui-radius-control"/);
 
     expect(() => render(
       <ThemeProvider
-        tokens={{ "--pui-brand-surprise": "hotpink" } as unknown as ThemeTokens}
+        tokens={{ "--ui-brand-surprise": "hotpink" } as unknown as ThemeTokens}
       >
         Unknown token
       </ThemeProvider>,
-    )).toThrow(/unsupported theme token "--pui-brand-surprise"/);
+    )).toThrow(/unsupported theme token "--ui-brand-surprise"/);
 
     expect(() => render(
       <ThemeProvider
-        tokens={{ "--pui-primary": 42 } as unknown as ThemeTokens}
+        tokens={{ "--ui-primary": 42 } as unknown as ThemeTokens}
       >
         Invalid value
       </ThemeProvider>,
-    )).toThrow(/token "--pui-primary" must be a non-empty CSS color string/);
+    )).toThrow(/token "--ui-primary" must be a non-empty CSS color string/);
 
     consoleError.mockRestore();
   });
@@ -100,7 +100,7 @@ describe("ThemeProvider contracts", () => {
     render(<ThemeProvider {...forcedProps} />);
 
     const theme = screen.getByTestId("safe-theme");
-    expect(theme).toHaveClass("pui-theme", "pui-root");
+    expect(theme).toHaveClass("ui-theme", "ui-root");
     expect(theme).not.toHaveClass("foreign-theme");
     expect(theme.style.background).toBe("");
 

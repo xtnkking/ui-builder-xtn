@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { Button, Stack } from "../../src/personal-ui";
+import { Button, Stack } from "../../src/ui";
 import { InfiniteScrollExample, type InfinitePageExample } from "../../src/explorer/cases/navigation/infinite-scroll.case";
-import "../../src/personal-ui/styles.css";
+import "../../src/ui/styles.css";
 
 type PendingPage = { cursor: number; resolve: (value: InfinitePageExample) => void; reject: (reason: unknown) => void };
 const requests: number[] = [];

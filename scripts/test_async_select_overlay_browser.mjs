@@ -1,24 +1,24 @@
 import assert from "node:assert/strict";
-import { isPersonalUiRegressionMain, runPersonalUiRegression } from "./browser-test-harness.mjs";
+import { isUIRegressionMain, runUIRegression } from "./browser-test-harness.mjs";
 import { legacyExplorerCaseTabs, selectExplorerCase } from "./browser-explorer-case.mjs";
 
 export const asyncSelectOverlayWidths = Object.freeze([2560, 1440, 1024, 736, 360, 320]);
 
 async function checkPopover(page, panel, popup, label) {
   await popup.waitFor({ state: 'visible' });
-  await page.locator('.pui-async-select__popover[data-positioned="true"]').waitFor();
+  await page.locator('.ui-async-select__popover[data-positioned="true"]').waitFor();
   const measured = await popup.evaluate((element) => {
     const bounds = element.getBoundingClientRect();
-    const list = element.querySelector('.pui-async-select__list');
+    const list = element.querySelector('.ui-async-select__list');
     const listBounds = list.getBoundingClientRect();
-    const footer = element.querySelector('.pui-async-select__footer');
+    const footer = element.querySelector('.ui-async-select__footer');
     const footerBounds = footer?.getBoundingClientRect();
     const hit = document.elementFromPoint(
       Math.min(innerWidth - 1, bounds.left + bounds.width / 2),
       Math.min(innerHeight - 1, bounds.top + 20),
     );
     return {
-      portalOutsidePanel: !element.closest('.pui-dialog__panel, .pui-drawer__panel'),
+      portalOutsidePanel: !element.closest('.ui-dialog__panel, .ui-drawer__panel'),
       visible: getComputedStyle(element).visibility === 'visible',
       hit: !!hit && element.contains(hit),
       bounds: { left: bounds.left, right: bounds.right, top: bounds.top, bottom: bounds.bottom },
@@ -34,17 +34,17 @@ async function checkPopover(page, panel, popup, label) {
   assert.ok(measured.listHeight >= 70, `${label}: list has no useful vertical space`);
   assert.ok(measured.footerBounds && measured.footerBounds.top >= measured.bounds.top && measured.footerBounds.bottom <= measured.bounds.bottom + 1, `${label}: load-more footer clipped`);
   assert.ok(measured.documentWidth <= measured.viewport.width, `${label}: document horizontal overflow`);
-  assert.equal(await panel.locator('.pui-async-select__popover').count(), 0, `${label}: popup remained inside overlay scroll body`);
+  assert.equal(await panel.locator('.ui-async-select__popover').count(), 0, `${label}: popup remained inside overlay scroll body`);
   return measured;
 }
 
 async function exercise(page, panel, ariaLabel, label) {
   const trigger = panel.getByLabel(ariaLabel, { exact: true });
   assert.equal(await trigger.getAttribute('role'), 'combobox', `${label}: closed trigger is not exposed as a combobox`);
-  const footer = panel.locator('.pui-dialog__footer, .pui-drawer__footer');
+  const footer = panel.locator('.ui-dialog__footer, .ui-drawer__footer');
   const footerBefore = await footer.boundingBox();
   await trigger.click();
-  const popup = page.locator('.pui-async-select__popover');
+  const popup = page.locator('.ui-async-select__popover');
   await popup.waitFor();
   const list = popup.getByRole('listbox', { name: ariaLabel });
   assert.equal(await list.getByRole('option').count(), 6, `${label}: initial page mismatch`);
@@ -62,7 +62,7 @@ async function exercise(page, panel, ariaLabel, label) {
   }
   const loadMore = popup.getByRole('button', { name: '加载更多' });
   await loadMore.click();
-  assert.equal(await popup.locator('.pui-async-select__footer .pui-button').getAttribute('data-loading'), 'true', `${label}: load-more button lacks loading state`);
+  assert.equal(await popup.locator('.ui-async-select__footer .ui-button').getAttribute('data-loading'), 'true', `${label}: load-more button lacks loading state`);
   await list.getByRole('option').nth(11).waitFor();
   assert.equal(await loadMore.count(), 0, `${label}: load-more footer stayed after final page`);
   assert.equal(await list.getByRole('option').count(), 12, `${label}: load-more options missing`);
@@ -77,12 +77,12 @@ async function exercise(page, panel, ariaLabel, label) {
 
   const search = popup.getByRole('combobox', { name: `搜索${ariaLabel}` });
   await search.fill('日本');
-  await popup.locator('.pui-extra-state[role="status"]').waitFor();
+  await popup.locator('.ui-extra-state[role="status"]').waitFor();
   try {
     await list.getByRole('option', { name: /日本/ }).waitFor({ timeout: 2500 });
   } catch (cause) {
     console.error(`${label} search diagnostics:`, await page.evaluate(() => ({
-      popups: [...document.querySelectorAll('.pui-async-select__popover')].map((popup) => popup.textContent?.trim()),
+      popups: [...document.querySelectorAll('.ui-async-select__popover')].map((popup) => popup.textContent?.trim()),
       active: document.activeElement?.outerHTML,
       dialogs: [...document.querySelectorAll('[role="dialog"]')].map((dialog) => dialog.getAttribute('aria-label')),
     })));
@@ -102,7 +102,7 @@ async function exercise(page, panel, ariaLabel, label) {
   assert.ok((await popup.getByRole('alert').textContent())?.includes('国家目录加载失败'), `${label}: error state missing`);
   const retry = popup.getByRole('button', { name: '重试' });
   await retry.click();
-  assert.equal(await popup.locator('.pui-extra-error .pui-button').getAttribute('data-loading'), 'true', `${label}: retry button lacks loading state`);
+  assert.equal(await popup.locator('.ui-extra-error .ui-button').getAttribute('data-loading'), 'true', `${label}: retry button lacks loading state`);
   await list.getByRole('option').nth(5).waitFor();
   assert.equal(await popup.getByRole('alert').count(), 0, `${label}: retry did not clear error`);
   await checkPopover(page, panel, popup, `${label} after retry`);
@@ -118,7 +118,7 @@ async function checkMenu(page, menu, label) {
   const geometry = await menu.evaluate((element) => {
     const box = element.getBoundingClientRect();
     const hit = document.elementFromPoint(Math.min(innerWidth - 1, box.left + box.width / 2), Math.min(innerHeight - 1, box.top + 20));
-    return { portal: element.parentElement?.matches('.pui-overlay'), hit: !!hit && element.contains(hit), left: box.left, right: box.right, top: box.top, bottom: box.bottom, width: document.documentElement.clientWidth, height: document.documentElement.clientHeight };
+    return { portal: element.parentElement?.matches('.ui-overlay'), hit: !!hit && element.contains(hit), left: box.left, right: box.right, top: box.top, bottom: box.bottom, width: document.documentElement.clientWidth, height: document.documentElement.clientHeight };
   });
   assert.ok(geometry.portal && geometry.hit, `${label}: menu is clipped or covered`);
   assert.ok(geometry.left >= 11 && geometry.right <= geometry.width - 11 && geometry.top >= 11 && geometry.bottom <= geometry.height - 11, `${label}: menu escaped viewport ${JSON.stringify(geometry)}`);
@@ -130,7 +130,7 @@ async function checkSelectorPopup(page, popup, label) {
   const geometry = await popup.evaluate((element) => {
     const box = element.getBoundingClientRect();
     const hit = document.elementFromPoint(Math.min(innerWidth - 1, box.left + box.width / 2), Math.min(innerHeight - 1, box.top + 20));
-    return { portal: element.parentElement?.matches('.pui-overlay'), positioned: element.dataset.positioned, hit: !!hit && element.contains(hit), left: box.left, right: box.right, top: box.top, bottom: box.bottom, width: document.documentElement.clientWidth, height: document.documentElement.clientHeight };
+    return { portal: element.parentElement?.matches('.ui-overlay'), positioned: element.dataset.positioned, hit: !!hit && element.contains(hit), left: box.left, right: box.right, top: box.top, bottom: box.bottom, width: document.documentElement.clientWidth, height: document.documentElement.clientHeight };
   });
   assert.ok(geometry.portal && geometry.positioned === 'true' && geometry.hit, `${label}: selector popup clipped or covered ${JSON.stringify(geometry)}`);
   assert.ok(geometry.left >= 11 && geometry.right <= geometry.width - 11 && geometry.top >= 11 && geometry.bottom <= geometry.height - 11, `${label}: selector popup escaped viewport ${JSON.stringify(geometry)}`);
@@ -149,8 +149,8 @@ export async function runAsyncSelectOverlayRegression({ page, baseURL, widths = 
       await dialog.getByRole('button', { name: '角色操作菜单' }).click();
       const dropdown = page.getByRole('menu', { name: '角色操作菜单' });
       await checkMenu(page, dropdown, `${width}px DropdownMenu`);
-      if (process.env.PERSONAL_UI_ASYNC_SCREENSHOT_PREFIX && (width === 1440 || width === 320)) {
-        await page.screenshot({ path: `${process.env.PERSONAL_UI_ASYNC_SCREENSHOT_PREFIX}-menu-${width}.png` });
+      if (process.env.UI_ASYNC_SCREENSHOT_PREFIX && (width === 1440 || width === 320)) {
+        await page.screenshot({ path: `${process.env.UI_ASYNC_SCREENSHOT_PREFIX}-menu-${width}.png` });
       }
       assert.equal(await dropdown.getByRole('menuitem', { name: '查看角色记录' }).evaluate((item) => document.activeElement === item), true, `${width}px: DropdownMenu did not focus first item`);
       await page.keyboard.press('ArrowDown');
@@ -164,7 +164,7 @@ export async function runAsyncSelectOverlayRegression({ page, baseURL, widths = 
       const roleListbox = page.getByRole('listbox', { name: '角色', exact: true });
       await roleListbox.waitFor({ state: 'visible' });
       await dropdown.waitFor({ state: 'detached' });
-      assert.equal(await page.locator('.pui-multi-select__popover input').evaluate((input) => document.activeElement === input), true, `${width}px: MultiSelect did not focus its search before Escape`);
+      assert.equal(await page.locator('.ui-multi-select__popover input').evaluate((input) => document.activeElement === input), true, `${width}px: MultiSelect did not focus its search before Escape`);
       await page.keyboard.press('Escape');
       await roleListbox.waitFor({ state: 'detached' });
       const priorFocus = dialog.getByRole('button', { name: '角色操作菜单' });
@@ -173,8 +173,8 @@ export async function runAsyncSelectOverlayRegression({ page, baseURL, widths = 
       await contextTrigger.click({ button: 'right' });
       const context = page.getByRole('menu', { name: '角色右键菜单' });
       await checkMenu(page, context, `${width}px ContextMenu`);
-      if (process.env.PERSONAL_UI_ASYNC_SCREENSHOT_PREFIX && (width === 1440 || width === 320)) {
-        await page.screenshot({ path: `${process.env.PERSONAL_UI_ASYNC_SCREENSHOT_PREFIX}-context-${width}.png` });
+      if (process.env.UI_ASYNC_SCREENSHOT_PREFIX && (width === 1440 || width === 320)) {
+        await page.screenshot({ path: `${process.env.UI_ASYNC_SCREENSHOT_PREFIX}-context-${width}.png` });
       }
       assert.equal(await context.getByRole('menuitem', { name: '查看权限详情' }).evaluate((item) => document.activeElement === item), true, `${width}px: ContextMenu did not retain keyboard focus`);
       await page.keyboard.press('Escape');
@@ -193,20 +193,20 @@ export async function runAsyncSelectOverlayRegression({ page, baseURL, widths = 
       assert.equal(await dropdown.getByRole('menuitem', { name: '查看角色记录' }).evaluate((item) => document.activeElement === item), true, `${width}px: outside pointer dismissal stole focus from the newly opened dropdown`);
       await page.keyboard.press('Escape');
       await dropdown.waitFor({ state: 'detached' });
-      if (process.env.PERSONAL_UI_ASYNC_SCREENSHOT_PREFIX && (width === 1440 || width === 320)) {
+      if (process.env.UI_ASYNC_SCREENSHOT_PREFIX && (width === 1440 || width === 320)) {
         await dialog.getByRole('combobox', { name: '国家或地区' }).click();
-        await page.locator('.pui-async-select__popover[data-positioned="true"]').waitFor();
-        await page.screenshot({ path: `${process.env.PERSONAL_UI_ASYNC_SCREENSHOT_PREFIX}-dialog-${width}.png` });
+        await page.locator('.ui-async-select__popover[data-positioned="true"]').waitFor();
+        await page.screenshot({ path: `${process.env.UI_ASYNC_SCREENSHOT_PREFIX}-dialog-${width}.png` });
         await page.keyboard.press('Escape');
       }
       await dialog.getByRole('combobox', { name: '国家或地区' }).click();
-      const parentPopup = page.locator('.pui-async-select__popover');
+      const parentPopup = page.locator('.ui-async-select__popover');
       await parentPopup.waitFor({ state: 'visible' });
       await dialog.getByRole('button', { name: '上层确认' }).evaluate((button) => button.click());
       const nested = page.getByRole('dialog', { name: '确认国家范围' });
       await nested.waitFor();
       const covered = await page.evaluate(() => {
-        const popupElement = document.querySelector('.pui-async-select__popover');
+        const popupElement = document.querySelector('.ui-async-select__popover');
         if (!popupElement) return true;
         const box = popupElement.getBoundingClientRect();
         const hit = document.elementFromPoint(box.left + box.width / 2, box.top + 20);
@@ -259,10 +259,10 @@ export async function runAsyncSelectOverlayRegression({ page, baseURL, widths = 
       await edit.click();
       const drawer = page.getByRole('dialog', { name: '编辑陈沐的权限' });
       const drawerGeometry = await exercise(page, drawer, '所属国家或地区', `${width}px Drawer`);
-      if (process.env.PERSONAL_UI_ASYNC_SCREENSHOT_PREFIX && (width === 1440 || width === 320)) {
+      if (process.env.UI_ASYNC_SCREENSHOT_PREFIX && (width === 1440 || width === 320)) {
         await drawer.getByRole('combobox', { name: '所属国家或地区' }).click();
-        await page.locator('.pui-async-select__popover[data-positioned="true"]').waitFor();
-        await page.screenshot({ path: `${process.env.PERSONAL_UI_ASYNC_SCREENSHOT_PREFIX}-drawer-${width}.png` });
+        await page.locator('.ui-async-select__popover[data-positioned="true"]').waitFor();
+        await page.screenshot({ path: `${process.env.UI_ASYNC_SCREENSHOT_PREFIX}-drawer-${width}.png` });
         await page.keyboard.press('Escape');
       }
       await page.keyboard.press('Escape');
@@ -279,6 +279,6 @@ export async function runAsyncSelectOverlayRegression({ page, baseURL, widths = 
   console.log(`AsyncSelect Dialog/Drawer browser regression passed at ${widths.map((width) => `${width}px`).join(', ')}.`);
 }
 
-if (isPersonalUiRegressionMain(import.meta.url)) {
-  await runPersonalUiRegression(runAsyncSelectOverlayRegression);
+if (isUIRegressionMain(import.meta.url)) {
+  await runUIRegression(runAsyncSelectOverlayRegression);
 }

@@ -1,7 +1,7 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"authentication/overview","exports":["AuthenticationPage","FamilyLoginPage"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"authentication/overview","exports":["AuthenticationPage","FamilyLoginPage"]}
 import { StatePreview } from "../state-preview";
 import { useId, useState } from "react";
-import { AuthenticationPage, Button, FamilyLoginPage, Field, Form, Input, Tabs } from "../../../personal-ui";
+import { AuthenticationPage, Button, FamilyLoginPage, Field, Form, Input, Tabs } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 const loginProducts = [{ id: "docs", name: "文档", accent: "#1769d2", headline: "团队内容保持清楚有序", description: "共享同一份准确上下文。", visual: <div aria-hidden="true">Docs</div> }];
@@ -95,7 +95,7 @@ const explorerCase: ExplorerCase = {
   ],
   content: <AuthenticationExample />,
   previewLayout: "page",
-  code: `import { FamilyLoginPage } from "./personal-ui";
+  code: `import { FamilyLoginPage } from "./ui";
 
 <FamilyLoginPage companyName="Northstar" products={products} onSubmit={signIn} />`,
 };

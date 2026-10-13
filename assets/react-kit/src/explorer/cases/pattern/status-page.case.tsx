@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"status-page/overview","exports":["StatusPage"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"status-page/overview","exports":["StatusPage"]}
 import { StatePreview } from "../state-preview";
-import { Button, Inline, StatusPage } from "../../../personal-ui";
+import { Button, Inline, StatusPage } from "../../../ui";
 import { useState } from "react";
 import type { ExplorerCase } from "../types";
 
@@ -31,7 +31,7 @@ const explorerCase: ExplorerCase = {
     { state: "locale", exports: ["StatusPage"], content: <StatePreview state="locale">{<StatusPageExample />}</StatePreview> },
   ],
   content: <StatusPageExample />,
-  code: `import { StatusPage } from "./personal-ui";
+  code: `import { StatusPage } from "./ui";
 
 <StatusPage title="同步状态" kind="error" statusTitle="加载失败" onRetry={retry} />`,
 };

@@ -1,7 +1,7 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"attachment/overview","exports":["Attachment"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"attachment/overview","exports":["Attachment"]}
 import { StatePreview } from "../state-preview";
 import { useState } from "react";
-import { Attachment } from "../../../personal-ui";
+import { Attachment } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 function AttachmentExample() {

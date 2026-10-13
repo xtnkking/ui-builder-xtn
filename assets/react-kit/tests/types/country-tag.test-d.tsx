@@ -1,4 +1,4 @@
-import { Tag, type CountryTagData, type TagProps } from "../../src/personal-ui";
+import { Tag, type CountryTagData, type TagProps } from "../../src/ui";
 
 const country: CountryTagData = { code: "GB", name: "英国", callingCode: "+44" };
 const props: TagProps = { country, tone: "blue", selected: true };

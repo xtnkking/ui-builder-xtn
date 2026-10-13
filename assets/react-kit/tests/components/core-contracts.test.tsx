@@ -1,4 +1,4 @@
-// @personal-ui-coverage {"kind":"unit","runner":"components","exports":["Button","DataTable","Dialog","Drawer","Field","Input","PasswordInput","SearchInput","Tabs"]}
+// @ui-coverage {"kind":"unit","runner":"components","exports":["Button","DataTable","Dialog","Drawer","Field","Input","PasswordInput","SearchInput","Tabs"]}
 import { useState } from "react";
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -14,7 +14,7 @@ import {
   SearchInput,
   Tabs,
   type DataColumn,
-} from "../../src/personal-ui";
+} from "../../src/ui";
 
 describe("core component contracts", () => {
   it("keeps a loading button inert while exposing its pending label", async () => {

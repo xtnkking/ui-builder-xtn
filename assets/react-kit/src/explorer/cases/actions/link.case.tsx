@@ -1,5 +1,5 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"link/overview","exports":["Link"]}
-import { Inline, Link } from "../../../personal-ui";
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"link/overview","exports":["Link"]}
+import { Inline, Link } from "../../../ui";
 import { StatePreview } from "../state-preview";
 import type { ExplorerCase } from "../types";
 

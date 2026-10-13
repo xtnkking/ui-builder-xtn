@@ -1,7 +1,7 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"master-detail/overview","exports":["MasterDetail"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"master-detail/overview","exports":["MasterDetail"]}
 import { StatePreview } from "../state-preview";
 import { useState } from "react";
-import { Box, Button, DescriptionList, MasterDetail, Stack } from "../../../personal-ui";
+import { Box, Button, DescriptionList, MasterDetail, Stack } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 function MasterDetailExample() {
@@ -31,7 +31,7 @@ const explorerCase: ExplorerCase = {
     { state: "locale", exports: ["MasterDetail"], content: <StatePreview state="locale">{<MasterDetailExample />}</StatePreview> },
   ],
   content: <MasterDetailExample />,
-  code: `import { Box, MasterDetail } from "./personal-ui";
+  code: `import { Box, MasterDetail } from "./ui";
 
 <MasterDetail title="项目"
   master={<Box padding="medium">{projectList}</Box>}

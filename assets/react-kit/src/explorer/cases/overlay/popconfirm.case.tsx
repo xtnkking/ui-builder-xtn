@@ -1,5 +1,5 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"popconfirm/overview","exports":["Popconfirm"]}
-import { Inline, Popconfirm } from "../../../personal-ui";
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"popconfirm/overview","exports":["Popconfirm"]}
+import { Inline, Popconfirm } from "../../../ui";
 import { StatePreview } from "../state-preview";
 import type { ExplorerCase } from "../types";
 
@@ -42,7 +42,7 @@ const explorerCase: ExplorerCase = {
     { state: "dark", exports: ["Popconfirm"], content: <StatePreview state="dark"><PopconfirmExample /></StatePreview> },
     { state: "locale", exports: ["Popconfirm"], content: <StatePreview state="locale"><Popconfirm triggerLabel="Remove member" ariaLabel="Confirm member removal" title="Remove this member?" onConfirm={() => undefined} /></StatePreview> },
   ],
-  code: `import { Popconfirm } from "./personal-ui";
+  code: `import { Popconfirm } from "./ui";
 
 <Popconfirm
   triggerLabel="移除成员"

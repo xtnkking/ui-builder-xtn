@@ -1,4 +1,4 @@
-import { Box, Grid, Inline, Stack, type LayoutSpace } from "../../../personal-ui";
+import { Box, Grid, Inline, Stack, type LayoutSpace } from "../../../ui";
 import { StatePreview } from "../state-preview";
 import type { ExplorerCase } from "../types";
 

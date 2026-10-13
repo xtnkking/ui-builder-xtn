@@ -1,8 +1,8 @@
-// @personal-ui-coverage {"kind":"unit","runner":"components","exports":["MarkdownEditor","RichTextEditor"]}
+// @ui-coverage {"kind":"unit","runner":"components","exports":["MarkdownEditor","RichTextEditor"]}
 import { useState } from "react";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { MarkdownEditor, RichTextEditor } from "../../src/personal-ui";
+import { MarkdownEditor, RichTextEditor } from "../../src/ui";
 
 afterEach(() => vi.restoreAllMocks());
 
@@ -14,8 +14,8 @@ describe("Markdown editor naming and source editing", () => {
     }
     const view = render(<Editor />);
     const editor = screen.getByRole("textbox", { name: "Markdown source" }) as HTMLTextAreaElement;
-    expect(view.container.querySelector('[data-pui-owner="MarkdownEditor"]')).not.toBeNull();
-    expect(editor).toHaveAttribute("data-pui-owner", "MarkdownEditor");
+    expect(view.container.querySelector('[data-ui-owner="MarkdownEditor"]')).not.toBeNull();
+    expect(editor).toHaveAttribute("data-ui-owner", "MarkdownEditor");
     editor.setSelectionRange(6, 11);
     fireEvent.click(screen.getByRole("button", { name: "粗体" }));
     expect(editor).toHaveValue("hello **world**");
@@ -28,8 +28,8 @@ describe("Markdown editor naming and source editing", () => {
   it("preserves the old owner and warns once per deprecated instance in development", async () => {
     const warning = vi.spyOn(console, "warn").mockImplementation(() => undefined);
     const view = render(<RichTextEditor value="legacy" onValueChange={() => undefined} aria-label="Legacy source" />);
-    expect(view.container.querySelector('[data-pui-owner="RichTextEditor"]')).not.toBeNull();
-    expect(screen.getByRole("textbox", { name: "Legacy source" })).toHaveAttribute("data-pui-owner", "RichTextEditor");
+    expect(view.container.querySelector('[data-ui-owner="RichTextEditor"]')).not.toBeNull();
+    expect(screen.getByRole("textbox", { name: "Legacy source" })).toHaveAttribute("data-ui-owner", "RichTextEditor");
     await waitFor(() => expect(warning).toHaveBeenCalledWith(expect.stringContaining("use MarkdownEditor")));
     const count = warning.mock.calls.length;
     view.rerender(<RichTextEditor value="updated" onValueChange={() => undefined} aria-label="Legacy source" />);

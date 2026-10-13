@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"meter/overview","exports":["Meter"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"meter/overview","exports":["Meter"]}
 import { StatePreview } from "../state-preview";
-import { Meter } from "../../../personal-ui";
+import { Meter } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 const explorerCase = {

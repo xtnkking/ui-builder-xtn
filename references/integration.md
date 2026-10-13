@@ -1,6 +1,6 @@
 # Integration
 
-Personal UI v0.2.19 is installed source with an enforced provenance boundary. The application package receives the complete managed source tree, its runtime registry, the component manifest, the provenance scanner, and `tools/personal-ui/install-state.json`. Product code may compose public exports, but it may not fork, imitate, or reach inside the managed implementation.
+ui-builder-xtn installs source with an enforced provenance boundary. The application package receives the complete managed source tree, its runtime registry, the component manifest, the provenance scanner, and `tools/ui/install-state.json`. Product code may compose public exports, but it may not fork, imitate, or reach inside the managed implementation.
 
 ## Resolve The Installation Roots
 
@@ -8,13 +8,13 @@ The installer and verifier use the same three-root model:
 
 - **Project root** is the repository or workspace root. It bounds every write and owns the workspace lockfile.
 - **Package root** is the Vite or Next.js application package whose `package.json` is updated. In a standalone application it is the same directory as the project root.
-- **Source root** is the managed Personal UI directory relative to the package root. It defaults to `src/personal-ui`; it must not be absolute or escape the package root.
+- **Source root** is the managed ui-builder-xtn directory relative to the package root. It defaults to `src/ui`; it must not be absolute or escape the package root.
 
 `--target <application>` remains the shorthand for a standalone project. In a workspace, pass the roots explicitly; `--package-root` may be omitted only when exactly one application package can be inferred:
 
 ```powershell
-python scripts/install_personal_ui.py --mode integrate --project-root <workspace> --package-root apps/web --source-root src/personal-ui
-python scripts/verify_personal_ui.py --project-root <workspace> --package-root apps/web
+python scripts/install_ui.py --mode integrate --project-root <workspace> --package-root apps/web --source-root src/ui
+python scripts/verify_ui.py --project-root <workspace> --package-root apps/web
 ```
 
 The tool detects npm, pnpm, or Yarn from the root lockfile and `packageManager` declarations, and detects Vite or Next.js from the application package. Conflicting evidence, multiple possible application packages, a nested workspace lockfile, an undeclared package root, Yarn Classic, or a linked/junction path fails before any write. Use `--package-manager` or `--framework` only to make otherwise valid intent explicit; these flags do not override conflicting metadata.
@@ -28,11 +28,11 @@ Use the deterministic installer rather than manually copying snippets.
 The destination must be absent or empty on its first install. A later starter rerun recognizes its install state; `--force` can then replace only modified files recorded as installer-owned. An unrelated non-empty destination is always a conflict, including with `--force`.
 
 ```powershell
-python scripts/install_personal_ui.py --mode starter --target <destination>
-python scripts/install_personal_ui.py --mode starter --target <destination> --force --dry-run
+python scripts/install_ui.py --mode starter --target <destination>
+python scripts/install_ui.py --mode starter --target <destination> --force --dry-run
 ```
 
-This copies the neutral runnable consumer starter and the complete managed component source. The installed runtime registry lives at `src/personal-ui/registry.json`; enforcement support and installation state live under `tools/personal-ui/`. The starter shows a product-owned placeholder title, not the component Explorer, documentation, fixtures or demo branding. Build the requested product in `src/App.tsx`, keeping every UI control and reusable pattern imported from `src/personal-ui`.
+This copies the neutral runnable consumer starter and the complete managed component source. The installed runtime registry lives at `src/ui/registry.json`; enforcement support and installation state live under `tools/ui/`. The starter shows a product-owned placeholder title, not the component Explorer, documentation, fixtures or demo branding. Build the requested product in `src/App.tsx`, keeping every UI control and reusable pattern imported from `src/ui`.
 
 The starter includes a dependency lockfile and uses the neutral package name `web-app`, matching the lockfile's root package. It enables only development, production build, preview and the enforced provenance check; repository-only release/test/documentation scripts are not copied into the product. Production source maps are disabled in its Vite config. The installer does not run npm or write `node_modules`; run the install and build commands returned in `plan.commands` after the transaction commits. Regenerate the lockfile only as a deliberate dependency upgrade followed by the complete build and browser verification gate.
 
@@ -40,7 +40,7 @@ The starter includes a dependency lockfile and uses the neutral package name `we
 
 Consumer pages, titles, metadata, links and assets belong to the product. Do not copy Skill names, the project repository URL, Explorer code, generator tags or attribution banners into a business page. Runtime diagnostics use component-level descriptions without library promotion. The integrated mode preserves existing application titles, entrypoints and framework configuration; review the product's production output and keep source maps private there as well.
 
-Managed component identifiers (`personal-ui`, `pui-*`, owner markers and public type names) remain technical implementation details used by imports, styling and validation; removing them inconsistently would break behavior or weaken enforcement. No claim is made that an observer cannot identify a shared implementation from its code or styles. Preserve required copyright and license notices in distribution/legal files; they do not require a promotional footer or generator metadata in HTML. Existing installations update only when their owner runs the installer; a repository change does not silently rewrite deployed applications. Old starter demo files may be retired only within the installer-owned allowlist and normal conflict rules.
+Managed component identifiers (`ui`, `ui-*`, owner markers and public type names) remain technical implementation details used by imports, styling and validation; removing them inconsistently would break behavior or weaken enforcement. No claim is made that an observer cannot identify a shared implementation from its code or styles. Preserve required copyright and license notices in distribution/legal files; they do not require a promotional footer or generator metadata in HTML. Existing installations update only when their owner runs the installer; a repository change does not silently rewrite deployed applications. Old starter demo files may be retired only within the installer-owned allowlist and normal conflict rules.
 
 After the product build, inspect the directory actually deployed to browsers:
 
@@ -53,22 +53,22 @@ The checker rejects direct Skill/repository branding, shipped `.map` files and `
 ### Existing React and TypeScript application
 
 ```powershell
-python scripts/install_personal_ui.py --mode integrate --target <application-root>
+python scripts/install_ui.py --mode integrate --target <application-root>
 ```
 
-The command copies the complete managed source, installs the matching component manifest and provenance scanner under `tools/personal-ui`, records missing kit dependencies in `package.json`, and leaves application routes, aliases, and entrypoints unchanged. It installs the exact `verify:personal-ui` script and prefixes that verifier directly to the existing `build` command. This guarantees that npm, pnpm, and Yarn builds execute the gate without depending on package-manager lifecycle behavior. An unrelated existing `prebuild` remains unchanged; the installer removes only its own exact legacy `npm run verify:personal-ui` segment during migration. Compatible dependency declarations are preserved whether they live in `dependencies` or `devDependencies`. An incompatible dependency or malformed reserved script fails before any write.
+The command copies the complete managed source, installs the matching component manifest and provenance scanner under `tools/ui`, records missing kit dependencies in `package.json`, and leaves application routes, aliases, and entrypoints unchanged. It installs the exact `verify:ui` script and prefixes that verifier directly to the existing `build` command. This guarantees that npm, pnpm, and Yarn builds execute the gate without depending on package-manager lifecycle behavior. An unrelated existing `prebuild` remains unchanged; the installer removes only its own exact legacy `npm run verify:ui` segment during migration. Compatible dependency declarations are preserved whether they live in `dependencies` or `devDependencies`. An incompatible dependency or malformed reserved script fails before any write.
 
 Workspace examples:
 
 ```powershell
 # npm workspace + Vite
-python scripts/install_personal_ui.py --mode integrate --project-root <repo> --package-root apps/web --package-manager npm --framework vite
+python scripts/install_ui.py --mode integrate --project-root <repo> --package-root apps/web --package-manager npm --framework vite
 
 # pnpm workspace + Next.js + custom managed source location
-python scripts/install_personal_ui.py --mode integrate --project-root <repo> --package-root apps/portal --source-root ui/personal-ui --package-manager pnpm --framework next
+python scripts/install_ui.py --mode integrate --project-root <repo> --package-root apps/portal --source-root ui/ui --package-manager pnpm --framework next
 
 # Yarn 4 workspace + Vite
-python scripts/install_personal_ui.py --mode integrate --project-root <repo> --package-root packages/admin --package-manager yarn --framework vite
+python scripts/install_ui.py --mode integrate --project-root <repo> --package-root packages/admin --package-manager yarn --framework vite
 ```
 
 The JSON report supplies the exact follow-up command arrays. For a workspace these use npm `--workspace`, pnpm `--filter`, or `yarn workspace` as appropriate. Run the reported install command from the project root only after a successful apply; neither normal apply nor `--dry-run` invokes a package manager or modifies a lockfile.
@@ -76,19 +76,19 @@ The JSON report supplies the exact follow-up command arrays. For a workspace the
 Preview every update before replacing managed source:
 
 ```powershell
-python scripts/install_personal_ui.py --mode integrate --target <application-root> --force --dry-run
+python scripts/install_ui.py --mode integrate --target <application-root> --force --dry-run
 ```
 
 The deterministic JSON plan uses project-relative paths and lists SHA-256 values, files to create/update/delete, dependency changes, build-gate changes, conflicts, follow-up commands, and `planDigest`. Its `operation` is:
 
-- `install` when no prior Personal UI state or recognized legacy installation exists;
+- `install` when no prior ui-builder-xtn state or recognized legacy installation exists;
 - `upgrade` when a prior installation requires managed changes or state migration;
 - `noop` when files, package metadata, and state already match;
 - a conflict report when an existing path cannot be changed under the ownership rules.
 
 Exit code `0` means a valid plan or completed apply, `2` means invalid roots/metadata or another operational error, and `3` means unresolved conflicts. A conflicting dry-run still prints its plan and exits `3`. Dry-run writes no source, package, state, lockfile, backup, timestamp, or dependency artifact, so repeating the same input produces the same `planDigest`.
 
-Every managed file and its last installed hash is recorded in `tools/personal-ui/install-state.json`. A normal upgrade changes or retires only clean files owned by that state. A modified owned file is a conflict; `--force` permits replacing that file after it appears in the plan. `--force` cannot replace an unowned collision, remove an unowned file inside the managed source root, clear a directory, or cross the project/package boundaries. A recognized v0.2.19 installation without state can be migrated from its manifest inventory, while an unrelated root `registry.json` remains untouched.
+Every managed file and its last installed hash is recorded in `tools/ui/install-state.json`. A normal upgrade changes or retires only clean files owned by that state. A modified owned file is a conflict; `--force` permits replacing that file after it appears in the plan. `--force` cannot replace an unowned collision, remove an unowned file inside the managed source root, clear a directory, or cross the project/package boundaries. A recognized v0.2.19 installation without state can be migrated from its manifest inventory, while an unrelated root `registry.json` remains untouched.
 
 Apply holds a package-scoped operating-system lock, stages individual files, validates the result, and rechecks each destination hash and physical parent chain immediately before its write or deletion. An active lock fails without waiting; an unlocked record left by a crashed process is treated as stale and reused. The lock lives in the operating-system temporary directory, so dry-run does not create a project file or lock record.
 
@@ -97,25 +97,25 @@ On an ordinary in-process failure, the installer restores only writes made by th
 For Vite, import the stylesheet exactly once from the application entrypoint (adjust the relative path for a custom source root):
 
 ```tsx
-import "./personal-ui/styles.css";
+import "./ui/styles.css";
 ```
 
 For a root-level Next.js App Router, keep the global stylesheet import in the server `app/layout.tsx` boundary:
 
 ```tsx
-import "../src/personal-ui/styles.css";
+import "../src/ui/styles.css";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return <html><body>{children}</body></html>;
 }
 ```
 
-Place `'use client'` only on a consumer boundary that renders interactive Personal UI exports or uses client hooks. Do not mark the whole layout client-side merely to install the kit:
+Place `'use client'` only on a consumer boundary that renders interactive ui-builder-xtn exports or uses client hooks. Do not mark the whole layout client-side merely to install the kit:
 
 ```tsx
 'use client';
 
-import { Button } from "../src/personal-ui";
+import { Button } from "../src/ui";
 
 export default function Page() {
   return <Button>Run</Button>;
@@ -125,7 +125,7 @@ export default function Page() {
 Import every runtime component and pattern through the public barrel:
 
 ```tsx
-import { Button, DataTable, Drawer, FilterBar, SearchInput, Select } from "./personal-ui";
+import { Button, DataTable, Drawer, FilterBar, SearchInput, Select } from "./ui";
 ```
 
 ### Field-aligned query controls
@@ -153,19 +153,19 @@ Do not deep-import an implementation file:
 
 ```tsx
 // Forbidden: bypasses the public source contract.
-import { Button } from "./personal-ui/primitives";
+import { Button } from "./ui/primitives";
 ```
 
-Application code may own business state, data fetching, copy, product images, and non-interactive semantic layout. It must not add native protected controls, interactive ARIA roles, locally styled lookalikes, third-party JSX controls, `.pui-*` selectors, reserved `data-pui-*` markers, generic CSS selectors that can restyle protected controls, protected-selector mixins or `@apply`, JSX `<style>`, remote/package-global CSS, CSS-in-JS wrappers, or DOM/CSSOM style mutation. Protected Personal UI components must not receive application `className`, `style`, `css`, `sx`, `tw`, `ref`, or hidden ownership overrides through JSX, factories, runtime JSX calls, aliases, or `cloneElement`; put layout classes on a surrounding element or use a manifest-classified layout utility. Safe typed JSX spreads follow the compiler-backed contract below. A local wrapper is acceptable only when it composes public Personal UI exports without implementing or restyling a replacement control.
+Application code may own business state, data fetching, copy, product images, and non-interactive semantic layout. It must not add native protected controls, interactive ARIA roles, locally styled lookalikes, third-party JSX controls, `.ui-*` selectors, reserved `data-ui-*` markers, generic CSS selectors that can restyle protected controls, protected-selector mixins or `@apply`, JSX `<style>`, remote/package-global CSS, CSS-in-JS wrappers, or DOM/CSSOM style mutation. Protected ui-builder-xtn components must not receive application `className`, `style`, `css`, `sx`, `tw`, `ref`, or hidden ownership overrides through JSX, factories, runtime JSX calls, aliases, or `cloneElement`; put layout classes on a surrounding element or use a manifest-classified layout utility. Safe typed JSX spreads follow the compiler-backed contract below. A local wrapper is acceptable only when it composes public ui-builder-xtn exports without implementing or restyling a replacement control.
 
 Respect the target's existing package manager and project-root lockfile. Run the exact install and build commands from `plan.commands` after the installer updates `package.json`; the installer deliberately does not execute them inside its file transaction.
 
 ## Supported Public Usage
 
-Delivery requires TypeScript and provenance. TypeScript checks the whole application; provenance checks component ownership and also uses the same TypeScript compiler to check public JSX and factory-call prop types. Safe JSX spreads are supported, including object literals, `satisfies`, named public Props annotations, aliases, imported objects, typed function results and parameters, bounded generics, unions, nested spreads and generic public JSX. The same analysis accepts inspected prop objects in `React.createElement` and JSX-runtime calls, and checks their public component prop types even when the factory's own overload is loose. Python installation verification and the Node build gate share `tools/personal-ui/typed-usage.mjs`, with one compiler program per project.
+Delivery requires TypeScript and provenance. TypeScript checks the whole application; provenance checks component ownership and also uses the same TypeScript compiler to check public JSX and factory-call prop types. Safe JSX spreads are supported, including object literals, `satisfies`, named public Props annotations, aliases, imported objects, typed function results and parameters, bounded generics, unions, nested spreads and generic public JSX. The same analysis accepts inspected prop objects in `React.createElement` and JSX-runtime calls, and checks their public component prop types even when the factory's own overload is loose. Python installation verification and the Node build gate share `tools/ui/typed-usage.mjs`, with one compiler program per project.
 
 ```tsx
-import { Button, type ButtonProps } from "./personal-ui";
+import { Button, type ButtonProps } from "./ui";
 
 const saveProps = { variant: "primary", children: "Save" } satisfies ButtonProps;
 export function SaveAction(props: ButtonProps) {
@@ -173,7 +173,7 @@ export function SaveAction(props: ButtonProps) {
 }
 ```
 
-This restores equivalent prop syntax within the public ownership contract; it is not a promise that every arbitrary TypeScript program is safe. The gate rejects `any`/`unknown`, unbounded generics, open index signatures, unresolvable computed keys and observable protected or unknown keys. It follows available declarations/initializers and local factory returns so widening or asserting an object to a public Props type cannot conceal a known `style`, `ref` or ownership override. Third-party declaration files remain trusted type contracts, as they are for TypeScript itself; type assertions, diagnostic suppression and runtime mutation do not prove arbitrary runtime soundness. Source ownership, forbidden native controls and protected selectors are still enforced independently. A `PUI_PUBLIC_PROP_TYPE` error is a real public JSX type diagnostic; a protected/opaque spread rejection is an ownership diagnostic.
+This restores equivalent prop syntax within the public ownership contract; it is not a promise that every arbitrary TypeScript program is safe. The gate rejects `any`/`unknown`, unbounded generics, open index signatures, unresolvable computed keys and observable protected or unknown keys. It follows available declarations/initializers and local factory returns so widening or asserting an object to a public Props type cannot conceal a known `style`, `ref` or ownership override. Third-party declaration files remain trusted type contracts, as they are for TypeScript itself; type assertions, diagnostic suppression and runtime mutation do not prove arbitrary runtime soundness. Source ownership, forbidden native controls and protected selectors are still enforced independently. A `UI_PUBLIC_PROP_TYPE` error is a real public JSX type diagnostic; a protected/opaque spread rejection is an ownership diagnostic.
 
 React's `key` is supported in JSX and factory prop spreads using the installed `React.JSX.IntrinsicAttributes` type, including a props object containing only `key`. Invalid object/boolean keys remain type errors; `ref` and styling escapes remain forbidden.
 
@@ -185,7 +185,7 @@ The complete [supported usage example](../assets/react-kit/tests/fixtures/suppor
 
 ## Managed Source Boundary
 
-`src/personal-ui/` in a target project is generated, versioned source. Do not edit it, add files to it, or copy one of its implementation files elsewhere for customization. The verifier treats every missing, changed, or extra file as a release error; there is no local-extension allowance.
+`src/ui/` in a target project is generated, versioned source. Do not edit it, add files to it, or copy one of its implementation files elsewhere for customization. The verifier treats every missing, changed, or extra file as a release error; there is no local-extension allowance.
 
 Brand and product differences belong in documented props, visual slots, and tokens. If a reusable visual or behavior cannot be expressed by the public API, follow the canonical extension workflow below before continuing the feature.
 
@@ -198,7 +198,7 @@ The machine-readable authority is `assets/react-kit/component-manifest.json`:
 - Every rendered component family declares a source ownership marker that exists in those source files.
 - Foundation entries map to real CSS or TypeScript artifacts even when they have no runtime component.
 - Every registry runtime export must be covered by the manifest, and the manifest version must equal the registry version.
-- `sourceIntegrity` contains the canonical SHA-256 for every file under `src/personal-ui/`; both manifest validation and the installed npm gate require an exact file set and exact content.
+- `sourceIntegrity` contains the canonical SHA-256 for every file under `src/ui/`; both manifest validation and the installed npm gate require an exact file set and exact content.
 
 The catalog explains behavior; it cannot create or authorize an export that is absent from the manifest and barrel.
 
@@ -206,9 +206,9 @@ The catalog explains behavior; it cannot create or authorize an export that is a
 
 A requested capability that has no registered public export must not be built inside the target application. Extend the Skill's canonical kit first:
 
-1. Implement the reusable React source in `assets/react-kit/src/personal-ui/` and add its styles to the canonical style entry.
-2. Give the component root its unique `data-pui-owner` marker and cover its expected states, including disabled, loading, empty, error, keyboard, and responsive behavior when applicable.
-3. Export the runtime API from `assets/react-kit/src/personal-ui/index.ts`.
+1. Implement the reusable React source in `assets/react-kit/src/ui/` and add its styles to the canonical style entry.
+2. Give the component root its unique `data-ui-owner` marker and cover its expected states, including disabled, loading, empty, error, keyboard, and responsive behavior when applicable.
+3. Export the runtime API from `assets/react-kit/src/ui/index.ts`.
 4. Add the export to `assets/react-kit/registry.json`.
 5. Add or update the `component-manifest.json` family entry with `publicExports`, `sourceFiles`, aliases, and `ownerMarkers`.
 6. Add focused tests and a representative gallery or workflow example.
@@ -220,7 +220,7 @@ If canonical source cannot be changed within the task's authority, stop and repo
 
 ## Floating Surfaces
 
-`Select`, searchable selectors, comboboxes, tag suggestions, tree selectors, and dropdown menus portal their open surfaces outside clipped content and use fixed positioning. They attach to the owning modal overlay when present, otherwise to `document.body`, so a nested modal stays above its parent's menu. Their preferred placement flips when useful, clamps on both axes, and preserves a viewport gutter while retaining locally computed `--pui-*` tokens.
+`Select`, searchable selectors, comboboxes, tag suggestions, tree selectors, and dropdown menus portal their open surfaces outside clipped content and use fixed positioning. They attach to the owning modal overlay when present, otherwise to `document.body`, so a nested modal stays above its parent's menu. Their preferred placement flips when useful, clamps on both axes, and preserves a viewport gutter while retaining locally computed `--ui-*` tokens.
 
 Inside `Dialog` or `Drawer`, keep the bundled trigger/surface relationship intact so modal focus containment can follow the portaled surface. Do not wrap or replace these controls in a way that removes their focus and `aria-controls` wiring.
 
@@ -228,16 +228,16 @@ Popover and context-menu surfaces also follow their owning modal overlay. Toolti
 
 ## Existing Design Systems
 
-The provenance scanner inspects script, JSX/TSX, MDX, HTML, CSS, PostCSS, SCSS, Sass, and Less files across the project while excluding generated output, dependencies, installed enforcement tools, and the managed component source itself. A target that already renders another component system or raw interactive controls will not pass strict mode unchanged. Do not silently install Personal UI beside that system. Confirm that the requested surface can be migrated to Personal UI or place it in a separate application; explicit Skill use selects Personal UI but does not authorize an unrelated whole-product migration.
+The provenance scanner inspects script, JSX/TSX, MDX, HTML, CSS, PostCSS, SCSS, Sass, and Less files across the project while excluding generated output, dependencies, installed enforcement tools, and the managed component source itself. A target that already renders another component system or raw interactive controls will not pass strict mode unchanged. Do not silently install ui-builder-xtn beside that system. Confirm that the requested surface can be migrated to ui-builder-xtn or place it in a separate application; explicit Skill use selects ui-builder-xtn but does not authorize an unrelated whole-product migration.
 
 ## Updating An Installed Kit
 
 Run the verifier before upgrading and preserve application composition outside the configured managed source root:
 
 ```powershell
-python scripts/verify_personal_ui.py --target <application-root>
-python scripts/install_personal_ui.py --mode integrate --target <application-root> --dry-run
-python scripts/install_personal_ui.py --mode integrate --target <application-root>
+python scripts/verify_ui.py --target <application-root>
+python scripts/install_ui.py --mode integrate --target <application-root> --dry-run
+python scripts/install_ui.py --mode integrate --target <application-root>
 ```
 
 For a workspace, use the same `--project-root` and `--package-root` values for both tools. The verifier reads a previously installed custom `sourceRoot` from install state when `--source-root` is omitted. If the plan reports a user-modified owned file that you intentionally want to replace, rerun dry-run with `--force`, inspect the exact forced paths, and only then apply with `--force`. Unowned conflicts remain non-forceable.
@@ -248,7 +248,7 @@ After installation, run the install and build arrays reported in `plan.commands`
 
 ```powershell
 npm run build
-python scripts/verify_personal_ui.py --target <application-root>
+python scripts/verify_ui.py --target <application-root>
 ```
 
 The installed `build` script begins with the provenance command and then invokes the package's original build string. The gate checks both application provenance and the managed source SHA-256 inventory, so a changed, missing, linked, or extra component source file stops npm, pnpm, or Yarn before TypeScript, Vite, or Next.js runs. Directly invoking a lower-level compiler or bundler is not an accepted release verification path.
@@ -264,8 +264,8 @@ A passing report requires:
 - `installState.valid: true` with matching source root, framework, and package manager.
 - `buildGate.verifyScriptMatches: true` and `buildGate.buildIncludesGate: true`.
 - Empty `sourceDrift.missing`, `sourceDrift.changed`, and `sourceDrift.extra` lists.
-- Exactly one application import of the Personal UI stylesheet and compatible dependencies.
+- Exactly one application import of the ui-builder-xtn stylesheet and compatible dependencies.
 
-The automatic scan rejects deep imports, private or unregistered exports, raw protected HTML controls, interactive roles or raw interaction handlers used to imitate controls, reserved Personal UI classes and owner markers, generic or preprocessor styles that can alter protected controls, dynamic and external global styles, CSS-in-JS wrappers, DOM/CSSOM style mutation, `cloneElement`, protected-component `className`/`style`/`css`/`sx`/`tw`/`ref`/spread overrides (including factory, runtime, alias, and memo paths), unapproved external JSX components, and markup injection paths that cannot prove ownership. These failures are release blockers, not warnings.
+The automatic scan rejects deep imports, private or unregistered exports, raw protected HTML controls, interactive roles or raw interaction handlers used to imitate controls, reserved ui-builder-xtn classes and owner markers, generic or preprocessor styles that can alter protected controls, dynamic and external global styles, CSS-in-JS wrappers, DOM/CSSOM style mutation, `cloneElement`, protected-component `className`/`style`/`css`/`sx`/`tw`/`ref`/spread overrides (including factory, runtime, alias, and memo paths), unapproved external JSX components, and markup injection paths that cannot prove ownership. These failures are release blockers, not warnings.
 
 This is a deterministic build-time ownership gate, not a sandbox for hostile JavaScript. Deliberately obfuscated runtime code, generated source outside the inspected project, browser extensions, and code fetched after build require separate security review. They are not accepted ways to bypass the component contract; keep UI construction statically inspectable and verify the rendered product as part of release review.

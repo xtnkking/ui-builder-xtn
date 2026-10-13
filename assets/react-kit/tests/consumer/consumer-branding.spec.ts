@@ -10,7 +10,7 @@ test("installed production starter exposes product branding without library prom
   await page.goto("/");
   await expect(page).toHaveTitle("应用");
   await expect(page.getByRole("heading", { name: "应用", exact: true })).toBeVisible();
-  await expect(page.locator("[data-pui-owner='PageHeading']")).toBeVisible();
+  await expect(page.locator("[data-ui-owner='PageHeading']")).toBeVisible();
   expect(await page.content()).not.toMatch(/ui-builder-xtn|xtnkking|personal[ -]ui/i);
   expect(requests.some((url) => /\/assets\/.*\.js(?:\?|$)/.test(url))).toBe(true);
   expect(requests.some((url) => /\/assets\/.*\.css(?:\?|$)/.test(url))).toBe(true);

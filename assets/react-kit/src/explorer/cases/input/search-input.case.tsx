@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"search-input/overview","exports":["SearchInput"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"search-input/overview","exports":["SearchInput"]}
 import { useState } from "react";
-import { Field, SearchInput } from "../../../personal-ui";
+import { Field, SearchInput } from "../../../ui";
 import { StatePreview } from "../state-preview";
 import type { ExplorerCase } from "../types";
 

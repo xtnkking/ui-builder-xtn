@@ -1,7 +1,7 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"markdown-editor/overview","exports":["MarkdownEditor","RichTextEditor"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"markdown-editor/overview","exports":["MarkdownEditor","RichTextEditor"]}
 import { StatePreview } from "../state-preview";
 import { useState } from "react";
-import { Field, MarkdownEditor, RichTextEditor } from "../../../personal-ui";
+import { Field, MarkdownEditor, RichTextEditor } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 function MarkdownEditorExample() {

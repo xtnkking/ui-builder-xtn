@@ -1,4 +1,4 @@
-// @personal-ui-coverage {"kind":"browser","runner":"browser","exports":["MarkdownEditor","RichTextEditor"]}
+// @ui-coverage {"kind":"browser","runner":"browser","exports":["MarkdownEditor","RichTextEditor"]}
 import { expect, test } from "@playwright/test";
 
 test("MarkdownEditor edits source while the deprecated alias remains usable", async ({ page }) => {
@@ -7,11 +7,11 @@ test("MarkdownEditor edits source while the deprecated alias remains usable", as
   await page.goto("/tests/fixtures/m5-markdown-editor.html");
   const form = page.getByRole("form", { name: "Notes" });
   const editor = form.getByRole("textbox", { name: "Markdown source" });
-  await expect(editor).toHaveAttribute("data-pui-owner", "MarkdownEditor");
-  await expect(form.getByRole("textbox", { name: "Legacy source" })).toHaveAttribute("data-pui-owner", "RichTextEditor");
+  await expect(editor).toHaveAttribute("data-ui-owner", "MarkdownEditor");
+  await expect(form.getByRole("textbox", { name: "Legacy source" })).toHaveAttribute("data-ui-owner", "RichTextEditor");
   await expect.poll(() => warnings.some((warning) => warning.includes("use MarkdownEditor"))).toBe(true);
   await editor.evaluate((element) => (element as HTMLTextAreaElement).setSelectionRange(6, 11));
-  await form.locator('[data-pui-owner="MarkdownEditor"]').getByRole("button", { name: "粗体" }).click();
+  await form.locator('[data-ui-owner="MarkdownEditor"]').getByRole("button", { name: "粗体" }).click();
   await expect(editor).toHaveValue("Hello **world**");
   await expect(editor).toBeFocused();
   await expect(page.getByTestId("source-value")).toHaveText("Hello **world**");
@@ -19,10 +19,10 @@ test("MarkdownEditor edits source while the deprecated alias remains usable", as
     ["markdown", "Hello **world**"],
     ["legacy", "Old source"],
   ]);
-  await expect(form.locator('[data-pui-owner="MarkdownEditor"] strong')).toHaveCount(0);
+  await expect(form.locator('[data-ui-owner="MarkdownEditor"] strong')).toHaveCount(0);
   await page.getByRole("button", { name: "Toggle disabled" }).click();
   await expect(editor).toBeDisabled();
-  await expect(form.locator('[data-pui-owner="MarkdownEditor"]').getByRole("button", { name: "粗体" })).toBeDisabled();
+  await expect(form.locator('[data-ui-owner="MarkdownEditor"]').getByRole("button", { name: "粗体" })).toBeDisabled();
   expect(await form.evaluate((element) => Array.from(new FormData(element as HTMLFormElement).entries()))).toEqual([
     ["legacy", "Old source"],
   ]);
@@ -31,7 +31,7 @@ test("MarkdownEditor edits source while the deprecated alias remains usable", as
 test("Markdown toolbar is reachable by Tab and returns focus after keyboard activation", async ({ page }) => {
   await page.goto("/tests/fixtures/m5-markdown-editor.html");
   const editor = page.getByRole("textbox", { name: "Markdown source" });
-  const bold = page.locator('[data-pui-owner="MarkdownEditor"]').getByRole("button", { name: "粗体" });
+  const bold = page.locator('[data-ui-owner="MarkdownEditor"]').getByRole("button", { name: "粗体" });
   await expect(bold).toBeVisible();
   await page.keyboard.press("Tab");
   await expect(bold).toBeFocused();

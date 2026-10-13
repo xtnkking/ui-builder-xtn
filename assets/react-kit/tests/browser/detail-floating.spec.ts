@@ -1,4 +1,4 @@
-// @personal-ui-coverage {"kind":"browser","runner":"browser","exports":["Popover","Select"]}
+// @ui-coverage {"kind":"browser","runner":"browser","exports":["Popover","Select"]}
 import { expect, test, type Locator, type Page } from "@playwright/test";
 
 const matchedPopoverName = "与触发器等宽的详细筛选说明";
@@ -38,8 +38,8 @@ async function geometry(surface: Locator) {
       right: offsetLeft + width - 12,
       top: offsetTop + 12,
       bottom: offsetTop + height - 12,
-      maxWidth: Number.parseFloat(style.getPropertyValue("--pui-floating-max-width")),
-      maxHeight: Number.parseFloat(style.getPropertyValue("--pui-floating-max-height")),
+      maxWidth: Number.parseFloat(style.getPropertyValue("--ui-floating-max-width")),
+      maxHeight: Number.parseFloat(style.getPropertyValue("--ui-floating-max-height")),
       positioned: node.getAttribute("data-positioned"),
     };
   });

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate the deterministic Personal UI public-export coverage matrix."""
+"""Generate the deterministic UI public-export coverage matrix."""
 
 from __future__ import annotations
 
@@ -17,12 +17,12 @@ DEFAULT_MANIFEST = DEFAULT_KIT_ROOT / "component-manifest.json"
 DEFAULT_REGISTRY = DEFAULT_KIT_ROOT / "registry.json"
 DEFAULT_DOCUMENTATION = DEFAULT_KIT_ROOT / "component-docs.json"
 DEFAULT_OUTPUT = DEFAULT_KIT_ROOT / "component-coverage.json"
-DEFAULT_API_REPORT = DEFAULT_KIT_ROOT / "etc" / "personal-ui.api.md"
+DEFAULT_API_REPORT = DEFAULT_KIT_ROOT / "etc" / "ui.api.md"
 DEFAULT_EXPLORER_VALIDATOR = (
-    DEFAULT_KIT_ROOT / "tools" / "personal-ui" / "validate-explorer-cases.mjs"
+    DEFAULT_KIT_ROOT / "tools" / "ui" / "validate-explorer-cases.mjs"
 )
 DEFAULT_TEST_EVIDENCE_VALIDATOR = (
-    DEFAULT_KIT_ROOT / "tools" / "personal-ui" / "validate-test-evidence.mjs"
+    DEFAULT_KIT_ROOT / "tools" / "ui" / "validate-test-evidence.mjs"
 )
 
 CLASSIFICATIONS = (
@@ -78,13 +78,13 @@ SCRIPT_SUFFIXES = {".ts", ".tsx", ".js", ".jsx", ".mts", ".cts", ".mjs", ".cjs"}
 IGNORED_PARTS = {".git", "dist", "node_modules", "__pycache__"}
 RUNTIME_EXPORT = re.compile(r"^[A-Za-z_$][\w$]*$")
 DOCUMENTATION_ID = re.compile(r"^[a-z0-9]+(?:[./-][a-z0-9]+)*$")
-CSS_CUSTOM_PROPERTY = re.compile(r"--pui-[a-z0-9-]+")
+CSS_CUSTOM_PROPERTY = re.compile(r"--ui-[a-z0-9-]+")
 PUBLIC_THEME_TOKEN_BLOCK = re.compile(
     r"PUBLIC_THEME_TOKEN_NAMES\s*=\s*\[(?P<body>.*?)\]\s*as const",
     re.DOTALL,
 )
 COVERAGE_METADATA = re.compile(
-    r"^\s*//\s*@personal-ui-coverage\s+(?P<payload>\{.*\})\s*$"
+    r"^\s*//\s*@ui-coverage\s+(?P<payload>\{.*\})\s*$"
 )
 API_RUNTIME_SECTION = re.compile(
     r"^## Runtime export inventory\s*$\n(?P<body>.*?)(?=^## Type-only export inventory\s*$)",
@@ -154,19 +154,19 @@ def _grouped_export_map(
     errors: list[str] = []
     raw_groups = registry.get(field)
     if not isinstance(raw_groups, dict):
-        return {}, [f"Personal UI registry {field} must be an object"]
+        return {}, [f"UI registry {field} must be an object"]
 
     keys = set(raw_groups)
     missing_groups = sorted(set(allowed_groups) - keys)
     extra_groups = sorted(keys - set(allowed_groups))
     if missing_groups:
         errors.append(
-            f"Personal UI registry {field} is missing group(s): "
+            f"UI registry {field} is missing group(s): "
             + ", ".join(missing_groups)
         )
     if extra_groups:
         errors.append(
-            f"Personal UI registry {field} has unsupported group(s): "
+            f"UI registry {field} has unsupported group(s): "
             + ", ".join(extra_groups)
         )
 
@@ -174,26 +174,26 @@ def _grouped_export_map(
     for group in allowed_groups:
         raw_items = raw_groups.get(group, [])
         if not isinstance(raw_items, list):
-            errors.append(f"Personal UI registry {field}.{group} must be an array")
+            errors.append(f"UI registry {field}.{group} must be an array")
             continue
         valid_items = [item for item in raw_items if isinstance(item, str) and item]
         if len(valid_items) != len(raw_items):
             errors.append(
-                f"Personal UI registry {field}.{group} must contain only non-empty strings"
+                f"UI registry {field}.{group} must contain only non-empty strings"
             )
         duplicates = sorted(
             item for item in set(valid_items) if valid_items.count(item) > 1
         )
         if duplicates:
             errors.append(
-                f"Personal UI registry {field}.{group} contains duplicate export(s): "
+                f"UI registry {field}.{group} contains duplicate export(s): "
                 + ", ".join(duplicates)
             )
         for export_name in valid_items:
             previous = export_map.get(export_name)
             if previous is not None and previous != group:
                 errors.append(
-                    f"Personal UI registry {field} assigns {export_name!r} to both "
+                    f"UI registry {field} assigns {export_name!r} to both "
                     f"{previous!r} and {group!r}"
                 )
             export_map[export_name] = group
@@ -202,12 +202,12 @@ def _grouped_export_map(
     extra_exports = sorted(set(export_map) - exports)
     if missing_exports:
         errors.append(
-            f"Personal UI registry {field} leaves export(s) unclassified: "
+            f"UI registry {field} leaves export(s) unclassified: "
             + ", ".join(missing_exports)
         )
     if extra_exports:
         errors.append(
-            f"Personal UI registry {field} references unknown export(s): "
+            f"UI registry {field} references unknown export(s): "
             + ", ".join(extra_exports)
         )
     return export_map, errors
@@ -221,24 +221,24 @@ def validate_export_metadata(
     errors: list[str] = []
     raw_exports = registry.get("exports")
     if not isinstance(raw_exports, list):
-        return [], {}, {}, ["Personal UI registry exports must be an array"]
+        return [], {}, {}, ["UI registry exports must be an array"]
     exports = [item for item in raw_exports if isinstance(item, str) and item]
     if len(exports) != len(raw_exports):
-        errors.append("Personal UI registry exports must contain only non-empty strings")
+        errors.append("UI registry exports must contain only non-empty strings")
     invalid = sorted(item for item in exports if not RUNTIME_EXPORT.fullmatch(item))
     if invalid:
         errors.append(
-            "Personal UI registry has invalid runtime export name(s): "
+            "UI registry has invalid runtime export name(s): "
             + ", ".join(invalid)
         )
     duplicates = sorted(item for item in set(exports) if exports.count(item) > 1)
     if duplicates:
         errors.append(
-            "Personal UI registry exports must not contain duplicates: "
+            "UI registry exports must not contain duplicates: "
             + ", ".join(duplicates)
         )
     if not exports:
-        errors.append("Personal UI registry must contain runtime exports")
+        errors.append("UI registry must contain runtime exports")
 
     export_set = set(exports)
     classifications, classification_errors = _grouped_export_map(
@@ -397,7 +397,7 @@ def collect_validated_explorer_evidence(
     """Return example evidence only after the TypeScript AST validator succeeds."""
 
     validator = validator_path or (
-        kit_root / "tools" / "personal-ui" / "validate-explorer-cases.mjs"
+        kit_root / "tools" / "ui" / "validate-explorer-cases.mjs"
     )
     if not validator.is_file():
         return (
@@ -554,7 +554,7 @@ def collect_validated_test_evidence(
         for kind in ("keyboard", "a11y")
     }
     validator = validator_path or (
-        kit_root / "tools" / "personal-ui" / "validate-test-evidence.mjs"
+        kit_root / "tools" / "ui" / "validate-test-evidence.mjs"
     )
     if not validator.is_file():
         return empty, [f"test evidence validator is missing: {validator}"]
@@ -698,7 +698,7 @@ def collect_explicit_test_evidence(
         for line_number, line in enumerate(
             path.read_text(encoding="utf-8", errors="replace").splitlines(), start=1
         ):
-            if "@personal-ui-coverage" not in line:
+            if "@ui-coverage" not in line:
                 continue
             match = COVERAGE_METADATA.fullmatch(line)
             if match is None:
@@ -1067,7 +1067,7 @@ def validate_documentation_metadata(
     errors: list[str] = []
     incomplete: list[str] = []
     theme_contract = (
-        kit_root / "src" / "personal-ui" / "internal" / "theme-contract.ts"
+        kit_root / "src" / "ui" / "internal" / "theme-contract.ts"
     ).read_text(encoding="utf-8")
     public_token_match = PUBLIC_THEME_TOKEN_BLOCK.search(theme_contract)
     if public_token_match is None:
@@ -1435,7 +1435,7 @@ def build_coverage_matrix(
         kit_root / "component-manifest.json", label="component manifest"
     )
     registry = registry or read_json_object(
-        kit_root / "registry.json", label="Personal UI registry"
+        kit_root / "registry.json", label="UI registry"
     )
     documentation = documentation or read_json_object(
         kit_root / "component-docs.json", label="component documentation"
@@ -1443,7 +1443,7 @@ def build_coverage_matrix(
     exports, classifications, stability, errors = validate_export_metadata(registry)
     if errors:
         raise ValueError("; ".join(errors))
-    api_report = api_report or (kit_root / "etc" / "personal-ui.api.md")
+    api_report = api_report or (kit_root / "etc" / "ui.api.md")
     api_exports, api_errors = runtime_exports_from_api_report(api_report)
     missing_api_exports = sorted(set(exports) - set(api_exports))
     extra_api_exports = sorted(set(api_exports) - set(exports))
@@ -1598,12 +1598,12 @@ def build_coverage_matrix(
             "assets/react-kit/component-manifest.json",
             "assets/react-kit/registry.json",
             "assets/react-kit/component-docs.json",
-            "assets/react-kit/etc/personal-ui.api.md",
+            "assets/react-kit/etc/ui.api.md",
             "assets/react-kit/package.json",
             "assets/react-kit/playwright.config.ts",
             "assets/react-kit/vitest.config.ts",
-            "assets/react-kit/tools/personal-ui/validate-explorer-cases.mjs",
-            "assets/react-kit/tools/personal-ui/validate-test-evidence.mjs",
+            "assets/react-kit/tools/ui/validate-explorer-cases.mjs",
+            "assets/react-kit/tools/ui/validate-test-evidence.mjs",
             *[
                 _relative_path(path, skill_root)
                 for path in sorted(set(metadata_files))
@@ -1667,7 +1667,7 @@ def parse_args() -> argparse.Namespace:
 def main() -> int:
     args = parse_args()
     manifest = read_json_object(args.manifest, label="component manifest")
-    registry = read_json_object(args.registry, label="Personal UI registry")
+    registry = read_json_object(args.registry, label="UI registry")
     documentation = read_json_object(
         args.documentation, label="component documentation"
     )

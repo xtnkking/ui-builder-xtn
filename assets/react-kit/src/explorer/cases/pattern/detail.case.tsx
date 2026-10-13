@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"detail/overview","exports":["DetailPage"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"detail/overview","exports":["DetailPage"]}
 import { StatePreview } from "../state-preview";
-import { Button, Card, DescriptionList, DetailPage, Tag } from "../../../personal-ui";
+import { Button, Card, DescriptionList, DetailPage, Tag } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 function DetailExample() {
@@ -34,7 +34,7 @@ const explorerCase: ExplorerCase = {
     { state: "locale", exports: ["DetailPage"], content: <StatePreview state="locale">{<DetailExample />}</StatePreview> },
   ],
   content: <DetailExample />,
-  code: `import { DetailPage } from "./personal-ui";
+  code: `import { DetailPage } from "./ui";
 
 <DetailPage title="API 凭证" sections={sections} aside={securityAdvice} />`,
 };

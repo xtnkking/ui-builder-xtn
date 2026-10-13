@@ -1,4 +1,4 @@
-// @personal-ui-coverage {"kind":"unit","runner":"components","exports":["Attachment","Avatar","AvatarGroup","Badge","Card","CodeBlock","DescriptionList","Gallery","List","Media","Meter","Statistic","StatusIndicator","Timeline"]}
+// @ui-coverage {"kind":"unit","runner":"components","exports":["Attachment","Avatar","AvatarGroup","Badge","Card","CodeBlock","DescriptionList","Gallery","List","Media","Meter","Statistic","StatusIndicator","Timeline"]}
 import { createElement } from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
@@ -31,7 +31,7 @@ import {
   type StatisticProps,
   type StatusIndicatorProps,
   type TimelineProps,
-} from "../../src/personal-ui";
+} from "../../src/ui";
 
 function escapedProps(testId: string) {
   return {
@@ -41,8 +41,8 @@ function escapedProps(testId: string) {
     sx: "foreign-sx",
     tw: "foreign-tw",
     dangerouslySetInnerHTML: { __html: "<b>unsafe</b>" },
-    "data-pui-owner": "Consumer",
-    "data-pui-slot": "foreign",
+    "data-ui-owner": "Consumer",
+    "data-ui-slot": "foreign",
     "data-testid": testId,
     "data-track": "preserved",
   };
@@ -54,8 +54,8 @@ function expectClosedRoot(element: HTMLElement, owner: string) {
   expect(element).not.toHaveAttribute("css");
   expect(element).not.toHaveAttribute("sx");
   expect(element).not.toHaveAttribute("tw");
-  expect(element).not.toHaveAttribute("data-pui-slot");
-  expect(element).toHaveAttribute("data-pui-owner", owner);
+  expect(element).not.toHaveAttribute("data-ui-slot");
+  expect(element).toHaveAttribute("data-ui-owner", owner);
   expect(element).toHaveAttribute("data-track", "preserved");
 }
 
@@ -76,10 +76,10 @@ describe("display fixed-control contracts", () => {
 
   it("exposes a dot badge label as text without naming a generic span", () => {
     const { container } = render(<Badge dot label="Service online" />);
-    const indicator = container.querySelector(".pui-badge__indicator--dot");
+    const indicator = container.querySelector(".ui-badge__indicator--dot");
 
     expect(indicator).not.toHaveAttribute("aria-label");
-    expect(indicator?.querySelector(".pui-sr-only")).toHaveTextContent("Service online");
+    expect(indicator?.querySelector(".ui-sr-only")).toHaveTextContent("Service online");
   });
 
   it("filters escape props from every display root", () => {
@@ -118,9 +118,9 @@ describe("display fixed-control contracts", () => {
     const meter = screen.getByTestId("meter");
     expect(meter).not.toHaveClass("foreign-control");
     expect(meter).not.toHaveAttribute("style");
-    expect(meter).not.toHaveAttribute("data-pui-owner");
+    expect(meter).not.toHaveAttribute("data-ui-owner");
     expect(meter).toHaveAttribute("data-track", "preserved");
-    expect(meter.closest('[data-pui-owner="Meter"]')).not.toBeNull();
+    expect(meter.closest('[data-ui-owner="Meter"]')).not.toBeNull();
   });
 
   it("filters nested Avatar and Media element escape props", () => {
@@ -138,8 +138,8 @@ describe("display fixed-control contracts", () => {
     const avatarImage = screen.getByTestId("nested-image");
     expect(avatarImage).not.toHaveClass("foreign-control");
     expect(avatarImage).not.toHaveAttribute("style");
-    expect(avatarImage).not.toHaveAttribute("data-pui-owner");
-    expect(avatarImage).not.toHaveAttribute("data-pui-slot");
+    expect(avatarImage).not.toHaveAttribute("data-ui-owner");
+    expect(avatarImage).not.toHaveAttribute("data-ui-slot");
     fireEvent.mouseEnter(avatarImage);
     expect(nestedEscape.onMouseEnter).toHaveBeenCalledTimes(1);
 
@@ -153,8 +153,8 @@ describe("display fixed-control contracts", () => {
     const mediaImage = screen.getByTestId("media-image");
     expect(mediaImage).not.toHaveClass("foreign-control");
     expect(mediaImage).not.toHaveAttribute("style");
-    expect(mediaImage).not.toHaveAttribute("data-pui-owner");
-    expect(mediaImage).not.toHaveAttribute("data-pui-slot");
+    expect(mediaImage).not.toHaveAttribute("data-ui-owner");
+    expect(mediaImage).not.toHaveAttribute("data-ui-slot");
   });
 
   it("keeps Gallery selection interactive while filtering root escape props", () => {

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { createRoot } from "react-dom/client";
-import { Accordion, type AccordionItem } from "../../src/personal-ui";
-import "../../src/personal-ui/styles.css";
+import { Accordion, type AccordionItem } from "../../src/ui";
+import "../../src/ui/styles.css";
 
 const items: AccordionItem[] = [
   { id: "profile", title: "Profile", content: <button type="button">Profile action</button> },
@@ -16,7 +16,7 @@ function Fixture() {
   const [controlledOpenIds, setControlledOpenIds] = useState<string[]>(["profile"]);
 
   return (
-    <main className="pui-theme pui-root" style={{ maxWidth: 640, padding: 24 }} data-ready="true">
+    <main className="ui-theme ui-root" style={{ maxWidth: 640, padding: 24 }} data-ready="true">
       <button type="button">Before accordion</button>
       <section aria-label="Uncontrolled disclosure">
         <h2>Uncontrolled disclosure</h2>

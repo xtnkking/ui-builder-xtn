@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"color-picker/overview","exports":["ColorPicker"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"color-picker/overview","exports":["ColorPicker"]}
 import { useState } from "react";
-import { ColorPicker, Field } from "../../../personal-ui";
+import { ColorPicker, Field } from "../../../ui";
 import type { ExplorerCase } from "../types";
 import { StatePreview } from "../state-preview";
 

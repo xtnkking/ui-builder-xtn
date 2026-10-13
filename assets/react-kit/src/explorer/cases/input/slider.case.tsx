@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"slider/overview","exports":["Slider"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"slider/overview","exports":["Slider"]}
 import { useState } from "react";
-import { Field, Slider, type SliderValue } from "../../../personal-ui";
+import { Field, Slider, type SliderValue } from "../../../ui";
 import type { ExplorerCase } from "../types";
 import { StatePreview } from "../state-preview";
 

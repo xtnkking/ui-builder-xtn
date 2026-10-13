@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"overflow/overview","exports":["OverflowText","ExpandableText"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"overflow/overview","exports":["OverflowText","ExpandableText"]}
 import { StatePreview } from "../state-preview";
-import { ExpandableText, OverflowText } from "../../../personal-ui";
+import { ExpandableText, OverflowText } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 const longText = "这是一段用于验证窄容器省略提示和长段落展开行为的完整内容，包含全部产品的角色配置、数据访问权限、通知偏好和账户安全设置，信息不会因为空间不足而失去访问入口。";

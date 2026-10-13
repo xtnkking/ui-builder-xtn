@@ -9,7 +9,7 @@ import {
   Toolbar,
   type ControlHandle,
   type LinkProps,
-} from "../../src/personal-ui";
+} from "../../src/ui";
 
 const controlRef = createRef<ControlHandle>();
 const allowedActions = (
@@ -73,9 +73,9 @@ const linkRef = <Link ref={createRef<HTMLAnchorElement>()} href="/">Home</Link>;
 // @ts-expect-error fixed action controls do not expose raw HTML injection
 const linkHtml = <Link dangerouslySetInnerHTML={{ __html: "unsafe" }} href="/">Home</Link>;
 // @ts-expect-error reserved ownership attributes are never public
-const linkOwner = <Link data-pui-owner="Consumer" href="/">Home</Link>;
+const linkOwner = <Link data-ui-owner="Consumer" href="/">Home</Link>;
 // @ts-expect-error the wildcard contract rejects unregistered reserved keys in Props objects
-const linkPrivateData: LinkProps = { href: "/", "data-pui-private": "foreign" };
+const linkPrivateData: LinkProps = { href: "/", "data-ui-private": "foreign" };
 
 // @ts-expect-error ButtonGroup follows the protected public-control contract
 const buttonGroupClassName = <ButtonGroup className="foreign" ariaLabel="Actions" />;
@@ -84,7 +84,7 @@ const buttonGroupRef = <ButtonGroup ref={createRef<HTMLDivElement>()} ariaLabel=
 // @ts-expect-error Toolbar follows the protected public-control contract
 const toolbarStyle = <Toolbar style={{ color: "red" }} ariaLabel="Tools" />;
 // @ts-expect-error Toolbar cannot accept reserved ownership attributes
-const toolbarOwner = <Toolbar data-pui-slot="foreign" ariaLabel="Tools" />;
+const toolbarOwner = <Toolbar data-ui-slot="foreign" ariaLabel="Tools" />;
 // @ts-expect-error FilterBar follows the protected public-control contract
 const filterClassName = <FilterBar className="foreign" ariaLabel="Filters" actions={null}>Fields</FilterBar>;
 // @ts-expect-error FilterBar does not expose raw HTML injection
@@ -92,7 +92,7 @@ const filterHtml = <FilterBar dangerouslySetInnerHTML={{ __html: "unsafe" }} ari
 // @ts-expect-error SplitButton cannot reopen Button's styling escape hatch
 const splitStyle = <SplitButton style={{ color: "red" }} menuItems={[]} menuAriaLabel="More">Run</SplitButton>;
 // @ts-expect-error ToggleButton cannot expose reserved ownership attributes
-const toggleOwner = <ToggleButton data-pui-owner="Consumer" pressed={false} onPressedChange={() => undefined}>Pin</ToggleButton>;
+const toggleOwner = <ToggleButton data-ui-owner="Consumer" pressed={false} onPressedChange={() => undefined}>Pin</ToggleButton>;
 // @ts-expect-error controlled ToggleButton requires onPressedChange
 const toggleMissingChange = <ToggleButton pressed>Pin</ToggleButton>;
 // @ts-expect-error ToggleButton cannot be controlled and uncontrolled simultaneously

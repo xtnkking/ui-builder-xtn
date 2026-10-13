@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "kind": "personal-ui-third-party-notices",
+  "kind": "ui-third-party-notices",
   "generatedFrom": "assets/react-kit/package-lock.json",
   "dependencyCount": 226,
   "items": [

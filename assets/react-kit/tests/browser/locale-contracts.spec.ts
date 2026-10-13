@@ -1,4 +1,4 @@
-// @personal-ui-coverage {"kind":"browser","runner":"browser","exports":["LocaleProvider","usePersonalUILocale"]}
+// @ui-coverage {"kind":"browser","runner":"browser","exports":["LocaleProvider","useUILocale"]}
 import { expect, test } from "@playwright/test";
 
 test.describe("locale geometry", () => {
@@ -6,7 +6,7 @@ test.describe("locale geometry", () => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto("/#/components/locale");
 
-    await expect(page.getByRole("heading", { level: 1, name: "LocaleProvider / usePersonalUILocale" })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1, name: "LocaleProvider / useUILocale" })).toBeVisible();
     const overview = page.getByRole("tabpanel", { name: "总览", exact: true });
     await expect(overview).toBeVisible();
     const zh = overview.locator('[data-locale-example="zh-CN"]');

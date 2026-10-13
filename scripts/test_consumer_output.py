@@ -21,11 +21,11 @@ class ConsumerOutputContracts(unittest.TestCase):
                 encoding="utf-8",
             )
             (assets / "app.js").write_text(
-                "const owner = 'data-pui-owner'; const component = 'pui-button';",
+                "const owner = 'data-ui-owner'; const component = 'ui-button';",
                 encoding="utf-8",
             )
             (assets / "app.css").write_text(
-                ".pui-button { color: var(--pui-primary); }",
+                ".ui-button { color: var(--ui-primary); }",
                 encoding="utf-8",
             )
             (output / "LICENSES.txt").write_text(
@@ -109,6 +109,15 @@ class ConsumerOutputContracts(unittest.TestCase):
 
                 self.assertFalse(report["valid"])
                 self.assertIn(expected_code, codes)
+
+    def test_legacy_source_and_style_namespaces_are_rejected(self) -> None:
+        for marker in ("src/personal-ui", "PersonalUILocale", "data-pui-owner", ".pui-button", "--_pui-overlay"):
+            with self.subTest(marker=marker), tempfile.TemporaryDirectory(prefix="consumer-output-") as temporary:
+                output = Path(temporary)
+                (output / "app.js").write_text(f"const marker = '{marker}';", encoding="utf-8")
+                report = check_consumer_output(output)
+                self.assertFalse(report["valid"])
+                self.assertIn("FORBIDDEN_LEGACY_NAMESPACE", {issue["code"] for issue in report["issues"]})
 
 
 if __name__ == "__main__":

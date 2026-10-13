@@ -1,34 +1,34 @@
 ---
 name: ui-builder-xtn
-description: Build or revise React and TypeScript product interfaces by installing and composing the bundled Personal UI source components and page patterns. Use for login, forms, CRUD, searchable data lists, tables, feedback, overlays, and operational pages that should follow this personal design system; do not use for backend-only work or a product that must preserve another established UI system.
+description: Build or revise React and TypeScript product interfaces by installing and composing the bundled ui-builder-xtn source components and page patterns. Use for login, forms, CRUD, searchable data lists, tables, feedback, overlays, and operational pages that should follow this personal design system; do not use for backend-only work or a product that must preserve another established UI system.
 license: MIT
 ---
 
-# UI Builder XTN
+# ui-builder-xtn
 
-Build the requested interface from the bundled Personal UI implementation. This is an enforced source kit, not a prose style guide: every control, feedback surface, navigation control, overlay, data renderer, and bundled page pattern must be a registered public export with real React source in this Skill.
+Build the requested interface from the bundled ui-builder-xtn implementation. This is an enforced source kit, not a prose style guide: every control, feedback surface, navigation control, overlay, data renderer, and bundled page pattern must be a registered public export with real React source in this Skill.
 
 ## Start here
 
-1. Inspect the target framework, package manager, source root, aliases, existing UI system, and tests. An explicit request to use this Skill chooses Personal UI for the inspected application surface; do not mix component systems.
-2. Read the [integration guide](references/integration.md), then use `scripts/install_personal_ui.py` in `starter` or `integrate` mode. Never copy isolated snippets or use the archived `personal-ui-library-preview.html` as application source.
+1. Inspect the target framework, package manager, source root, aliases, existing UI system, and tests. An explicit request to use this Skill chooses ui-builder-xtn for the inspected application surface; do not mix component systems.
+2. Read the [integration guide](references/integration.md), then use `scripts/install_ui.py` in `starter` or `integrate` mode. Never copy isolated snippets or use an archived HTML preview as application source.
 3. Find the needed family in the generated [component catalog](references/component-catalog.md), then read its exact Props, defaults, behavior, example, and migration notes in the generated [component API](references/component-api.md). Inspect the matching runnable Explorer route when appearance or interaction matters.
-4. Import runtime components and patterns only from the installed `src/personal-ui/index.ts` barrel, normally through `./personal-ui` or its project alias. Compose business data, callbacks, copy, product media, approved tokens, and non-interactive layout around those exports.
-5. Run the target build, relevant tests, and `python scripts/verify_personal_ui.py --target <project-path>` before handoff. Check the browser deployment directory with `python scripts/check_consumer_output.py --output <public-output-path>` for direct project branding and source maps. Report the public exports used and any canonical capability added.
+4. Import runtime components and patterns only from the installed `src/ui/index.ts` barrel, normally through `./ui` or its project alias. Compose business data, callbacks, copy, product media, approved tokens, and non-interactive layout around those exports.
+5. Run the target build, relevant tests, and `python scripts/verify_ui.py --target <project-path>` before handoff. Check the browser deployment directory with `python scripts/check_consumer_output.py --output <public-output-path>` for direct project branding and source maps. Report the public exports used and any canonical capability added.
 
 ## Enforced ownership
 
-The canonical implementation is `assets/react-kit/src/personal-ui/`; `assets/react-kit/component-manifest.json` binds every family, runtime export, source file, alias, and ownership marker. The installer copies that versioned source into the target, owns its fixed `verify:personal-ui` command, and prefixes that command directly to the existing `build` script while preserving an unrelated caller-owned `prebuild`.
+The canonical implementation is `assets/react-kit/src/ui/`; `assets/react-kit/component-manifest.json` binds every family, runtime export, source file, alias, and ownership marker. The installer copies that versioned source into the target, owns its fixed `verify:ui` command, and prefixes that command directly to the existing `build` script while preserving an unrelated caller-owned `prebuild`.
 
 - Do not recreate a registered control with native interactive markup, application CSS, a local wrapper, copied source, or a third-party JSX component. Do not deep-import implementation files.
-- Do not style protected controls through `.pui-*`, `data-pui-*`, generic control selectors, CSS-in-JS, runtime CSS/DOM mutation, external global styles, or JSX `<style>`.
+- Do not style protected controls through `.ui-*`, `data-ui-*`, generic control selectors, CSS-in-JS, runtime CSS/DOM mutation, external global styles, or JSX `<style>`.
 - Protected public components must not receive application `className`, `style`, `css`, `sx`, `tw`, `ref`, or `cloneElement` overrides, including through property spreads. Use a surrounding layout element, a documented token, or a canonical typed prop.
 - Use public props and pass both TypeScript and provenance checks. Typed JSX spreads must resolve to safe public properties; unknown/opaque objects and protected overrides fail closed. Use the official `controllerField` adapter for form-library fields; see the supported syntax and compiler requirements in [supported usage](references/integration.md#supported-public-usage).
 - Use Lucide icons through component props. Keep option, tab, menu-item, product, table-column, and row identities stable, unique, and non-empty within their owner.
 - Keep business copy and machine values consumer-owned. Built-in fallback and ARIA text use the locale contract; product data must not be silently translated or reformatted for submission.
 - Keep consumer applications free of Skill/repository promotion: use the neutral consumer starter, never copy the Explorer, demo code, repository links, attribution UI, generator metadata or development paths into a product. Set product titles and branding from the user's business requirements. Keep source maps private in production; retain required legal notices outside rendered UI. Internal component names and styles are not a guarantee that implementation origin cannot be inferred.
 
-If a requested capability has no registered public export, stop that part of page composition. Add the reusable source and styles to the canonical kit, export it from the public barrel, register it in the Manifest and docs metadata, add a compiled Explorer case and focused tests, refresh integrity/API/coverage artifacts, and only then reinstall it. Never patch an installed `src/personal-ui/` as a local extension or bypass the verifier.
+If a requested capability has no registered public export, stop that part of page composition. Add the reusable source and styles to the canonical kit, export it from the public barrel, register it in the Manifest and docs metadata, add a compiled Explorer case and focused tests, refresh integrity/API/coverage artifacts, and only then reinstall it. Never patch an installed `src/ui/` as a local extension or bypass the verifier.
 
 ## Read by task
 
@@ -41,6 +41,7 @@ If a requested capability has no registered public export, stop that part of pag
 - Built-in text, `zh-CN`/`en-US`, nested providers, Portal inheritance, SSR, dates, numbers, and plurals: [locale contract](references/locale-contract.md).
 - Public API changes and upgrade action: [v0.3.0 migrations](references/v0.3.0-migrations.md).
 - Canonical source and generated-copy policy: [source authority](references/source-authority.md).
+- Official project naming and neutral consumer identifiers: [naming contract](references/naming-contract.md).
 
 ## Completion contract
 

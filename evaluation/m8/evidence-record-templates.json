@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "kind": "personal-ui-m8-evidence-record-templates",
+  "kind": "ui-m8-evidence-record-templates",
   "actualEnvironment": {
     "operatingSystem": "Windows 11 24H2",
     "architecture": "x64",
@@ -8,7 +8,7 @@
     "packageManager": "npm 10.9.3",
     "browser": "Chromium 140.0.0.0",
     "python": "3.13.7",
-    "installerCommand": "python skill/ui-builder-xtn/scripts/install_personal_ui.py install --project-root consumer/project"
+    "installerCommand": "python skill/ui-builder-xtn/scripts/install_ui.py install --project-root consumer/project"
   },
   "commandRecord": {
     "argv": [

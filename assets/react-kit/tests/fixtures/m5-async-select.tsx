@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { AsyncSelect, Button, Dialog, Field, Form, type AsyncSelectOption } from "../../src/personal-ui";
-import "../../src/personal-ui/styles.css";
+import { AsyncSelect, Button, Dialog, Field, Form, type AsyncSelectOption } from "../../src/ui";
+import "../../src/ui/styles.css";
 
 type Pending = { resolve: (options: readonly AsyncSelectOption[]) => void; reject: (error: Error) => void; signal: AbortSignal };
 

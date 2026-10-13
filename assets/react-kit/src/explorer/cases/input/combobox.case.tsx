@@ -1,7 +1,7 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"combobox/overview","exports":["Combobox","Autocomplete"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"combobox/overview","exports":["Combobox","Autocomplete"]}
 import { StatePreview } from "../state-preview";
 import { useState } from "react";
-import { Autocomplete, Combobox, Field } from "../../../personal-ui";
+import { Autocomplete, Combobox, Field } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 const teams = [

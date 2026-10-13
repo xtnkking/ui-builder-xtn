@@ -1,7 +1,7 @@
 import { createRoot } from "react-dom/client";
-import { Button } from "../../src/personal-ui";
+import { Button } from "../../src/ui";
 import { DragExample } from "../../src/explorer/cases/actions/drag.case";
-import "../../src/personal-ui/styles.css";
+import "../../src/ui/styles.css";
 
 function DragUploadFixture() {
   return <main style={{ maxWidth: 620, margin: "32px auto", padding: 16 }}>

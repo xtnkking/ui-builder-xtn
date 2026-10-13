@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"clipboard/overview","exports":["ClipboardButton"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"clipboard/overview","exports":["ClipboardButton"]}
 import { StatePreview } from "../state-preview";
-import { ClipboardButton, Inline } from "../../../personal-ui";
+import { ClipboardButton, Inline } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 const explorerCase = {

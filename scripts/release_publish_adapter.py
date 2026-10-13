@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Explicit, resumable Git/GitHub/generated-copy publication adapter.
 
-This module is inert until ``release_personal_ui.py publish --execute`` calls it.
+This module is inert until ``release_ui.py publish --execute`` calls it.
 Credentials are obtained from Git's credential helper for each process and are
 never returned to the release journal or included in command arguments.
 """
@@ -23,13 +23,13 @@ from pathlib import Path, PurePosixPath
 from typing import Mapping, Sequence
 
 try:
-    from . import release_personal_ui as release
+    from . import release_ui as release
 except ImportError:
-    import release_personal_ui as release
+    import release_ui as release
 
 
 GENERATED_COPY_MANIFEST = ".ui-builder-xtn-generated-copy.json"
-GENERATED_COPY_KIND = "personal-ui-generated-copy"
+GENERATED_COPY_KIND = "ui-generated-copy"
 PLAN_MARKER_PREFIX = "ui-builder-xtn-plan-digest:"
 
 

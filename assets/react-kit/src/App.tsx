@@ -32,7 +32,7 @@ import {
   type MemberQuery,
   type MemberRecord,
   type MemberResult,
-} from "./personal-ui";
+} from "./ui";
 import { ComponentExplorer, type ExplorerCases } from "./explorer/ComponentExplorer";
 
 type Scenario = "success" | "empty" | "error";
@@ -585,7 +585,7 @@ function DemoContent() {
       summary: "带草稿筛选、显式查询、加载、空结果、失败和重试状态的 CRUD 列表页面。",
       states: ["default", "loading", "empty", "error", "validation", "longContent", "keyboard", "mobile", "overlay"],
       content: dataPage,
-      code: `import { MemberManagementPage } from "./personal-ui";\n\n<MemberManagementPage\n  fetchMembers={fetchMembers}\n  roles={["管理员", "编辑者", "查看者"]}\n  statuses={["已加入", "待确认", "已停用"]}\n  onInvite={handleInvite}\n/>`,
+      code: `import { MemberManagementPage } from "./ui";\n\n<MemberManagementPage\n  fetchMembers={fetchMembers}\n  roles={["管理员", "编辑者", "查看者"]}\n  statuses={["已加入", "待确认", "已停用"]}\n  onInvite={handleInvite}\n/>`,
     }],
     authentication: [{
       id: "family-login",
@@ -594,7 +594,7 @@ function DemoContent() {
       summary: "公司身份与登录控件保持一致，产品只通过名称、强调色、文案和视觉插槽表达差异。",
       states: ["default", "loading", "error", "validation", "longContent", "keyboard", "mobile"],
       content: loginPage,
-      code: `import { FamilyLoginPage } from "./personal-ui";\n\n<FamilyLoginPage\n  companyName="Northstar"\n  companyMark={<CompanyMark />}\n  products={products}\n  onSubmit={handleLogin}\n/>`,
+      code: `import { FamilyLoginPage } from "./ui";\n\n<FamilyLoginPage\n  companyName="Northstar"\n  companyMark={<CompanyMark />}\n  products={products}\n  onSubmit={handleLogin}\n/>`,
     }],
     number: [{
       id: "number-input-states",
@@ -603,7 +603,7 @@ function DemoContent() {
       summary: "同时展示受控值、空值、只读和禁用状态，并保持步进按钮几何稳定。",
       states: ["default", "disabled", "readOnly", "controlled", "validation", "keyboard"],
       content: numberCase,
-      code: `import { Field, NumberInput } from "./personal-ui";\n\n<Field label="自检周期（分钟）" htmlFor="period">\n  <NumberInput\n    id="period"\n    value={value}\n    onValueChange={setValue}\n    min={0}\n    max={180}\n    step={10}\n  />\n</Field>`,
+      code: `import { Field, NumberInput } from "./ui";\n\n<Field label="自检周期（分钟）" htmlFor="period">\n  <NumberInput\n    id="period"\n    value={value}\n    onValueChange={setValue}\n    min={0}\n    max={180}\n    step={10}\n  />\n</Field>`,
     }],
     "data-table": [{
       id: "permission-table",
@@ -612,7 +612,7 @@ function DemoContent() {
       summary: "分页与非分页、固定与内容高度、选择列和操作列冻结，以及稳定加载状态。",
       states: ["default", "controlled", "loading", "empty", "longContent", "keyboard", "mobile"],
       content: listPageCase,
-      code: `import { DataTable, ListManagementPage } from "./personal-ui";\n\n<ListManagementPage title="用户权限">\n  <DataTable\n    ariaLabel="用户权限表"\n    columns={columns}\n    rows={rows}\n    rowKey={(row) => row.id}\n    viewportRows={4}\n    pagination={pagination}\n  />\n</ListManagementPage>`,
+      code: `import { DataTable, ListManagementPage } from "./ui";\n\n<ListManagementPage title="用户权限">\n  <DataTable\n    ariaLabel="用户权限表"\n    columns={columns}\n    rows={rows}\n    rowKey={(row) => row.id}\n    viewportRows={4}\n    pagination={pagination}\n  />\n</ListManagementPage>`,
     }],
     dialog: [{
       id: "nested-dialog-workflow",
@@ -621,7 +621,7 @@ function DemoContent() {
       summary: "覆盖不可点击遮罩关闭、嵌套确认、异步保存和弹窗内复杂选择器。",
       states: ["default", "controlled", "loading", "error", "validation", "keyboard", "overlay"],
       content: dialogCase,
-      code: `import { Button, ConfirmDialog, Dialog } from "./personal-ui";\n\n<Button onClick={() => setOpen(true)}>分配角色</Button>\n<Dialog\n  open={open}\n  onOpenChange={setOpen}\n  closeOnBackdropClick={false}\n  title="分配角色"\n>\n  {form}\n</Dialog>`,
+      code: `import { Button, ConfirmDialog, Dialog } from "./ui";\n\n<Button onClick={() => setOpen(true)}>分配角色</Button>\n<Dialog\n  open={open}\n  onOpenChange={setOpen}\n  closeOnBackdropClick={false}\n  title="分配角色"\n>\n  {form}\n</Dialog>`,
     }],
   };
 

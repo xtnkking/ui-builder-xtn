@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "kind": "personal-ui-m6-state-applicability-audit",
+  "kind": "ui-m6-state-applicability-audit",
   "scope": "26 data/action families and 9 page-pattern families; 42 runtime exports",
   "evidencePolicy": "Source/API applicability and runnable fixtures only; not browser or accessibility acceptance. Do not apply these narrowed scopes to deferred M2/M5 decisions.",
   "exports": {

@@ -1,7 +1,7 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"inline-edit/overview","exports":["InlineEdit"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"inline-edit/overview","exports":["InlineEdit"]}
 import { StatePreview } from "../state-preview";
 import { useState } from "react";
-import { Field, InlineEdit } from "../../../personal-ui";
+import { Field, InlineEdit } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 function InlineEditExample() {

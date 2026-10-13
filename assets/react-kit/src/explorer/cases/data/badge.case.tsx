@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"badge/overview","exports":["Badge"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"badge/overview","exports":["Badge"]}
 import { StatePreview } from "../state-preview";
-import { Badge, Inline } from "../../../personal-ui";
+import { Badge, Inline } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 const explorerCase = {

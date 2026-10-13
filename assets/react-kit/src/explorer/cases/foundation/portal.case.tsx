@@ -1,7 +1,7 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"portal/overview","exports":["Portal"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"portal/overview","exports":["Portal"]}
 import { StatePreview } from "../state-preview";
 import { useState } from "react";
-import { Box, Portal } from "../../../personal-ui";
+import { Box, Portal } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 function PortalExample() {

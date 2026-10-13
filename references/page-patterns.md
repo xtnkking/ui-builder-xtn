@@ -1,4 +1,4 @@
-# Personal UI page pattern routing
+# ui-builder-xtn page pattern routing
 
 Use a bundled page pattern when the requested workflow matches one below. Patterns own page geometry and recurring interaction structure; consumers provide business data, copy, callbacks, permissions, and product media through documented props. See the generated [component API](component-api.md) for exact signatures and the [component catalog](component-catalog.md) for aliases.
 
@@ -32,7 +32,7 @@ The pattern owns validation focus, password visibility, pending submission, dupl
 
 Place `FilterBar` and `DataTable` inside `ListManagementPage` or `SearchFilterPage`. Their default `layoutWidth="readable"` aligns heading, filters, table, and footer; use `layoutWidth="wide"` only for a table that genuinely needs the width. Keep table pagination in `DataTable.pagination`, not the page footer. Detailed request and height behavior is in the [data workflow contract](data-workflows.md).
 
-`CreateEditPage` owns the form and stable action footer. Compose fields from Personal UI and follow the [form contract](form-contract.md). For editing inside a modal surface, use `Dialog` or `Drawer` rather than nesting a page pattern merely to obtain actions.
+`CreateEditPage` owns the form and stable action footer. Compose fields from ui-builder-xtn and follow the [form contract](form-contract.md). For editing inside a modal surface, use `Dialog` or `Drawer` rather than nesting a page pattern merely to obtain actions.
 
 ## Detail and process pages
 

@@ -42,6 +42,11 @@ FORBIDDEN_MARKERS = (
         "personal-ui-focus-trap",
         re.compile(r"personal-ui-focus-trap", re.IGNORECASE),
     ),
+    (
+        "FORBIDDEN_LEGACY_NAMESPACE",
+        "legacy component namespace",
+        re.compile(r"personal[-_]ui|PersonalUI|PersonalUi|(?:data-|--_?|\b)pui[-_.]"),
+    ),
 )
 SOURCE_MAPPING_URL = re.compile(
     r"(?://|/\*)\s*[@#]\s*sourceMappingURL\s*=",

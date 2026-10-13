@@ -1,4 +1,4 @@
-// @personal-ui-coverage {"kind":"unit","runner":"components","exports":["ButtonGroup","ClipboardButton","FilterBar","Link","SplitButton","ToggleButton","Toolbar"]}
+// @ui-coverage {"kind":"unit","runner":"components","exports":["ButtonGroup","ClipboardButton","FilterBar","Link","SplitButton","ToggleButton","Toolbar"]}
 import { createElement } from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
@@ -17,7 +17,7 @@ import {
   type SplitButtonProps,
   type ToggleButtonProps,
   type ToolbarProps,
-} from "../../src/personal-ui";
+} from "../../src/ui";
 
 function escapedProps(testId: string, onMouseEnter: () => void) {
   return {
@@ -27,9 +27,9 @@ function escapedProps(testId: string, onMouseEnter: () => void) {
     sx: "foreign-sx",
     tw: "foreign-tw",
     dangerouslySetInnerHTML: { __html: "<b>unsafe</b>" },
-    "data-pui-owner": "Consumer",
-    "data-pui-slot": "foreign",
-    "data-pui-private": "foreign",
+    "data-ui-owner": "Consumer",
+    "data-ui-slot": "foreign",
+    "data-ui-private": "foreign",
     "data-testid": testId,
     "data-track": "preserved",
     "aria-describedby": "action-description",
@@ -43,9 +43,9 @@ function expectEscapesRemoved(element: HTMLElement, owner: string) {
   expect(element).not.toHaveAttribute("css");
   expect(element).not.toHaveAttribute("sx");
   expect(element).not.toHaveAttribute("tw");
-  expect(element).not.toHaveAttribute("data-pui-slot");
-  expect(element).not.toHaveAttribute("data-pui-private");
-  expect(element).toHaveAttribute("data-pui-owner", owner);
+  expect(element).not.toHaveAttribute("data-ui-slot");
+  expect(element).not.toHaveAttribute("data-ui-private");
+  expect(element).toHaveAttribute("data-ui-owner", owner);
   expect(element).toHaveAttribute("data-track", "preserved");
   expect(element).toHaveAttribute("aria-describedby", "action-description");
   expect(element).not.toHaveTextContent("unsafe");
@@ -66,7 +66,7 @@ describe("action public-control contracts", () => {
     render(createElement(Link, rawProps as unknown as LinkProps, "Accounts"));
 
     const link = screen.getByTestId("account-link");
-    expect(link).toHaveClass("pui-link", "pui-link--default");
+    expect(link).toHaveClass("ui-link", "ui-link--default");
     expect(link).toHaveAttribute("href", "/accounts");
     expect(link).toHaveAttribute("target", "_blank");
     expect(link).toHaveAttribute("rel", expect.stringContaining("author"));
@@ -105,7 +105,7 @@ describe("action public-control contracts", () => {
     );
 
     const group = screen.getByTestId("action-group");
-    expect(group).toHaveClass("pui-button-group", "pui-button-group--attached");
+    expect(group).toHaveClass("ui-button-group", "ui-button-group--attached");
     expect(group).toHaveAttribute("role", "group");
     expect(group).toHaveAttribute("aria-label", "Record actions");
     expect(group).not.toHaveAttribute("aria-orientation");
@@ -113,7 +113,7 @@ describe("action public-control contracts", () => {
     expectEscapesRemoved(group, "ButtonGroup");
 
     const toolbar = screen.getByTestId("action-toolbar");
-    expect(toolbar).toHaveClass("pui-toolbar");
+    expect(toolbar).toHaveClass("ui-toolbar");
     expect(toolbar).toHaveAttribute("role", "toolbar");
     expect(toolbar).toHaveAttribute("aria-label", "List tools");
     expect(toolbar).not.toHaveAttribute("data-wrap");
@@ -146,7 +146,7 @@ describe("action public-control contracts", () => {
     render(createElement(FilterBar, rawProps as unknown as FilterBarProps));
 
     const form = screen.getByTestId("account-filters");
-    expect(form).toHaveClass("pui-filter-bar");
+    expect(form).toHaveClass("ui-filter-bar");
     expect(form).toHaveAttribute("aria-label", "Account filters");
     expect(form).toHaveAttribute("method", "get");
     expect(form).toHaveAttribute("novalidate");
@@ -197,21 +197,21 @@ describe("action public-control contracts", () => {
     );
 
     const split = screen.getByTestId("split-action");
-    expect(split).toHaveClass("pui-button", "pui-split-button__primary");
+    expect(split).toHaveClass("ui-button", "ui-split-button__primary");
     expect(split).toHaveAttribute("name", "intent");
     expect(split).toHaveAttribute("value", "run");
     expect(split).toHaveAttribute("form", "report-form");
     expectEscapesRemoved(split, "Button");
 
     const toggle = screen.getByTestId("toggle-action");
-    expect(toggle).toHaveClass("pui-button", "pui-toggle-button");
+    expect(toggle).toHaveClass("ui-button", "ui-toggle-button");
     expect(toggle).toHaveAttribute("aria-pressed", "false");
     expectEscapesRemoved(toggle, "ToggleButton");
     fireEvent.click(toggle);
     expect(onPressedChange).toHaveBeenCalledWith(true);
 
     const clipboard = screen.getByTestId("clipboard-action");
-    expect(clipboard).toHaveClass("pui-button");
+    expect(clipboard).toHaveClass("ui-button");
     expect(clipboard).toHaveAttribute("name", "copy");
     expectEscapesRemoved(clipboard, "Button");
 

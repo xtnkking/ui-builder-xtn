@@ -1,5 +1,5 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"breadcrumb/overview","exports":["Breadcrumbs"]}
-import { Breadcrumbs } from "../../../personal-ui";
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"breadcrumb/overview","exports":["Breadcrumbs"]}
+import { Breadcrumbs } from "../../../ui";
 import { StatePreview } from "../state-preview";
 import type { ExplorerCase } from "../types";
 

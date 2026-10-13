@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { createRoot } from "react-dom/client";
-import { Cascader, Form, type CascaderOption } from "../../src/personal-ui";
-import "../../src/personal-ui/styles.css";
+import { Cascader, Form, type CascaderOption } from "../../src/ui";
+import "../../src/ui/styles.css";
 
 const baseOptions: CascaderOption[] = [
   {
@@ -27,7 +27,7 @@ function Fixture() {
   ];
 
   return (
-    <main className="pui-theme pui-root" style={{ maxWidth: 680, padding: 24 }} data-ready="true">
+    <main className="ui-theme ui-root" style={{ maxWidth: 680, padding: 24 }} data-ready="true">
       <Form aria-label="Leaf destination" onSubmit={(event) => event.preventDefault()}>
         <Cascader options={options} defaultValue={["asia"]} ariaLabel="Destination" levelLabels={["Continent", "City"]} name="destination" required />
       </Form>

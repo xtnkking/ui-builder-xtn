@@ -1,7 +1,7 @@
-// @personal-ui-coverage {"kind":"unit","runner":"components","exports":["Carousel"]}
+// @ui-coverage {"kind":"unit","runner":"components","exports":["Carousel"]}
 import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { Carousel } from "../../src/personal-ui";
+import { Carousel } from "../../src/ui";
 
 const slides = [
   { id: "first", label: "First", content: <button type="button">First action</button> },
@@ -28,7 +28,7 @@ describe("Carousel behavior", () => {
     vi.useFakeTimers();
     const { unmount } = render(<Carousel ariaLabel="Highlights" slides={slides} autoplay loop interval={1500} />);
     const carousel = screen.getByRole("region", { name: "Highlights" });
-    const stage = carousel.querySelector<HTMLElement>(".pui-carousel__stage")!;
+    const stage = carousel.querySelector<HTMLElement>(".ui-carousel__stage")!;
     expect(stage).toHaveAttribute("aria-live", "off");
     expect(stage).toHaveAttribute("aria-label", "1 / 3: First");
     act(() => vi.advanceTimersByTime(1500));
@@ -83,6 +83,6 @@ describe("Carousel behavior", () => {
     expect(within(first).getByRole("button", { name: "下一项" })).toBeDisabled();
     expect(within(first).getByRole("button", { name: "Third action" })).toBeInTheDocument();
     expect(within(first).queryByRole("button", { name: "First action" })).toBeNull();
-    expect(first.querySelector(".pui-carousel__stage")).toHaveAttribute("aria-label", "3 / 3: Third");
+    expect(first.querySelector(".ui-carousel__stage")).toHaveAttribute("aria-label", "3 / 3: Third");
   });
 });

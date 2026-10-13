@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"focus-trap/overview","exports":["FocusTrap"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"focus-trap/overview","exports":["FocusTrap"]}
 import { StatePreview } from "../state-preview";
-import { Button, FocusTrap, Inline } from "../../../personal-ui";
+import { Button, FocusTrap, Inline } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 const explorerCase = {

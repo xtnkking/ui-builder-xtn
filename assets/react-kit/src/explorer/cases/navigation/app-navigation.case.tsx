@@ -1,5 +1,5 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"app-navigation/overview","exports":["AppNavigation","TopNavigation","SideNavigation","BottomNavigation"]}
-import { AppNavigation, BottomNavigation, SideNavigation, Stack, TopNavigation, type NavigationItem } from "../../../personal-ui";
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"app-navigation/overview","exports":["AppNavigation","TopNavigation","SideNavigation","BottomNavigation"]}
+import { AppNavigation, BottomNavigation, SideNavigation, Stack, TopNavigation, type NavigationItem } from "../../../ui";
 import { StatePreview } from "../state-preview";
 import type { ExplorerCase } from "../types";
 

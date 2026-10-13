@@ -6,7 +6,7 @@ import tableCase from "../../src/explorer/cases/data/data-table.case";
 import searchCase from "../../src/explorer/cases/input/search-input.case";
 import textareaCase from "../../src/explorer/cases/input/textarea.case";
 import { StatePreview } from "../../src/explorer/cases/state-preview";
-import { Input } from "../../src/personal-ui";
+import { Input } from "../../src/ui";
 import type { ExplorerCase, ExplorerCaseState } from "../../src/explorer/cases/types";
 
 afterEach(cleanup);
@@ -80,12 +80,12 @@ describe("real Explorer state fixtures", () => {
     await user.click(screen.getByRole("button", { name: "搜索" }));
     expect(within(table).getByText("英国市场推广账户")).toBeVisible();
     expect(within(table).getAllByRole("row")).toHaveLength(2);
-    expect(container.querySelector('[data-pui-owner="DataTable"]')).toBeInTheDocument();
+    expect(container.querySelector('[data-ui-owner="DataTable"]')).toBeInTheDocument();
   });
 
   it("renders separate table loading, empty, and recoverable error examples", async () => {
     let rendered = render(example(tableCase, "loading"));
-    expect(rendered.container.querySelector('[data-pui-owner="DataTable"]')).toHaveAttribute("aria-busy", "true");
+    expect(rendered.container.querySelector('[data-ui-owner="DataTable"]')).toHaveAttribute("aria-busy", "true");
     rendered.unmount();
     rendered = render(example(tableCase, "empty"));
     expect(screen.getByText("没有匹配账户")).toBeVisible();

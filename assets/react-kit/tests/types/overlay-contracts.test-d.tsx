@@ -6,7 +6,7 @@ import {
   Popover,
   Tooltip,
   type HoverCardProps,
-} from "../../src/personal-ui";
+} from "../../src/ui";
 
 const menuItems = [{ id: "edit", label: "Edit", onSelect: () => undefined }];
 
@@ -18,7 +18,7 @@ const allowedOverlays = (
     <Popover triggerLabel="Open" ariaLabel="Details">Content</Popover>
     <Popover triggerLabel="Open" ariaLabel="Details" open={false} onOpenChange={() => undefined}>Content</Popover>
     <HoverCard triggerLabel="Preview" ariaLabel="Preview" defaultOpen>Content</HoverCard>
-    <HoverCard triggerLabel="Preview" ariaLabel="Preview" data-pui-consumer-state="draft">Content</HoverCard>
+    <HoverCard triggerLabel="Preview" ariaLabel="Preview" data-ui-consumer-state="draft">Content</HoverCard>
   </>
 );
 void allowedOverlays;
@@ -30,7 +30,7 @@ const tooltipStyle = <Tooltip style={{ color: "red" }} content="Details"><span>I
 // @ts-expect-error fixed overlays do not expose raw DOM refs
 const overflowRef = <OverflowText ref={createRef<HTMLSpanElement>()}>Long value</OverflowText>;
 // @ts-expect-error fixed overlays do not expose internal owner markers
-const tooltipOwner = <Tooltip data-pui-owner="Consumer" content="Details"><span>Info</span></Tooltip>;
+const tooltipOwner = <Tooltip data-ui-owner="Consumer" content="Details"><span>Info</span></Tooltip>;
 // @ts-expect-error fixed overlays do not expose raw HTML injection
 const popoverHtml = <Popover dangerouslySetInnerHTML={{ __html: "unsafe" }} triggerLabel="Open" ariaLabel="Details">Content</Popover>;
 // @ts-expect-error controlled open requires onOpenChange
@@ -42,15 +42,15 @@ const contradictoryHoverCard = <HoverCard triggerLabel="Preview" ariaLabel="Prev
 // @ts-expect-error HoverCard owns its interaction mode
 const hoverInteraction = <HoverCard triggerLabel="Preview" ariaLabel="Preview" interaction="click">Content</HoverCard>;
 // @ts-expect-error HoverCard wrappers retain the explicit owner-marker boundary
-const hoverOwnerProps: HoverCardProps = { triggerLabel: "Preview", ariaLabel: "Preview", children: "Content", "data-pui-owner": "Consumer" };
+const hoverOwnerProps: HoverCardProps = { triggerLabel: "Preview", ariaLabel: "Preview", children: "Content", "data-ui-owner": "Consumer" };
 // @ts-expect-error HoverCard wrappers retain the explicit slot-marker boundary
-const hoverSlotProps: HoverCardProps = { triggerLabel: "Preview", ariaLabel: "Preview", children: "Content", "data-pui-slot": "foreign" };
+const hoverSlotProps: HoverCardProps = { triggerLabel: "Preview", ariaLabel: "Preview", children: "Content", "data-ui-slot": "foreign" };
 // @ts-expect-error arbitrary reserved data remains closed after overlay wrapping
-const hoverPrivateProps: HoverCardProps = { triggerLabel: "Preview", ariaLabel: "Preview", children: "Content", "data-pui-private": "foreign" };
+const hoverPrivateProps: HoverCardProps = { triggerLabel: "Preview", ariaLabel: "Preview", children: "Content", "data-ui-private": "foreign" };
 // @ts-expect-error HoverCard JSX rejects the explicitly reserved owner marker
-const hoverOwnerJsx = <HoverCard triggerLabel="Preview" ariaLabel="Preview" data-pui-owner="Consumer">Content</HoverCard>;
+const hoverOwnerJsx = <HoverCard triggerLabel="Preview" ariaLabel="Preview" data-ui-owner="Consumer">Content</HoverCard>;
 // @ts-expect-error HoverCard JSX rejects the explicitly reserved slot marker
-const hoverSlotJsx = <HoverCard triggerLabel="Preview" ariaLabel="Preview" data-pui-slot="foreign">Content</HoverCard>;
+const hoverSlotJsx = <HoverCard triggerLabel="Preview" ariaLabel="Preview" data-ui-slot="foreign">Content</HoverCard>;
 // @ts-expect-error re-publishing HoverCard must not reopen className
 const hoverClassName = <HoverCard triggerLabel="Preview" ariaLabel="Preview" className="foreign">Content</HoverCard>;
 // @ts-expect-error wrapped overlays do not expose raw DOM refs

@@ -1,7 +1,7 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"sortable/overview","exports":["SortableList"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"sortable/overview","exports":["SortableList"]}
 import { StatePreview } from "../state-preview";
 import { useState } from "react";
-import { SortableList, Tag } from "../../../personal-ui";
+import { SortableList, Tag } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 function SortableExample() {

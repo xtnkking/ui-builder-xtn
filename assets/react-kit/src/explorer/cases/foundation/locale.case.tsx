@@ -1,10 +1,10 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"locale/overview","exports":["LocaleProvider","usePersonalUILocale"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"locale/overview","exports":["LocaleProvider","useUILocale"]}
 import { StatePreview } from "../state-preview";
-import { Field, Inline, LocaleProvider, Pagination, Stack, Tag, usePersonalUILocale } from "../../../personal-ui";
+import { Field, Inline, LocaleProvider, Pagination, Stack, Tag, useUILocale } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 function LocaleSummary({ label }: { label: string }) {
-  const { formatDate, formatNumber, locale, plural } = usePersonalUILocale();
+  const { formatDate, formatNumber, locale, plural } = useUILocale();
   return (
     <Stack gap="small" data-locale-example={locale}>
       <Inline gap="small" align="center">
@@ -20,7 +20,7 @@ function LocaleSummary({ label }: { label: string }) {
 }
 
 function LongLocaleContent() {
-  const { formatDate, formatNumber } = usePersonalUILocale();
+  const { formatDate, formatNumber } = useUILocale();
   return <Stack gap="medium"><span>{formatDate(Date.UTC(2026, 8, 22, 23, 59, 59), { dateStyle: "full", timeStyle: "long", timeZone: "UTC" })}</span><span>{formatNumber(1234567890123.89, { style: "currency", currency: "USD" })}</span></Stack>;
 }
 
@@ -30,8 +30,8 @@ const explorerCase = {
   summary: "LocaleProvider 独立管理语言与时区；组件文案、ARIA、数字、日期和复数从同一逻辑上下文读取。",
   states: ["usage", "locale", "longContent"],
   stateExamples: [
-    { state: "longContent", exports: ["LocaleProvider", "usePersonalUILocale"], content: <Field group label="Long localized dates, large currency amounts, and complete accessible descriptions for cross-region financial reports"><LocaleProvider locale="en-US" timeZone="UTC"><LongLocaleContent /></LocaleProvider></Field> },
-    { state: "usage", exports: ["LocaleProvider","usePersonalUILocale"], content: (
+    { state: "longContent", exports: ["LocaleProvider", "useUILocale"], content: <Field group label="Long localized dates, large currency amounts, and complete accessible descriptions for cross-region financial reports"><LocaleProvider locale="en-US" timeZone="UTC"><LongLocaleContent /></LocaleProvider></Field> },
+    { state: "usage", exports: ["LocaleProvider","useUILocale"], content: (
     <Inline gap="large" align="start" wrap>
       <LocaleProvider locale="zh-CN" timeZone="Asia/Shanghai">
         <LocaleSummary label="默认中文" />
@@ -41,7 +41,7 @@ const explorerCase = {
       </LocaleProvider>
     </Inline>
   ) },
-    { state: "locale", exports: ["LocaleProvider","usePersonalUILocale"], content: <StatePreview state="locale">{(
+    { state: "locale", exports: ["LocaleProvider","useUILocale"], content: <StatePreview state="locale">{(
     <Inline gap="large" align="start" wrap>
       <LocaleProvider locale="zh-CN" timeZone="Asia/Shanghai">
         <LocaleSummary label="默认中文" />
@@ -62,10 +62,10 @@ const explorerCase = {
       </LocaleProvider>
     </Inline>
   ),
-  code: `import { LocaleProvider, usePersonalUILocale } from "./personal-ui";
+  code: `import { LocaleProvider, useUILocale } from "./ui";
 
 function Price() {
-  const { formatNumber } = usePersonalUILocale();
+  const { formatNumber } = useUILocale();
   return <span>{formatNumber(1288, { style: "currency", currency: "USD" })}</span>;
 }
 

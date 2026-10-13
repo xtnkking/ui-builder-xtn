@@ -1,7 +1,7 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"tree-select/overview","exports":["TreeSelect"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"tree-select/overview","exports":["TreeSelect"]}
 import { StatePreview } from "../state-preview";
 import { useState } from "react";
-import { Field, TreeSelect } from "../../../personal-ui";
+import { Field, TreeSelect } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 const organizations = [

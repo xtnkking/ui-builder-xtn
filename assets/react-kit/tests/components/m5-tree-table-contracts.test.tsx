@@ -1,7 +1,7 @@
-// @personal-ui-coverage {"kind":"unit","runner":"components","exports":["TreeTable"]}
+// @ui-coverage {"kind":"unit","runner":"components","exports":["TreeTable"]}
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { TreeTable } from "../../src/personal-ui";
+import { TreeTable } from "../../src/ui";
 
 const nodes = [{ id: "team", value: { name: "Team" }, hasChildren: true }];
 const columns = [{ id: "name", header: "Name", cell: (value: { name: string }) => value.name }];

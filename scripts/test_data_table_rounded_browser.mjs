@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { isPersonalUiRegressionMain, runPersonalUiRegression } from "./browser-test-harness.mjs";
+import { isUIRegressionMain, runUIRegression } from "./browser-test-harness.mjs";
 import { legacyExplorerCaseTabs, selectExplorerCase } from "./browser-explorer-case.mjs";
 
 async function settledScrollTop(locator, baseline) {
@@ -66,8 +66,8 @@ async function captureLoadingGeometry(casePanel, surfaceSelector, rowSelector) {
   return casePanel.evaluate((panel, selectors) => new Promise((resolve, reject) => {
     const deadline = performance.now() + 5_000;
     const sample = () => {
-      const table = panel.querySelector('.pui-data-page .pui-data-table[data-state="loading"]');
-      const frame = table?.querySelector('.pui-data-table__frame');
+      const table = panel.querySelector('.ui-data-page .ui-data-table[data-state="loading"]');
+      const frame = table?.querySelector('.ui-data-table__frame');
       const surface = table?.querySelector(selectors.surface);
       const row = surface?.querySelector(selectors.row);
       if (frame && surface && row) {
@@ -76,16 +76,16 @@ async function captureLoadingGeometry(casePanel, surfaceSelector, rowSelector) {
         const frameRect = frame.getBoundingClientRect();
         const surfaceRect = surface.getBoundingClientRect();
         const rowRect = row.getBoundingClientRect();
-        const pager = frame.querySelector('.pui-data-table__pagination');
-        const pagination = pager?.querySelector('.pui-pagination');
+        const pager = frame.querySelector('.ui-data-table__pagination');
+        const pagination = pager?.querySelector('.ui-pagination');
         resolve({
           width: frameRect.width,
           frameRadii: [frameStyle.borderTopLeftRadius, frameStyle.borderTopRightRadius, frameStyle.borderBottomRightRadius, frameStyle.borderBottomLeftRadius],
           frameBorders: [frameStyle.borderTopWidth, frameStyle.borderRightWidth, frameStyle.borderBottomWidth, frameStyle.borderLeftWidth],
           frameOverflow: [frameStyle.overflowX, frameStyle.overflowY],
           surfaceRadii: [surfaceStyle.borderTopLeftRadius, surfaceStyle.borderTopRightRadius, surfaceStyle.borderBottomRightRadius, surfaceStyle.borderBottomLeftRadius],
-          marker: frame.classList.contains('pui-data-table__frame--paginated'),
-          fixedViewport: frame.classList.contains('pui-data-table__frame--fixed-viewport'),
+          marker: frame.classList.contains('ui-data-table__frame--paginated'),
+          fixedViewport: frame.classList.contains('ui-data-table__frame--fixed-viewport'),
           pager: pager ? {
             left: pager.getBoundingClientRect().left,
             right: pager.getBoundingClientRect().right,
@@ -132,7 +132,7 @@ async function captureLoadingGeometry(casePanel, surfaceSelector, rowSelector) {
 
 async function assertDesktopBandLayout(table, label) {
   const contract = await table.evaluate((element) => {
-    const surface = element.querySelector(".pui-data-table__scroller");
+    const surface = element.querySelector(".ui-data-table__scroller");
     const header = surface.querySelector("thead th:last-child");
     const surfaceRect = surface.getBoundingClientRect();
     const headerRect = header.getBoundingClientRect();
@@ -157,7 +157,7 @@ async function assertDesktopBandLayout(table, label) {
 
 async function assertDesktopScrollableHeaderLayout(table, label) {
   const contract = await table.evaluate(async (element) => {
-    const surface = element.querySelector(".pui-data-table__scroller");
+    const surface = element.querySelector(".ui-data-table__scroller");
     const header = surface.querySelector("thead th:last-child");
     const surfaceRect = surface.getBoundingClientRect();
     const headerRectBefore = header.getBoundingClientRect();
@@ -175,7 +175,7 @@ async function assertDesktopScrollableHeaderLayout(table, label) {
       maxScrollTop,
       actualScrollTop: firstRowTopBefore - firstRowTopAfter,
       headerHeight: headerRectBefore.height,
-      headerOffset: surfaceStyle.getPropertyValue("--_pui-data-table-header-height").trim(),
+      headerOffset: surfaceStyle.getPropertyValue("--_ui-data-table-header-height").trim(),
       scrollbarGutter: surfaceStyle.scrollbarGutter,
       backgroundImage: surfaceStyle.backgroundImage,
       headerPosition: headerStyle.position,
@@ -199,7 +199,7 @@ async function assertDesktopScrollableHeaderLayout(table, label) {
 
 async function assertMobileScrollbarHasNoHeaderOffset(surface, label) {
   const contract = await surface.evaluate((element) => ({
-    headerOffset: getComputedStyle(element).getPropertyValue("--_pui-data-table-header-height").trim(),
+    headerOffset: getComputedStyle(element).getPropertyValue("--_ui-data-table-header-height").trim(),
     scrollbarGutter: getComputedStyle(element).scrollbarGutter,
     overflowY: getComputedStyle(element).overflowY,
   }));
@@ -247,16 +247,16 @@ function assertRoundedGeometry(geometry, label, { paginated }) {
 
 async function assertRounded(table, label, { paginated, empty = false }) {
   const geometry = await table.evaluate((element) => {
-    const frame = element.querySelector(".pui-data-table__frame");
+    const frame = element.querySelector(".ui-data-table__frame");
     const frameStyle = getComputedStyle(frame);
     const frameRect = frame.getBoundingClientRect();
-    const scroller = frame.querySelector(".pui-data-table__scroller");
-    const mobile = frame.querySelector(".pui-data-table__mobile");
-    const surface = frame.querySelector(".pui-data-table__empty-scroller")
+    const scroller = frame.querySelector(".ui-data-table__scroller");
+    const mobile = frame.querySelector(".ui-data-table__mobile");
+    const surface = frame.querySelector(".ui-data-table__empty-scroller")
       ?? (getComputedStyle(scroller).display === "none" ? mobile : scroller);
     const surfaceStyle = getComputedStyle(surface);
-    const pager = frame.querySelector(".pui-data-table__pagination");
-    const pagination = pager?.querySelector(".pui-pagination");
+    const pager = frame.querySelector(".ui-data-table__pagination");
+    const pagination = pager?.querySelector(".ui-pagination");
     const tableHeaders = [...frame.querySelectorAll("table thead th")].map((header) => header.getBoundingClientRect().width);
     return {
       width: frameRect.width,
@@ -264,8 +264,8 @@ async function assertRounded(table, label, { paginated, empty = false }) {
       frameBorders: [frameStyle.borderTopWidth, frameStyle.borderRightWidth, frameStyle.borderBottomWidth, frameStyle.borderLeftWidth],
       frameOverflow: [frameStyle.overflowX, frameStyle.overflowY],
       surfaceRadii: [surfaceStyle.borderTopLeftRadius, surfaceStyle.borderTopRightRadius, surfaceStyle.borderBottomRightRadius, surfaceStyle.borderBottomLeftRadius],
-      marker: frame.classList.contains("pui-data-table__frame--paginated"),
-      fixedViewport: frame.classList.contains("pui-data-table__frame--fixed-viewport"),
+      marker: frame.classList.contains("ui-data-table__frame--paginated"),
+      fixedViewport: frame.classList.contains("ui-data-table__frame--fixed-viewport"),
       pager: pager ? {
         left: pager.getBoundingClientRect().left,
         right: pager.getBoundingClientRect().right,
@@ -291,7 +291,7 @@ async function assertRounded(table, label, { paginated, empty = false }) {
   });
   assertRoundedGeometry(geometry, label, { paginated });
   if (empty) {
-    assert.equal(await table.locator(".pui-empty").count(), 1, `${label}: empty state missing`);
+    assert.equal(await table.locator(".ui-empty").count(), 1, `${label}: empty state missing`);
     assert.equal(geometry.surface.role, "region", `${label}: fixed empty state has no scroll-region semantics`);
     assert.equal(geometry.surface.tabIndex, 0, `${label}: fixed empty state is not keyboard focusable`);
   }
@@ -300,37 +300,37 @@ async function assertRounded(table, label, { paginated, empty = false }) {
 
 export async function runDataTableRoundedRegression({ page, baseURL }) {
   assert.ok(baseURL, "A baseURL is required");
-  const widths = process.env.PERSONAL_UI_TABLE_WIDTHS
-    ? process.env.PERSONAL_UI_TABLE_WIDTHS.split(",").map(Number).filter((width) => Number.isFinite(width) && width > 0)
+  const widths = process.env.UI_TABLE_WIDTHS
+    ? process.env.UI_TABLE_WIDTHS.split(",").map(Number).filter((width) => Number.isFinite(width) && width > 0)
     : [2560, 1440, 1024, 736, 360, 320];
-  assert.ok(widths.length > 0, "PERSONAL_UI_TABLE_WIDTHS did not contain a valid viewport width");
+  assert.ok(widths.length > 0, "UI_TABLE_WIDTHS did not contain a valid viewport width");
 
   for (const width of widths) {
     await page.setViewportSize({ width, height: 900 });
     await page.goto(`${baseURL}/?regressionWidth=${width}#/patterns/list-filter`);
       const casePanel = await selectExplorerCase(page, legacyExplorerCaseTabs.listFilter);
-      const table = casePanel.locator(".pui-data-page .pui-data-table");
+      const table = casePanel.locator(".ui-data-page .ui-data-table");
       const surfaceSelector = width <= 640
-        ? ".pui-data-page .pui-data-table__mobile"
-        : ".pui-data-page .pui-data-table__scroller";
+        ? ".ui-data-page .ui-data-table__mobile"
+        : ".ui-data-page .ui-data-table__scroller";
       const surface = casePanel.locator(surfaceSelector);
       const scenario = casePanel.getByRole("group", { name: "选择下一次查询响应" });
-      const tableState = (state) => casePanel.locator(`.pui-data-page .pui-data-table[data-state="${state}"]`);
-      const rowSelector = width <= 640 ? ".pui-mobile-data-row:first-child" : "tbody tr:first-child";
+      const tableState = (state) => casePanel.locator(`.ui-data-page .ui-data-table[data-state="${state}"]`);
+      const rowSelector = width <= 640 ? ".ui-mobile-data-row:first-child" : "tbody tr:first-child";
       await tableState("ready").waitFor();
       const ready = await assertRounded(table, `ready ${width}px`, { paginated: true });
       const readyRowHeight = await surface.locator(rowSelector).evaluate((element) => element.getBoundingClientRect().height);
       assert.equal(ready.fixedViewport, true, `paginated table did not enable its stable viewport at ${width}px`);
       await assertRowsFitSurface(surface, rowSelector, `ready ${width}px`);
       if (width > 640) await assertDesktopBandLayout(table, `ready ${width}px`);
-      const lastRow = surface.locator(width <= 640 ? ".pui-mobile-data-row:last-child" : "tbody tr:last-child td:last-child");
+      const lastRow = surface.locator(width <= 640 ? ".ui-mobile-data-row:last-child" : "tbody tr:last-child td:last-child");
       assert.equal(await lastRow.evaluate((element) => getComputedStyle(element).borderBottomWidth), "0px", `double bottom line at ${width}px`);
       const readyHeight = ready.surface.height;
 
       const [explicitLoading] = await Promise.all([
         captureLoadingGeometry(
           casePanel,
-          width <= 640 ? ".pui-data-table__mobile" : ".pui-data-table__scroller",
+          width <= 640 ? ".ui-data-table__mobile" : ".ui-data-table__scroller",
           rowSelector,
         ),
         casePanel.getByRole("button", { name: "查询", exact: true }).click(),
@@ -350,7 +350,7 @@ export async function runDataTableRoundedRegression({ page, baseURL }) {
 
       await table.getByRole("combobox", { name: "每页数量" }).click();
       await Promise.all([
-        captureLoadingGeometry(casePanel, width <= 640 ? ".pui-data-table__mobile" : ".pui-data-table__scroller", rowSelector),
+        captureLoadingGeometry(casePanel, width <= 640 ? ".ui-data-table__mobile" : ".ui-data-table__scroller", rowSelector),
         page.getByRole("option", { name: "20 条" }).click(),
       ]);
       await tableState("ready").waitFor();
@@ -370,8 +370,8 @@ export async function runDataTableRoundedRegression({ page, baseURL }) {
       if (width > 640) {
         assertDesktopColumnLayout(ready.tableHeaders, largePage.tableHeaders, `vertical scrollbar at ${width}px`);
       }
-      if (process.env.PERSONAL_UI_TABLE_SCREENSHOT_PREFIX && [1440, 320].includes(width)) {
-        await page.screenshot({ path: `${process.env.PERSONAL_UI_TABLE_SCREENSHOT_PREFIX}-scrolling-${width}.png`, fullPage: true });
+      if (process.env.UI_TABLE_SCREENSHOT_PREFIX && [1440, 320].includes(width)) {
+        await page.screenshot({ path: `${process.env.UI_TABLE_SCREENSHOT_PREFIX}-scrolling-${width}.png`, fullPage: true });
       }
 
       await casePanel.getByRole("button", { name: "查询", exact: true }).focus();
@@ -415,7 +415,7 @@ export async function runDataTableRoundedRegression({ page, baseURL }) {
       assert.ok(beforePageSizeReset.scrollTop > 0, `could not prepare the table scroll reset case at ${width}px`);
       await table.getByRole("combobox", { name: "每页数量" }).click();
       const [pageSizeLoading] = await Promise.all([
-        captureLoadingGeometry(casePanel, width <= 640 ? ".pui-data-table__mobile" : ".pui-data-table__scroller", rowSelector),
+        captureLoadingGeometry(casePanel, width <= 640 ? ".ui-data-table__mobile" : ".ui-data-table__scroller", rowSelector),
         page.getByRole("option", { name: "50 条" }).click(),
       ]);
       const loadingScroll = pageSizeLoading.surface;
@@ -433,23 +433,23 @@ export async function runDataTableRoundedRegression({ page, baseURL }) {
 
       await casePanel.getByRole("searchbox", { name: "搜索姓名或邮箱" }).fill("ning");
       const [sparseLoading] = await Promise.all([
-        captureLoadingGeometry(casePanel, width <= 640 ? ".pui-data-table__mobile" : ".pui-data-table__scroller", rowSelector),
+        captureLoadingGeometry(casePanel, width <= 640 ? ".ui-data-table__mobile" : ".ui-data-table__scroller", rowSelector),
         casePanel.getByRole("button", { name: "查询", exact: true }).click(),
       ]);
       assertRoundedGeometry(sparseLoading, `sparse loading ${width}px`, { paginated: true });
       assert.ok(Math.abs(ready.surface.height - sparseLoading.surface.height) <= 1, `query loading changed table height at ${width}px`);
       await tableState("ready").waitFor();
       const sparse = await assertRounded(table, `sparse ready ${width}px`, { paginated: true });
-      assert.equal(await surface.locator(width <= 640 ? ".pui-mobile-data-row" : "tbody tr").count(), 2, `sparse query did not render two rows at ${width}px`);
-      assert.equal(await table.locator(".pui-data-table__pagination").count(), 1, `sparse query removed pagination at ${width}px`);
+      assert.equal(await surface.locator(width <= 640 ? ".ui-mobile-data-row" : "tbody tr").count(), 2, `sparse query did not render two rows at ${width}px`);
+      assert.equal(await table.locator(".ui-data-table__pagination").count(), 1, `sparse query removed pagination at ${width}px`);
       await table.getByText("1-2 / 2 条结果", { exact: true }).waitFor();
-      await assertRowsFitSurface(surface, width <= 640 ? ".pui-mobile-data-row" : "tbody tr", `sparse ready ${width}px`);
+      await assertRowsFitSurface(surface, width <= 640 ? ".ui-mobile-data-row" : "tbody tr", `sparse ready ${width}px`);
       if (width > 640) await assertDesktopBandLayout(table, `sparse ready ${width}px`);
       assert.ok(Math.abs(ready.surface.height - sparse.surface.height) <= 1, `sparse ready result changed table height at ${width}px`);
       assert.ok(Math.abs(ready.frame.height - sparse.frame.height) <= 1, `sparse ready result changed frame height at ${width}px`);
       assert.ok(Math.abs((largestPage.surface.right - largestPage.surface.left) - (sparse.surface.right - sparse.surface.left)) <= 1, `sparse results changed the table surface width at ${width}px (${largestPage.surface.right - largestPage.surface.left} -> ${sparse.surface.right - sparse.surface.left})`);
       assert.ok(Math.abs(largestPage.width - sparse.width) <= 1, `sparse results changed the table frame width at ${width}px (${largestPage.width} -> ${sparse.width})`);
-      const sparseLastRowCells = surface.locator(width <= 640 ? ".pui-mobile-data-row:last-child" : ":scope > table > tbody > tr:last-child > td");
+      const sparseLastRowCells = surface.locator(width <= 640 ? ".ui-mobile-data-row:last-child" : ":scope > table > tbody > tr:last-child > td");
       const sparseLastRowBorders = await sparseLastRowCells.evaluateAll((elements) => elements.map((element) => getComputedStyle(element).borderBottomWidth));
       assert.ok(sparseLastRowBorders.length > 0, `sparse result last row missing at ${width}px`);
       assert.ok(sparseLastRowBorders.every((widthValue) => widthValue === "1px"), `sparse result last-row divider incomplete at ${width}px`);
@@ -459,13 +459,13 @@ export async function runDataTableRoundedRegression({ page, baseURL }) {
       const readyPagerOffset = ready.pager.top - ready.frame.top;
       const sparsePagerOffset = sparse.pager.top - sparse.frame.top;
       assert.ok(Math.abs(readyPagerOffset - sparsePagerOffset) <= 1, `sparse ready result moved pagination within the table at ${width}px`);
-      if (process.env.PERSONAL_UI_TABLE_SCREENSHOT_PREFIX && [1440, 320].includes(width)) {
-        await page.screenshot({ path: `${process.env.PERSONAL_UI_TABLE_SCREENSHOT_PREFIX}-sparse-${width}.png`, fullPage: true });
+      if (process.env.UI_TABLE_SCREENSHOT_PREFIX && [1440, 320].includes(width)) {
+        await page.screenshot({ path: `${process.env.UI_TABLE_SCREENSHOT_PREFIX}-sparse-${width}.png`, fullPage: true });
       }
 
       await casePanel.getByRole("button", { name: "重置", exact: true }).click();
       await Promise.all([
-        captureLoadingGeometry(casePanel, width <= 640 ? ".pui-data-table__mobile" : ".pui-data-table__scroller", rowSelector),
+        captureLoadingGeometry(casePanel, width <= 640 ? ".ui-data-table__mobile" : ".ui-data-table__scroller", rowSelector),
         casePanel.getByRole("button", { name: "查询", exact: true }).click(),
       ]);
       await tableState("ready").waitFor();
@@ -473,7 +473,7 @@ export async function runDataTableRoundedRegression({ page, baseURL }) {
 
       await scenario.getByRole("button", { name: "空结果" }).click();
       const [emptyLoading] = await Promise.all([
-        captureLoadingGeometry(casePanel, width <= 640 ? ".pui-data-table__mobile" : ".pui-data-table__scroller", rowSelector),
+        captureLoadingGeometry(casePanel, width <= 640 ? ".ui-data-table__mobile" : ".ui-data-table__scroller", rowSelector),
         casePanel.getByRole("button", { name: "查询", exact: true }).click(),
       ]);
       assertRoundedGeometry(emptyLoading, `loading ${width}px`, { paginated: true });
@@ -486,17 +486,17 @@ export async function runDataTableRoundedRegression({ page, baseURL }) {
       assert.ok(Math.abs(ready.frame.height - empty.frame.height) <= 1, `empty result changed the table frame at ${width}px`);
       assert.ok(Math.abs((ready.pager.top - ready.frame.top) - (empty.pager.top - empty.frame.top)) <= 1, `empty result moved pagination within the table at ${width}px`);
 
-      const emptyFrame = table.locator(".pui-data-table__frame");
+      const emptyFrame = table.locator(".ui-data-table__frame");
       const originalViewportHeights = await emptyFrame.evaluate((element) => {
         const original = {
-          desktop: element.style.getPropertyValue("--pui-data-table-desktop-viewport-height"),
-          mobile: element.style.getPropertyValue("--pui-data-table-mobile-viewport-height"),
+          desktop: element.style.getPropertyValue("--ui-data-table-desktop-viewport-height"),
+          mobile: element.style.getPropertyValue("--ui-data-table-mobile-viewport-height"),
         };
-        element.style.setProperty("--pui-data-table-desktop-viewport-height", "100px");
-        element.style.setProperty("--pui-data-table-mobile-viewport-height", "76px");
+        element.style.setProperty("--ui-data-table-desktop-viewport-height", "100px");
+        element.style.setProperty("--ui-data-table-mobile-viewport-height", "76px");
         return original;
       });
-      const emptyScroller = table.locator(".pui-data-table__empty-scroller");
+      const emptyScroller = table.locator(".ui-data-table__empty-scroller");
       const compactEmpty = await emptyScroller.evaluate((element) => {
         element.scrollTop = 0;
         element.focus();
@@ -507,8 +507,8 @@ export async function runDataTableRoundedRegression({ page, baseURL }) {
       await emptyScroller.press("PageDown");
       assert.ok(await settledScrollTop(emptyScroller, 0) > 0, `compact fixed empty viewport cannot be scrolled by keyboard at ${width}px`);
       await emptyFrame.evaluate((element, original) => {
-        element.style.setProperty("--pui-data-table-desktop-viewport-height", original.desktop);
-        element.style.setProperty("--pui-data-table-mobile-viewport-height", original.mobile);
+        element.style.setProperty("--ui-data-table-desktop-viewport-height", original.desktop);
+        element.style.setProperty("--ui-data-table-mobile-viewport-height", original.mobile);
       }, originalViewportHeights);
 
       await scenario.getByRole("button", { name: "请求失败" }).click();
@@ -527,12 +527,12 @@ export async function runDataTableRoundedRegression({ page, baseURL }) {
       await casePanel.getByRole("button", { name: "查询", exact: true }).click();
       await tableState("error").waitFor();
       await assertRounded(table, `error ${width}px`, { paginated: true });
-      assert.equal(await table.locator(":scope > .pui-alert").count(), 1, `error alert moved inside table at ${width}px`);
+      assert.equal(await table.locator(":scope > .ui-alert").count(), 1, `error alert moved inside table at ${width}px`);
       assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), `horizontal overflow at ${width}px`);
   }
   console.log(`DataTable rounded and stable-height ready/loading/sparse/empty/error regression passed at ${widths.map((width) => `${width}px`).join(", ")}.`);
 }
 
-if (isPersonalUiRegressionMain(import.meta.url)) {
-  await runPersonalUiRegression(runDataTableRoundedRegression);
+if (isUIRegressionMain(import.meta.url)) {
+  await runUIRegression(runDataTableRoundedRegression);
 }

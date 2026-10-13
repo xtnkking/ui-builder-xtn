@@ -1,7 +1,7 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"transfer/overview","exports":["Transfer"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"transfer/overview","exports":["Transfer"]}
 import { StatePreview } from "../state-preview";
 import { useState } from "react";
-import { Field, Transfer } from "../../../personal-ui";
+import { Field, Transfer } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 const members = [

@@ -1,0 +1,3991 @@
+{
+  "schemaVersion": 1,
+  "layerOrder": [
+    "ui.reset",
+    "ui.tokens",
+    "ui.base",
+    "ui.components",
+    "ui.utilities"
+  ],
+  "files": [
+    "src/ui/styles.css",
+    "src/ui/styles/extended.css",
+    "src/ui/styles/inputs-extra.css",
+    "src/ui/styles/layout-actions-display.css"
+  ],
+  "selectorOwners": [
+    {
+      "selector": ".ui-accordion",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-accordion__item",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-alert",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-alert__action",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-alert__copy",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-alert__icon",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-alert--danger",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-alert--success",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-alert--warning",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-align-center",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-align-end",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-anchor-nav",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-app-nav",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-app-nav__actions",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-app-nav__badge",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-app-nav__brand",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-app-nav__icon",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-app-nav__item",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-app-nav__items",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-app-nav__label",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-app-nav--bottom",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-app-nav--side",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-app-nav--top",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-applied-tags",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-aspect-ratio",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-async-select",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-async-select__footer",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-async-select__list",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-async-select__popover",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-attachment",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-attachment__actions",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-attachment__copy",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-attachment__icon",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-attachment__link",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-auth",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-auth__company",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-auth__create",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-auth__form",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-auth__heading",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-auth__legal",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-auth__options",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-auth__panel",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-auth__product-copy",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-auth__scene",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-auth__visual",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-auth-page",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-auth-page__content",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-auth-page__fields",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-auth-page__form",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-auth-page__identity",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-auth-page__layout",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-auth-page__visual",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-auth-unavailable",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-autocomplete",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-autocomplete__list",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-avatar",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-avatar-group",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-avatar-group__overflow",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-badge",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-badge__anchor",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-badge__indicator",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-badge__indicator--blue",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-badge__indicator--danger",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-badge__indicator--dot",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-badge__indicator--neutral",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-badge__indicator--success",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-badge__indicator--warning",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-badge--anchored",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-banner",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-banner--sticky",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-bar-chart",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-bar-chart__item",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-bar-chart__label",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-bar-chart__track",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-bar-chart__value",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-box",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-box--default",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-box--pad-large",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-box--pad-medium",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-box--pad-small",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-box--pad-xlarge",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-box--pad-xsmall",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-box--raised",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-box--subtle",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-breadcrumbs",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-button",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-button__content",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-button__icon",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-button__label",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-button__loading",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-button__trailing",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-button--danger",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-button--field",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-button--ghost",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-button--primary",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-button--small",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-button-group",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-button-group--attached",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-calendar",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-calendar__grid",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-card",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-card__body",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-card__footer",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-card__header",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-card__header-content",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-card__heading-copy",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-card--outlined",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-card--raised",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-card--subtle",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-carousel",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-carousel__controls",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-carousel__dots",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-carousel__stage",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-cascader",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-choice",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-clipboard-button",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-code-block",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-code-block__toolbar",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-code-block--wrap",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-code-editor",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-code-editor__input",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-code-editor__meta",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-collapse",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-collapse__content",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-collapse__heading",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-collapse__panel",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-collapse__trigger",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-color-picker",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-color-picker__native",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-color-picker__swatch",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-color-picker__swatches",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-combobox",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-combobox__empty",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-combobox__list",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-combobox__popover",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-combobox__search",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-combobox__trigger",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-combobox__value",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-command",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-command__copy",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-command__icon",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-command__results",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-command__shortcut",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-command__status",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-confirm-actions",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-context-menu",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-context-menu__label",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-context-menu__surface",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-data-page",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-data-table",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-data-table__cell--pin-end",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-data-table__cell--pin-start",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-data-table__cell-content",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-data-table__cell-content--text",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-data-table__empty-scroller",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-data-table__frame",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-data-table__frame--fixed-viewport",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-data-table__frame--paginated",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-data-table__frame--viewport-slack",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-data-table__header-content",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-data-table__header-content--text",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-data-table__mobile",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-data-table__pagination",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-data-table__scroller",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-data-table__skeleton-cell",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-data-table__sort",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-data-table__sort-label",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-data-table--has-mobile",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-date-range",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-date-range__error",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-date-range__separator",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-description-list",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-description-list__item",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-description-list--divided",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-detail-page",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-detail-page__layout",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-detail-page__sections",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-dialog",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-dialog__body",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-dialog__footer",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-dialog__header",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-dialog--large",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-dialog--no-body",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-dialog--small",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-divider",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-divider--horizontal",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-divider--vertical",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-drag-drop",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-drag-drop__native",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-drawer",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-drawer__body",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-drawer__footer",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-drawer__header",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-drawer--edge",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-drawer--large",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-dropdown",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-dropdown__item",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-dropdown__item-icon",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-dropdown__item-label",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-dropdown__menu",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-dropdown__menu--end",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-dropdown__menu--start",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-dropdown__trigger-label",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-empty",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-empty__action",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-empty__icon",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-empty--compact",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-expandable-text",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-extra-error",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-extra-option",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-extra-option__copy",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-extra-option__leading",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-extra-popover",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-extra-state",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-field",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-field__error",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-field__hint",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-file-upload",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-file-upload__copy",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-file-upload__dropzone",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-file-upload__file-icon",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-file-upload__footer",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-file-upload__item",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-file-upload__item-actions",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-file-upload__item-copy",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-file-upload__list",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-file-upload__native",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-file-upload__progress",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-filter-bar",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-filter-bar__actions",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-filter-bar__active",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-filter-bar__fields",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-filter-bar__status",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-focus-trap",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-form",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-form-control-bridge",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-form-page__actions",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-form-page__content",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-form-page__form",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-gallery",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-gallery__caption",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-gallery__frame",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-gallery__item",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-gallery-empty",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-grid",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-grid--fixed",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-hover-card",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-icon-button",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-icon-button__icon",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-icon-button--danger",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-icon-button--secondary",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-import-export-page__grid",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-infinite-scroll",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-infinite-scroll__sentinel",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-inline",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-inline-edit",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-inline-edit__actions",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-inline-edit__error",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-inline-edit__value",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-inline-message",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-inline-message--danger",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-inline-message--success",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-inline-message--warning",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-input",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-input--embedded",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-input-action",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-input-shell",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-input-shell__end",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-input-shell__start",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-keyboard-shortcut",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-keyboard-shortcut__separator",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-label",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-label__required",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-layout-portal",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-lightbox",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-lightbox__caption",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-lightbox__close",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-lightbox__image-error",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-lightbox__next",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-lightbox__position",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-lightbox__previous",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-link",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-link__icon",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-link__label",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-link__trailing",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-link--danger",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-link--muted",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-link-button",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-list",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-list__item",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-list--divided",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-list-empty",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-list-page",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-list-page__bulk",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-list-page__content",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-list-page__filters",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-list-page__footer",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-list-page--wide",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-load-more",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-load-more__end",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-master-detail__detail",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-master-detail__layout",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-master-detail__master",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-media",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-media__frame",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-member-cell",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-member-mobile-row",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-member-mobile-row__copy",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-menu",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-meter",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-meter-group",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-meter-group__label",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-mobile-data-row__copy",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-mobile-data-row--loading",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-multi-select",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-multi-select__check",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-multi-select__count",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-multi-select__footer",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-multi-select__list",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-multi-select__popover",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-multi-select__summary",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-multi-select__trigger",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-number-input",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-number-input__steps",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-option",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-option__check",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-option__copy",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-option__leading",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-otp",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-otp__cell",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-overflow-text",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-overlay",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-overlay--drawer",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-overlay--drawer-edge",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-page",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-page-button",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-page-button__label",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-page-header",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-page-heading",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-page-heading__actions",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-page-heading__copy",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-pagination",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-pagination__controls",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-pagination__ellipsis",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-pagination__mobile-label",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-pagination__mobile-loading",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-pagination__mobile-page",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-pagination__mobile-status",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-pagination__pages",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-pagination__summary",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-popconfirm",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-popconfirm__heading",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-popover",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-popover__surface",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-popover__trigger",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-portal-source",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-progress",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-progress-group",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-progress-group__label",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-progress-ring",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-progress-ring--large",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-progress-ring--small",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-query-state",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-query-toolbar",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-query-toolbar__actions",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-rating",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-rating__stars",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-rating__value",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-resizable",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-resizable__handle",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-resizable__panel",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-resizable--horizontal",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-resizable--vertical",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-responsive-visibility",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-result-summary",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-rich-text",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-rich-text__toolbar",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-scheduler",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-scheduler__agenda",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-scheduler__empty",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-scheduler__event",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-scroll-area",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-scroll-area--both",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-scroll-area--horizontal",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-scroll-area--vertical",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-search-filter-page",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-segmented",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-segmented--fill",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-segmented--mobile-fill",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-select",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-select__indicator",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-select__option",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-select__option-label",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-select__popover",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-select__value",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-select-shell",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-settings-page",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-settings-page__layout",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-skeleton",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-skeleton--avatar",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-skeleton--short",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-slider",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-slider__header",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-slider__range-control",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-sortable",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-sortable__actions",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-spinner",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-spinner-wrap",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-split-button",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-split-button__menu",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-stack",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-statistic",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-statistic__description",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-statistic__label",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-statistic__suffix",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-statistic__trend",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-statistic__trend--negative",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-statistic__trend--positive",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-statistic__value",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-statistic__value-row",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-status-indicator",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-status-indicator__detail",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-status-indicator__dot",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-status-indicator__label",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-status-indicator--blue",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-status-indicator--danger",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-status-indicator--neutral",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-status-indicator--success",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-status-indicator--warning",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-status-page",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-stepper",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-stepper__copy",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-stepper__indicator",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-stepper--responsive",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-stepper--vertical",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-sticky-action-bar",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-sticky-action-bar__actions",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-sticky-action-bar__copy",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-switch",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-switch__track",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-tabs__label",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-tabs__list",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-tabs__panel",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-tabs--fill",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-tag",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-tag__calling-code",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-tag__country",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-tag__country-code",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-tag__country-name",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-tag__flag",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-tag__label",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-tag__leading",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-tag__remove",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-tag--blue",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-tag--danger",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-tag--success",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-tag--warning",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-tag-input",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-tag-input__control",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-tag-input__error",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-tag-input__input",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-tag-input__suggestions",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-textarea",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-timeline",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-timeline__copy",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-timeline__item",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-timeline__marker",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-timeline__marker--blue",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-timeline__marker--danger",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-timeline__marker--success",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-timeline__marker--warning",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-toast",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-toast__action",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-toast__action-content",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-toast__action-loading",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-toast__actions",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-toast__close",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-toast__copy",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-toast__countdown",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-toast__icon",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-toast__main",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-toast--danger",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-toast--pill",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-toast--success",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-toast--warning",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-toast-viewport",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-toast-viewport--bottom-right",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-toast-viewport--top",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-toggle-button",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-toolbar",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-toolbar__end",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-toolbar__main",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-toolbar__start",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-tooltip",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-tooltip__bubble",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-tooltip__trigger",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-tooltip--fill",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-tour",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-tour__card",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-tour__count",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-tour__scrim",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-tour__spotlight",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-transfer",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-transfer__actions",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-transfer__panel",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-tree",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-tree__row",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-tree__spacer",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-tree-select",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-tree-select__expander",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-tree-select__label",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-tree-select__row",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-tree-select__spacer",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-tree-select__tree",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
+      "selector": ".ui-tree-table",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-tree-table__empty",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-tree-table__tree-cell",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-validation-summary",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-validation-summary__heading",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-virtual-list",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-virtual-list__empty",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-virtual-list__loading",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-virtual-list__spacer",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-visually-hidden",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-wizard-page__actions",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-wizard-page__content",
+      "file": "src/ui/styles/extended.css"
+    }
+  ],
+  "tokens": [
+    {
+      "token": "--_ui-auth-visual-bg",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 72
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 151
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 225
+        }
+      ]
+    },
+    {
+      "token": "--_ui-auth-visual-copy",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 75
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 154
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 228
+        }
+      ]
+    },
+    {
+      "token": "--_ui-auth-visual-muted",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 74
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 153
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 227
+        }
+      ]
+    },
+    {
+      "token": "--_ui-auth-visual-text",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 73
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 152
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 226
+        }
+      ]
+    },
+    {
+      "token": "--_ui-backdrop",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 68
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 147
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 221
+        }
+      ]
+    },
+    {
+      "token": "--_ui-carousel-dot",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 83
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 162
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 236
+        }
+      ]
+    },
+    {
+      "token": "--_ui-chart-track",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 82
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 161
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 235
+        }
+      ]
+    },
+    {
+      "token": "--_ui-code-action",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 80
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 159
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 233
+        }
+      ]
+    },
+    {
+      "token": "--_ui-code-bg",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 76
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 155
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 229
+        }
+      ]
+    },
+    {
+      "token": "--_ui-code-border",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 78
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 157
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 231
+        }
+      ]
+    },
+    {
+      "token": "--_ui-code-muted",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 79
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 158
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 232
+        }
+      ]
+    },
+    {
+      "token": "--_ui-code-text",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 77
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 156
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 230
+        }
+      ]
+    },
+    {
+      "token": "--_ui-color-swatch-shadow",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 89
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 168
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 242
+        }
+      ]
+    },
+    {
+      "token": "--_ui-color-swatch-text",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 88
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 167
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 241
+        }
+      ]
+    },
+    {
+      "token": "--_ui-control-hover-bg",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 45
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 124
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 198
+        }
+      ]
+    },
+    {
+      "token": "--_ui-control-hover-border",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 44
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 123
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 197
+        }
+      ]
+    },
+    {
+      "token": "--_ui-danger-border",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 62
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 141
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 215
+        }
+      ]
+    },
+    {
+      "token": "--_ui-danger-hover",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 46
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 125
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 199
+        }
+      ]
+    },
+    {
+      "token": "--_ui-data-table-header-height",
+      "kind": "internal-component",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.components",
+          "line": 2569
+        }
+      ]
+    },
+    {
+      "token": "--_ui-disabled-bg",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 47
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 126
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 200
+        }
+      ]
+    },
+    {
+      "token": "--_ui-disabled-text",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 48
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 127
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 201
+        }
+      ]
+    },
+    {
+      "token": "--_ui-filter-action-offset",
+      "kind": "internal-runtime",
+      "declarations": []
+    },
+    {
+      "token": "--_ui-filter-align-offset",
+      "kind": "internal-runtime",
+      "declarations": []
+    },
+    {
+      "token": "--_ui-icon-button-background",
+      "kind": "internal-component",
+      "declarations": [
+        {
+          "file": "src/ui/styles/extended.css",
+          "layer": "ui.components",
+          "line": 262
+        }
+      ]
+    },
+    {
+      "token": "--_ui-icon-button-border",
+      "kind": "internal-component",
+      "declarations": [
+        {
+          "file": "src/ui/styles/extended.css",
+          "layer": "ui.components",
+          "line": 263
+        }
+      ]
+    },
+    {
+      "token": "--_ui-icon-button-glyph-size",
+      "kind": "internal-component",
+      "declarations": [
+        {
+          "file": "src/ui/styles/extended.css",
+          "layer": "ui.components",
+          "line": 266
+        }
+      ]
+    },
+    {
+      "token": "--_ui-icon-button-hover-background",
+      "kind": "internal-component",
+      "declarations": [
+        {
+          "file": "src/ui/styles/extended.css",
+          "layer": "ui.components",
+          "line": 265
+        }
+      ]
+    },
+    {
+      "token": "--_ui-icon-button-hover-ink",
+      "kind": "internal-component",
+      "declarations": [
+        {
+          "file": "src/ui/styles/extended.css",
+          "layer": "ui.components",
+          "line": 264
+        }
+      ]
+    },
+    {
+      "token": "--_ui-icon-button-ink",
+      "kind": "internal-component",
+      "declarations": [
+        {
+          "file": "src/ui/styles/extended.css",
+          "layer": "ui.components",
+          "line": 261
+        }
+      ]
+    },
+    {
+      "token": "--_ui-input-autofill-background",
+      "kind": "internal-component",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.components",
+          "line": 662
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.components",
+          "line": 705
+        }
+      ]
+    },
+    {
+      "token": "--_ui-input-autofill-state-shadow",
+      "kind": "internal-component",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.components",
+          "line": 664
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.components",
+          "line": 758
+        }
+      ]
+    },
+    {
+      "token": "--_ui-input-autofill-text",
+      "kind": "internal-component",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.components",
+          "line": 663
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.components",
+          "line": 706
+        }
+      ]
+    },
+    {
+      "token": "--_ui-interactive-hover-bg",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 63
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 142
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 216
+        }
+      ]
+    },
+    {
+      "token": "--_ui-lightbox-backdrop",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 84
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 163
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 237
+        }
+      ]
+    },
+    {
+      "token": "--_ui-lightbox-text",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 85
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 164
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 238
+        }
+      ]
+    },
+    {
+      "token": "--_ui-meter-track",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 81
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 160
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 234
+        }
+      ]
+    },
+    {
+      "token": "--_ui-neutral-tag-bg",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 57
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 136
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 210
+        }
+      ]
+    },
+    {
+      "token": "--_ui-neutral-tag-border",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 56
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 135
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 209
+        }
+      ]
+    },
+    {
+      "token": "--_ui-neutral-tag-text",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 58
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 137
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 211
+        }
+      ]
+    },
+    {
+      "token": "--_ui-placeholder",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 49
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 128
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 202
+        }
+      ]
+    },
+    {
+      "token": "--_ui-primary-border",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 59
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 138
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 212
+        }
+      ]
+    },
+    {
+      "token": "--_ui-progress-track",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 64
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 143
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 217
+        }
+      ]
+    },
+    {
+      "token": "--_ui-rating",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 87
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 166
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 240
+        }
+      ]
+    },
+    {
+      "token": "--_ui-scrollbar-thumb",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 71
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 150
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 224
+        }
+      ]
+    },
+    {
+      "token": "--_ui-segmented-bg",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 53
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 132
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 206
+        }
+      ]
+    },
+    {
+      "token": "--_ui-segmented-border",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 54
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 133
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 207
+        }
+      ]
+    },
+    {
+      "token": "--_ui-segmented-shadow",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 55
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 134
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 208
+        }
+      ]
+    },
+    {
+      "token": "--_ui-skeleton",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 50
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 129
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 203
+        }
+      ]
+    },
+    {
+      "token": "--_ui-success-border",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 60
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 139
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 213
+        }
+      ]
+    },
+    {
+      "token": "--_ui-switch-thumb",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 52
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 131
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 205
+        }
+      ]
+    },
+    {
+      "token": "--_ui-switch-track",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 51
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 130
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 204
+        }
+      ]
+    },
+    {
+      "token": "--_ui-toast-close-hover",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 65
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 144
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 218
+        }
+      ]
+    },
+    {
+      "token": "--_ui-toast-countdown-fill",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 67
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 146
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 220
+        }
+      ]
+    },
+    {
+      "token": "--_ui-toast-countdown-track",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 66
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 145
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 219
+        }
+      ]
+    },
+    {
+      "token": "--_ui-tooltip-bg",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 69
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 148
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 222
+        }
+      ]
+    },
+    {
+      "token": "--_ui-tooltip-text",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 70
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 149
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 223
+        }
+      ]
+    },
+    {
+      "token": "--_ui-tour-backdrop",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 86
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 165
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 239
+        }
+      ]
+    },
+    {
+      "token": "--_ui-warning-border",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 61
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 140
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 214
+        }
+      ]
+    },
+    {
+      "token": "--ui-avatar-font-size",
+      "kind": "internal-component",
+      "declarations": [
+        {
+          "file": "src/ui/styles/layout-actions-display.css",
+          "layer": "ui.components",
+          "line": 588
+        },
+        {
+          "file": "src/ui/styles/layout-actions-display.css",
+          "layer": "ui.components",
+          "line": 589
+        },
+        {
+          "file": "src/ui/styles/layout-actions-display.css",
+          "layer": "ui.components",
+          "line": 590
+        },
+        {
+          "file": "src/ui/styles/layout-actions-display.css",
+          "layer": "ui.components",
+          "line": 591
+        }
+      ]
+    },
+    {
+      "token": "--ui-avatar-size",
+      "kind": "internal-component",
+      "declarations": [
+        {
+          "file": "src/ui/styles/layout-actions-display.css",
+          "layer": "ui.components",
+          "line": 588
+        },
+        {
+          "file": "src/ui/styles/layout-actions-display.css",
+          "layer": "ui.components",
+          "line": 589
+        },
+        {
+          "file": "src/ui/styles/layout-actions-display.css",
+          "layer": "ui.components",
+          "line": 590
+        },
+        {
+          "file": "src/ui/styles/layout-actions-display.css",
+          "layer": "ui.components",
+          "line": 591
+        }
+      ]
+    },
+    {
+      "token": "--ui-bg",
+      "kind": "public-semantic",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 22
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 101
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 175
+        }
+      ]
+    },
+    {
+      "token": "--ui-border",
+      "kind": "public-semantic",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 27
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 106
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 180
+        }
+      ]
+    },
+    {
+      "token": "--ui-border-strong",
+      "kind": "public-semantic",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 28
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 107
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 181
+        }
+      ]
+    },
+    {
+      "token": "--ui-clamp-lines",
+      "kind": "internal-runtime",
+      "declarations": []
+    },
+    {
+      "token": "--ui-control-height",
+      "kind": "internal-geometry",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 10
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.components",
+          "line": 1617
+        },
+        {
+          "file": "src/ui/styles/layout-actions-display.css",
+          "layer": "ui.components",
+          "line": 333
+        },
+        {
+          "file": "src/ui/styles/layout-actions-display.css",
+          "layer": "ui.components",
+          "line": 347
+        },
+        {
+          "file": "src/ui/styles/layout-actions-display.css",
+          "layer": "ui.components",
+          "line": 408
+        },
+        {
+          "file": "src/ui/styles/layout-actions-display.css",
+          "layer": "ui.components",
+          "line": 418
+        }
+      ]
+    },
+    {
+      "token": "--ui-danger",
+      "kind": "public-semantic",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 38
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 117
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 191
+        }
+      ]
+    },
+    {
+      "token": "--ui-danger-soft",
+      "kind": "public-semantic",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 39
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 118
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 192
+        }
+      ]
+    },
+    {
+      "token": "--ui-data-table-desktop-viewport-height",
+      "kind": "internal-runtime",
+      "declarations": []
+    },
+    {
+      "token": "--ui-data-table-mobile-viewport-height",
+      "kind": "internal-runtime",
+      "declarations": []
+    },
+    {
+      "token": "--ui-description-columns",
+      "kind": "internal-component",
+      "declarations": [
+        {
+          "file": "src/ui/styles/layout-actions-display.css",
+          "layer": "ui.components",
+          "line": 499
+        },
+        {
+          "file": "src/ui/styles/layout-actions-display.css",
+          "layer": "ui.components",
+          "line": 500
+        },
+        {
+          "file": "src/ui/styles/layout-actions-display.css",
+          "layer": "ui.components",
+          "line": 501
+        },
+        {
+          "file": "src/ui/styles/layout-actions-display.css",
+          "layer": "ui.components",
+          "line": 1028
+        },
+        {
+          "file": "src/ui/styles/layout-actions-display.css",
+          "layer": "ui.components",
+          "line": 1050
+        }
+      ]
+    },
+    {
+      "token": "--ui-event-color",
+      "kind": "internal-runtime",
+      "declarations": []
+    },
+    {
+      "token": "--ui-floating-anchor-width",
+      "kind": "internal-runtime",
+      "declarations": []
+    },
+    {
+      "token": "--ui-floating-max-height",
+      "kind": "internal-runtime",
+      "declarations": []
+    },
+    {
+      "token": "--ui-floating-max-width",
+      "kind": "internal-runtime",
+      "declarations": []
+    },
+    {
+      "token": "--ui-focus-ring",
+      "kind": "public-semantic",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 41
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 120
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 194
+        }
+      ]
+    },
+    {
+      "token": "--ui-font",
+      "kind": "internal-geometry",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 9
+        }
+      ]
+    },
+    {
+      "token": "--ui-gallery-columns",
+      "kind": "internal-component",
+      "declarations": [
+        {
+          "file": "src/ui/styles/layout-actions-display.css",
+          "layer": "ui.components",
+          "line": 1029
+        },
+        {
+          "file": "src/ui/styles/layout-actions-display.css",
+          "layer": "ui.components",
+          "line": 1062
+        }
+      ]
+    },
+    {
+      "token": "--ui-grid-columns",
+      "kind": "internal-runtime",
+      "declarations": []
+    },
+    {
+      "token": "--ui-grid-min",
+      "kind": "internal-runtime",
+      "declarations": []
+    },
+    {
+      "token": "--ui-meter-color",
+      "kind": "internal-component",
+      "declarations": [
+        {
+          "file": "src/ui/styles/layout-actions-display.css",
+          "layer": "ui.components",
+          "line": 896
+        },
+        {
+          "file": "src/ui/styles/layout-actions-display.css",
+          "layer": "ui.components",
+          "line": 901
+        },
+        {
+          "file": "src/ui/styles/layout-actions-display.css",
+          "layer": "ui.components",
+          "line": 902
+        },
+        {
+          "file": "src/ui/styles/layout-actions-display.css",
+          "layer": "ui.components",
+          "line": 903
+        }
+      ]
+    },
+    {
+      "token": "--ui-muted",
+      "kind": "public-semantic",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 26
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 105
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 179
+        }
+      ]
+    },
+    {
+      "token": "--ui-on-danger",
+      "kind": "public-semantic",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 40
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 119
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 193
+        }
+      ]
+    },
+    {
+      "token": "--ui-on-primary",
+      "kind": "public-semantic",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 33
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 112
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 186
+        }
+      ]
+    },
+    {
+      "token": "--ui-panel-size",
+      "kind": "internal-component",
+      "declarations": [
+        {
+          "file": "src/ui/styles/extended.css",
+          "layer": "ui.components",
+          "line": 208
+        }
+      ]
+    },
+    {
+      "token": "--ui-primary",
+      "kind": "public-semantic",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 29
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 108
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 182
+        }
+      ]
+    },
+    {
+      "token": "--ui-primary-hover",
+      "kind": "public-semantic",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 30
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 109
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 183
+        }
+      ]
+    },
+    {
+      "token": "--ui-primary-ink",
+      "kind": "public-semantic",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 32
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 111
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 185
+        }
+      ]
+    },
+    {
+      "token": "--ui-primary-soft",
+      "kind": "public-semantic",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 31
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 110
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 184
+        }
+      ]
+    },
+    {
+      "token": "--ui-product-accent",
+      "kind": "public-semantic",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 14
+        }
+      ]
+    },
+    {
+      "token": "--ui-progress-value",
+      "kind": "internal-runtime",
+      "declarations": []
+    },
+    {
+      "token": "--ui-radius-control",
+      "kind": "internal-geometry",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 11
+        }
+      ]
+    },
+    {
+      "token": "--ui-radius-surface",
+      "kind": "internal-geometry",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 12
+        }
+      ]
+    },
+    {
+      "token": "--ui-radius-table",
+      "kind": "internal-geometry",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 13
+        }
+      ]
+    },
+    {
+      "token": "--ui-ring-size",
+      "kind": "internal-component",
+      "declarations": [
+        {
+          "file": "src/ui/styles/extended.css",
+          "layer": "ui.components",
+          "line": 38
+        },
+        {
+          "file": "src/ui/styles/extended.css",
+          "layer": "ui.components",
+          "line": 52
+        },
+        {
+          "file": "src/ui/styles/extended.css",
+          "layer": "ui.components",
+          "line": 53
+        }
+      ]
+    },
+    {
+      "token": "--ui-shadow-overlay",
+      "kind": "internal-geometry",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 43
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 122
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 196
+        }
+      ]
+    },
+    {
+      "token": "--ui-shadow-popover",
+      "kind": "internal-geometry",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 42
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 121
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 195
+        }
+      ]
+    },
+    {
+      "token": "--ui-success",
+      "kind": "public-semantic",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 34
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 113
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 187
+        }
+      ]
+    },
+    {
+      "token": "--ui-success-soft",
+      "kind": "public-semantic",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 35
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 114
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 188
+        }
+      ]
+    },
+    {
+      "token": "--ui-surface",
+      "kind": "public-semantic",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 23
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 102
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 176
+        }
+      ]
+    },
+    {
+      "token": "--ui-surface-subtle",
+      "kind": "public-semantic",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 24
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 103
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 177
+        }
+      ]
+    },
+    {
+      "token": "--ui-text",
+      "kind": "public-semantic",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 25
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 104
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 178
+        }
+      ]
+    },
+    {
+      "token": "--ui-toast-duration",
+      "kind": "internal-runtime",
+      "declarations": []
+    },
+    {
+      "token": "--ui-warning",
+      "kind": "public-semantic",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 36
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 115
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 189
+        }
+      ]
+    },
+    {
+      "token": "--ui-warning-soft",
+      "kind": "public-semantic",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 37
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 116
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 190
+        }
+      ]
+    }
+  ],
+  "selectorCount": 1156
+}

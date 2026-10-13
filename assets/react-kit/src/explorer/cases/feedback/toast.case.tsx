@@ -1,7 +1,7 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"toast/overview","exports":["ToastProvider","useToast"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"toast/overview","exports":["ToastProvider","useToast"]}
 import { useState } from "react";
 import { StatePreview } from "../state-preview";
-import { Button, Inline, ToastProvider, useToast } from "../../../personal-ui";
+import { Button, Inline, ToastProvider, useToast } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 function ToastCommands() {

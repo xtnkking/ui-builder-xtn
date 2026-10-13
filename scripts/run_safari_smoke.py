@@ -144,14 +144,14 @@ def run_smoke(*, url: str, timeout: float = 60) -> dict[str, object]:
                 execute(
                     driver_url,
                     session_id,
-                    "return document.readyState === 'complete' && Boolean(document.querySelector('.pui-root'));",
+                    "return document.readyState === 'complete' && Boolean(document.querySelector('.ui-root'));",
                 )
             )
             if ready:
                 break
             time.sleep(0.25)
         if not ready:
-            raise RuntimeError("Personal UI root did not render in Safari")
+            raise RuntimeError("UI root did not render in Safari")
 
         element_response = request_json(
             "POST",
@@ -175,7 +175,7 @@ def run_smoke(*, url: str, timeout: float = 60) -> dict[str, object]:
             session_id,
             "const input=document.querySelector('input[aria-label=\"搜索组件\"]');"
             "const status=input?.closest('.demo-explorer-search')?.querySelector('[role=status]');"
-            "return {value:input?.value||'',status:status?.textContent||'',root:Boolean(document.querySelector('.pui-root'))};",
+            "return {value:input?.value||'',status:status?.textContent||'',root:Boolean(document.querySelector('.ui-root'))};",
         )
         if not isinstance(interaction, dict) or interaction.get("value") != text or not interaction.get("root"):
             raise RuntimeError(f"SearchInput interaction failed in Safari: {interaction!r}")
@@ -205,7 +205,7 @@ def run_smoke(*, url: str, timeout: float = 60) -> dict[str, object]:
                 )
         return {
             "schemaVersion": 1,
-            "kind": "personal-ui-real-safari-smoke",
+            "kind": "ui-real-safari-smoke",
             "result": "passed",
             "safari": {
                 "product": "Safari",

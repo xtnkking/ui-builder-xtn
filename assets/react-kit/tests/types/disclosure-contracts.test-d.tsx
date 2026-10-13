@@ -5,7 +5,7 @@ import {
   KeyboardShortcut,
   type AccordionProps,
   type CollapseProps,
-} from "../../src/personal-ui";
+} from "../../src/ui";
 
 const accordionItems = [
   { id: "profile", title: "Profile", content: "Profile content" },
@@ -59,7 +59,7 @@ const collapseRef = <Collapse title="Details" ref={createRef<HTMLDivElement>()}>
 // @ts-expect-error private composition props are not public
 const collapseInternalClass = <Collapse title="Details" internalClassName="foreign">Content</Collapse>;
 // @ts-expect-error reserved ownership attributes are never public
-const collapseOwner = <Collapse title="Details" data-pui-owner="Consumer">Content</Collapse>;
+const collapseOwner = <Collapse title="Details" data-ui-owner="Consumer">Content</Collapse>;
 
 // @ts-expect-error controlled Accordion requires onValueChange
 const accordionMissingChange = <Accordion items={accordionItems} value={["profile"]} />;
@@ -70,11 +70,11 @@ const accordionClassName = <Accordion items={accordionItems} className="foreign"
 // @ts-expect-error Accordion does not expose raw refs
 const accordionRef = <Accordion items={accordionItems} ref={createRef<HTMLDivElement>()} />;
 // @ts-expect-error Accordion does not expose ownership markers
-const accordionOwner = <Accordion items={accordionItems} data-pui-owner="Consumer" />;
+const accordionOwner = <Accordion items={accordionItems} data-ui-owner="Consumer" />;
 // @ts-expect-error KeyboardShortcut keeps styling internal
 const shortcutClassName = <KeyboardShortcut keys="Escape" className="foreign" />;
 // @ts-expect-error KeyboardShortcut does not expose ownership markers
-const shortcutOwner = <KeyboardShortcut keys="Escape" data-pui-owner="Consumer" />;
+const shortcutOwner = <KeyboardShortcut keys="Escape" data-ui-owner="Consumer" />;
 
 void collapseMissingChange;
 void collapseContradictory;

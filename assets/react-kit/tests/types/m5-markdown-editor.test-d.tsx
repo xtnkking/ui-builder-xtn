@@ -1,5 +1,5 @@
 import { createRef } from "react";
-import { MarkdownEditor, RichTextEditor, type MarkdownEditorProps, type RichTextEditorProps, type TextControlHandle } from "../../src/personal-ui";
+import { MarkdownEditor, RichTextEditor, type MarkdownEditorProps, type RichTextEditorProps, type TextControlHandle } from "../../src/ui";
 
 const textRef = createRef<TextControlHandle>();
 const props: MarkdownEditorProps = { value: "**source**", onValueChange: () => undefined, "aria-label": "Markdown source" };

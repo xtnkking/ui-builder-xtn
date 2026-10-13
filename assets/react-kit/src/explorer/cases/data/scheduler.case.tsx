@@ -1,7 +1,7 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"scheduler/overview","exports":["Scheduler"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"scheduler/overview","exports":["Scheduler"]}
 import { StatePreview } from "../state-preview";
 import { useState } from "react";
-import { Scheduler } from "../../../personal-ui";
+import { Scheduler } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 function SchedulerExample() {

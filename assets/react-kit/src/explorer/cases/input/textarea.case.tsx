@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"textarea/overview","exports":["Textarea"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"textarea/overview","exports":["Textarea"]}
 import { useState } from "react";
-import { Field, Textarea } from "../../../personal-ui";
+import { Field, Textarea } from "../../../ui";
 import { StatePreview } from "../state-preview";
 import type { ExplorerCase } from "../types";
 

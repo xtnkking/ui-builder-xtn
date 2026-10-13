@@ -4,8 +4,8 @@ import {
   DataTable,
   VisuallyHidden,
   type DataColumn,
-} from "./personal-ui";
-import "./personal-ui/styles.css";
+} from "./ui";
+import "./ui/styles.css";
 
 interface TestRow {
   id: string;

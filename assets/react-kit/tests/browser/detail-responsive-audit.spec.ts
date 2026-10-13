@@ -41,7 +41,7 @@ test("long selector options wrap fully at 320px with stable selection slots", as
     await trigger.click();
     const list = page.getByRole("listbox", { name: label, exact: true });
     const option = list.getByRole("option").first();
-    const copy = option.locator(label === "长选项" ? ".pui-select__option-label" : ".pui-option__copy strong");
+    const copy = option.locator(label === "长选项" ? ".ui-select__option-label" : ".ui-option__copy strong");
     await expect(copy).toContainText("enterprise security operations");
     const metrics = await copy.evaluate(node => ({
       whiteSpace: getComputedStyle(node).whiteSpace,
@@ -89,7 +89,7 @@ test("table query Enter preserves the page and applies the same explicit draft a
   await page.setViewportSize({ width: 1440, height: 1000 });
   const preview = await previewFor(page, "data-table");
   const filter = preview.getByRole("form", { name: "账户筛选", exact: true });
-  const table = preview.locator('[data-pui-owner="DataTable"]');
+  const table = preview.locator('[data-ui-owner="DataTable"]');
   await table.getByRole("button", { name: "下一页", exact: true }).click();
   const input = filter.getByRole("searchbox", { name: "账户、负责人或状态", exact: true });
   const previousText = await table.innerText();
@@ -119,8 +119,8 @@ test("pagination recalculates page count and preserves a visible compact page lo
   await page.setViewportSize({ width: 320, height: 1000 });
   const loading = await previewFor(page, "pagination", "加载中");
   const pagers = loading.getByRole("navigation", { name: "数据分页", exact: true });
-  await expect(pagers.nth(0).locator(".pui-pagination__mobile-loading .pui-spinner")).toBeVisible();
-  await expect(pagers.nth(1).locator(".pui-pagination__mobile-loading .pui-spinner")).toHaveCount(0);
+  await expect(pagers.nth(0).locator(".ui-pagination__mobile-loading .ui-spinner")).toBeVisible();
+  await expect(pagers.nth(1).locator(".ui-pagination__mobile-loading .ui-spinner")).toHaveCount(0);
   await capture(loading, "pagination-loading-320");
   await noOverflow(page);
 });
@@ -131,7 +131,7 @@ test("long Tabs labels ellipsize without losing keyboard access or full accessib
   const tabs = preview.getByRole("tablist", { name: "长标题", exact: true });
   const longLabel = "跨区域基础设施迁移项目的全部成员权限与安全策略审核记录";
   const longTab = tabs.getByRole("tab", { name: longLabel, exact: true });
-  const copy = longTab.locator(".pui-tabs__label");
+  const copy = longTab.locator(".ui-tabs__label");
   await expect(copy).toHaveAttribute("title", longLabel);
   const metrics = await copy.evaluate(node => ({ clipped: node.scrollWidth > node.clientWidth, ellipsis: getComputedStyle(node).textOverflow }));
   expect(metrics).toEqual({ clipped: true, ellipsis: "ellipsis" });
@@ -150,7 +150,7 @@ test("Dialog owns paragraph spacing without stacking browser margins on its gap"
   const preview = await previewFor(page, "dialog", "长内容");
   await preview.getByRole("button", { name: "长内容弹窗", exact: true }).click();
   const dialog = page.getByRole("dialog", { name: "项目配置详情", exact: true });
-  const paragraphs = dialog.locator(".pui-dialog__body > p");
+  const paragraphs = dialog.locator(".ui-dialog__body > p");
   const spacing = await paragraphs.evaluateAll(nodes => {
     const first = nodes[0].getBoundingClientRect();
     const second = nodes[1].getBoundingClientRect();

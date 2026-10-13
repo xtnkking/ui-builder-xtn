@@ -18,7 +18,7 @@ import {
   type SearchInputProps,
   type TextControlHandle,
   type ValidityControlHandle,
-} from "../../src/personal-ui";
+} from "../../src/ui";
 
 const textControlRef = createRef<TextControlHandle>();
 const validityControlRef = createRef<ValidityControlHandle>();
@@ -42,13 +42,13 @@ const allowedFormControls = (
     <Field label="Email" htmlFor="email"><Input id="email" /></Field>
     <Field label="Methods" group><Checkbox label="Email" /></Field>
     <Input defaultValue="draft" controlRef={textControlRef} data-track="email" />
-    <Input data-pui-consumer-state="draft" />
+    <Input data-ui-consumer-state="draft" />
     <Input value="saved" onChange={() => undefined} />
     <Input value={undefined} defaultValue="draft" />
     <Input controllerField={inputControllerField} />
     <Input controllerField={reactHookFormField} />
     <PasswordInput defaultValue="secret" controlRef={textControlRef} />
-    <PasswordInput data-pui-consumer-state="draft" />
+    <PasswordInput data-ui-consumer-state="draft" />
     <PasswordInput controllerField={inputControllerField} />
     <SearchInput value="query" onChange={() => undefined} onClear={() => undefined} controlRef={textControlRef} />
     <Select name="country" form="profile" required controlRef={validityControlRef} options={[{ value: "us", label: "US" }]} value="us" onValueChange={() => undefined} ariaLabel="Country" />
@@ -83,9 +83,9 @@ const inputDomControlRef = <Input controlRef={createRef<HTMLInputElement>()} />;
 // @ts-expect-error fixed inputs do not expose raw HTML injection
 const inputHtml = <Input dangerouslySetInnerHTML={{ __html: "unsafe" }} />;
 // @ts-expect-error fixed inputs do not expose internal ownership markers
-const inputOwner = <Input data-pui-owner="Consumer" />;
+const inputOwner = <Input data-ui-owner="Consumer" />;
 // @ts-expect-error fixed inputs do not expose internal slot markers
-const inputSlot = <Input data-pui-slot="foreign" />;
+const inputSlot = <Input data-ui-slot="foreign" />;
 
 // @ts-expect-error controlled input values require onChange
 const inputMissingChange = <Input value="saved" />;
@@ -104,15 +104,15 @@ const uncontrolledSearch = <SearchInput defaultValue="query" onChange={() => und
 // @ts-expect-error SearchInput requires onChange
 const searchMissingChange = <SearchInput value="query" />;
 // @ts-expect-error PasswordInput wrappers retain the explicit owner-marker boundary
-const passwordOwnerProps: PasswordInputProps = { "data-pui-owner": "Consumer" };
+const passwordOwnerProps: PasswordInputProps = { "data-ui-owner": "Consumer" };
 // @ts-expect-error SearchInput wrappers retain the explicit slot-marker boundary
-const searchSlotProps: SearchInputProps = { value: "query", onChange: () => undefined, "data-pui-slot": "foreign" };
+const searchSlotProps: SearchInputProps = { value: "query", onChange: () => undefined, "data-ui-slot": "foreign" };
 // @ts-expect-error arbitrary reserved data remains closed after input wrapping
-const passwordPrivateProps: PasswordInputProps = { "data-pui-private": "foreign" };
+const passwordPrivateProps: PasswordInputProps = { "data-ui-private": "foreign" };
 // @ts-expect-error PasswordInput JSX rejects the explicitly reserved owner marker
-const passwordOwnerJsx = <PasswordInput data-pui-owner="Consumer" />;
+const passwordOwnerJsx = <PasswordInput data-ui-owner="Consumer" />;
 // @ts-expect-error SearchInput JSX rejects the explicitly reserved slot marker
-const searchSlotJsx = <SearchInput value="query" onChange={() => undefined} data-pui-slot="foreign" />;
+const searchSlotJsx = <SearchInput value="query" onChange={() => undefined} data-ui-slot="foreign" />;
 // @ts-expect-error re-publishing PasswordInput must not reopen className
 const passwordClassName = <PasswordInput className="foreign" />;
 // @ts-expect-error re-publishing SearchInput must not reopen style
@@ -126,7 +126,7 @@ const comboboxStyle = <Combobox options={[]} onValueChange={() => undefined} ari
 // @ts-expect-error Select exposes a limited validity handle instead of its button element
 const selectDomControlRef = <Select options={[]} value="" onValueChange={() => undefined} ariaLabel="Country" controlRef={createRef<HTMLButtonElement>()} />;
 // @ts-expect-error SegmentedControl does not expose internal owner markers
-const segmentedOwner = <SegmentedControl value="list" options={[]} onValueChange={() => undefined} ariaLabel="View" data-pui-owner="Consumer" />;
+const segmentedOwner = <SegmentedControl value="list" options={[]} onValueChange={() => undefined} ariaLabel="View" data-ui-owner="Consumer" />;
 // @ts-expect-error DateField follows the same value-state contract
 const contradictoryDate = <DateField precision="month" value="2026-09" defaultValue="2026-08" onChange={() => undefined} />;
 

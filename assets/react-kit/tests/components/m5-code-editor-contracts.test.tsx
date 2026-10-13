@@ -1,8 +1,8 @@
-// @personal-ui-coverage {"kind":"unit","runner":"components","exports":["CodeEditor"]}
+// @ui-coverage {"kind":"unit","runner":"components","exports":["CodeEditor"]}
 import { useState } from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { CodeEditor } from "../../src/personal-ui";
+import { CodeEditor } from "../../src/ui";
 
 describe("CodeEditor keyboard ownership", () => {
   it("leaves Tab and Shift+Tab to native focus navigation by default", () => {

@@ -1,4 +1,4 @@
-// @personal-ui-coverage {"kind":"browser","runner":"browser","exports":["DragDrop"]}
+// @ui-coverage {"kind":"browser","runner":"browser","exports":["DragDrop"]}
 import { expect, test } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 

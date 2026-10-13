@@ -1,8 +1,8 @@
-// @personal-ui-coverage {"kind":"unit","runner":"components","exports":["DateField"]}
+// @ui-coverage {"kind":"unit","runner":"components","exports":["DateField"]}
 import { createRef } from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { DateField, type ValidityControlHandle } from "../../src/personal-ui";
+import { DateField, type ValidityControlHandle } from "../../src/ui";
 
 describe("DateField range fallback", () => {
   it("does not replace caller-owned custom validity while normalizing a date", () => {

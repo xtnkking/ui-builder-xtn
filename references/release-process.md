@@ -1,4 +1,4 @@
-# Personal UI Release Process
+# ui-builder-xtn Release Process
 
 This document describes the M7/M8 release contracts. The development checkout can retain `0.2.19` metadata while candidates are prepared in isolation. A public release exists only when its completed journal, immutable tag, GitHub Release, checksums, and generated copies identify the same plan. Hosted CI, M8 acceptance, and any eligible assembler-only continuity record are retained outside the candidate source after freeze; this document cannot attest to their outcome.
 
@@ -15,9 +15,9 @@ npm run release -- publish ...
 The same repository-owned orchestrator can be invoked from the repository root:
 
 ```text
-python scripts/release_personal_ui.py prepare ...
-python scripts/release_personal_ui.py verify ...
-python scripts/release_personal_ui.py publish ...
+python scripts/release_ui.py prepare ...
+python scripts/release_ui.py verify ...
+python scripts/release_ui.py publish ...
 ```
 
 `prepare`, `verify`, and `publish` are phases of the same orchestrator. `release:check` remains a validation command and must not be described as a release command.
@@ -38,7 +38,7 @@ A dirty worktree is rejected unless `--allow-dirty-local` is explicit. That opti
 Preparing stable for the frozen `releaseTarget` is a separate promotion operation. `--promotion-from` must be the filesystem path of an already verified, publishable `<releaseTarget>-rc.N` candidate that ran the frozen formal verification command set; a tag name, version string, plan digest, thin verification plan, or unverified directory is insufficient. The stable candidate must retain that same formal command set. The RC and stable preparation must use the same immutable commit, tree, source content digest, and source timestamp. The stable plan hash-binds the RC plan, archive, candidate inventory, verification record, and source identity. It records the complete RC-to-stable file delta and rejects any change outside the fixed version-bearing metadata files plus `CHANGELOG.md`. The currently configured target is `0.3.1`; the already published `v0.3.0` tag and artifacts are never reused for these later changes.
 
 ```text
-python scripts/release_personal_ui.py prepare \
+python scripts/release_ui.py prepare \
   --output <new-stable-candidate-directory> \
   --version <configured-stable-version> \
   --source-mode commit \
@@ -72,7 +72,7 @@ Publication remains blocked unless all of the following are true:
 
 For an RC, a full M8 acceptance bundle and hosted-CI evidence bind directly to that candidate. The narrow continuity alternative below preserves the origin's complete M8 binding while recording eligible reuse for the target RC; hosted CI must still bind directly to the target. For a promoted stable candidate, preflight resolves the reviewed RC plan through the validated promotion binding and validates M8 evidence against that RC. Stable formal verification remains an independent requirement. Publication must not fabricate evidence with the stable archive hash. Final authorization must equal the promoted stable plan digest so the user approves the exact version metadata, changelog, release notes, archive, and checksums that will be published.
 
-`THIRD_PARTY_NOTICES.json` uses schema version `1`, kind `personal-ui-third-party-notices`, `generatedFrom: assets/react-kit/package-lock.json`, the exact integer `dependencyCount`, and a non-empty `items` array. Every item records non-empty `name`, `version`, `license`, `source`, `resolved`, and `dependencyType` strings plus a boolean `optional` value. `source` and `resolved` both identify the exact locked tarball; the release preflight derives the expected inventory from the lockfile and rejects duplicate, missing, extra, source, license, resolution, dependency-type, optional, count, or generator metadata mismatches. Refresh with `python scripts/generate_third_party_notices.py --write` and verify with `--check`. Full M8 and CI evidence are JSON objects with schema version `1`, kind `personal-ui-release-evidence`, their respective `type` (`m8-acceptance` or `hosted-ci`), the exact `planDigest`, `sourceCommit`, and `archiveSha256`, plus `result: passed`. M8 acceptance additionally requires all six unique consumer scenarios, immutable request/input/initial/final artifact hashes, fresh-context and forbidden-input assertions, a fixed attribution, and passed typecheck, build, verifier, behavior, accessibility, and responsive checks. `scripts/validate_m8_evidence.py` enforces that structure; a binding-only JSON record is rejected. The distinct continuity kind is validated by `scripts/m8_evidence_continuity.py` against the reviewed RC plan through the same `--m8-evidence` release argument.
+`THIRD_PARTY_NOTICES.json` uses schema version `1`, kind `ui-third-party-notices`, `generatedFrom: assets/react-kit/package-lock.json`, the exact integer `dependencyCount`, and a non-empty `items` array. Every item records non-empty `name`, `version`, `license`, `source`, `resolved`, and `dependencyType` strings plus a boolean `optional` value. `source` and `resolved` both identify the exact locked tarball; the release preflight derives the expected inventory from the lockfile and rejects duplicate, missing, extra, source, license, resolution, dependency-type, optional, count, or generator metadata mismatches. Refresh with `python scripts/generate_third_party_notices.py --write` and verify with `--check`. Full M8 and CI evidence are JSON objects with schema version `1`, kind `ui-release-evidence`, their respective `type` (`m8-acceptance` or `hosted-ci`), the exact `planDigest`, `sourceCommit`, and `archiveSha256`, plus `result: passed`. M8 acceptance additionally requires all six unique consumer scenarios, immutable request/input/initial/final artifact hashes, fresh-context and forbidden-input assertions, a fixed attribution, and passed typecheck, build, verifier, behavior, accessibility, and responsive checks. `scripts/validate_m8_evidence.py` enforces that structure; a binding-only JSON record is rejected. The distinct continuity kind is validated by `scripts/m8_evidence_continuity.py` against the reviewed RC plan through the same `--m8-evidence` release argument.
 
 The adapter contract is journaled as idempotent steps: freeze the release commit in a temporary worktree, create an immutable annotated tag, atomically push source and tag without force/delete refspecs, create a draft GitHub Release, upload artifacts and checksums, download and verify their byte identity, publish the Release, then synchronize only explicitly named absolute generated-copy targets. Existing lightweight tags, different annotated tag objects, unmanaged destination collisions, or uncommitted destination changes block execution. Credentials are read through Git's credential helper into process memory and are never written to the journal or command arguments. A local failure before remote work leaves no version or tag. After any remote side effect, recovery resumes from the journal; automation must never move or delete a public tag to simulate rollback.
 
@@ -108,7 +108,7 @@ The local review bundle retains the candidate archive, checksums, migration guid
 
 ## Assembler-only M8 continuity
 
-`scripts/m8_evidence_continuity.py` provides a narrow alternative to a new M8 bundle when two already verified, publishable RCs differ only in assembler maintenance. Its record has kind `personal-ui-m8-evidence-continuity` and policy `assembler-only-v1`. The origin must be a complete passed M8 bundle, never another continuity record. The helper reopens retained origin and target plans, source archives, journals, candidate archive proofs, the original acceptance record, and an actual maintenance review.
+`scripts/m8_evidence_continuity.py` provides a narrow alternative to a new M8 bundle when two already verified, publishable RCs differ only in assembler maintenance. Its record has kind `ui-m8-evidence-continuity` and policy `assembler-only-v1`. The origin must be a complete passed M8 bundle, never another continuity record. The helper reopens retained origin and target plans, source archives, journals, candidate archive proofs, the original acceptance record, and an actual maintenance review.
 
 The complete canonical source path sets must agree, and the source digest for each immutable commit must match its candidate plan. Only `scripts/assemble_m8_acceptance.py`, `scripts/test_assemble_m8_acceptance.py`, and `CHANGELOG.md` may differ in source bytes. Deterministic release version transforms must reproduce both complete candidate inventories and ZIP members exactly. Version-bearing JSON is not ignored wholesale. Components, CSS, dependencies, installers, evaluation rules, workflows, and templates cannot use this exception.
 
@@ -118,7 +118,7 @@ The report keeps `consumerRunsSourceCommit` at the origin and limits `reuseScope
 
 ## Approved sampled-impact M8 acceptance
 
-The user approved change-impact acceptance on 2026-10-10 for the remaining R3 work. `scripts/m8_impact_acceptance.py` validates the distinct kind `personal-ui-m8-impact-acceptance` with policy `r3-sampled-impact-2026-10-10-v1`. It does not broaden the full-bundle or `assembler-only-v1` validators. Release preflight accepts it through the existing `--m8-evidence` argument and binds its target to the reviewed RC.
+The user approved change-impact acceptance on 2026-10-10 for the remaining R3 work. `scripts/m8_impact_acceptance.py` validates the distinct kind `ui-m8-impact-acceptance` with policy `r3-sampled-impact-2026-10-10-v1`. It does not broaden the full-bundle or `assembler-only-v1` validators. Release preflight accepts it through the existing `--m8-evidence` argument and binds its target to the reviewed RC.
 
 This bounded policy permits only the two diagnosed managed-runtime changes in `display/display.tsx` and `internal/layer-kernel.tsx`, requires unchanged public API, retains the origin's complete family-login report and migration under their original identities, and requires actual target installation, typecheck, build, provenance, and browser evidence for five repaired consumers. Each uses Chromium, Firefox, and WebKit at two widths: member-crud/searchable-table at 1440 and 320; complex-form/detail-panel/nested-modal at 2560 and 320. The report lists the 30 new cells, 18 origin family cells, and 60 unproven cells explicitly. `fullMatrixProven` and `newBlindEvaluation` remain false; the origin migration is not represented as a target migration.
 

@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"import-export/overview","exports":["ImportExportPage"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"import-export/overview","exports":["ImportExportPage"]}
 import { StatePreview } from "../state-preview";
-import { Attachment, ImportExportPage } from "../../../personal-ui";
+import { Attachment, ImportExportPage } from "../../../ui";
 import { useState } from "react";
 import type { ExplorerCase } from "../types";
 
@@ -38,7 +38,7 @@ const explorerCase: ExplorerCase = {
     { state: "locale", exports: ["ImportExportPage"], content: <StatePreview state="locale">{<ImportExportExample />}</StatePreview> },
   ],
   content: <ImportExportExample />,
-  code: `import { ImportExportPage } from "./personal-ui";
+  code: `import { ImportExportPage } from "./ui";
 
 <ImportExportPage title="数据迁移" importContent={upload} exportContent={summary} onImport={runImport} onExport={runExport} />`,
 };

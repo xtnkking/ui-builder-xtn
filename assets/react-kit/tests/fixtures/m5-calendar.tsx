@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { createRoot } from "react-dom/client";
-import { Calendar, DateField } from "../../src/personal-ui";
-import "../../src/personal-ui/styles.css";
+import { Calendar, DateField } from "../../src/ui";
+import "../../src/ui/styles.css";
 
 function Fixture() {
   const [month, setMonth] = useState(new Date(2024, 1, 1));
   const [value, setValue] = useState<Date | undefined>(new Date(2024, 1, 28));
   return (
-    <main className="pui-theme pui-root" style={{ maxWidth: 760, padding: 24 }} data-ready="true">
+    <main className="ui-theme ui-root" style={{ maxWidth: 760, padding: 24 }} data-ready="true">
       <button type="button" onClick={() => { setMonth(new Date(2026, 8, 1)); setValue(new Date(2026, 8, 15)); }}>External update</button>
       <Calendar
         month={month}

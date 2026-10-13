@@ -1,8 +1,8 @@
-// @personal-ui-coverage {"kind":"unit","runner":"components","exports":["SortableList"]}
+// @ui-coverage {"kind":"unit","runner":"components","exports":["SortableList"]}
 import { useState } from "react";
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { SortableList, type SortableItem } from "../../src/personal-ui";
+import { SortableList, type SortableItem } from "../../src/ui";
 
 const initial: SortableItem<string>[] = [{ id: "a", value: "Alpha" }, { id: "b", value: "Beta" }];
 

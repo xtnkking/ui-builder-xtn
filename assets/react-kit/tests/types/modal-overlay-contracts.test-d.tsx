@@ -7,7 +7,7 @@ import {
   GuidedTour,
   Lightbox,
   Popconfirm,
-} from "../../src/personal-ui";
+} from "../../src/ui";
 
 const menuItems = [{ id: "edit", label: "Edit", onSelect: () => undefined }];
 const lightboxItems = [{ id: "first", src: "/first.png", alt: "First" }];
@@ -47,7 +47,7 @@ const drawerRef = <Drawer open={false} onOpenChange={() => undefined} title="Dra
 // @ts-expect-error ConfirmDialog controlled open requires onOpenChange
 const confirmMissingChange = <ConfirmDialog open title="Confirm" onConfirm={() => undefined} />;
 // @ts-expect-error ConfirmDialog does not expose reserved ownership markers
-const confirmOwner = <ConfirmDialog open={false} onOpenChange={() => undefined} title="Confirm" onConfirm={() => undefined} data-pui-owner="Consumer" />;
+const confirmOwner = <ConfirmDialog open={false} onOpenChange={() => undefined} title="Confirm" onConfirm={() => undefined} data-ui-owner="Consumer" />;
 
 // @ts-expect-error Popconfirm owns its open state internally
 const popconfirmOpen = <Popconfirm open triggerLabel="Delete" ariaLabel="Delete record" title="Delete?" onConfirm={() => undefined} />;
@@ -61,7 +61,7 @@ const popconfirmRichTrigger = <Popconfirm triggerLabel={<button type="button">Ne
 // @ts-expect-error ContextMenu does not expose className
 const contextClassName = <ContextMenu className="foreign" ariaLabel="Actions" items={menuItems}><span>Record</span></ContextMenu>;
 // @ts-expect-error ContextMenu does not expose reserved internal markers
-const contextSlot = <ContextMenu data-pui-slot="foreign" ariaLabel="Actions" items={menuItems}><span>Record</span></ContextMenu>;
+const contextSlot = <ContextMenu data-ui-slot="foreign" ariaLabel="Actions" items={menuItems}><span>Record</span></ContextMenu>;
 
 // @ts-expect-error Lightbox controlled open requires onOpenChange
 const lightboxMissingOpenChange = <Lightbox open items={lightboxItems} value="first" onValueChange={() => undefined} />;
@@ -79,7 +79,7 @@ const tourMissingOpenChange = <GuidedTour open steps={tourSteps} currentId="intr
 // @ts-expect-error GuidedTour currentId requires onCurrentChange
 const tourMissingCurrentChange = <GuidedTour open={false} onOpenChange={() => undefined} steps={tourSteps} currentId="intro" />;
 // @ts-expect-error GuidedTour does not expose internal ownership markers
-const tourOwner = <GuidedTour open={false} onOpenChange={() => undefined} steps={tourSteps} currentId="intro" onCurrentChange={() => undefined} data-pui-owner="Consumer" />;
+const tourOwner = <GuidedTour open={false} onOpenChange={() => undefined} steps={tourSteps} currentId="intro" onCurrentChange={() => undefined} data-ui-owner="Consumer" />;
 
 void dialogOnClose;
 void dialogMissingChange;

@@ -1,4 +1,4 @@
-// @personal-ui-coverage {"kind":"unit","runner":"components","exports":["DragDrop","FileUpload"]}
+// @ui-coverage {"kind":"unit","runner":"components","exports":["DragDrop","FileUpload"]}
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { DragExample } from "../../src/explorer/cases/actions/drag.case";
@@ -6,7 +6,7 @@ import { DragExample } from "../../src/explorer/cases/actions/drag.case";
 function controls(container: HTMLElement) {
   const input = container.querySelector<HTMLInputElement>("input[type=file]");
   if (!input) throw new Error("The official FileUpload file input is missing.");
-  const upload = container.querySelector<HTMLElement>("[data-pui-owner='FileUpload']");
+  const upload = container.querySelector<HTMLElement>("[data-ui-owner='FileUpload']");
   if (!upload) throw new Error("The official FileUpload owner is missing.");
   return { input, upload, drop: screen.getByRole("group", { name: "接收CSV文件" }) };
 }
@@ -62,7 +62,7 @@ describe("D2 official shared file composition", () => {
     const blocked = [new File(["b"], "blocked.csv", { type: "text/csv" }), new File(["x"], "blocked.png", { type: "image/png" })];
     fireEvent.change(input, { target: { files: blocked } });
     fireEvent.drop(drop, { dataTransfer: { files: blocked } });
-    const zone = upload.querySelector(".pui-file-upload__dropzone");
+    const zone = upload.querySelector(".ui-file-upload__dropzone");
     if (!zone) throw new Error("The official upload dropzone is missing.");
     fireEvent.drop(zone, { dataTransfer: { files: blocked } });
     fireEvent.click(screen.getByRole("button", { name: "移除 retained.csv" }));

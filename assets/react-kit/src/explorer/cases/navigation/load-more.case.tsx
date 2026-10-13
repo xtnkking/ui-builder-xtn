@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"load-more/overview","exports":["LoadMore"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"load-more/overview","exports":["LoadMore"]}
 import { useState } from "react";
-import { LoadMore } from "../../../personal-ui";
+import { LoadMore } from "../../../ui";
 import { StatePreview } from "../state-preview";
 import type { ExplorerCase } from "../types";
 

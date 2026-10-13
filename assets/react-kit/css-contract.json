@@ -1,26 +1,26 @@
 {
   "schemaVersion": 1,
-  "entry": "src/personal-ui/styles.css",
+  "entry": "src/ui/styles.css",
   "layerOrder": [
-    "pui.reset",
-    "pui.tokens",
-    "pui.base",
-    "pui.components",
-    "pui.utilities"
+    "ui.reset",
+    "ui.tokens",
+    "ui.base",
+    "ui.components",
+    "ui.utilities"
   ],
   "canonicalFiles": [
-    "src/personal-ui/styles.css",
-    "src/personal-ui/styles/layout-actions-display.css",
-    "src/personal-ui/styles/inputs-extra.css",
-    "src/personal-ui/styles/extended.css"
+    "src/ui/styles.css",
+    "src/ui/styles/layout-actions-display.css",
+    "src/ui/styles/inputs-extra.css",
+    "src/ui/styles/extended.css"
   ],
   "infrastructureAnchors": [
-    "pui-root",
-    "pui-portal",
-    "pui-theme"
+    "ui-root",
+    "ui-portal",
+    "ui-theme"
   ],
   "utilityAnchors": [
-    "pui-sr-only"
+    "ui-sr-only"
   ],
   "maxClassSpecificity": 4
 }

@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"resizable/overview","exports":["ResizablePanels"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"resizable/overview","exports":["ResizablePanels"]}
 import { StatePreview } from "../state-preview";
-import { Box, ResizablePanels } from "../../../personal-ui";
+import { Box, ResizablePanels } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 const explorerCase = {

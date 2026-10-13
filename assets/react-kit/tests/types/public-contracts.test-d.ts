@@ -4,7 +4,7 @@ import type {
   ControllableValueProps,
   PublicControlProps,
   TextControlHandle,
-} from "../../src/personal-ui";
+} from "../../src/ui";
 
 type LeakyProps = {
   id?: string;
@@ -15,8 +15,8 @@ type LeakyProps = {
   tw?: string;
   ref?: unknown;
   dangerouslySetInnerHTML?: { __html: string };
-  "data-pui-owner"?: string;
-  "data-pui-slot"?: string;
+  "data-ui-owner"?: string;
+  "data-ui-slot"?: string;
 };
 
 const publicProps: PublicControlProps<LeakyProps> = { id: "account" };
@@ -25,7 +25,7 @@ void publicProps;
 // @ts-expect-error protected styling props are not public
 const classNameLeak: PublicControlProps<LeakyProps> = { className: "foreign" };
 // @ts-expect-error reserved ownership attributes are not public
-const ownerLeak: PublicControlProps<LeakyProps> = { "data-pui-slot": "field" };
+const ownerLeak: PublicControlProps<LeakyProps> = { "data-ui-slot": "field" };
 void classNameLeak;
 void ownerLeak;
 

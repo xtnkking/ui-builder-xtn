@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"radio/overview","exports":["Radio"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"radio/overview","exports":["Radio"]}
 import { useId, useState } from "react";
-import { Field, Radio } from "../../../personal-ui";
+import { Field, Radio } from "../../../ui";
 import type { ExplorerCase } from "../types";
 import { StatePreview } from "../state-preview";
 

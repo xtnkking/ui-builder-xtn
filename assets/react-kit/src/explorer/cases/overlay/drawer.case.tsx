@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"drawer/overview","exports":["Drawer"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"drawer/overview","exports":["Drawer"]}
 import { useState } from "react";
-import { Button, DescriptionList, Drawer, Inline } from "../../../personal-ui";
+import { Button, DescriptionList, Drawer, Inline } from "../../../ui";
 import { StatePreview } from "../state-preview";
 import type { ExplorerCase } from "../types";
 
@@ -54,7 +54,7 @@ const explorerCase: ExplorerCase = {
     { state: "dark", exports: ["Drawer"], content: <StatePreview state="dark"><DrawerExample /></StatePreview> },
     { state: "locale", exports: ["Drawer"], content: <StatePreview state="locale"><EnglishDrawerExample /></StatePreview> },
   ],
-  code: `import { Drawer } from "./personal-ui";
+  code: `import { Drawer } from "./ui";
 
 <Drawer open={open} onOpenChange={setOpen} closeOnBackdropClick={false} title="成员详情">
   {details}

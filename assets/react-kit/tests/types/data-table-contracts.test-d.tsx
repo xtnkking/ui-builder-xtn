@@ -3,7 +3,7 @@ import {
   DataTable,
   type DataColumn,
   type DataTableProps,
-} from "../../src/personal-ui";
+} from "../../src/ui";
 
 type Row = {
   id: string;
@@ -52,16 +52,16 @@ const tableRef = <DataTable ariaLabel="Accounts" columns={columns} rows={rows} r
 // @ts-expect-error fixed data controls do not expose raw HTML injection
 const tableHtml = <DataTable ariaLabel="Accounts" columns={columns} rows={rows} rowKey={(row) => row.id} dangerouslySetInnerHTML={{ __html: "unsafe" }} />;
 // @ts-expect-error reserved ownership attributes are never public
-const tableOwner = <DataTable ariaLabel="Accounts" columns={columns} rows={rows} rowKey={(row) => row.id} data-pui-owner="Consumer" />;
+const tableOwner = <DataTable ariaLabel="Accounts" columns={columns} rows={rows} rowKey={(row) => row.id} data-ui-owner="Consumer" />;
 // @ts-expect-error known private slots are never public
-const tableSlot = <DataTable ariaLabel="Accounts" columns={columns} rows={rows} rowKey={(row) => row.id} data-pui-slot="foreign" />;
+const tableSlot = <DataTable ariaLabel="Accounts" columns={columns} rows={rows} rowKey={(row) => row.id} data-ui-slot="foreign" />;
 const tablePrivateData: DataTableProps<Row> = {
   ariaLabel: "Accounts",
   columns,
   rows,
   rowKey: (row) => row.id,
   // @ts-expect-error the wildcard contract rejects unregistered reserved keys in Props objects
-  "data-pui-private": "foreign",
+  "data-ui-private": "foreign",
 };
 // @ts-expect-error DataTable owns its rendered table and empty-state children
 const tableChildren = <DataTable ariaLabel="Accounts" columns={columns} rows={rows} rowKey={(row) => row.id}>Injected child</DataTable>;

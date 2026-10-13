@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { createRoot } from "react-dom/client";
-import { Field, FileUpload, Form, type FileUploadItem, type FileUploadRejection } from "../../src/personal-ui";
-import "../../src/personal-ui/styles.css";
+import { Field, FileUpload, Form, type FileUploadItem, type FileUploadRejection } from "../../src/ui";
+import "../../src/ui/styles.css";
 
 const initialItems: FileUploadItem[] = [
   { id: "queued", name: "queued.txt", status: "queued" },
@@ -22,7 +22,7 @@ function Fixture() {
   const rejectFiles = (rejections: FileUploadRejection[]) => setRejectionReasons(rejections.map((item) => item.reason));
 
   return (
-    <main className="pui-theme pui-root" style={{ maxWidth: 680, padding: 24 }} data-ready="true">
+    <main className="ui-theme ui-root" style={{ maxWidth: 680, padding: 24 }} data-ready="true">
       <Form aria-label="Documents" id="upload-form" onSubmit={(event) => event.preventDefault()}>
         <Field label="Documents" htmlFor="documents" required>
           <FileUpload

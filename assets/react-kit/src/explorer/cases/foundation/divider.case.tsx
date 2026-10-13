@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"divider/overview","exports":["Divider"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"divider/overview","exports":["Divider"]}
 import { StatePreview } from "../state-preview";
-import { Divider, Stack } from "../../../personal-ui";
+import { Divider, Stack } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 const explorerCase = {

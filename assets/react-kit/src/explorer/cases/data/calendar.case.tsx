@@ -1,7 +1,7 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"calendar/overview","exports":["Calendar"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"calendar/overview","exports":["Calendar"]}
 import { StatePreview } from "../state-preview";
 import { useState } from "react";
-import { Calendar } from "../../../personal-ui";
+import { Calendar } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 function CalendarExample() {

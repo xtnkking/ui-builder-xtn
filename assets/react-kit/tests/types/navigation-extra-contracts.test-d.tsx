@@ -11,7 +11,7 @@ import {
   Stepper,
   TopNavigation,
   type AppNavigationProps,
-} from "../../src/personal-ui";
+} from "../../src/ui";
 
 const navigationItems = [{ id: "home", label: "Home", onSelect: () => undefined }];
 const steps = [{ id: "details", label: "Details" }];
@@ -61,7 +61,7 @@ const topNavigationStyle = <TopNavigation style={{ color: "red" }} items={naviga
 // @ts-expect-error fixed navigation does not expose raw DOM refs
 const sideNavigationRef = <SideNavigation ref={createRef<HTMLElement>()} items={navigationItems} ariaLabel="Side" />;
 // @ts-expect-error fixed navigation does not expose internal ownership markers
-const bottomNavigationOwner = <BottomNavigation data-pui-owner="Consumer" items={navigationItems} ariaLabel="Bottom" />;
+const bottomNavigationOwner = <BottomNavigation data-ui-owner="Consumer" items={navigationItems} ariaLabel="Bottom" />;
 // @ts-expect-error Menu styling remains privately owned
 const menuClassName = <Menu className="foreign" items={navigationItems} ariaLabel="Menu" />;
 // @ts-expect-error Menu cannot reopen AppNavigation's brand slot
@@ -77,14 +77,14 @@ const stepperTw = <Stepper tw="foreign" steps={steps} currentId="details" ariaLa
 // @ts-expect-error CommandPalette follows the protected public-control contract
 const commandClassName = <CommandPalette className="foreign" commands={commands} />;
 // @ts-expect-error CommandPalette cannot accept reserved internal markers
-const commandSlot = <CommandPalette data-pui-slot="foreign" commands={commands} />;
+const commandSlot = <CommandPalette data-ui-slot="foreign" commands={commands} />;
 // @ts-expect-error AnchorNavigation does not expose raw DOM refs
 const anchorRef = <AnchorNavigation ref={createRef<HTMLElement>()} items={anchors} />;
 const privateNavigationData: AppNavigationProps = {
   items: navigationItems,
   ariaLabel: "Primary",
   // @ts-expect-error wildcard reserved ownership keys are forbidden in object props
-  "data-pui-private": "foreign",
+  "data-ui-private": "foreign",
 };
 
 // @ts-expect-error controlled open requires onOpenChange

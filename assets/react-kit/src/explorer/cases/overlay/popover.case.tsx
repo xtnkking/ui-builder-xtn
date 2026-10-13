@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"popover/overview","exports":["Popover"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"popover/overview","exports":["Popover"]}
 import { useState } from "react";
-import { Button, Popover, Stack } from "../../../personal-ui";
+import { Button, Popover, Stack } from "../../../ui";
 import { StatePreview } from "../state-preview";
 import type { ExplorerCase } from "../types";
 
@@ -43,7 +43,7 @@ const explorerCase: ExplorerCase = {
     { state: "dark", exports: ["Popover"], content: <StatePreview state="dark"><PopoverExample /></StatePreview> },
     { state: "locale", exports: ["Popover"], content: <StatePreview state="locale"><Popover triggerLabel="Filter summary" ariaLabel="Active filters">Status: Active; Region: United States</Popover></StatePreview> },
   ],
-  code: `import { Popover } from "./personal-ui";
+  code: `import { Popover } from "./ui";
 
 <Popover
   triggerLabel="查看筛选摘要"

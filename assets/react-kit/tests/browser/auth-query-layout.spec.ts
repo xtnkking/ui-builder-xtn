@@ -1,4 +1,4 @@
-// @personal-ui-coverage {"kind":"browser","runner":"browser","exports":["AuthenticationPage","FilterBar","Button"]}
+// @ui-coverage {"kind":"browser","runner":"browser","exports":["AuthenticationPage","FilterBar","Button"]}
 import { expect, test, type Locator, type Page } from "@playwright/test";
 
 async function previewFor(page: Page, family: string, state = "默认") {
@@ -24,8 +24,8 @@ test("generic authentication centers a bounded form without blank columns and su
     await page.setViewportSize({ width, height: 900 });
     const preview = await previewFor(page, "authentication");
     await preview.getByRole("tab", { name: "通用认证页", exact: true }).click();
-    const auth = preview.getByRole("tabpanel", { name: "通用认证页", exact: true }).locator('[data-pui-owner="AuthenticationPage"]');
-    const content = auth.locator(".pui-auth-page__content");
+    const auth = preview.getByRole("tabpanel", { name: "通用认证页", exact: true }).locator('[data-ui-owner="AuthenticationPage"]');
+    const content = auth.locator(".ui-auth-page__content");
     const input = auth.getByRole("textbox", { name: "邮箱", exact: true });
     const action = auth.getByRole("button", { name: "继续", exact: true });
     const shell = await bounds(auth);
@@ -37,7 +37,7 @@ test("generic authentication centers a bounded form without blank columns and su
     expect(shell.height).toBeLessThanOrEqual(561);
     expect(button.y - field.y - field.height).toBeGreaterThanOrEqual(16);
     expect(button.height).toBe(44);
-    await expect(auth.locator(".pui-auth-page__visual")).toHaveCount(0);
+    await expect(auth.locator(".ui-auth-page__visual")).toHaveCount(0);
     await input.fill("demo@example.com");
     await input.press("Enter");
     await expect(auth.getByRole("status")).toHaveText("已使用 demo@example.com 继续");
@@ -50,9 +50,9 @@ test("authentication illustration responds to its container and long content sta
   await page.setViewportSize({ width: 1440, height: 1000 });
   const preview = await previewFor(page, "authentication");
   await preview.getByRole("tab", { name: "带插画认证页", exact: true }).click();
-  const auth = preview.getByRole("tabpanel", { name: "带插画认证页", exact: true }).locator('[data-pui-owner="AuthenticationPage"]');
-  const visual = auth.locator(".pui-auth-page__visual");
-  const form = auth.locator(".pui-auth-page__form");
+  const auth = preview.getByRole("tabpanel", { name: "带插画认证页", exact: true }).locator('[data-ui-owner="AuthenticationPage"]');
+  const visual = auth.locator(".ui-auth-page__visual");
+  const form = auth.locator(".ui-auth-page__form");
   await expect(visual).toBeVisible();
   const art = await bounds(visual);
   const panel = await bounds(form);
@@ -65,9 +65,9 @@ test("authentication illustration responds to its container and long content sta
   await capture(auth, "illustrated-narrow-container");
   await page.setViewportSize({ width: 320, height: 900 });
   const longPreview = await previewFor(page, "authentication", "长内容");
-  const longAuth = longPreview.getByRole("tabpanel", { name: "通用认证页", exact: true }).locator('[data-pui-owner="AuthenticationPage"]');
+  const longAuth = longPreview.getByRole("tabpanel", { name: "通用认证页", exact: true }).locator('[data-ui-owner="AuthenticationPage"]');
   await expect(longAuth).toContainText("请确认所有关联配置均符合团队的实际使用要求");
-  expect((await bounds(longAuth.locator(".pui-auth-page__content"))).width).toBeLessThanOrEqual(272);
+  expect((await bounds(longAuth.locator(".ui-auth-page__content"))).width).toBeLessThanOrEqual(272);
   await noOverflow(page);
   await capture(longAuth, "long-auth-320");
 });
@@ -131,7 +131,7 @@ test("query pending state shows a spinner without resizing or accepting a second
   await action.click();
   await expect(action).toHaveAttribute("aria-busy", "true");
   await expect(action).toHaveAttribute("aria-disabled", "true");
-  await expect(action.locator(".pui-button__loading .pui-spinner")).toBeVisible();
+  await expect(action.locator(".ui-button__loading .ui-spinner")).toBeVisible();
   await expect(preview.getByRole("status")).toContainText("正在查询；共 3 条结果");
   const pending = await bounds(action);
   expect(pending.width).toBe(idle.width);

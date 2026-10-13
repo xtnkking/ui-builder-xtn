@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"banner/overview","exports":["Banner"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"banner/overview","exports":["Banner"]}
 import { StatePreview } from "../state-preview";
-import { Banner } from "../../../personal-ui";
+import { Banner } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 

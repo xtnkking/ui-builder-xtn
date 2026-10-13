@@ -28,11 +28,11 @@ import validate_m8_evidence as validator
 
 
 SCHEMA_VERSION = 1
-PLAN_KIND = "personal-ui-m8-scenario-quality-plan"
-FAILURE_KIND = "personal-ui-m8-scenario-quality-failure"
-CAPTURE_KIND = "personal-ui-m8-quality-command-capture"
-CAPTURE_INDEX_KIND = "personal-ui-m8-quality-command-capture-index"
-WORKER_CONFIG_KIND = "personal-ui-m8-browser-quality-worker-config"
+PLAN_KIND = "ui-m8-scenario-quality-plan"
+FAILURE_KIND = "ui-m8-scenario-quality-failure"
+CAPTURE_KIND = "ui-m8-quality-command-capture"
+CAPTURE_INDEX_KIND = "ui-m8-quality-command-capture-index"
+WORKER_CONFIG_KIND = "ui-m8-browser-quality-worker-config"
 PURPOSES = ("typecheck", "build", "verifier", "browser-quality")
 STATIC_PURPOSES = PURPOSES[:3]
 DEFAULT_WORKER = Path(__file__).with_suffix(".mjs")
@@ -396,7 +396,7 @@ def load_inputs(
     acceptance = manifest.get("acceptanceEvidence")
     if (
         manifest.get("schemaVersion") != SCHEMA_VERSION
-        or manifest.get("kind") != "personal-ui-m8-evaluator-inputs"
+        or manifest.get("kind") != "ui-m8-evaluator-inputs"
         or manifest.get("official") is not True
         or not isinstance(acceptance, dict)
         or acceptance.get("eligible") is not True

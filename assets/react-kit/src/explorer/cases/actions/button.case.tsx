@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"button/overview","exports":["Button"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"button/overview","exports":["Button"]}
 import { useState } from "react";
-import { Button, Inline } from "../../../personal-ui";
+import { Button, Inline } from "../../../ui";
 import { StatePreview } from "../state-preview";
 import type { ExplorerCase } from "../types";
 

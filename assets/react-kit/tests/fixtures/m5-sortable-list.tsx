@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { createRoot } from "react-dom/client";
-import { SortableList, type SortableItem } from "../../src/personal-ui";
-import "../../src/personal-ui/styles.css";
+import { SortableList, type SortableItem } from "../../src/ui";
+import "../../src/ui/styles.css";
 
 function SortableListFixture() {
   const [items, setItems] = useState<SortableItem<string>[]>([

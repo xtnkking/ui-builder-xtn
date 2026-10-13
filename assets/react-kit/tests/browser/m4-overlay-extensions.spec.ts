@@ -1,4 +1,4 @@
-// @personal-ui-coverage {"kind":"browser","runner":"browser","exports":["GuidedTour","HoverCard","Lightbox","Popconfirm","Popover"]}
+// @ui-coverage {"kind":"browser","runner":"browser","exports":["GuidedTour","HoverCard","Lightbox","Popconfirm","Popover"]}
 import { expect, test } from "@playwright/test";
 
 test("M4 overlay extensions preserve keyboard, target, focus, and trigger contracts", async ({ page }) => {
@@ -9,10 +9,10 @@ test("M4 overlay extensions preserve keyboard, target, focus, and trigger contra
   await expect(page.getByRole("button", { name: "删除记录确认" })).toHaveCount(1);
   await expect(page.locator("button button")).toHaveCount(0);
   await page.getByRole("button", { name: "删除记录确认" }).click();
-  await expect(page.locator("[data-pui-owner='Popconfirm']")).toBeVisible();
+  await expect(page.locator("[data-ui-owner='Popconfirm']")).toBeVisible();
   await expect(page.locator("button button")).toHaveCount(0);
   await page.keyboard.press("Escape");
-  await expect(page.locator("[data-pui-owner='Popconfirm']")).toHaveCount(0);
+  await expect(page.locator("[data-ui-owner='Popconfirm']")).toHaveCount(0);
 
   const lightboxOpener = page.getByRole("button", { name: "打开图片预览" });
   await lightboxOpener.click();
@@ -36,8 +36,8 @@ test("M4 overlay extensions preserve keyboard, target, focus, and trigger contra
   const targetTour = page.getByRole("dialog", { name: "功能引导" });
   await expect(targetTour).toBeVisible();
   await expect(targetTour).toBeFocused();
-  const targetCard = targetTour.locator(".pui-tour__card");
-  const spotlight = targetTour.locator(".pui-tour__spotlight");
+  const targetCard = targetTour.locator(".ui-tour__card");
+  const spotlight = targetTour.locator(".ui-tour__spotlight");
   await expect(targetCard).toHaveAttribute("data-placement", /^(top|right|bottom|left)$/);
   await expect(spotlight).toBeVisible();
   const [targetBounds, spotlightBounds] = await Promise.all([
@@ -56,9 +56,9 @@ test("M4 overlay extensions preserve keyboard, target, focus, and trigger contra
   await missingTourOpener.click();
   const missingTour = page.getByRole("dialog", { name: "功能引导" });
   await expect(missingTour).toBeVisible();
-  await expect(missingTour.locator(".pui-tour__scrim")).toBeVisible();
-  await expect(missingTour.locator(".pui-tour__spotlight")).toHaveCount(0);
-  await expect(missingTour.locator(".pui-tour__card")).not.toHaveAttribute("data-placement");
+  await expect(missingTour.locator(".ui-tour__scrim")).toBeVisible();
+  await expect(missingTour.locator(".ui-tour__spotlight")).toHaveCount(0);
+  await expect(missingTour.locator(".ui-tour__card")).not.toHaveAttribute("data-placement");
   await page.keyboard.press("Escape");
   await expect(missingTour).toHaveCount(0);
   await expect(missingTourOpener).toBeFocused();

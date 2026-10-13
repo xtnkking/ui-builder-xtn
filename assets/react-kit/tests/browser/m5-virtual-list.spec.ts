@@ -1,4 +1,4 @@
-// @personal-ui-coverage {"kind":"browser","runner":"browser","exports":["VirtualList"]}
+// @ui-coverage {"kind":"browser","runner":"browser","exports":["VirtualList"]}
 import { expect, test } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 

@@ -112,7 +112,7 @@
         "workspaceRoot": ".",
         "packageRoot": ".",
         "sourceRootMode": "canonical",
-        "sourceRoot": "src/personal-ui",
+        "sourceRoot": "src/ui",
         "renderMode": "client"
       },
       "operations": [
@@ -162,7 +162,7 @@
         "workspaceRoot": ".",
         "packageRoot": ".",
         "sourceRootMode": "canonical",
-        "sourceRoot": "src/personal-ui",
+        "sourceRoot": "src/ui",
         "renderMode": "client"
       },
       "operations": [
@@ -212,7 +212,7 @@
         "workspaceRoot": ".",
         "packageRoot": ".",
         "sourceRootMode": "canonical",
-        "sourceRoot": "src/personal-ui",
+        "sourceRoot": "src/ui",
         "renderMode": "client"
       },
       "operations": [
@@ -262,7 +262,7 @@
         "workspaceRoot": ".",
         "packageRoot": ".",
         "sourceRootMode": "canonical",
-        "sourceRoot": "src/personal-ui",
+        "sourceRoot": "src/ui",
         "renderMode": "client"
       },
       "operations": [
@@ -312,7 +312,7 @@
         "workspaceRoot": ".",
         "packageRoot": "packages/vite-app",
         "sourceRootMode": "canonical",
-        "sourceRoot": "src/personal-ui",
+        "sourceRoot": "src/ui",
         "renderMode": "client"
       },
       "operations": [
@@ -342,7 +342,7 @@
     {
       "id": "pnpm10-vite-node24-react19-ts59-custom-root",
       "status": "target",
-      "purpose": "pnpm 10 with a non-default Personal UI source root.",
+      "purpose": "pnpm 10 with a non-default ui-builder-xtn source root.",
       "environment": {
         "node": "24.0.0",
         "react": "19.1.1",
@@ -364,7 +364,7 @@
         "workspaceRoot": ".",
         "packageRoot": ".",
         "sourceRootMode": "custom",
-        "sourceRoot": "ui/personal-ui",
+        "sourceRoot": "ui/ui",
         "renderMode": "client"
       },
       "operations": [
@@ -416,7 +416,7 @@
         "workspaceRoot": ".",
         "packageRoot": "packages/vite-app",
         "sourceRootMode": "canonical",
-        "sourceRoot": "src/personal-ui",
+        "sourceRoot": "src/ui",
         "renderMode": "client"
       },
       "operations": [
@@ -468,7 +468,7 @@
         "workspaceRoot": ".",
         "packageRoot": "apps/next-app",
         "sourceRootMode": "custom",
-        "sourceRoot": "ui/personal-ui",
+        "sourceRoot": "ui/ui",
         "renderMode": "ssr-hydration"
       },
       "operations": [

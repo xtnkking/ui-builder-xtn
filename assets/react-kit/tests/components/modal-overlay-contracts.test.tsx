@@ -1,4 +1,4 @@
-// @personal-ui-coverage {"kind":"unit","runner":"components","exports":["ConfirmDialog","ContextMenu","Dialog","Drawer","GuidedTour","Lightbox","Popconfirm"]}
+// @ui-coverage {"kind":"unit","runner":"components","exports":["ConfirmDialog","ContextMenu","Dialog","Drawer","GuidedTour","Lightbox","Popconfirm"]}
 import { createElement } from "react";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -18,7 +18,7 @@ import {
   type GuidedTourProps,
   type LightboxProps,
   type PopconfirmProps,
-} from "../../src/personal-ui";
+} from "../../src/ui";
 
 const menuItems = [{ id: "edit", label: "Edit", onSelect: () => undefined }];
 const lightboxItems = [
@@ -38,22 +38,22 @@ function forcedEscapeProps() {
     sx: "foreign-sx",
     tw: "foreign-tw",
     dangerouslySetInnerHTML: { __html: "<b>unsafe overlay</b>" },
-    "data-pui-owner": "Consumer",
-    "data-pui-slot": "foreign",
-    "data-pui-private": "foreign",
+    "data-ui-owner": "Consumer",
+    "data-ui-slot": "foreign",
+    "data-ui-private": "foreign",
   };
 }
 
 function expectEscapesRemoved(element: HTMLElement, owner: string) {
-  expect(element).toHaveAttribute("data-pui-owner", owner);
+  expect(element).toHaveAttribute("data-ui-owner", owner);
   expect(element).not.toHaveClass("foreign-overlay");
   expect(element.style.color).not.toBe("red");
   expect(element.style.background).not.toBe("magenta");
   expect(element).not.toHaveAttribute("css");
   expect(element).not.toHaveAttribute("sx");
   expect(element).not.toHaveAttribute("tw");
-  expect(element).not.toHaveAttribute("data-pui-slot");
-  expect(element).not.toHaveAttribute("data-pui-private");
+  expect(element).not.toHaveAttribute("data-ui-slot");
+  expect(element).not.toHaveAttribute("data-ui-private");
   expect(element).not.toHaveTextContent("unsafe overlay");
 }
 
@@ -98,7 +98,7 @@ describe("modal overlay public contracts", () => {
       title: "Confirm",
       onConfirm: () => undefined,
     } as unknown as ConfirmDialogProps));
-    expectEscapesRemoved(document.querySelector<HTMLElement>("[data-pui-owner='ConfirmDialog']")!, "ConfirmDialog");
+    expectEscapesRemoved(document.querySelector<HTMLElement>("[data-ui-owner='ConfirmDialog']")!, "ConfirmDialog");
     confirm.unmount();
 
     const popconfirm = render(createElement(Popconfirm, {
@@ -109,7 +109,7 @@ describe("modal overlay public contracts", () => {
       onConfirm: () => undefined,
     } as unknown as PopconfirmProps));
     await user.click(screen.getByRole("button", { name: "Delete record" }));
-    expectEscapesRemoved(document.querySelector<HTMLElement>("[data-pui-owner='Popconfirm']")!, "Popconfirm");
+    expectEscapesRemoved(document.querySelector<HTMLElement>("[data-ui-owner='Popconfirm']")!, "Popconfirm");
     popconfirm.unmount();
 
     const contextMenu = render(createElement(ContextMenu, {
@@ -118,7 +118,7 @@ describe("modal overlay public contracts", () => {
       items: menuItems,
       children: <span>Record</span>,
     } as unknown as ContextMenuProps));
-    expectEscapesRemoved(document.querySelector<HTMLElement>("[data-pui-owner='ContextMenu']")!, "ContextMenu");
+    expectEscapesRemoved(document.querySelector<HTMLElement>("[data-ui-owner='ContextMenu']")!, "ContextMenu");
     contextMenu.unmount();
 
     const lightbox = render(createElement(Lightbox, {
@@ -143,7 +143,7 @@ describe("modal overlay public contracts", () => {
     expectEscapesRemoved(screen.getByRole("dialog", { name: "功能引导" }), "GuidedTour");
     tour.unmount();
 
-    expect(document.querySelector("[data-pui-owner='Consumer']")).toBeNull();
+    expect(document.querySelector("[data-ui-owner='Consumer']")).toBeNull();
   });
 
   it("reports controlled Dialog and Drawer dismiss actions through onOpenChange", async () => {
@@ -181,16 +181,16 @@ describe("modal overlay public contracts", () => {
       <Popconfirm triggerLabel="Delete" ariaLabel="Delete record" title="Delete?" onConfirm={() => undefined} />,
     );
     await user.click(screen.getByRole("button", { name: "Delete record" }));
-    expect(document.querySelector("[data-pui-owner='Popconfirm']")).not.toBeNull();
+    expect(document.querySelector("[data-ui-owner='Popconfirm']")).not.toBeNull();
     expect(document.querySelector("button button")).toBeNull();
     await user.click(screen.getByRole("button", { name: "取消" }));
-    expect(document.querySelector("[data-pui-owner='Popconfirm']")).toBeNull();
+    expect(document.querySelector("[data-ui-owner='Popconfirm']")).toBeNull();
     popconfirm.unmount();
 
     const contextMenu = render(
       <ContextMenu ariaLabel="Record actions" items={menuItems}><span>Record</span></ContextMenu>,
     );
-    fireEvent.contextMenu(document.querySelector("[data-pui-owner='ContextMenu']")!, { clientX: 20, clientY: 20 });
+    fireEvent.contextMenu(document.querySelector("[data-ui-owner='ContextMenu']")!, { clientX: 20, clientY: 20 });
     expect(await screen.findByRole("menu", { name: "Record actions" })).toBeInTheDocument();
     fireEvent.keyDown(document, { key: "Escape" });
     expect(screen.queryByRole("menu", { name: "Record actions" })).not.toBeInTheDocument();
@@ -267,7 +267,7 @@ describe("modal overlay public contracts", () => {
     let targetTop = 100;
     vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockImplementation(function bounds() {
       if (this.id === "tour-target") return new DOMRect(120, targetTop, 180, 44);
-      if (this.classList.contains("pui-tour__card")) return new DOMRect(0, 0, 380, 220);
+      if (this.classList.contains("ui-tour__card")) return new DOMRect(0, 0, 380, 220);
       return new DOMRect(0, 0, 1, 1);
     });
     const target = document.createElement("button");
@@ -288,9 +288,9 @@ describe("modal overlay public contracts", () => {
       />,
     );
 
-    const card = document.querySelector<HTMLElement>(".pui-tour__card")!;
+    const card = document.querySelector<HTMLElement>(".ui-tour__card")!;
     await waitFor(() => expect(card).toHaveAttribute("data-placement", "bottom"));
-    expect(document.querySelector(".pui-tour__spotlight")).not.toBeNull();
+    expect(document.querySelector(".ui-tour__spotlight")).not.toBeNull();
     const firstTop = card.style.top;
     targetTop = 180;
     fireEvent.scroll(window);
@@ -298,7 +298,7 @@ describe("modal overlay public contracts", () => {
 
     target.remove();
     await waitFor(() => expect(card).not.toHaveAttribute("data-placement"));
-    expect(document.querySelector(".pui-tour__scrim")).not.toBeNull();
+    expect(document.querySelector(".ui-tour__scrim")).not.toBeNull();
     fireEvent.keyDown(document, { key: "Escape" });
     expect(onOpenChange).toHaveBeenCalledWith(false);
   });
@@ -312,12 +312,12 @@ describe("modal overlay public contracts", () => {
       <GuidedTour open onOpenChange={() => undefined} steps={invalidSteps} currentId="invalid" onCurrentChange={() => undefined} />,
     );
     expect(screen.getByRole("dialog", { name: "功能引导" })).toBeInTheDocument();
-    expect(document.querySelector(".pui-tour__card")).not.toHaveAttribute("data-placement");
-    expect(document.querySelector(".pui-tour__scrim")).not.toBeNull();
+    expect(document.querySelector(".ui-tour__card")).not.toHaveAttribute("data-placement");
+    expect(document.querySelector(".ui-tour__scrim")).not.toBeNull();
     tour.rerender(
       <GuidedTour open onOpenChange={() => undefined} steps={invalidSteps} currentId="missing" onCurrentChange={() => undefined} />,
     );
-    expect(document.querySelector(".pui-tour__card")).not.toHaveAttribute("data-placement");
+    expect(document.querySelector(".ui-tour__card")).not.toHaveAttribute("data-placement");
   });
 
   it("rejects invalid controlled-only JavaScript combinations before rendering", () => {

@@ -1,4 +1,4 @@
-// @personal-ui-coverage {"kind":"browser","runner":"browser","exports":["InfiniteScroll"]}
+// @ui-coverage {"kind":"browser","runner":"browser","exports":["InfiniteScroll"]}
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
@@ -20,7 +20,7 @@ test("InfiniteScroll standalone keyboard command shares observer ownership, retr
   });
   await page.goto("/tests/fixtures/m5-standalone-infinite-scroll.html");
   await page.waitForFunction(() => Boolean(window.standaloneInfinite));
-  const owner = page.locator("[data-pui-owner='InfiniteScroll']");
+  const owner = page.locator("[data-ui-owner='InfiniteScroll']");
   const button = owner.getByRole("button");
   const before = page.getByRole("button", { name: "Before records" });
   const after = page.getByRole("button", { name: "After records" });
@@ -80,7 +80,7 @@ test("InfiniteScroll standalone keyboard command shares observer ownership, retr
 test("InfiniteScroll keyboard loading works without IntersectionObserver", async ({ page }) => {
   await page.addInitScript(() => Object.defineProperty(window, "IntersectionObserver", { configurable: true, value: undefined }));
   await page.goto("/tests/fixtures/m5-standalone-infinite-scroll.html");
-  const button = page.locator("[data-pui-owner='InfiniteScroll']").getByRole("button");
+  const button = page.locator("[data-ui-owner='InfiniteScroll']").getByRole("button");
   await button.focus();
   await page.keyboard.press("Space");
   await expect.poll(() => page.evaluate(() => window.standaloneInfinite.requests)).toEqual([2]);

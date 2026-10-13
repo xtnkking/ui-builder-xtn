@@ -13,7 +13,7 @@ import sys
 from pathlib import Path, PurePosixPath
 from typing import Any, Mapping, Sequence
 
-import release_personal_ui as release
+import release_ui as release
 import run_m8_consumer as consumer
 
 
@@ -22,8 +22,8 @@ RESULTS = frozenset({"passed", "failed", "blocked"})
 CHECK_RESULTS = frozenset({"passed", "failed", "blocked", "not-run"})
 CHECKS = ("typecheck", "build", "verifier", "behavior", "a11y", "responsive")
 QUALITY_PURPOSES = ("typecheck", "build", "verifier", "browser-quality")
-QUALITY_REPORT_KIND = "personal-ui-m8-scenario-quality-report"
-QUALITY_VERIFICATION_KIND = "personal-ui-m8-quality-verification"
+QUALITY_REPORT_KIND = "ui-m8-scenario-quality-report"
+QUALITY_VERIFICATION_KIND = "ui-m8-quality-verification"
 QUALITY_VERIFICATION_PATH = PurePosixPath("evidence/quality-verification.json")
 ATTRIBUTIONS = frozenset(
     {
@@ -123,7 +123,7 @@ def _workspace(path: Path) -> tuple[Path, dict[str, Any]]:
     if (
         not isinstance(manifest, dict)
         or manifest.get("schemaVersion") != consumer.SCHEMA_VERSION
-        or manifest.get("kind") != "personal-ui-m8-evaluator-inputs"
+        or manifest.get("kind") != "ui-m8-evaluator-inputs"
     ):
         raise M8EvidenceError("input manifest schema or kind is unsupported")
     run = manifest.get("run")
@@ -258,7 +258,7 @@ def start_run(
         raise M8EvidenceError("workspace manifest is incomplete")
     record: dict[str, object] = {
         "schemaVersion": SCHEMA_VERSION,
-        "kind": "personal-ui-m8-run-start",
+        "kind": "ui-m8-run-start",
         "runId": run["id"],
         "scenarioId": scenario.get("id"),
         "evaluatorId": evaluator_id,
@@ -334,7 +334,7 @@ def record_command(
             )
     record: dict[str, object] = {
         "schemaVersion": SCHEMA_VERSION,
-        "kind": "personal-ui-m8-command",
+        "kind": "ui-m8-command",
         "runId": run["id"],
         "sequence": sequence,
         "argv": list(argv),
@@ -388,7 +388,7 @@ def _recorded_command_materials(
         if (
             not isinstance(record, dict)
             or record.get("schemaVersion") != SCHEMA_VERSION
-            or record.get("kind") != "personal-ui-m8-command"
+            or record.get("kind") != "ui-m8-command"
             or record.get("runId") != run_id
             or record.get("sequence") != sequence
         ):
@@ -620,7 +620,7 @@ def _freeze_source(
         inventory_path,
         {
             "schemaVersion": SCHEMA_VERSION,
-            "kind": "personal-ui-m8-source-inventory",
+            "kind": "ui-m8-source-inventory",
             "contentDigest": release.digest_file_map(files),
             "files": release.file_inventory(files),
         },
@@ -703,7 +703,7 @@ def freeze_result(
     run = manifest["run"]
     record: dict[str, object] = {
         "schemaVersion": SCHEMA_VERSION,
-        "kind": f"personal-ui-m8-{stage}-result",
+        "kind": f"ui-m8-{stage}-result",
         "runId": run["id"],
         "result": result,
         "frozenAt": frozen_timestamp,
@@ -764,7 +764,7 @@ def record_review(
     run = manifest["run"]
     record: dict[str, object] = {
         "schemaVersion": SCHEMA_VERSION,
-        "kind": "personal-ui-m8-organizer-review",
+        "kind": "ui-m8-organizer-review",
         "runId": run["id"],
         "result": result,
         "attribution": attribution,
@@ -817,7 +817,7 @@ def record_repair(
     run = manifest["run"]
     record: dict[str, object] = {
         "schemaVersion": SCHEMA_VERSION,
-        "kind": "personal-ui-m8-repair",
+        "kind": "ui-m8-repair",
         "runId": run["id"],
         "sequence": sequence,
         "recordedAt": recorded_timestamp,
@@ -839,7 +839,7 @@ def _freeze_indexes(root: Path, run_id: str) -> None:
         root / "evidence" / "command-index.json",
         {
             "schemaVersion": SCHEMA_VERSION,
-            "kind": "personal-ui-m8-command-index",
+            "kind": "ui-m8-command-index",
             "runId": run_id,
             "commands": command_descriptors,
         },
@@ -849,7 +849,7 @@ def _freeze_indexes(root: Path, run_id: str) -> None:
         root / "evidence" / "repair-trace.json",
         {
             "schemaVersion": SCHEMA_VERSION,
-            "kind": "personal-ui-m8-repair-trace",
+            "kind": "ui-m8-repair-trace",
             "runId": run_id,
             "repairs": [descriptor(root, path) for path in repairs],
         },

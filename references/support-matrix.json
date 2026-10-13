@@ -17,7 +17,7 @@
   },
   "sourceAuthority": {
     "editableSource": "git-checkout",
-    "canonicalComponentPath": "assets/react-kit/src/personal-ui",
+    "canonicalComponentPath": "assets/react-kit/src/ui",
     "generatedCopies": [
       "$CODEX_HOME/skills/ui-builder-xtn",
       "local-backup",

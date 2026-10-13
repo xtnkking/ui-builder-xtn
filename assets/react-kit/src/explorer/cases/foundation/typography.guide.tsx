@@ -1,4 +1,4 @@
-import { Card, Stack } from "../../../personal-ui";
+import { Card, Stack } from "../../../ui";
 import { StatePreview } from "../state-preview";
 import type { ExplorerCase } from "../types";
 

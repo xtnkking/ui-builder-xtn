@@ -1,4 +1,4 @@
-// @personal-ui-coverage {"kind":"browser","runner":"browser","exports":["Form","MultiSelect","Select"]}
+// @ui-coverage {"kind":"browser","runner":"browser","exports":["Form","MultiSelect","Select"]}
 import { expect, test } from "@playwright/test";
 
 test.beforeEach(async ({ page }) => {
@@ -12,7 +12,7 @@ test("required composites block submit and focus their visible owner", async ({ 
     form.addEventListener("submit", () => { submitted = true; }, { once: true });
     form.requestSubmit();
     return {
-      activeOwner: document.activeElement?.closest<HTMLElement>("[data-pui-owner]")?.dataset.puiOwner,
+      activeOwner: document.activeElement?.closest<HTMLElement>("[data-ui-owner]")?.dataset.uiOwner,
       valid: form.checkValidity(),
       submitted,
     };
@@ -23,7 +23,7 @@ test("required composites block submit and focus their visible owner", async ({ 
   const unnamed = await page.locator("#unnamed-required").evaluate((form: HTMLFormElement) => {
     form.requestSubmit();
     return {
-      activeOwner: document.activeElement?.closest<HTMLElement>("[data-pui-owner]")?.dataset.puiOwner,
+      activeOwner: document.activeElement?.closest<HTMLElement>("[data-ui-owner]")?.dataset.uiOwner,
       valid: form.checkValidity(),
     };
   });
@@ -34,7 +34,7 @@ test("required composites block submit and focus their visible owner", async ({ 
     form.addEventListener("submit", () => { submitted = true; }, { once: true });
     form.requestSubmit();
     return {
-      activeOwner: document.activeElement?.closest<HTMLElement>("[data-pui-owner]")?.dataset.puiOwner,
+      activeOwner: document.activeElement?.closest<HTMLElement>("[data-ui-owner]")?.dataset.uiOwner,
       entries: Array.from(new FormData(form).entries()),
       valid: form.checkValidity(),
       submitted,
@@ -65,7 +65,7 @@ test("disabled composites omit values and restore serialization and validation w
   const invalid = await form.evaluate((element: HTMLFormElement) => {
     element.requestSubmit();
     return {
-      activeOwner: document.activeElement?.closest<HTMLElement>("[data-pui-owner]")?.dataset.puiOwner,
+      activeOwner: document.activeElement?.closest<HTMLElement>("[data-ui-owner]")?.dataset.uiOwner,
       entries: Array.from(new FormData(element).entries()),
       valid: element.checkValidity(),
     };

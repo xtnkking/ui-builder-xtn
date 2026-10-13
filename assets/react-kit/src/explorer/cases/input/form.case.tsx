@@ -1,7 +1,7 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"form/overview","exports":["Form"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"form/overview","exports":["Form"]}
 import { StatePreview } from "../state-preview";
 import { useState } from "react";
-import { Button, Field, Form, Inline, Input } from "../../../personal-ui";
+import { Button, Field, Form, Inline, Input } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 function FormExample() {
@@ -47,7 +47,7 @@ const explorerCase = {
     { state: "locale", exports: ["Form"], content: <StatePreview state="locale">{<FormExample />}</StatePreview> },
   ],
   content: <FormExample />,
-  code: `import { Button, Field, Form, Input } from "./personal-ui";\n\n<Form onSubmit={handleSubmit}>\n  <Field label="项目名称" htmlFor="project-name" required>\n    <Input id="project-name" name="name" value={name} onChange={handleChange} />\n  </Field>\n  <Button type="submit">创建项目</Button>\n</Form>`,
+  code: `import { Button, Field, Form, Input } from "./ui";\n\n<Form onSubmit={handleSubmit}>\n  <Field label="项目名称" htmlFor="project-name" required>\n    <Input id="project-name" name="name" value={name} onChange={handleChange} />\n  </Field>\n  <Button type="submit">创建项目</Button>\n</Form>`,
 } satisfies ExplorerCase;
 
 export default explorerCase;

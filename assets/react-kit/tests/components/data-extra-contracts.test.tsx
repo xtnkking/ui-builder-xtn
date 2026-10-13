@@ -1,4 +1,4 @@
-// @personal-ui-coverage {"kind":"unit","runner":"components","exports":["BarChart","Calendar","Carousel","DragDrop","ExpandableText","ResizablePanels","Scheduler","SortableList","Tree","TreeTable","VirtualList"]}
+// @ui-coverage {"kind":"unit","runner":"components","exports":["BarChart","Calendar","Carousel","DragDrop","ExpandableText","ResizablePanels","Scheduler","SortableList","Tree","TreeTable","VirtualList"]}
 import { createElement } from "react";
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -26,7 +26,7 @@ import {
   type TreeProps,
   type TreeTableProps,
   type VirtualListProps,
-} from "../../src/personal-ui";
+} from "../../src/ui";
 
 const treeNodes = [
   {
@@ -59,8 +59,8 @@ function escapedProps(testId: string, onMouseEnter = vi.fn()) {
     sx: "foreign-sx",
     tw: "foreign-tw",
     dangerouslySetInnerHTML: { __html: "<b>unsafe</b>" },
-    "data-pui-owner": "Consumer",
-    "data-pui-slot": "foreign",
+    "data-ui-owner": "Consumer",
+    "data-ui-slot": "foreign",
     "data-testid": testId,
     "data-track": "preserved",
     onMouseEnter,
@@ -73,8 +73,8 @@ function expectClosedRoot(element: HTMLElement, owner: string) {
   expect(element).not.toHaveAttribute("css");
   expect(element).not.toHaveAttribute("sx");
   expect(element).not.toHaveAttribute("tw");
-  expect(element).not.toHaveAttribute("data-pui-slot");
-  expect(element).toHaveAttribute("data-pui-owner", owner);
+  expect(element).not.toHaveAttribute("data-ui-slot");
+  expect(element).toHaveAttribute("data-ui-owner", owner);
   expect(element).toHaveAttribute("data-track", "preserved");
   expect(element.querySelector("b")).toBeNull();
 }

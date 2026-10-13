@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import Any, Mapping
 
 import validate_hosted_ci_evidence as validator
-import release_personal_ui as release
+import release_ui as release
 
 
 SKILL_ROOT = Path(__file__).resolve().parents[1]
@@ -63,9 +63,9 @@ def github_context(*, expected_job: str) -> dict[str, object]:
         raise ValueError(f"expected GitHub job {expected_job!r}, received {actual_job!r}")
     repository = required_environment("GITHUB_REPOSITORY")
     run_id = positive_environment_integer("GITHUB_RUN_ID")
-    source_commit = required_environment("PUI_SOURCE_COMMIT").lower()
+    source_commit = required_environment("UI_SOURCE_COMMIT").lower()
     if validator.COMMIT_PATTERN.fullmatch(source_commit) is None:
-        raise ValueError("PUI_SOURCE_COMMIT must be a complete Git object id")
+        raise ValueError("UI_SOURCE_COMMIT must be a complete Git object id")
     return {
         "sourceCommit": source_commit,
         "repository": repository,
@@ -167,7 +167,7 @@ def record_safari(*, report_path: Path, output: Path) -> dict[str, object]:
     report = read_object(report_path)
     if (
         report.get("schemaVersion") != 1
-        or report.get("kind") != "personal-ui-real-safari-smoke"
+        or report.get("kind") != "ui-real-safari-smoke"
         or report.get("result") != "passed"
     ):
         raise ValueError("Safari report is not a passing real-Safari smoke report")

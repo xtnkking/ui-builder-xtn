@@ -25,7 +25,7 @@ async function openExample(page: Page, route: string) {
   await expect(page).toHaveURL(new RegExp(`${route.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`));
 }
 
-test.describe("Personal UI example accessibility", () => {
+test.describe("ui-builder-xtn example accessibility", () => {
   test("member management has no blocking automated violations", async ({ page }) => {
     await openExample(page, "/#/patterns/list-filter");
     await expect(page.getByRole("tab", { name: "列表管理", exact: true })).toBeVisible();
@@ -41,7 +41,7 @@ test.describe("Personal UI example accessibility", () => {
   test("family login visual slot keeps contrast at tablet width", async ({ page }) => {
     await page.setViewportSize({ width: 736, height: 900 });
     await openExample(page, "/#/patterns/authentication");
-    await expect(page.locator(".pui-auth__scene").first()).toHaveCSS("opacity", "1");
+    await expect(page.locator(".ui-auth__scene").first()).toHaveCSS("opacity", "1");
     await expectNoBlockingViolations(page, "family login at 736px");
   });
 
@@ -49,13 +49,13 @@ test.describe("Personal UI example accessibility", () => {
     await page.setViewportSize({ width: 736, height: 900 });
     await openExample(page, "/#/components/field");
     await page.addStyleTag({ content: "#root { background: #f4f7f6; }" });
-    const markers = page.locator(".pui-label__required");
+    const markers = page.locator(".ui-label__required");
     await expect(markers.first()).toHaveCSS("background-color", "rgb(247, 248, 250)");
     const results = await new axeBuilder({ page }).analyze();
     const blocking = [...results.violations, ...results.incomplete]
       .filter((rule) => rule.impact != null && blockingImpacts.has(rule.impact))
       .flatMap((rule) => rule.nodes
-        .filter((node) => node.target.some((target) => target.includes(".pui-label__required")))
+        .filter((node) => node.target.some((target) => target.includes(".ui-label__required")))
         .map((node) => ({ id: rule.id, target: node.target })));
     expect(blocking).toEqual([]);
   });
@@ -70,7 +70,7 @@ test.describe("Personal UI example accessibility", () => {
     await page.setViewportSize({ width: 2560, height: 900 });
     await openExample(page, "/#/components/textarea");
     const textarea = page.locator("#explorer-textarea");
-    await expect(textarea).toHaveAttribute("data-pui-owner", "Textarea");
+    await expect(textarea).toHaveAttribute("data-ui-owner", "Textarea");
     await textarea.fill("");
     await expect(textarea).toHaveValue("");
     await expect(textarea).toHaveCSS("overflow-x", "hidden");

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Inline, Progress, Spinner, Stack } from "../../../personal-ui";
+import { Button, Inline, Progress, Spinner, Stack } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 function MotionExample() {

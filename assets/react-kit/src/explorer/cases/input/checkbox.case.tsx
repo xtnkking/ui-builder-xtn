@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"checkbox/overview","exports":["Checkbox"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"checkbox/overview","exports":["Checkbox"]}
 import { useState } from "react";
-import { Checkbox, Field } from "../../../personal-ui";
+import { Checkbox, Field } from "../../../ui";
 import type { ExplorerCase } from "../types";
 import { StatePreview } from "../state-preview";
 

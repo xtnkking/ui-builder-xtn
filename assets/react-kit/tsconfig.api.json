@@ -9,6 +9,6 @@
     "rootDir": "src",
     "incremental": false
   },
-  "files": ["src/personal-ui/index.ts"],
+  "files": ["src/ui/index.ts"],
   "include": []
 }

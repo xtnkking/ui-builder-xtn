@@ -10,7 +10,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-import release_personal_ui as release
+import release_ui as release
 import run_m8_consumer as m8
 
 
@@ -29,7 +29,7 @@ def source_files(
 ) -> dict[str, bytes]:
     source = b'export const Button = "button";\n'
     package: dict[str, object] = {
-        "name": "personal-ui-react-starter",
+        "name": "ui-builder-xtn",
         "private": True,
         "version": "0.2.19",
         "devDependencies": {"fixture-dependency": "1.2.3"},
@@ -56,12 +56,12 @@ def source_files(
         "assets/react-kit/package.json": b"",
         "assets/react-kit/package-lock.json": json_bytes(
             {
-                "name": "personal-ui-react-starter",
+                "name": "ui-builder-xtn",
                 "version": "0.2.19",
                 "lockfileVersion": 3,
                 "packages": {
                     "": {
-                        "name": "personal-ui-react-starter",
+                        "name": "ui-builder-xtn",
                         "version": "0.2.19",
                         "devDependencies": {"fixture-dependency": "1.2.3"},
                     },
@@ -75,7 +75,7 @@ def source_files(
             }
         ),
         "assets/react-kit/registry.json": json_bytes(
-            {"name": "personal-ui", "version": "0.2.19"}
+            {"name": "ui", "version": "0.2.19"}
         ),
         "assets/react-kit/component-manifest.json": json_bytes(
             {
@@ -91,7 +91,7 @@ def source_files(
                 "releaseTarget": "0.3.0",
             }
         ),
-        "assets/react-kit/etc/personal-ui.api-compatibility.json": json_bytes(
+        "assets/react-kit/etc/ui.api-compatibility.json": json_bytes(
             {
                 "schemaVersion": 1,
                 "classification": "breaking",
@@ -106,11 +106,11 @@ def source_files(
         "assets/react-kit/component-coverage.json": json_bytes(
             {"schemaVersion": 3, "kitVersion": "0.2.19"}
         ),
-        "assets/react-kit/etc/personal-ui.module-ownership.json": json_bytes(
+        "assets/react-kit/etc/ui.module-ownership.json": json_bytes(
             {"schemaVersion": 1, "kitVersion": "0.2.19", "modules": []}
         ),
         "references/component-api.md": (
-            b"# Personal UI Component API\n\nGenerated for Personal UI 0.2.19.\n"
+            b"# UI Component API\n\nGenerated for UI 0.2.19.\n"
         ),
         "references/component-catalog.md": (
             b"# Component Catalog\n\n- Version: `0.2.19`\n"
@@ -132,7 +132,7 @@ def source_files(
                         "project": {
                             "layout": "single-package",
                             "packageRoot": ".",
-                            "sourceRoot": "src/personal-ui",
+                            "sourceRoot": "src/ui",
                         },
                     }
                 ],
@@ -141,7 +141,7 @@ def source_files(
         "evaluation/m8/scenarios.json": json_bytes(
             {
                 "schemaVersion": 1,
-                "kind": "personal-ui-m8-scenarios",
+                "kind": "ui-m8-scenarios",
                 "scenarios": [
                     {
                         "id": SCENARIO_ID,
@@ -162,15 +162,15 @@ def source_files(
         "evaluation/m8/acceptance-rules.json": json_bytes(
             {
                 "schemaVersion": 1,
-                "kind": "personal-ui-m8-acceptance-rules",
+                "kind": "ui-m8-acceptance-rules",
                 "visibility": "organizer-only",
                 "attributionEnum": ["consumer-omission"],
                 "scenarioRules": [{"id": SCENARIO_ID, "checks": {}}],
             }
         ),
         f"evaluation/m8/requests/{SCENARIO_ID}.md": request_text.encode("utf-8"),
-        "assets/react-kit/src/personal-ui/index.ts": source,
-        "scripts/release_personal_ui.py": b"# fixture tool\n",
+        "assets/react-kit/src/ui/index.ts": source,
+        "scripts/release_ui.py": b"# fixture tool\n",
     }
     if licensed:
         package["license"] = "MIT"
@@ -182,7 +182,7 @@ def source_files(
         files[release.STRUCTURED_NOTICE_FILE] = json_bytes(
             {
                 "schemaVersion": 1,
-                "kind": "personal-ui-third-party-notices",
+                "kind": "ui-third-party-notices",
                 "generatedFrom": "assets/react-kit/package-lock.json",
                 "dependencyCount": 1,
                 "items": [
@@ -275,7 +275,7 @@ def make_catalog(
     request_digest = expected_request_hash or release.sha256_bytes(request.read_bytes())
     catalog = {
         "schemaVersion": 1,
-        "kind": "personal-ui-m8-scenarios",
+        "kind": "ui-m8-scenarios",
         "scenarios": [
             {
                 "id": SCENARIO_ID,
@@ -344,7 +344,7 @@ class M8ConsumerWorkspaceContracts(unittest.TestCase):
             m8._validate_candidate_materials(bad_request)
 
     def test_official_projection_is_deterministic_and_excludes_organizer_inputs(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-") as temporary:
             root = Path(temporary)
             candidate, plan = make_candidate(root, official=True)
             catalog_root, request = make_catalog(
@@ -417,7 +417,7 @@ class M8ConsumerWorkspaceContracts(unittest.TestCase):
             self.assertTrue((root / "evaluator-a" / m8.EVIDENCE_ROOT).is_dir())
 
     def test_existing_output_preserves_first_inputs(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-") as temporary:
             root = Path(temporary)
             candidate, _ = make_candidate(
                 root,
@@ -452,7 +452,7 @@ class M8ConsumerWorkspaceContracts(unittest.TestCase):
             self.assertFalse((root / "changed-request").exists())
 
     def test_rehearsal_allows_dirty_nonpublishable_candidate_but_is_not_evidence(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-") as temporary:
             root = Path(temporary)
             candidate, _ = make_candidate(
                 root,
@@ -482,7 +482,7 @@ class M8ConsumerWorkspaceContracts(unittest.TestCase):
             self.assertFalse((root / "rehearsal" / "m8-acceptance.json").exists())
 
     def test_unverified_and_tampered_candidates_are_rejected_without_output(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-") as temporary:
             root = Path(temporary)
             candidate = root / "candidate"
             release.prepare_release(
@@ -525,7 +525,7 @@ class M8ConsumerWorkspaceContracts(unittest.TestCase):
             self.assertFalse((root / "tampered-output").exists())
 
     def test_output_boundaries_and_parent_traversal_are_rejected(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-") as temporary:
             root = Path(temporary)
             repository = root / "repository"
             repository.mkdir()
@@ -555,7 +555,7 @@ class M8ConsumerWorkspaceContracts(unittest.TestCase):
                 )
 
     def test_linked_request_and_plan_path_traversal_are_rejected(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-") as temporary:
             root = Path(temporary)
             candidate, _ = make_candidate(
                 root,
@@ -573,7 +573,7 @@ class M8ConsumerWorkspaceContracts(unittest.TestCase):
             make_directory_link(linked_directory, request_source)
             linked_catalog_document = {
                 "schemaVersion": 1,
-                "kind": "personal-ui-m8-scenarios",
+                "kind": "ui-m8-scenarios",
                 "scenarios": [
                     {
                         "id": SCENARIO_ID,

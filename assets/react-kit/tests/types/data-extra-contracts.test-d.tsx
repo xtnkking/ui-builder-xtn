@@ -15,7 +15,7 @@ import {
   type TreeProps,
   type TreeTableProps,
   type VirtualListProps,
-} from "../../src/personal-ui";
+} from "../../src/ui";
 
 const treeNodes = [
   {
@@ -169,9 +169,9 @@ const treeStyle = <Tree nodes={treeNodes} ariaLabel="Account tree" style={{ colo
 // @ts-expect-error fixed controls do not expose raw DOM refs
 const carouselRef = <Carousel slides={slides} ariaLabel="Highlights" ref={createRef<HTMLElement>()} />;
 // @ts-expect-error reserved ownership attributes are never public
-const chartOwner = <BarChart data={[]} ariaLabel="Chart" data-pui-owner="Consumer" />;
+const chartOwner = <BarChart data={[]} ariaLabel="Chart" data-ui-owner="Consumer" />;
 // @ts-expect-error wildcard reserved ownership attributes are never public in Props objects
-const treePrivateData: TreeProps = { nodes: treeNodes, ariaLabel: "Account tree", "data-pui-private": "foreign" };
+const treePrivateData: TreeProps = { nodes: treeNodes, ariaLabel: "Account tree", "data-ui-private": "foreign" };
 
 void treeMissingValueChange;
 void treeContradictoryValue;

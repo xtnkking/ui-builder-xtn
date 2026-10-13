@@ -1,7 +1,7 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"multi-select/overview","exports":["MultiSelect"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"multi-select/overview","exports":["MultiSelect"]}
 import { StatePreview } from "../state-preview";
 import { useState } from "react";
-import { Field, MultiSelect } from "../../../personal-ui";
+import { Field, MultiSelect } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 const permissions = [

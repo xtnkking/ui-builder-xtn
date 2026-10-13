@@ -12,12 +12,12 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-import install_personal_ui as installer
-from personal_ui_installation import STATE_RELATIVE, resolve_context
+import install_ui as installer
+from ui_installation import STATE_RELATIVE, resolve_context
 
 
 SCRIPT_ROOT = Path(__file__).resolve().parent
-VERIFIER = SCRIPT_ROOT / "verify_personal_ui.py"
+VERIFIER = SCRIPT_ROOT / "verify_ui.py"
 
 
 def write_json(path: Path, value: object) -> None:
@@ -49,7 +49,7 @@ def make_package(root: Path, *, framework: str = "vite", name: str = "fixture") 
     )
 
 
-def context_for(root: Path, *, source: str = "src/personal-ui", framework: str = "vite"):
+def context_for(root: Path, *, source: str = "src/ui", framework: str = "vite"):
     return resolve_context(
         target=root,
         project_root=None,
@@ -73,7 +73,7 @@ class InstallerContracts(unittest.TestCase):
         )
         for manager, root_fields, lockfile in profiles:
             with self.subTest(manager=manager), tempfile.TemporaryDirectory(
-                prefix=f"pui-{manager}-workspace-"
+                prefix=f"ui-{manager}-workspace-"
             ) as temporary:
                 root = Path(temporary)
                 root_package = {"name": "workspace", "private": True, **root_fields}
@@ -89,24 +89,24 @@ class InstallerContracts(unittest.TestCase):
                     target=None,
                     project_root=root,
                     package_root=Path("packages/web"),
-                    source_root=Path("ui/personal-ui"),
+                    source_root=Path("ui/ui"),
                     package_manager="auto",
                     framework="auto",
                 )
                 self.assertEqual(context.package_manager, manager)
                 self.assertTrue(context.workspace)
-                self.assertEqual(context.source_relative.as_posix(), "ui/personal-ui")
+                self.assertEqual(context.source_relative.as_posix(), "ui/ui")
                 self.assertEqual(context.lockfile, root / lockfile)
 
     def test_source_root_escape_is_rejected(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-path-contract-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-path-contract-") as temporary:
             root = Path(temporary)
             make_package(root)
             with self.assertRaisesRegex(ValueError, "does not escape"):
                 context_for(root, source="../outside")
 
     def test_dry_run_is_deterministic_and_does_not_write(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-dry-run-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-dry-run-") as temporary:
             root = Path(temporary)
             make_package(root)
             lock_path = installer.package_lock_path(root)
@@ -127,7 +127,7 @@ class InstallerContracts(unittest.TestCase):
             self.assertFalse(lock_path.exists())
 
     def test_install_then_noop_and_modified_source_conflict(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-install-noop-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-install-noop-") as temporary:
             root = Path(temporary)
             make_package(root)
             context = context_for(root)
@@ -136,7 +136,7 @@ class InstallerContracts(unittest.TestCase):
             )
             self.assertEqual(installed["operation"], "install")
             package = json.loads((root / "package.json").read_text(encoding="utf-8"))
-            self.assertTrue(package["scripts"]["build"].startswith(package["scripts"]["verify:personal-ui"] + " && "))
+            self.assertTrue(package["scripts"]["build"].startswith(package["scripts"]["verify:ui"] + " && "))
             self.assertEqual(package["scripts"]["prebuild"], "node existing.mjs")
             self.assertTrue((root / STATE_RELATIVE).is_file())
             repeated = installer.install_integrated(
@@ -167,7 +167,7 @@ class InstallerContracts(unittest.TestCase):
             )
 
     def test_legacy_manifest_upgrades_without_clearing_unowned_paths(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-legacy-upgrade-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-legacy-upgrade-") as temporary:
             root = Path(temporary)
             make_package(root)
             context = context_for(root)
@@ -181,8 +181,8 @@ class InstallerContracts(unittest.TestCase):
                     "legacy.ts": hashlib.sha256(legacy_bytes).hexdigest()
                 }
             }
-            write_json(root / "tools/personal-ui/component-manifest.json", manifest)
-            (root / "tools/personal-ui/verify-provenance.mjs").write_text(
+            write_json(root / "tools/ui/component-manifest.json", manifest)
+            (root / "tools/ui/verify-provenance.mjs").write_text(
                 "export {};\n", encoding="utf-8"
             )
             report = installer.install_integrated(
@@ -193,7 +193,7 @@ class InstallerContracts(unittest.TestCase):
             self.assertTrue((legacy_source / "index.ts").is_file())
 
     def test_legacy_manifest_escape_cannot_delete_external_file(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-legacy-escape-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-legacy-escape-") as temporary:
             parent = Path(temporary)
             root = parent / "app"
             make_package(root)
@@ -205,8 +205,8 @@ class InstallerContracts(unittest.TestCase):
             sentinel = parent / "outside-file"
             sentinel_bytes = b"must remain outside the package\n"
             sentinel.write_bytes(sentinel_bytes)
-            (root / "tools/personal-ui").mkdir(parents=True)
-            (root / "tools/personal-ui/verify-provenance.mjs").write_text(
+            (root / "tools/ui").mkdir(parents=True)
+            (root / "tools/ui/verify-provenance.mjs").write_text(
                 "export {};\n", encoding="utf-8"
             )
 
@@ -217,7 +217,7 @@ class InstallerContracts(unittest.TestCase):
                     else hashlib.sha256(sentinel_bytes).hexdigest()
                 )
                 write_json(
-                    root / "tools/personal-ui/component-manifest.json",
+                    root / "tools/ui/component-manifest.json",
                     {"sourceIntegrity": {"../../../outside-file": digest}},
                 )
                 with self.subTest(force=force), self.assertRaisesRegex(
@@ -243,7 +243,7 @@ class InstallerContracts(unittest.TestCase):
         )
         for relative, digest in invalid_entries:
             with self.subTest(relative=relative), tempfile.TemporaryDirectory(
-                prefix="pui-legacy-invalid-"
+                prefix="ui-legacy-invalid-"
             ) as temporary:
                 root = Path(temporary)
                 make_package(root)
@@ -253,14 +253,14 @@ class InstallerContracts(unittest.TestCase):
                     installer.REGISTRY_PATH.read_bytes()
                 )
                 write_json(
-                    root / "tools/personal-ui/component-manifest.json",
+                    root / "tools/ui/component-manifest.json",
                     {"sourceIntegrity": {relative: digest}},
                 )
                 with self.assertRaises(ValueError):
                     installer.legacy_owned_files(context)
 
     def test_tool_parent_link_is_rejected_before_external_write(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-tool-link-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-tool-link-") as temporary:
             parent = Path(temporary)
             root = parent / "app"
             outside = parent / "outside-tools"
@@ -296,12 +296,12 @@ class InstallerContracts(unittest.TestCase):
                     dry_run=False,
                 )
             self.assertEqual(sentinel.read_text(encoding="utf-8"), "unchanged\n")
-            self.assertFalse((outside / "personal-ui").exists())
+            self.assertFalse((outside / "ui").exists())
 
     def test_all_failure_points_restore_file_and_directory_inventory(self) -> None:
         for failure_point in ("copy", "dependencies", "package", "verify", "commit"):
             with self.subTest(failure_point=failure_point), tempfile.TemporaryDirectory(
-                prefix=f"pui-rollback-{failure_point}-"
+                prefix=f"ui-rollback-{failure_point}-"
             ) as temporary:
                 root = Path(temporary)
                 make_package(root)
@@ -330,7 +330,7 @@ class InstallerContracts(unittest.TestCase):
                 )
 
     def test_package_lock_rejects_active_recovers_stale_and_cleans_exception(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-package-lock-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-package-lock-") as temporary:
             root = Path(temporary)
             lock_path = installer.package_lock_path(root)
             lock_path.unlink(missing_ok=True)
@@ -358,7 +358,7 @@ class InstallerContracts(unittest.TestCase):
                 lock_path.unlink(missing_ok=True)
 
     def test_later_concurrent_change_is_not_overwritten_and_prior_write_rolls_back(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-transaction-race-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-transaction-race-") as temporary:
             root = Path(temporary)
             first = root / "first.txt"
             later = root / "later.txt"
@@ -403,23 +403,23 @@ class InstallerContracts(unittest.TestCase):
             self.assertEqual(later.read_bytes(), b"concurrent-user-change")
 
     def test_next_root_app_is_reachable_with_custom_source_root(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-next-root-app-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-next-root-app-") as temporary:
             root = Path(temporary)
             make_package(root, framework="next", name="next-fixture")
             app = root / "app"
             app.mkdir()
             (app / "layout.tsx").write_text(
-                "import '../ui/personal-ui/styles.css';\n"
+                "import '../ui/ui/styles.css';\n"
                 "export default function Layout({children}:{children:React.ReactNode}){return <html><body>{children}</body></html>;}\n",
                 encoding="utf-8",
             )
             (app / "page.tsx").write_text(
                 "'use client';\n"
-                "import {Button} from '../ui/personal-ui';\n"
+                "import {Button} from '../ui/ui';\n"
                 "export default function Page(){return <Button>Run</Button>;}\n",
                 encoding="utf-8",
             )
-            context = context_for(root, source="ui/personal-ui", framework="next")
+            context = context_for(root, source="ui/ui", framework="next")
             installer.install_integrated(
                 context, registry=self.registry, force=False, dry_run=False
             )
@@ -439,10 +439,10 @@ class InstallerContracts(unittest.TestCase):
             self.assertEqual(result.returncode, 0, report)
             self.assertTrue(report["upToDate"], report)
             self.assertEqual(report["framework"], "next")
-            self.assertEqual(report["sourceRoot"], str(root / "ui/personal-ui"))
+            self.assertEqual(report["sourceRoot"], str(root / "ui/ui"))
 
     def test_integrate_state_cannot_claim_application_files(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-state-ownership-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-state-ownership-") as temporary:
             root = Path(temporary)
             make_package(root)
             app = root / "src/App.tsx"
@@ -487,7 +487,7 @@ class InstallerContracts(unittest.TestCase):
             write_json(state_path, clean_state)
 
     def test_install_state_context_fields_must_match(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-state-context-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-state-context-") as temporary:
             root = Path(temporary)
             make_package(root)
             context = context_for(root)
@@ -517,7 +517,7 @@ class InstallerContracts(unittest.TestCase):
             write_json(state_path, clean_state)
 
     def test_custom_source_root_is_restored_and_build_gate_reads_state(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-state-source-root-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-state-source-root-") as temporary:
             root = Path(temporary)
             make_package(root)
             custom_source = "ui/personal & custom"
@@ -527,7 +527,7 @@ class InstallerContracts(unittest.TestCase):
             )
 
             package = json.loads((root / "package.json").read_text(encoding="utf-8"))
-            verify_command = package["scripts"]["verify:personal-ui"]
+            verify_command = package["scripts"]["verify:ui"]
             self.assertEqual(verify_command, installer.PROVENANCE_SCRIPT_COMMAND)
             self.assertNotIn("--source-root", verify_command)
             self.assertNotIn(custom_source, package["scripts"]["build"])
@@ -545,16 +545,16 @@ class InstallerContracts(unittest.TestCase):
                 restored, registry=self.registry, force=False, dry_run=False
             )
             self.assertEqual(repeated["operation"], "noop")
-            self.assertFalse((root / "src/personal-ui").exists())
+            self.assertFalse((root / "src/ui").exists())
 
             provenance = subprocess.run(
                 [
                     "node",
-                    "tools/personal-ui/verify-provenance.mjs",
+                    "tools/ui/verify-provenance.mjs",
                     "--target",
                     ".",
                     "--manifest",
-                    "tools/personal-ui/component-manifest.json",
+                    "tools/ui/component-manifest.json",
                 ],
                 cwd=root,
                 capture_output=True,
@@ -565,7 +565,7 @@ class InstallerContracts(unittest.TestCase):
             self.assertEqual(provenance.returncode, 0, provenance.stdout + provenance.stderr)
 
     def test_starter_state_uses_explicit_owned_file_allowlist(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-starter-state-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-starter-state-") as temporary:
             root = Path(temporary)
             installer.install_starter(
                 root, registry=self.registry, force=False, dry_run=False
@@ -590,7 +590,7 @@ class InstallerContracts(unittest.TestCase):
             write_json(state_path, clean_state)
 
     def test_starter_install_is_neutral_and_repeatable(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-neutral-starter-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-neutral-starter-") as temporary:
             root = Path(temporary)
             installed = installer.install_starter(
                 root, registry=self.registry, force=False, dry_run=False
@@ -603,17 +603,17 @@ class InstallerContracts(unittest.TestCase):
             self.assertEqual(lock["packages"][""]["name"], "web-app")
             self.assertEqual(package["license"], "MIT")
             self.assertEqual(
-                set(package["scripts"]), {"dev", "build", "preview", "verify:personal-ui"}
+                set(package["scripts"]), {"dev", "build", "preview", "verify:ui"}
             )
             self.assertTrue(
                 package["scripts"]["build"].startswith(
-                    package["scripts"]["verify:personal-ui"] + " && "
+                    package["scripts"]["verify:ui"] + " && "
                 )
             )
             self.assertFalse((root / "src/explorer").exists())
             self.assertFalse((root / "src/demo.css").exists())
             self.assertFalse((root / "component-docs.json").exists())
-            self.assertTrue((root / "src/personal-ui/index.ts").is_file())
+            self.assertTrue((root / "src/ui/index.ts").is_file())
             self.assertEqual(
                 installer.install_starter(
                     root, registry=self.registry, force=False, dry_run=False
@@ -622,7 +622,7 @@ class InstallerContracts(unittest.TestCase):
             )
 
     def test_starter_upgrade_retires_owned_legacy_demo_files(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-legacy-starter-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-legacy-starter-") as temporary:
             root = Path(temporary)
             installer.install_starter(
                 root, registry=self.registry, force=False, dry_run=False
@@ -663,7 +663,7 @@ class InstallerContracts(unittest.TestCase):
                 )
 
     def test_modified_legacy_starter_file_requires_explicit_force(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-modified-legacy-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-modified-legacy-") as temporary:
             root = Path(temporary)
             installer.install_starter(
                 root, registry=self.registry, force=False, dry_run=False
@@ -700,10 +700,10 @@ class InstallerContracts(unittest.TestCase):
         self.assertFalse(any("test-results" in path for path in paths))
         self.assertFalse(any(path.startswith("tests/") for path in paths))
         self.assertIn("component-manifest.json", paths)
-        self.assertIn("tools/personal-ui/component-manifest.json", paths)
-        self.assertIn("src/personal-ui/index.ts", paths)
+        self.assertIn("tools/ui/component-manifest.json", paths)
+        self.assertIn("src/ui/index.ts", paths)
         self.assertEqual(
-            {path for path in paths if path.startswith("src/") and not path.startswith("src/personal-ui/")},
+            {path for path in paths if path.startswith("src/") and not path.startswith("src/ui/")},
             {"src/App.tsx", "src/main.tsx"},
         )
         self.assertNotIn("component-docs.json", paths)

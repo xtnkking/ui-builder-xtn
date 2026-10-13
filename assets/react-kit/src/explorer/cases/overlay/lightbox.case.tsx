@@ -1,10 +1,10 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"lightbox/overview","exports":["Lightbox"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"lightbox/overview","exports":["Lightbox"]}
 import { useState } from "react";
-import { Button, Lightbox } from "../../../personal-ui";
+import { Button, Lightbox } from "../../../ui";
 import { StatePreview } from "../state-preview";
 import type { ExplorerCase } from "../types";
 
-const image = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="960" height="640"><rect width="960" height="640" fill="#1769d2"/><rect x="120" y="110" width="720" height="420" rx="24" fill="#ffffff"/><text x="480" y="290" text-anchor="middle" font-family="Arial" font-size="96" font-weight="700" fill="#1769d2">01</text><text x="480" y="380" text-anchor="middle" font-family="Arial" font-size="54" fill="#172033">Personal UI</text></svg>')}`;
+const image = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="960" height="640"><rect width="960" height="640" fill="#1769d2"/><rect x="120" y="110" width="720" height="420" rx="24" fill="#ffffff"/><text x="480" y="290" text-anchor="middle" font-family="Arial" font-size="96" font-weight="700" fill="#1769d2">01</text><text x="480" y="380" text-anchor="middle" font-family="Arial" font-size="54" fill="#172033">ui-builder-xtn</text></svg>')}`;
 const secondImage = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="960" height="640"><rect width="960" height="640" fill="#103f83"/><rect x="150" y="90" width="660" height="460" rx="24" fill="#eaf2ff"/><text x="480" y="290" text-anchor="middle" font-family="Arial" font-size="96" font-weight="700" fill="#103f83">02</text><text x="480" y="380" text-anchor="middle" font-family="Arial" font-size="54" fill="#172033">Workspace</text><path d="M330 450h300" stroke="#1769d2" stroke-width="12" stroke-linecap="round"/></svg>')}`;
 
 function LightboxExample() {
@@ -19,7 +19,7 @@ function LightboxExample() {
         value={value}
         onValueChange={setValue}
         items={[
-          { id: "one", src: image, alt: "蓝色 Personal UI 示例图", caption: "第一张" },
+          { id: "one", src: image, alt: "蓝色 ui-builder-xtn 示例图", caption: "第一张" },
           { id: "two", src: secondImage, alt: "深蓝色 Workspace 第二张示例图", caption: "第二张" },
         ]}
       />
@@ -40,7 +40,7 @@ function LongLightboxExample() {
 function EnglishLightboxExample() {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("one");
-  return <><Button onClick={() => setOpen(true)}>Preview images</Button><Lightbox open={open} onOpenChange={setOpen} value={value} onValueChange={setValue} items={[{ id: "one", src: image, alt: "Blue Personal UI image 01", caption: "First image" }, { id: "two", src: secondImage, alt: "Dark blue Workspace image 02", caption: "Second image" }]} /></>;
+  return <><Button onClick={() => setOpen(true)}>Preview images</Button><Lightbox open={open} onOpenChange={setOpen} value={value} onValueChange={setValue} items={[{ id: "one", src: image, alt: "Blue ui-builder-xtn image 01", caption: "First image" }, { id: "two", src: secondImage, alt: "Dark blue Workspace image 02", caption: "Second image" }]} /></>;
 }
 
 const explorerCase: ExplorerCase = {
@@ -60,7 +60,7 @@ const explorerCase: ExplorerCase = {
     { state: "dark", exports: ["Lightbox"], content: <StatePreview state="dark"><LightboxExample /></StatePreview> },
     { state: "locale", exports: ["Lightbox"], content: <StatePreview state="locale"><EnglishLightboxExample /></StatePreview> },
   ],
-  code: `import { Lightbox } from "./personal-ui";
+  code: `import { Lightbox } from "./ui";
 
 <Lightbox open={open} onOpenChange={setOpen} value={currentId} onValueChange={setCurrentId} items={images} />`,
 };

@@ -1,20 +1,20 @@
-// @personal-ui-coverage {"kind":"browser","runner":"browser","exports":["Scheduler","ResizablePanels","InfiniteScroll","CommandPalette","Transfer"]}
+// @ui-coverage {"kind":"browser","runner":"browser","exports":["Scheduler","ResizablePanels","InfiniteScroll","CommandPalette","Transfer"]}
 import { expect, test } from "@playwright/test";
 
 test("Scheduler sorts events by instant and navigates adjacent dates in its time zone", async ({ page }) => {
   await page.goto("/tests/fixtures/m5-adjacent.html");
   const agenda = page.getByRole("region", { name: "Day agenda" });
-  await expect(agenda.locator(".pui-scheduler > header strong")).toHaveText("Sunday, November 1, 2026");
-  await expect(agenda.locator(".pui-scheduler__agenda button")).toHaveText(["Early meeting", "Middle meeting", "Late meeting"]);
+  await expect(agenda.locator(".ui-scheduler > header strong")).toHaveText("Sunday, November 1, 2026");
+  await expect(agenda.locator(".ui-scheduler__agenda button")).toHaveText(["Early meeting", "Middle meeting", "Late meeting"]);
   await agenda.getByRole("button", { name: "Early meeting" }).focus();
   await page.keyboard.press("Enter");
   await expect(agenda.getByLabel("Last event")).toHaveText("early");
   await agenda.getByRole("button", { name: "后一天" }).focus();
   await page.keyboard.press("Enter");
-  await expect(agenda.locator(".pui-scheduler > header strong")).toHaveText("Monday, November 2, 2026");
-  await expect(agenda.locator(".pui-scheduler__empty")).toBeVisible();
+  await expect(agenda.locator(".ui-scheduler > header strong")).toHaveText("Monday, November 2, 2026");
+  await expect(agenda.locator(".ui-scheduler__empty")).toBeVisible();
   await agenda.getByRole("button", { name: "前一天" }).click();
-  await expect(agenda.locator(".pui-scheduler > header strong")).toHaveText("Sunday, November 1, 2026");
+  await expect(agenda.locator(".ui-scheduler > header strong")).toHaveText("Sunday, November 1, 2026");
 });
 
 test("Scheduler follows the complete day agenda Tab order and exits after the last event", async ({ page }) => {
@@ -32,7 +32,7 @@ test("Scheduler follows the complete day agenda Tab order and exits after the la
   await expect(page.getByRole("separator", { name: "Resize workspace" })).toBeFocused();
 
   await agenda.getByRole("button", { name: "后一天" }).click();
-  await expect(agenda.locator(".pui-scheduler__empty")).toBeVisible();
+  await expect(agenda.locator(".ui-scheduler__empty")).toBeVisible();
   await agenda.getByRole("button", { name: "前一天" }).focus();
   await page.keyboard.press("Tab");
   await expect(agenda.getByRole("button", { name: "后一天" })).toBeFocused();
@@ -54,7 +54,7 @@ test("ResizablePanels keyboard bounds and pointer cancellation retain the resolv
   await page.keyboard.press("Home");
   await expect(separator).toHaveAttribute("aria-valuenow", "25");
 
-  const bounds = await section.locator(".pui-resizable").boundingBox();
+  const bounds = await section.locator(".ui-resizable").boundingBox();
   const handle = await separator.boundingBox();
   expect(bounds && handle).toBeTruthy();
   await separator.evaluate((element) => element.addEventListener("pointerdown", (event) => {
@@ -106,7 +106,7 @@ test("InfiniteScroll requests once per caller-owned cursor and reports rejected 
     }
     Object.defineProperty(window, "IntersectionObserver", { configurable: true, value: ControlledObserver });
     (window as typeof window & { observedSentinelCount: () => number }).observedSentinelCount = () =>
-      observers.filter(({ target }) => target?.isConnected && target.matches(".pui-infinite-scroll__sentinel")).length;
+      observers.filter(({ target }) => target?.isConnected && target.matches(".ui-infinite-scroll__sentinel")).length;
     (window as typeof window & { triggerSentinel: () => void }).triggerSentinel = () => {
       observers.forEach(({ callback, target }) => {
         if (target) callback([{ isIntersecting: true, target } as IntersectionObserverEntry], {} as IntersectionObserver);
@@ -123,7 +123,7 @@ test("InfiniteScroll requests once per caller-owned cursor and reports rejected 
   };
   await trigger();
   await expect(count).toHaveText("1");
-  await expect(section.locator(".pui-infinite-scroll__sentinel")).not.toContainText("正在加载更多内容");
+  await expect(section.locator(".ui-infinite-scroll__sentinel")).not.toContainText("正在加载更多内容");
   await trigger();
   await page.waitForTimeout(80);
   await expect(count).toHaveText("1");

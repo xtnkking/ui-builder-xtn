@@ -1,7 +1,7 @@
-// @personal-ui-coverage {"kind":"unit","runner":"components","exports":["FileUpload"]}
+// @ui-coverage {"kind":"unit","runner":"components","exports":["FileUpload"]}
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { FileUpload, Form, type FileUploadItem } from "../../src/personal-ui";
+import { FileUpload, Form, type FileUploadItem } from "../../src/ui";
 
 const items: FileUploadItem[] = [
   { id: "queued", name: "queued.txt", status: "queued" },
@@ -47,7 +47,7 @@ describe("FileUpload ownership and form contract", () => {
     const oversized = new File(["large"], "large.png", { type: "image/png" });
     const overCount = new File(["ok"], "another.png", { type: "image/png" });
     const beyondLimit = new File(["ok"], "extra.png", { type: "image/png" });
-    fireEvent.drop(view.container.querySelector(".pui-file-upload__dropzone")!, {
+    fireEvent.drop(view.container.querySelector(".ui-file-upload__dropzone")!, {
       dataTransfer: { files: [good, wrongType, oversized, overCount, beyondLimit] },
     });
 
@@ -72,7 +72,7 @@ describe("FileUpload ownership and form contract", () => {
     fireEvent.click(screen.getByRole("button", { name: "重试 failed.txt" }));
     fireEvent.click(screen.getByRole("button", { name: "移除 failed.txt" }));
     fireEvent.click(screen.getByRole("button", { name: "开始上传" }));
-    fireEvent.drop(view.container.querySelector(".pui-file-upload__dropzone")!, {
+    fireEvent.drop(view.container.querySelector(".ui-file-upload__dropzone")!, {
       dataTransfer: { files: [new File(["ok"], "good.png", { type: "image/png" })] },
     });
     expect(onFiles).not.toHaveBeenCalled();

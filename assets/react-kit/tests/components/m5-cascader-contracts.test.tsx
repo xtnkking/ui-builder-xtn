@@ -1,7 +1,7 @@
-// @personal-ui-coverage {"kind":"unit","runner":"components","exports":["Cascader"]}
+// @ui-coverage {"kind":"unit","runner":"components","exports":["Cascader"]}
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { Cascader, type CascaderOption } from "../../src/personal-ui";
+import { Cascader, type CascaderOption } from "../../src/ui";
 
 const options: CascaderOption[] = [
   {

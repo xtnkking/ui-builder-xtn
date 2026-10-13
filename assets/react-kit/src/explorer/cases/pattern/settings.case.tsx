@@ -1,7 +1,7 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"settings/overview","exports":["SettingsPage"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"settings/overview","exports":["SettingsPage"]}
 import { StatePreview } from "../state-preview";
 import { useState } from "react";
-import { Field, Input, SettingsPage, Switch } from "../../../personal-ui";
+import { Field, Input, SettingsPage, Switch } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 function SettingsExample() {
@@ -40,7 +40,7 @@ const explorerCase: ExplorerCase = {
     { state: "locale", exports: ["SettingsPage"], content: <StatePreview state="locale">{<SettingsExample />}</StatePreview> },
   ],
   content: <SettingsExample />,
-  code: `import { SettingsPage } from "./personal-ui";
+  code: `import { SettingsPage } from "./ui";
 
 <SettingsPage title="工作区设置" sections={sections} currentId={section} onCurrentChange={setSection} />`,
 };

@@ -1,12 +1,12 @@
-// @personal-ui-coverage {"kind":"unit","runner":"components","exports":["ConfirmDialog","Dialog","Drawer","GuidedTour","Lightbox","ToastProvider","useToast"]}
+// @ui-coverage {"kind":"unit","runner":"components","exports":["ConfirmDialog","Dialog","Drawer","GuidedTour","Lightbox","ToastProvider","useToast"]}
 import { StrictMode, useState } from "react";
 import { flushSync } from "react-dom";
 import { renderToString } from "react-dom/server";
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { Button, ConfirmDialog, Dialog, Drawer, GuidedTour, Input, Lightbox, ToastProvider, useToast } from "../../src/personal-ui";
-import { consumeLayerActivation, LAYER_ACTIVATION_WINDOW_MS, recordLayerActivation } from "../../src/personal-ui/internal/layer-activation";
+import { Button, ConfirmDialog, Dialog, Drawer, GuidedTour, Input, Lightbox, ToastProvider, useToast } from "../../src/ui";
+import { consumeLayerActivation, LAYER_ACTIVATION_WINDOW_MS, recordLayerActivation } from "../../src/ui/internal/layer-activation";
 
 afterEach(() => {
   document.querySelectorAll("[data-layer-test-background]").forEach((element) => element.remove());
@@ -336,7 +336,7 @@ describe("modal layer kernel contracts", () => {
 
     render(<ToastProvider><Harness /></ToastProvider>);
     await user.click(screen.getByRole("button", { name: "显示通知" }));
-    const toastPortal = document.querySelector<HTMLElement>("[data-pui-toast-portal-root='true']")!;
+    const toastPortal = document.querySelector<HTMLElement>("[data-ui-toast-portal-root='true']")!;
     expect(toastPortal).not.toHaveAttribute("inert");
     expect(screen.getByRole("status")).toHaveTextContent("保存完成");
 

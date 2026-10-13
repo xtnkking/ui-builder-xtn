@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"accordion/overview","exports":["Accordion"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"accordion/overview","exports":["Accordion"]}
 import { StatePreview } from "../state-preview";
-import { Accordion } from "../../../personal-ui";
+import { Accordion } from "../../../ui";
 import { useState } from "react";
 import type { ExplorerCase } from "../types";
 

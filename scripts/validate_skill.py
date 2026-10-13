@@ -54,10 +54,10 @@ UI_BUILDER_REQUIRED_ROUTES = {
     "references/v0.3.0-roadmap.md",
 }
 UI_BUILDER_CORE_MARKERS = {
-    "canonical source": ("assets/react-kit/src/personal-ui/", True),
-    "public barrel": ("src/personal-ui/index.ts", True),
+    "canonical source": ("assets/react-kit/src/ui/", True),
+    "public barrel": ("src/ui/index.ts", True),
     "Manifest ownership": ("assets/react-kit/component-manifest.json", True),
-    "provenance gate": ("verify:personal-ui", True),
+    "provenance gate": ("verify:ui", True),
     "no control recreation": ("Do not recreate", False),
     "protected public Props": ("Protected public components must not receive", False),
     "missing capability gate": ("If a requested capability has no registered public export", False),

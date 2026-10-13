@@ -1,10 +1,10 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { isPersonalUiRegressionMain, runPersonalUiRegression } from "./browser-test-harness.mjs";
+import { isUIRegressionMain, runUIRegression } from "./browser-test-harness.mjs";
 import { legacyExplorerCaseTabs, selectExplorerCase } from "./browser-explorer-case.mjs";
 
-const numberStyles = readFileSync(new URL("../assets/react-kit/src/personal-ui/styles/inputs-extra.css", import.meta.url), "utf8");
-assert.match(numberStyles, /\.pui-number-input \.pui-input--embedded::-webkit-inner-spin-button/);
+const numberStyles = readFileSync(new URL("../assets/react-kit/src/ui/styles/inputs-extra.css", import.meta.url), "utf8");
+assert.match(numberStyles, /\.ui-number-input \.ui-input--embedded::-webkit-inner-spin-button/);
 assert.match(numberStyles, /-webkit-appearance:\s*none/);
 
 export async function runNumberInputRegression({ page, baseURL }) {
@@ -13,14 +13,14 @@ export async function runNumberInputRegression({ page, baseURL }) {
     await page.setViewportSize({ width, height: 800 });
     await page.goto(`${baseURL}/#/components/number`);
       await selectExplorerCase(page, legacyExplorerCaseTabs.number);
-      if (process.env.PERSONAL_UI_NUMBER_SCREENSHOT_PREFIX) {
-        await page.screenshot({ path: `${process.env.PERSONAL_UI_NUMBER_SCREENSHOT_PREFIX}-${width}.png` });
+      if (process.env.UI_NUMBER_SCREENSHOT_PREFIX) {
+        await page.screenshot({ path: `${process.env.UI_NUMBER_SCREENSHOT_PREFIX}-${width}.png` });
       }
-      const editable = page.locator(".pui-number-input:has(#number-demo-period)");
+      const editable = page.locator(".ui-number-input:has(#number-demo-period)");
       const input = editable.locator("input");
       const increase = editable.getByRole("button", { name: "自检周期（分钟） 增加", exact: true });
       const decrease = editable.getByRole("button", { name: "自检周期（分钟） 减少", exact: true });
-      const empty = page.locator(".pui-number-input:has(#number-demo-empty)");
+      const empty = page.locator(".ui-number-input:has(#number-demo-empty)");
       const emptyInput = empty.locator("input");
       const emptyIncrease = empty.getByRole("button", { name: "空值起点 增加", exact: true });
       const emptyDecrease = empty.getByRole("button", { name: "空值起点 减少", exact: true });
@@ -65,7 +65,7 @@ export async function runNumberInputRegression({ page, baseURL }) {
       assert.equal(await decrease.isDisabled(), true);
 
       for (const state of ["readonly", "disabled"]) {
-        const control = page.locator(`.pui-number-input:has(#number-demo-${state})`);
+        const control = page.locator(`.ui-number-input:has(#number-demo-${state})`);
         const label = state === "readonly" ? "只读周期" : "禁用周期";
         assert.equal(await control.getByRole("button", { name: `${label} 增加`, exact: true }).isDisabled(), true);
         assert.equal(await control.getByRole("button", { name: `${label} 减少`, exact: true }).isDisabled(), true);
@@ -75,8 +75,8 @@ export async function runNumberInputRegression({ page, baseURL }) {
 
       const geometry = await editable.evaluate((shell) => {
         const field = shell.querySelector("input");
-        const slot = shell.querySelector(".pui-input-shell__end");
-        const buttons = [...shell.querySelectorAll(".pui-number-input__steps button")];
+        const slot = shell.querySelector(".ui-input-shell__end");
+        const buttons = [...shell.querySelectorAll(".ui-number-input__steps button")];
         const frame = shell.getBoundingClientRect();
         const slotBox = slot.getBoundingClientRect();
         const buttonBoxes = buttons.map((button) => button.getBoundingClientRect());
@@ -107,6 +107,6 @@ export async function runNumberInputRegression({ page, baseURL }) {
   console.log("NumberInput browser regression passed at 2560, 1440, 1024, 736, 360, and 320px.");
 }
 
-if (isPersonalUiRegressionMain(import.meta.url)) {
-  await runPersonalUiRegression(runNumberInputRegression);
+if (isUIRegressionMain(import.meta.url)) {
+  await runUIRegression(runNumberInputRegression);
 }

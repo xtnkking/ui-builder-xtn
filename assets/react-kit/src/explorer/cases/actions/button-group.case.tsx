@@ -1,5 +1,5 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"button-group/overview","exports":["ButtonGroup"]}
-import { Button, ButtonGroup, Stack } from "../../../personal-ui";
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"button-group/overview","exports":["ButtonGroup"]}
+import { Button, ButtonGroup, Stack } from "../../../ui";
 import { StatePreview } from "../state-preview";
 import type { ExplorerCase } from "../types";
 

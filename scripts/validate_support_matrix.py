@@ -546,10 +546,10 @@ def validate_fixture_catalog(
             errors.append(f"{label} single-package fixture must use packageRoot '.'")
         if layout == "workspace" and package_root == ".":
             errors.append(f"{label} workspace fixture must identify a packageRoot")
-        if source_root_mode == "canonical" and source_root != "src/personal-ui":
-            errors.append(f"{label} canonical source root must be 'src/personal-ui'")
-        if source_root_mode == "custom" and source_root == "src/personal-ui":
-            errors.append(f"{label} custom source root must differ from 'src/personal-ui'")
+        if source_root_mode == "canonical" and source_root != "src/ui":
+            errors.append(f"{label} canonical source root must be 'src/ui'")
+        if source_root_mode == "custom" and source_root == "src/ui":
+            errors.append(f"{label} custom source root must differ from 'src/ui'")
         for path_field in ("workspaceRoot", "packageRoot", "sourceRoot"):
             path_value = project.get(path_field)
             if not isinstance(path_value, str) or not path_value:

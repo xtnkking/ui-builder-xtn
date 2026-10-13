@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Bell, Check, ChevronRight, Download, Plus, Search } from "lucide-react";
-import { Button, IconButton, Inline, Stack, Tag } from "../../../personal-ui";
+import { Button, IconButton, Inline, Stack, Tag } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 function IconsExample() {

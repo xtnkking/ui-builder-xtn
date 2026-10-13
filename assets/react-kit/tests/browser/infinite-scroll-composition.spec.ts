@@ -1,4 +1,4 @@
-// @personal-ui-coverage {"kind":"browser","runner":"browser","exports":["InfiniteScroll","LoadMore"]}
+// @ui-coverage {"kind":"browser","runner":"browser","exports":["InfiniteScroll","LoadMore"]}
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
@@ -64,7 +64,7 @@ test("official infinite pair owns keyboard, observer, rejection retry, end, and 
   await expect.poll(cursors).toEqual([2, 4, 6]);
   await page.evaluate(() => window.infiniteFixture.fail());
   await expect(region.getByRole("alert")).toContainText("服务器暂不可用");
-  await expect(region.getByRole("alert")).toHaveAttribute("data-pui-owner", "Alert");
+  await expect(region.getByRole("alert")).toHaveAttribute("data-ui-owner", "Alert");
   await expect(state).toContainText("cursor 6");
   await expect(region.getByRole("listitem")).toHaveCount(6);
   await expect(manual).toBeEnabled();

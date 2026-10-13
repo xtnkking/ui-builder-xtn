@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { useController, useForm } from "react-hook-form";
-import { Button, Field, Form, Input, Select, Stack, type TextControlHandle } from "../../src/personal-ui";
+import { Button, Field, Form, Input, Select, Stack, type TextControlHandle } from "../../src/ui";
 
 interface AccountValues { email: string; }
 

@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"dialog/overview","exports":["Dialog","ConfirmDialog"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"dialog/overview","exports":["Dialog","ConfirmDialog"]}
 import { useState } from "react";
-import { Button, ConfirmDialog, Dialog, Field, Input, Inline, Stack } from "../../../personal-ui";
+import { Button, ConfirmDialog, Dialog, Field, Input, Inline, Stack } from "../../../ui";
 import { StatePreview } from "../state-preview";
 import type { ExplorerCase } from "../types";
 
@@ -97,7 +97,7 @@ const explorerCase: ExplorerCase = {
     { state: "dark", exports: ["Dialog", "ConfirmDialog"], content: <StatePreview state="dark"><DialogExample /></StatePreview> },
     { state: "locale", exports: ["Dialog", "ConfirmDialog"], content: <StatePreview state="locale"><EnglishDialogs /></StatePreview> },
   ],
-  code: `import { ConfirmDialog, Dialog } from "./personal-ui";
+  code: `import { ConfirmDialog, Dialog } from "./ui";
 
 <Dialog open={open} onOpenChange={setOpen} closeOnBackdropClick={false} title="编辑项目">
   {form}

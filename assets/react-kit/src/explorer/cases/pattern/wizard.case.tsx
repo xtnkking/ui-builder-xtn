@@ -1,7 +1,7 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"wizard/overview","exports":["WizardFlow"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"wizard/overview","exports":["WizardFlow"]}
 import { StatePreview } from "../state-preview";
 import { useState } from "react";
-import { Alert, WizardFlow } from "../../../personal-ui";
+import { Alert, WizardFlow } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 const steps = [
@@ -45,7 +45,7 @@ const explorerCase: ExplorerCase = {
     { state: "locale", exports: ["WizardFlow"], content: <StatePreview state="locale">{<WizardExample />}</StatePreview> },
   ],
   content: <WizardExample />,
-  code: `import { WizardFlow } from "./personal-ui";
+  code: `import { WizardFlow } from "./ui";
 
 <WizardFlow title="导入成员" steps={steps} currentId={step} onStepChange={setStep}>{content}</WizardFlow>`,
 };

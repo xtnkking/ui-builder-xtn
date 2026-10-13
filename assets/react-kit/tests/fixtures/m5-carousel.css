@@ -1,7 +1,7 @@
-@import "../../src/personal-ui/styles.css";
+@import "../../src/ui/styles.css";
 
 * { box-sizing: border-box; }
-body { margin: 0; background: var(--pui-bg); color: var(--pui-text); font-family: var(--pui-font); }
+body { margin: 0; background: var(--ui-bg); color: var(--ui-text); font-family: var(--ui-font); }
 main { display: grid; gap: 28px; max-width: 720px; padding: 24px; }
-.slide { display: grid; align-content: center; justify-items: start; gap: 10px; min-height: 160px; padding: 20px; background: var(--pui-surface-subtle); }
+.slide { display: grid; align-content: center; justify-items: start; gap: 10px; min-height: 160px; padding: 20px; background: var(--ui-surface-subtle); }
 .slide strong { font-size: 20px; }

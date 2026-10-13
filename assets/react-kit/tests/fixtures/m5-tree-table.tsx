@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { createRoot } from "react-dom/client";
-import { Button, TreeTable, type TreeTableNode } from "../../src/personal-ui";
-import "../../src/personal-ui/styles.css";
+import { Button, TreeTable, type TreeTableNode } from "../../src/ui";
+import "../../src/ui/styles.css";
 
 interface Team { name: string }
 const columns = [{ id: "name", header: "Name", cell: (value: Team) => value.name }];

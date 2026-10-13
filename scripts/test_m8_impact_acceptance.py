@@ -77,7 +77,7 @@ def api_contract() -> bytes:
 
 class ImpactAcceptanceContracts(unittest.TestCase):
     def setUp(self) -> None:
-        temporary = tempfile.TemporaryDirectory(prefix="pui-m8-impact-")
+        temporary = tempfile.TemporaryDirectory(prefix="ui-m8-impact-")
         self.addCleanup(temporary.cleanup)
         self.root = Path(temporary.name)
         self.repository = self.root / "repository"
@@ -91,11 +91,11 @@ class ImpactAcceptanceContracts(unittest.TestCase):
         self.origin_binding = impact._binding(self.origin_plan)
         self.target_binding = impact._binding(self.target_plan)
         self.before = {
-            "assets/react-kit/etc/personal-ui.api-compatibility.json": api_contract(),
-            "assets/react-kit/src/personal-ui/display/display.tsx": b"export const display = 1;\n",
-            "assets/react-kit/src/personal-ui/internal/layer-kernel.tsx": b"export const layer = 1;\n",
-            "scripts/install_personal_ui.py": b"# fixture installer\n",
-            "scripts/verify_personal_ui.py": b"# fixture verifier\n",
+            "assets/react-kit/etc/ui.api-compatibility.json": api_contract(),
+            "assets/react-kit/src/ui/display/display.tsx": b"export const display = 1;\n",
+            "assets/react-kit/src/ui/internal/layer-kernel.tsx": b"export const layer = 1;\n",
+            "scripts/install_ui.py": b"# fixture installer\n",
+            "scripts/verify_ui.py": b"# fixture verifier\n",
             "scripts/run_m8_scenario_quality.mjs": b"// fixture browser worker\n",
             "scripts/run_m8_scenario_quality.py": b"# fixture producer\n",
             "scripts/run_m8_quality.py": Path(quality.__file__).read_bytes(),
@@ -139,7 +139,7 @@ class ImpactAcceptanceContracts(unittest.TestCase):
         self.family_recovery = self.root / "family-recovery.json"
         write_json(self.family_recovery, {
             "schemaVersion": 1,
-            "kind": "personal-ui-m8-family-quality-evidence-recovery",
+            "kind": "ui-m8-family-quality-evidence-recovery",
             "result": "passed",
             "candidate": full_binding(self.origin_plan),
             "scenarioId": "family-login",
@@ -215,10 +215,10 @@ class ImpactAcceptanceContracts(unittest.TestCase):
     def _make_target_scripts(self) -> None:
         staging = self.target_root / "staging" / "ui-builder-xtn" / "scripts"
         staging.mkdir(parents=True)
-        for name in ("install_personal_ui.py", "verify_personal_ui.py", "run_m8_scenario_quality.mjs"):
+        for name in ("install_ui.py", "verify_ui.py", "run_m8_scenario_quality.mjs"):
             (staging / name).write_bytes(self.native_after[f"scripts/{name}"])
-        self.installer = staging / "install_personal_ui.py"
-        self.verifier = staging / "verify_personal_ui.py"
+        self.installer = staging / "install_ui.py"
+        self.verifier = staging / "verify_ui.py"
         self.worker = staging / "run_m8_scenario_quality.mjs"
 
     def _capture(self, workspace: Path, project: Path, name: str, argv: list[str], minute: int) -> str:
@@ -272,7 +272,7 @@ class ImpactAcceptanceContracts(unittest.TestCase):
         project.mkdir(parents=True)
         run_id = f"m8-{scenario}-fixture"
         write_json(workspace / "visible-inputs.json", {
-            "kind": "personal-ui-m8-evaluator-inputs",
+            "kind": "ui-m8-evaluator-inputs",
             "candidate": full_binding(self.target_plan),
             "scenario": {"id": scenario},
             "run": {"id": run_id},
@@ -283,21 +283,21 @@ class ImpactAcceptanceContracts(unittest.TestCase):
             "candidate": full_binding(self.target_plan),
             "startedAt": START,
         })
-        source = project / "src" / "personal-ui"
+        source = project / "src" / "ui"
         owned: dict[str, str] = {}
         for name, content in self.native_after.items():
-            prefix = "assets/react-kit/src/personal-ui/"
+            prefix = "assets/react-kit/src/ui/"
             if not name.startswith(prefix):
                 continue
             relative = name.removeprefix(prefix)
             path = source / relative
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_bytes(content)
-            owned[f"src/personal-ui/{relative}"] = impact._digest(content)
-        write_json(project / "tools" / "personal-ui" / "install-state.json", {
+            owned[f"src/ui/{relative}"] = impact._digest(content)
+        write_json(project / "tools" / "ui" / "install-state.json", {
             "version": self.target_plan["candidateVersion"],
             "packageRoot": ".",
-            "sourceRoot": "src/personal-ui",
+            "sourceRoot": "src/ui",
             "packageManager": "npm",
             "framework": "vite",
             "ownedFiles": owned,
@@ -319,7 +319,7 @@ class ImpactAcceptanceContracts(unittest.TestCase):
             "install": self._capture(workspace, project, "install", [
                 "python", str(self.installer), "--mode", "integrate",
                 "--project-root", str(project), "--package-root", ".",
-                "--source-root", "src/personal-ui", "--package-manager", "npm",
+                "--source-root", "src/ui", "--package-manager", "npm",
                 "--framework", "vite",
             ], 1),
             **{
@@ -464,7 +464,7 @@ class ImpactAcceptanceContracts(unittest.TestCase):
         workspace = Path(self.report["targetConsumers"][0]["workspace"])
         capture = workspace / "consumer" / "logs" / "install.json"
         original = capture.read_bytes()
-        wrong_installer = self.root / "wrong-install_personal_ui.py"
+        wrong_installer = self.root / "wrong-install_ui.py"
         wrong_installer.write_bytes(b"# unrelated installer\n")
         try:
             for mutation in ("kind", "installer"):

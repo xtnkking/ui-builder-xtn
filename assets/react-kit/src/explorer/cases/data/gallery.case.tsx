@@ -1,7 +1,7 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"gallery/overview","exports":["Gallery"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"gallery/overview","exports":["Gallery"]}
 import { StatePreview } from "../state-preview";
 import { useState } from "react";
-import { Gallery } from "../../../personal-ui";
+import { Gallery } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 function createPreviewImage(background: string, content: string) {

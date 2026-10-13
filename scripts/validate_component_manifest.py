@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the canonical Personal UI component manifest."""
+"""Validate the canonical UI component manifest."""
 
 from __future__ import annotations
 
@@ -131,8 +131,8 @@ def resolve_source_file(kit_root: Path, source_file: str) -> Path | None:
     if relative.is_absolute() or ".." in relative.parts:
         return None
     candidates = [kit_root / relative]
-    if not relative.parts or relative.parts[:2] != ("src", "personal-ui"):
-        candidates.append(kit_root / "src" / "personal-ui" / relative)
+    if not relative.parts or relative.parts[:2] != ("src", "ui"):
+        candidates.append(kit_root / "src" / "ui" / relative)
     kit_physical = kit_root.resolve(strict=True)
     for candidate in candidates:
         physical = candidate.resolve(strict=False)
@@ -146,7 +146,7 @@ def validate_source_integrity(
     kit_root: Path,
     errors: list[str],
 ) -> dict[str, Any]:
-    source_root = kit_root / "src" / "personal-ui"
+    source_root = kit_root / "src" / "ui"
     declared_value = manifest.get("sourceIntegrity")
     if not isinstance(declared_value, dict) or not declared_value:
         errors.append("component manifest sourceIntegrity must be a non-empty object")
@@ -178,12 +178,12 @@ def validate_source_integrity(
 
     actual: dict[str, Path] = {}
     if not source_root.is_dir() or is_link_like(source_root):
-        errors.append(f"managed Personal UI source root is missing or link-like: {source_root}")
+        errors.append(f"managed UI source root is missing or link-like: {source_root}")
     else:
         for path in source_root.rglob("*"):
             relative = path.relative_to(source_root).as_posix()
             if is_link_like(path):
-                errors.append(f"managed Personal UI source contains a link: {relative}")
+                errors.append(f"managed UI source contains a link: {relative}")
                 continue
             if path.is_file():
                 actual[relative] = path
@@ -282,19 +282,19 @@ def owner_marker_is_bound(text: str, marker: str) -> bool:
     code = strip_script_comments(text)
     escaped = re.escape(marker)
     direct = re.compile(
-        rf"(?:\bdata-pui-owner\s*=|[\"']data-pui-owner[\"']\s*:)"
+        rf"(?:\bdata-ui-owner\s*=|[\"']data-ui-owner[\"']\s*:)"
         rf"\s*(?:\"{escaped}\"|'{escaped}')"
     )
     if direct.search(code):
         return True
     for match in re.finditer(
-        r"\bdata-pui-owner\s*=\s*\{\s*([A-Za-z_$][\w$]*)\s*\}", code
+        r"\bdata-ui-owner\s*=\s*\{\s*([A-Za-z_$][\w$]*)\s*\}", code
     ):
         variable = re.escape(match.group(1))
         literal = rf"(?:\"{escaped}\"|'{escaped}')"
         bindings = (
             rf"\b{variable}\s*=\s*[^;\n]*{literal}",
-            rf"[\"']data-pui-owner[\"']\s*:\s*{variable}\s*=\s*{literal}",
+            rf"[\"']data-ui-owner[\"']\s*:\s*{variable}\s*=\s*{literal}",
             rf"\b{variable}\s*:\s*[^;=\n]*{literal}",
         )
         if any(re.search(pattern, code) for pattern in bindings):
@@ -354,10 +354,10 @@ def validate_component_manifest(
         }
 
     try:
-        registry = read_json_object(registry_path, label="Personal UI registry")
+        registry = read_json_object(registry_path, label="UI registry")
     except (OSError, UnicodeDecodeError, json.JSONDecodeError, ValueError) as error:
         registry = {}
-        errors.append(f"invalid Personal UI registry: {error}")
+        errors.append(f"invalid UI registry: {error}")
 
     if manifest.get("schemaVersion") != 2:
         errors.append("component manifest schemaVersion must be 2")
@@ -552,7 +552,7 @@ def validate_component_manifest(
                 for path, text in source_texts.items()
             ):
                 errors.append(
-                    f"entry {entry_id!r} owner marker {marker!r} is not bound to data-pui-owner in its source files"
+                    f"entry {entry_id!r} owner marker {marker!r} is not bound to data-ui-owner in its source files"
                 )
 
         entries_report.append(

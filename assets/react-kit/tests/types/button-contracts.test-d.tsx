@@ -8,7 +8,7 @@ import {
   SplitButton,
   ToggleButton,
   type ControlHandle,
-} from "../../src/personal-ui";
+} from "../../src/ui";
 
 const controlRef = createRef<ControlHandle>();
 const allowedButtons = (
@@ -38,7 +38,7 @@ const buttonDomControlRef = <Button controlRef={createRef<HTMLButtonElement>()}>
 // @ts-expect-error fixed buttons do not expose raw HTML injection
 const buttonHtml = <Button dangerouslySetInnerHTML={{ __html: "unsafe" }}>Save</Button>;
 // @ts-expect-error fixed buttons do not expose internal ownership markers
-const buttonOwner = <Button data-pui-owner="Consumer">Save</Button>;
+const buttonOwner = <Button data-ui-owner="Consumer">Save</Button>;
 
 // @ts-expect-error IconButton follows the same closed styling contract
 const iconButtonClassName = <IconButton className="foreign" aria-label="Close" icon={<span />} />;
@@ -52,7 +52,7 @@ const toggleStyle = <ToggleButton style={{ color: "red" }} pressed={false} onPre
 // @ts-expect-error ClipboardButton cannot reopen Button's styling escape hatch
 const clipboardClassName = <ClipboardButton className="foreign" text="value" />;
 // @ts-expect-error RetryButton cannot reopen Button's styling escape hatch
-const retryOwner = <RetryButton data-pui-owner="Consumer" onRetry={() => undefined} />;
+const retryOwner = <RetryButton data-ui-owner="Consumer" onRetry={() => undefined} />;
 // @ts-expect-error AsyncAction cannot reopen Button's styling escape hatch
 const asyncStyle = <AsyncAction style={{ color: "red" }} onAction={() => undefined}>Save</AsyncAction>;
 

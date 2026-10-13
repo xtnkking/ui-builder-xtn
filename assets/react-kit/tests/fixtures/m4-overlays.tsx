@@ -7,7 +7,7 @@ import {
   Lightbox,
   Popconfirm,
   Popover,
-} from "../../src/personal-ui";
+} from "../../src/ui";
 import "./m4-overlays.css";
 
 const fixtureImage = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(

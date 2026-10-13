@@ -119,7 +119,7 @@
       "apiPage": {"status": "derived", "source": "generated-component-api"},
       "keyboard": {"mode": "none", "reason": "This formatting hook has no independent keyboard interaction."},
       "aria": {"mode": "none", "reason": "This formatting hook renders no ARIA semantics."},
-      "migration": {"status": "none", "reason": "usePersonalUILocale is new in v0.3.0 and requires no existing call-site migration."}
+      "migration": {"status": "none", "reason": "useUILocale is new in v0.3.0 and requires no existing call-site migration."}
     },
     "hook": {
       "interaction": "non-visual",
@@ -401,7 +401,7 @@
     "TreeSelect": {"profile":"interactive-dual","overrides":{"applicableStates":["default","disabled","controlled","uncontrolled","validation","longContent","keyboard","overlay","dark","locale"],"stateMode":"controlled-uncontrolled"}},
     "TreeTable": {"profile": "interactive-dual", "overrides": {"applicableStates": ["default", "controlled", "uncontrolled", "loading", "empty", "error", "longContent", "keyboard", "mobile", "overlay", "dark", "locale"]}},
     "useCommandPaletteShortcut": {"profile": "keyboard-hook"},
-    "usePersonalUILocale": {"profile": "locale-hook"},
+    "useUILocale": {"profile": "locale-hook"},
     "useToast": {"profile": "hook"},
     "ValidationSummary": {"profile":"interactive-stateless","overrides":{"applicableStates":["default","empty","error","validation","longContent","keyboard","dark","locale"]}},
     "VirtualList": {"profile":"layout","overrides":{"applicableStates":["default","empty","longContent","keyboard","mobile","dark","locale"]}},

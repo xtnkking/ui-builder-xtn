@@ -28,7 +28,7 @@ from pathlib import Path, PurePosixPath
 from typing import Any, Mapping, Sequence
 from urllib.parse import urlparse
 
-import release_personal_ui as release
+import release_ui as release
 import m8_evidence as evidence_records
 import run_m8_consumer as consumer
 import validate_hosted_ci_evidence as hosted_validator
@@ -36,11 +36,11 @@ import validate_m8_evidence as validator
 
 
 SCHEMA_VERSION = 1
-SCENARIO_REPORT_KIND = "personal-ui-m8-scenario-quality-report"
-BEHAVIOR_KIND = "personal-ui-m8-browser-behavior"
-RESPONSIVE_KIND = "personal-ui-m8-responsive-measurement"
-RAW_INVENTORY_KIND = "personal-ui-m8-quality-raw-artifact-inventory"
-SAFARI_WRAPPER_KIND = "personal-ui-real-safari-smoke"
+SCENARIO_REPORT_KIND = "ui-m8-scenario-quality-report"
+BEHAVIOR_KIND = "ui-m8-browser-behavior"
+RESPONSIVE_KIND = "ui-m8-responsive-measurement"
+RAW_INVENTORY_KIND = "ui-m8-quality-raw-artifact-inventory"
+SAFARI_WRAPPER_KIND = "ui-real-safari-smoke"
 QUALITY_FRAGMENT_NAME = "quality-fragment.json"
 QUALITY_DIRECTORY = PurePosixPath("quality")
 CHECKS = ("behavior", "a11y", "responsive")
@@ -358,7 +358,7 @@ def _validate_source_snapshot(
     )
     if (
         inventory.get("schemaVersion") != SCHEMA_VERSION
-        or inventory.get("kind") != "personal-ui-m8-source-inventory"
+        or inventory.get("kind") != "ui-m8-source-inventory"
         or inventory.get("contentDigest") != release.digest_file_map(files)
         or inventory.get("files") != release.file_inventory(files)
     ):
@@ -379,7 +379,7 @@ def _load_recorded_commands(
     descriptors = command_index.get("commands")
     if (
         command_index.get("schemaVersion") != SCHEMA_VERSION
-        or command_index.get("kind") != "personal-ui-m8-command-index"
+        or command_index.get("kind") != "ui-m8-command-index"
         or command_index.get("runId") != run_id
         or not isinstance(descriptors, list)
         or not descriptors
@@ -405,7 +405,7 @@ def _load_recorded_commands(
         argv = record.get("argv")
         if (
             record.get("schemaVersion") != SCHEMA_VERSION
-            or record.get("kind") != "personal-ui-m8-command"
+            or record.get("kind") != "ui-m8-command"
             or record.get("runId") != run_id
             or record.get("sequence") != offset
             or not isinstance(argv, list)
@@ -474,7 +474,7 @@ def _validate_final_result(
     )
     if (
         start.get("schemaVersion") != SCHEMA_VERSION
-        or start.get("kind") != "personal-ui-m8-run-start"
+        or start.get("kind") != "ui-m8-run-start"
         or start.get("runId") != run_id
         or start.get("scenarioId") != scenario_id
         or start.get("candidate") != candidate_binding
@@ -500,7 +500,7 @@ def _validate_final_result(
     checks = final.get("checks")
     if (
         final.get("schemaVersion") != SCHEMA_VERSION
-        or final.get("kind") != "personal-ui-m8-final-result"
+        or final.get("kind") != "ui-m8-final-result"
         or final.get("runId") != run_id
         or final.get("result") != "passed"
         or not isinstance(checks, dict)
@@ -538,7 +538,7 @@ def _validate_final_result(
     verification_checks = verification.get("checks")
     if (
         verification.get("schemaVersion") != SCHEMA_VERSION
-        or verification.get("kind") != "personal-ui-m8-quality-verification"
+        or verification.get("kind") != "ui-m8-quality-verification"
         or verification.get("runId") != run_id
         or verification.get("candidate") != candidate_binding
         or verification.get("result") != "passed"
@@ -1194,7 +1194,7 @@ def validate_scenario_report(
     acceptance = manifest.get("acceptanceEvidence")
     if (
         manifest.get("schemaVersion") != SCHEMA_VERSION
-        or manifest.get("kind") != "personal-ui-m8-evaluator-inputs"
+        or manifest.get("kind") != "ui-m8-evaluator-inputs"
         or manifest.get("official") is not True
         or not isinstance(acceptance, dict)
         or acceptance.get("eligible") is not True
@@ -1604,7 +1604,7 @@ def _quality_files(
         checks = {name: "passed" for name in CHECKS}
         record = {
             "schemaVersion": SCHEMA_VERSION,
-            "kind": "personal-ui-m8-quality-scenario",
+            "kind": "ui-m8-quality-scenario",
             "scenarioId": scenario.scenario_id,
             "result": "passed",
             "candidate": dict(candidate_summary),
@@ -1630,7 +1630,7 @@ def _quality_files(
 
     matrix = {
         "schemaVersion": SCHEMA_VERSION,
-        "kind": "personal-ui-m8-quality-matrix",
+        "kind": "ui-m8-quality-matrix",
         "result": "passed",
         "candidate": dict(candidate_summary),
         "widths": list(validator.REQUIRED_WIDTHS),
@@ -1642,7 +1642,7 @@ def _quality_files(
     }
     browser_versions = {
         "schemaVersion": SCHEMA_VERSION,
-        "kind": "personal-ui-m8-browser-versions",
+        "kind": "ui-m8-browser-versions",
         "result": "passed",
         "candidate": dict(candidate_summary),
         "browsers": list(first_versions),
@@ -1652,7 +1652,7 @@ def _quality_files(
     }
     responsive_review = {
         "schemaVersion": SCHEMA_VERSION,
-        "kind": "personal-ui-m8-responsive-review",
+        "kind": "ui-m8-responsive-review",
         "result": "passed",
         "candidate": dict(candidate_summary),
         "widths": list(validator.REQUIRED_WIDTHS),
@@ -1672,7 +1672,7 @@ def _quality_files(
     ]
     axe = {
         "schemaVersion": SCHEMA_VERSION,
-        "kind": "personal-ui-m8-axe-report",
+        "kind": "ui-m8-axe-report",
         "result": "passed",
         "candidate": dict(candidate_summary),
         "critical": 0,

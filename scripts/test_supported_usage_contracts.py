@@ -14,9 +14,23 @@ from test_strict_enforcement import SKILL_ROOT, MANAGED_SOURCE, MANIFEST, SCANNE
 
 
 class SupportedUsageContracts(unittest.TestCase):
+    def test_project_title_is_content_while_reserved_classes_stay_protected(self):
+        source = 'import {Button} from "./ui"; export const App=()=> <Button>ui-builder-xtn</Button>;'
+        expect_valid("official project title", {
+            "src/App.tsx": source,
+            "index.html": '<!doctype html><title>ui-builder-xtn</title><div id="root"></div>',
+        }, {"Button"})
+        expect_issue("reserved class text", {
+            "src/App.tsx": source.replace("ui-builder-xtn", "ui-button"),
+        }, {"UI_PRIVATE_CLASS"})
+        expect_issue("reserved selector remains protected", {
+            "src/App.tsx": source,
+            "src/app.css": ".ui-builder-xtn { color: red; }",
+        }, {"UI_PRIVATE_CLASS"})
+
     def test_complete_official_explicit_example_passes_provenance(self):
         fixture = SKILL_ROOT / "assets/react-kit/tests/fixtures/supported-public-usage.tsx"
-        source = fixture.read_text(encoding="utf-8").replace('"../../src/personal-ui"', '"./personal-ui"')
+        source = fixture.read_text(encoding="utf-8").replace('"../../src/ui"', '"./ui"')
         expect_valid("complete explicit-prop example", {"src/App.tsx": source}, {"Button", "Field", "Form", "Input", "Select", "Stack"})
 
     def scan_both(self, source, extra=None):
@@ -24,16 +38,16 @@ class SupportedUsageContracts(unittest.TestCase):
         registry = json.loads(REGISTRY.read_text(encoding="utf-8"))
         protected = verifier["classified_runtime_exports"](registry, "fixed-control")
         aliases = {name: name for name in registry["exports"]}
-        with tempfile.TemporaryDirectory(prefix="pui-typed-usage-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-typed-usage-") as temporary:
             target = Path(temporary)
-            shutil.copytree(MANAGED_SOURCE, target / "src/personal-ui")
-            (target / "src/personal-ui/registry.json").write_text(json.dumps(registry), encoding="utf-8")
+            shutil.copytree(MANAGED_SOURCE, target / "src/ui")
+            (target / "src/ui/registry.json").write_text(json.dumps(registry), encoding="utf-8")
             files = {"src/App.tsx": source, **(extra or {})}
             for relative, text in files.items():
                 destination = target / relative
                 destination.parent.mkdir(parents=True, exist_ok=True)
                 destination.write_text(text, encoding="utf-8")
-            result = subprocess.run([shutil.which("node") or "node", str(SCANNER), "--target", str(target), "--source-root", "src/personal-ui", "--manifest", str(MANIFEST)], capture_output=True, text=True, encoding="utf-8", timeout=60)
+            result = subprocess.run([shutil.which("node") or "node", str(SCANNER), "--target", str(target), "--source-root", "src/ui", "--manifest", str(MANIFEST)], capture_output=True, text=True, encoding="utf-8", timeout=60)
             report = json.loads(result.stdout)
             errors = []
             code = verifier["masked_code"](source, verifier["code_position_mask"](source))
@@ -42,7 +56,7 @@ class SupportedUsageContracts(unittest.TestCase):
 
     def test_safe_typed_spreads_share_the_public_type_contract(self):
         source = '''
-import {Button, Button as Action, Input, DataTable, type ButtonProps, type DataTableProps} from "./personal-ui";
+import {Button, Button as Action, Input, DataTable, type ButtonProps, type DataTableProps} from "./ui";
 import {createElement} from "react";
 import {jsx} from "react/jsx-runtime";
 import {imported} from "./props";
@@ -62,20 +76,20 @@ export const App = () => <><Button {...literal} /><Action {...alias} /><Button {
 <Button {...imported} /><Button {...union} /><Button {...{...literal, loading:false}} />
 <Input {...{defaultValue:"Ada"}} /><DataTable<Row> {...table} /><Param {...literal}/><Generic {...literal}/></>;
 '''
-        report, errors = self.scan_both(source, {"src/props.ts": 'import type {ButtonProps} from "./personal-ui"; export const imported: ButtonProps = {children:"Imported"};'})
+        report, errors = self.scan_both(source, {"src/props.ts": 'import type {ButtonProps} from "./ui"; export const imported: ButtonProps = {children:"Imported"};'})
         self.assertTrue(report["valid"], report)
         self.assertEqual(errors, [])
 
     def test_opaque_hidden_and_ill_typed_spreads_fail_in_both_gates(self):
         source = '''
-import {Button, Input, type ButtonProps} from "./personal-ui";
+import {Button, Input, type ButtonProps} from "./ui";
 import {createElement} from "react";
 import {jsx} from "react/jsx-runtime";
 declare const opaque: any;
 declare const indexed: Record<string, unknown>;
 const hidden = {children:"Bad", style:{color:"red"}};
 const widened: ButtonProps = hidden;
-const marker = {"data-pui-owner":"Consumer"};
+const marker = {"data-ui-owner":"Consumer"};
 const unknown = {children:"Bad", notAPublicProp:true};
 const typedWrong: ButtonProps = {disabled:"yes"};
 function hiddenFactory(): ButtonProps {return hidden;}
@@ -89,21 +103,21 @@ export const App = () => <><Button {...opaque}/><Button {...indexed}/><Button {.
         report, errors = self.scan_both(source)
         self.assertFalse(report["valid"])
         combined = "\n".join(report["errors"])
-        for reason in ("any/unknown", "index signature", "style prop hidden", "data-pui-owner", "notAPublicProp", "ill-typed spread source", "PUI_PUBLIC_PROP_TYPE"):
+        for reason in ("any/unknown", "index signature", "style prop hidden", "data-ui-owner", "notAPublicProp", "ill-typed spread source", "UI_PUBLIC_PROP_TYPE"):
             self.assertIn(reason, combined)
             self.assertIn(reason, "\n".join(errors))
         self.assertTrue(any("invalid public call props" in error for error in errors))
 
     def test_installer_distributes_the_same_compiler_helper(self):
-        installer = runpy.run_path(str(SKILL_ROOT / "scripts/install_personal_ui.py"))
-        relative = Path("tools/personal-ui/typed-usage.mjs")
+        installer = runpy.run_path(str(SKILL_ROOT / "scripts/install_ui.py"))
+        relative = Path("tools/ui/typed-usage.mjs")
         payload = installer["support_file_map"]()
         self.assertEqual(payload[relative], (SKILL_ROOT / "assets/react-kit" / relative).read_bytes())
         self.assertIn(relative.as_posix(), installer["INTEGRATED_SUPPORT_OWNERSHIP"])
 
     def test_react_intrinsic_key_is_supported_without_weakening_public_props(self):
         prefix = '''
-import {Button} from "./personal-ui";
+import {Button} from "./ui";
 import {createElement} from "react";
 import {jsx} from "react/jsx-runtime";
 '''
@@ -128,23 +142,23 @@ export const App = () => <><Button {...badObject}/><Button {...badBoolean}/><But
 '''
         report, errors = self.scan_both(invalid)
         self.assertFalse(report["valid"])
-        for text in ("invalid React intrinsic key type", "PUI_PUBLIC_PROP_TYPE", "style prop hidden", "ref prop hidden"):
+        for text in ("invalid React intrinsic key type", "UI_PUBLIC_PROP_TYPE", "style prop hidden", "ref prop hidden"):
             self.assertIn(text, "\n".join(report["errors"]))
             self.assertIn(text, "\n".join(errors))
 
     def test_form_binding_exception_does_not_allow_external_visual_props(self):
         sources = {
-            "visual prop": 'import {Button} from "./personal-ui"; import {useController} from "react-hook-form"; const {field}=useController({name:"email"}); export const App=()=> <Button icon={field}>Save</Button>;',
-            "foreign binding": 'import {Input} from "./personal-ui"; import {field} from "foreign-form"; export const App=()=> <Input controllerField={field} />;',
+            "visual prop": 'import {Button} from "./ui"; import {useController} from "react-hook-form"; const {field}=useController({name:"email"}); export const App=()=> <Button icon={field}>Save</Button>;',
+            "foreign binding": 'import {Input} from "./ui"; import {field} from "foreign-form"; export const App=()=> <Input controllerField={field} />;',
         }
         for name, source in sources.items():
             with self.subTest(name=name):
-                expect_issue(name, {"src/App.tsx": source}, {"PUI_EXTERNAL_JSX"})
+                expect_issue(name, {"src/App.tsx": source}, {"UI_EXTERNAL_JSX"})
 
     def test_explicit_styling_ref_and_ownership_escapes_are_rejected(self):
-        for prop in ('className="foreign"', 'style={{color:"red"}}', 'css={{color:"red"}}', 'sx={{color:"red"}}', 'tw="foreign"', 'ref={()=>undefined}', 'data-pui-owner="Foreign"'):
+        for prop in ('className="foreign"', 'style={{color:"red"}}', 'css={{color:"red"}}', 'sx={{color:"red"}}', 'tw="foreign"', 'ref={()=>undefined}', 'data-ui-owner="Foreign"'):
             with self.subTest(prop=prop):
-                expect_issue(prop, {"src/App.tsx": f'import {{Button}} from "./personal-ui"; export const App=()=> <Button {prop}>Save</Button>;'}, {"PUI_COMPONENT_STYLE_OVERRIDE"})
+                expect_issue(prop, {"src/App.tsx": f'import {{Button}} from "./ui"; export const App=()=> <Button {prop}>Save</Button>;'}, {"UI_COMPONENT_STYLE_OVERRIDE"})
 
 
 if __name__ == "__main__":

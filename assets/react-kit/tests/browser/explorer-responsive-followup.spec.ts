@@ -1,4 +1,4 @@
-// @personal-ui-coverage {"kind":"browser","runner":"browser","exports":["SplitButton","FilterBar","Tag","TagInput","Pagination","Banner","InlineMessage","Lightbox","FocusTrap","Field","Toolbar"]}
+// @ui-coverage {"kind":"browser","runner":"browser","exports":["SplitButton","FilterBar","Tag","TagInput","Pagination","Banner","InlineMessage","Lightbox","FocusTrap","Field","Toolbar"]}
 import { expect, test, type Locator, type Page } from "@playwright/test";
 
 test.use({ viewport: { width: 1440, height: 1000 } });
@@ -29,9 +29,9 @@ async function capture(node: Locator, name: string) {
 
 test("split actions keep joined corners, a readable menu and bounded ellipsis as their host shrinks", async ({ page }) => {
   const preview = await previewFor(page, "split-button", "长内容");
-  const split = preview.locator('[data-pui-owner="SplitButton"]');
-  const primary = split.locator(".pui-split-button__primary");
-  const menu = split.locator(".pui-split-button__menu > button");
+  const split = preview.locator('[data-ui-owner="SplitButton"]');
+  const primary = split.locator(".ui-split-button__primary");
+  const menu = split.locator(".ui-split-button__menu > button");
   for (const width of [800, 280]) {
     await resizeHost(preview, width);
     const whole = await box(split);
@@ -44,7 +44,7 @@ test("split actions keep joined corners, a readable menu and bounded ellipsis as
     expect(Math.abs(b.width - 38)).toBeLessThanOrEqual(1);
     await expect(primary).toHaveCSS("border-top-right-radius", "0px");
     await expect(menu).toHaveCSS("border-top-left-radius", "0px");
-    const label = primary.locator(".pui-button__label");
+    const label = primary.locator(".ui-button__label");
     expect(await label.evaluate(node => node.scrollWidth > node.clientWidth)).toBe(true);
     await expect(label).toHaveCSS("text-overflow", "ellipsis");
     await noDocumentOverflow(page);
@@ -80,9 +80,9 @@ test("filter fields stay compact on desktop and reflow in a narrow host without 
 
 test("long tag input values keep bounded pills, full text and accessible removal at changing widths", async ({ page }) => {
   const preview = await previewFor(page, "tag-input", "长内容");
-  const tags = preview.locator('[data-pui-owner="Tag"]');
+  const tags = preview.locator('[data-ui-owner="Tag"]');
   const tag = tags.first();
-  const full = await tag.locator(".pui-tag__label").innerText();
+  const full = await tag.locator(".ui-tag__label").innerText();
   expect(full.length).toBeGreaterThan(80);
   for (const width of [900, 280]) {
     await resizeHost(preview, width);
@@ -93,7 +93,7 @@ test("long tag input values keep bounded pills, full text and accessible removal
     expect(removeBox.width).toBeGreaterThanOrEqual(27);
     expect(removeBox.x + removeBox.width).toBeLessThanOrEqual(bounds.x + bounds.width + 1);
     await expect(tag).toHaveAttribute("title", full);
-    await expect(tag.locator(".pui-tag__label")).toHaveCSS("text-overflow", "ellipsis");
+    await expect(tag.locator(".ui-tag__label")).toHaveCSS("text-overflow", "ellipsis");
     await capture(preview, `tag-input-${width}`);
   }
   const focusableLabel = tag.locator('[tabindex="0"]').first();
@@ -111,7 +111,7 @@ test("long tag input values keep bounded pills, full text and accessible removal
     await input.press("Enter");
   }
   await expect(tags).toHaveCount(12);
-  const control = preview.locator(".pui-tag-input__control");
+  const control = preview.locator(".ui-tag-input__control");
   expect((await box(control)).height).toBeLessThanOrEqual(192);
   expect(await control.evaluate(node => node.scrollHeight > node.clientHeight)).toBe(true);
   const controlBox = await box(control);
@@ -125,7 +125,7 @@ test("long tag input values keep bounded pills, full text and accessible removal
   const invalidInput = invalidPreview.getByRole("combobox");
   await invalidInput.focus();
   await invalidInput.press("Enter");
-  const invalidControl = invalidPreview.locator(".pui-tag-input__control");
+  const invalidControl = invalidPreview.locator(".ui-tag-input__control");
   await expect(invalidInput).toHaveAttribute("aria-invalid", "true");
   await expect(invalidControl).toHaveCSS("box-shadow", /inset/);
   const errorFocus = await invalidControl.evaluate(node => {
@@ -138,11 +138,11 @@ test("long tag input values keep bounded pills, full text and accessible removal
 
 test("text prefixes align with tag labels and nonremovable long tags remain bounded", async ({ page }) => {
   let preview = await previewFor(page, "tag", "默认");
-  const country = preview.locator('[data-pui-owner="Tag"]').filter({ hasText: "US" });
-  const leading = await box(country.locator(".pui-tag__leading"));
-  const label = await box(country.locator(".pui-tag__label"));
+  const country = preview.locator('[data-ui-owner="Tag"]').filter({ hasText: "US" });
+  const leading = await box(country.locator(".ui-tag__leading"));
+  const label = await box(country.locator(".ui-tag__label"));
   expect(Math.abs(leading.y + leading.height / 2 - label.y - label.height / 2)).toBeLessThanOrEqual(1);
-  const prefixTextWidth = await country.locator(".pui-tag__leading").evaluate(node => {
+  const prefixTextWidth = await country.locator(".ui-tag__leading").evaluate(node => {
     const range = document.createRange();
     range.selectNodeContents(node);
     return range.getBoundingClientRect().width;
@@ -150,7 +150,7 @@ test("text prefixes align with tag labels and nonremovable long tags remain boun
   expect(prefixTextWidth).toBeLessThanOrEqual(leading.width + 1);
   await capture(preview, "tag-prefix");
   preview = await previewFor(page, "tag", "长内容");
-  const tag = preview.locator('[data-pui-owner="Tag"]').first();
+  const tag = preview.locator('[data-ui-owner="Tag"]').first();
   const tagBox = await box(tag);
   expect(tagBox.width).toBeLessThanOrEqual(321);
   await expect(tag.locator('[tabindex="0"]').first()).toBeVisible();
@@ -159,7 +159,7 @@ test("text prefixes align with tag labels and nonremovable long tags remain boun
 
 test("pagination uses equal control heights before and after its container switches mode", async ({ page }) => {
   const preview = await previewFor(page, "pagination", "默认");
-  const owner = preview.locator('[data-pui-owner="Pagination"]');
+  const owner = preview.locator('[data-ui-owner="Pagination"]');
   for (const width of [900, 280]) {
     await resizeHost(preview, width);
     const select = await box(owner.getByRole("combobox"));
@@ -167,7 +167,7 @@ test("pagination uses equal control heights before and after its container switc
     for (const control of await owner.locator("button:visible").all()) {
       expect(Math.abs((await box(control)).height - select.height)).toBeLessThanOrEqual(1);
     }
-    if (width < 600) await expect(owner.locator(".pui-pagination__pages")).toBeHidden();
+    if (width < 600) await expect(owner.locator(".ui-pagination__pages")).toBeHidden();
     await noDocumentOverflow(page);
     await capture(preview, `pagination-${width}`);
   }
@@ -175,11 +175,11 @@ test("pagination uses equal control heights before and after its container switc
 
 test("inline feedback aligns to the first text line and ordinary banners keep rounded boundaries", async ({ page }) => {
   let preview = await previewFor(page, "banner", "默认");
-  await expect(preview.locator(".pui-banner > .pui-alert")).toHaveCSS("border-top-left-radius", "8px");
+  await expect(preview.locator(".ui-banner > .ui-alert")).toHaveCSS("border-top-left-radius", "8px");
   await capture(preview, "banner-rounded");
   for (const state of ["默认", "长内容"]) {
     preview = await previewFor(page, "inline-message", state);
-    const message = preview.locator('[data-pui-owner="InlineMessage"]');
+    const message = preview.locator('[data-ui-owner="InlineMessage"]');
     const icon = await box(message.locator(":scope > svg"));
     const text = await box(message.locator(":scope > span"));
     expect(Math.abs(icon.y + icon.height / 2 - text.y - 10)).toBeLessThanOrEqual(1);
@@ -192,7 +192,7 @@ test("single-image lightboxes center media and bound full captions at desktop an
   const preview = await previewFor(page, "lightbox", "长内容");
   const trigger = preview.getByRole("button", { name: "预览长说明图片", exact: true });
   await trigger.click();
-  const dialog = page.locator('[data-pui-owner="Lightbox"]');
+  const dialog = page.locator('[data-ui-owner="Lightbox"]');
   await expect(dialog).toBeVisible();
   await expect(dialog).toHaveAttribute("data-single", "true");
   for (const width of [1440, 320]) {
@@ -204,8 +204,8 @@ test("single-image lightboxes center media and bound full captions at desktop an
     expect(imageBox.width).toBeGreaterThan(width === 320 ? 240 : 500);
     expect(imageBox.height).toBeGreaterThan(150);
     expect(Math.abs(imageBox.x + imageBox.width / 2 - width / 2)).toBeLessThanOrEqual(2);
-    await expect(dialog.locator(".pui-lightbox__previous,.pui-lightbox__next")).toHaveCount(0);
-    const caption = dialog.locator(".pui-lightbox__caption");
+    await expect(dialog.locator(".ui-lightbox__previous,.ui-lightbox__next")).toHaveCount(0);
+    const caption = dialog.locator(".ui-lightbox__caption");
     await expect(caption).toContainText("完整说明不会被截断");
     if (width === 320) {
       expect(await caption.evaluate(node => node.scrollHeight > node.clientHeight)).toBe(true);
@@ -224,11 +224,11 @@ test("single-image lightboxes center media and bound full captions at desktop an
 test("multi-image preview preserves navigation and focus-trap examples align actions at the right", async ({ page }) => {
   let preview = await previewFor(page, "lightbox", "默认");
   await preview.getByRole("button", { name: "预览图片", exact: true }).click();
-  const viewer = page.locator('[data-pui-owner="Lightbox"]');
-  await expect(viewer.locator(".pui-lightbox__previous")).toBeVisible();
-  await expect(viewer.locator(".pui-lightbox__next")).toBeVisible();
+  const viewer = page.locator('[data-ui-owner="Lightbox"]');
+  await expect(viewer.locator(".ui-lightbox__previous")).toBeVisible();
+  await expect(viewer.locator(".ui-lightbox__next")).toBeVisible();
   await page.keyboard.press("ArrowRight");
-  await expect(viewer.locator(".pui-lightbox__position")).toHaveText("2 / 2");
+  await expect(viewer.locator(".ui-lightbox__position")).toHaveText("2 / 2");
   await capture(viewer, "lightbox-multi");
   await page.keyboard.press("Escape");
   preview = await previewFor(page, "focus-trap", "键盘操作");
@@ -236,7 +236,7 @@ test("multi-image preview preserves navigation and focus-trap examples align act
   const dialog = page.getByRole("dialog");
   const next = dialog.getByRole("button", { name: "下一步", exact: true });
   const previous = dialog.getByRole("button", { name: "上一步", exact: true });
-  const row = dialog.locator('[data-pui-owner="Inline"]');
+  const row = dialog.locator('[data-ui-owner="Inline"]');
   const rowBox = await box(row);
   const nextBox = await box(next);
   expect(Math.abs(nextBox.x + nextBox.width - rowBox.x - rowBox.width)).toBeLessThanOrEqual(1);
@@ -251,17 +251,17 @@ test("multi-image preview preserves navigation and focus-trap examples align act
 test("field required notes preserve their intended spacing and toolbar long content can shrink", async ({ page }) => {
   let preview = await previewFor(page, "form", "默认");
   await resizeHost(preview, 280);
-  const field = preview.locator('[data-pui-owner="Field"]');
-  const label = field.locator(".pui-label");
+  const field = preview.locator('[data-ui-owner="Field"]');
+  const label = field.locator(".ui-label");
   const input = field.locator("input");
   const a = await box(label);
   const b = await box(input);
   expect(Math.abs(b.y - a.y - a.height - 7)).toBeLessThanOrEqual(1);
-  await expect(field.locator(".pui-label__required")).toHaveCSS("white-space", "nowrap");
+  await expect(field.locator(".ui-label__required")).toHaveCSS("white-space", "nowrap");
   await capture(preview, "field-required");
   preview = await previewFor(page, "toolbar", "长内容");
   await resizeHost(preview, 280);
-  const toolbar = preview.locator('[data-pui-owner="Toolbar"]');
+  const toolbar = preview.locator('[data-ui-owner="Toolbar"]');
   expect(await toolbar.evaluate(node => node.scrollWidth - node.clientWidth)).toBeLessThanOrEqual(1);
   await noDocumentOverflow(page);
   await capture(preview, "toolbar-narrow");

@@ -8,7 +8,7 @@ import {
   SegmentedControl,
   Select,
   type ValidityControlHandle,
-} from "../../src/personal-ui";
+} from "../../src/ui";
 
 const countryOptions = [
   { value: "cn", label: "China" },
@@ -45,7 +45,7 @@ function CompositeFormFixture() {
   };
 
   return (
-    <main className="pui-theme pui-root" data-ready="true">
+    <main className="ui-theme ui-root" data-ready="true">
       <Form id="external-profile" aria-label="External profile" onSubmit={(event) => event.preventDefault()}>
         <button type="submit">Submit external profile</button>
         <button type="reset">Reset external profile</button>

@@ -1,4 +1,4 @@
-// @personal-ui-coverage {"kind":"browser","runner":"browser","exports":["Accordion"]}
+// @ui-coverage {"kind":"browser","runner":"browser","exports":["Accordion"]}
 import { expect, test } from "@playwright/test";
 
 test("accordion keyboard traversal skips hidden and disabled content", async ({ page }) => {
@@ -6,8 +6,8 @@ test("accordion keyboard traversal skips hidden and disabled content", async ({ 
   const disclosure = page.getByRole("region", { name: "Uncontrolled disclosure" });
   const profile = disclosure.getByRole("button", { name: "Profile", exact: true });
   const security = disclosure.getByRole("button", { name: "Security", exact: true });
-  const profilePanel = disclosure.locator(".pui-collapse__panel").first();
-  const securityPanel = disclosure.locator(".pui-collapse__panel").nth(1);
+  const profilePanel = disclosure.locator(".ui-collapse__panel").first();
+  const securityPanel = disclosure.locator(".ui-collapse__panel").nth(1);
 
   await page.getByRole("button", { name: "Before accordion" }).focus();
   await page.keyboard.press("Tab");

@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"pagination/overview","exports":["Pagination"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"pagination/overview","exports":["Pagination"]}
 import { useState } from "react";
-import { Pagination } from "../../../personal-ui";
+import { Pagination } from "../../../ui";
 import { StatePreview } from "../state-preview";
 import type { ExplorerCase } from "../types";
 

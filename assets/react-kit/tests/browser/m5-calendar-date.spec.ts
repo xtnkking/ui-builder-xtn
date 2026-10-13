@@ -1,4 +1,4 @@
-// @personal-ui-coverage {"kind":"browser","runner":"browser","exports":["Calendar","DateField"]}
+// @ui-coverage {"kind":"browser","runner":"browser","exports":["Calendar","DateField"]}
 import { expect, test } from "@playwright/test";
 
 test("calendar provides one date Tab stop, real focus, and leap-year/month navigation", async ({ page }) => {

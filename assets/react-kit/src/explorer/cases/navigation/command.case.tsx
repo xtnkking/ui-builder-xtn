@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"command/overview","exports":["CommandPalette","useCommandPaletteShortcut"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"command/overview","exports":["CommandPalette","useCommandPaletteShortcut"]}
 import { useCallback, useState } from "react";
-import { Button, CommandPalette, useCommandPaletteShortcut } from "../../../personal-ui";
+import { Button, CommandPalette, useCommandPaletteShortcut } from "../../../ui";
 import { StatePreview } from "../state-preview";
 import type { ExplorerCase } from "../types";
 

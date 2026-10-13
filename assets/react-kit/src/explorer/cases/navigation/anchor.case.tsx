@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"anchor/overview","exports":["AnchorNavigation"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"anchor/overview","exports":["AnchorNavigation"]}
 import { useState } from "react";
-import { AnchorNavigation } from "../../../personal-ui";
+import { AnchorNavigation } from "../../../ui";
 import { StatePreview } from "../state-preview";
 import type { ExplorerCase } from "../types";
 

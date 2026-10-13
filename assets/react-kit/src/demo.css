@@ -7,12 +7,12 @@ body,
 }
 
 body {
-  background: var(--pui-bg);
+  background: var(--ui-bg);
 }
 
 .demo-shell {
   min-height: 100vh;
-  background: var(--pui-bg);
+  background: var(--ui-bg);
 }
 
 .demo-topbar {
@@ -21,12 +21,12 @@ body {
   justify-content: space-between;
   min-height: 56px;
   padding: 0 24px;
-  border-bottom: 1px solid var(--pui-border);
-  background: var(--pui-surface);
+  border-bottom: 1px solid var(--ui-border);
+  background: var(--ui-surface);
 }
 
 .demo-topbar > span {
-  color: var(--pui-muted);
+  color: var(--ui-muted);
   font-size: 12px;
 }
 
@@ -42,7 +42,7 @@ body {
   width: 30px;
   height: 30px;
   border-radius: 7px;
-  background: var(--pui-primary);
+  background: var(--ui-primary);
   color: #ffffff;
 }
 
@@ -69,8 +69,8 @@ body {
   align-self: start;
   height: calc(100vh - 57px);
   overflow: auto;
-  border-inline-end: 1px solid var(--pui-border);
-  background: var(--pui-surface);
+  border-inline-end: 1px solid var(--ui-border);
+  background: var(--ui-surface);
 }
 
 .demo-explorer-search {
@@ -80,12 +80,12 @@ body {
   display: grid;
   gap: 8px;
   padding: 16px;
-  border-bottom: 1px solid var(--pui-border);
-  background: var(--pui-surface);
+  border-bottom: 1px solid var(--ui-border);
+  background: var(--ui-surface);
 }
 
 .demo-explorer-search > span {
-  color: var(--pui-muted);
+  color: var(--ui-muted);
   font-size: 12px;
 }
 
@@ -100,7 +100,7 @@ body {
 .demo-explorer-directory__group h2 {
   margin: 0;
   padding: 12px 16px 4px;
-  color: var(--pui-muted);
+  color: var(--ui-muted);
   font-size: 12px;
   font-weight: 650;
 }
@@ -140,7 +140,7 @@ body {
 
 .demo-explorer-heading > small {
   min-width: 0;
-  color: var(--pui-muted);
+  color: var(--ui-muted);
   font-size: 15px;
   font-weight: 450;
   overflow-wrap: anywhere;
@@ -172,7 +172,7 @@ body {
 .demo-explorer-case__summary p {
   max-width: 72ch;
   margin: 6px 0 0;
-  color: var(--pui-muted);
+  color: var(--ui-muted);
   line-height: 1.65;
 }
 
@@ -189,9 +189,9 @@ body {
   max-width: 960px;
   min-width: 0;
   padding: 24px;
-  border: 1px solid var(--pui-border);
-  border-radius: var(--pui-radius-surface);
-  background: var(--pui-surface);
+  border: 1px solid var(--ui-border);
+  border-radius: var(--ui-radius-surface);
+  background: var(--ui-surface);
 }
 
 .demo-explorer-preview[data-preview-size="compact"] {
@@ -209,7 +209,7 @@ body {
 
 .demo-explorer-state-note {
   margin: 0 0 16px;
-  color: var(--pui-muted);
+  color: var(--ui-muted);
   font-size: 13px;
   line-height: 1.65;
   overflow-wrap: anywhere;
@@ -218,7 +218,7 @@ body {
 .demo-state-preview {
   min-width: 0;
   overflow: clip;
-  border-radius: var(--pui-radius-surface);
+  border-radius: var(--ui-radius-surface);
 }
 
 .demo-aspect-specimen {
@@ -230,10 +230,10 @@ body {
   gap: 12px;
   padding: 16px;
   overflow: auto;
-  border: 1px dashed var(--pui-border-strong);
-  border-radius: var(--pui-radius-surface);
-  background: var(--pui-surface-subtle);
-  color: var(--pui-muted);
+  border: 1px dashed var(--ui-border-strong);
+  border-radius: var(--ui-radius-surface);
+  background: var(--ui-surface-subtle);
+  color: var(--ui-muted);
   text-align: center;
   overflow-wrap: anywhere;
 }
@@ -248,7 +248,7 @@ body {
   min-height: 300px;
   display: grid;
   place-items: center;
-  border-top: 1px solid var(--pui-border);
+  border-top: 1px solid var(--ui-border);
 }
 
 .demo-explorer-mobile-directory {
@@ -275,7 +275,7 @@ body {
 
 .demo-list-frame {
   padding: 20px;
-  background: var(--pui-surface);
+  background: var(--ui-surface);
 }
 
 .demo-list-user {
@@ -286,7 +286,7 @@ body {
 
 .demo-list-user span {
   overflow: hidden;
-  color: var(--pui-muted);
+  color: var(--ui-muted);
   font-size: 12px;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -312,7 +312,7 @@ body {
   grid-row: 2;
   min-width: 0;
   overflow: hidden;
-  color: var(--pui-muted);
+  color: var(--ui-muted);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -325,7 +325,7 @@ body {
   justify-content: space-between;
   gap: 2px 12px;
   min-width: 0;
-  color: var(--pui-muted);
+  color: var(--ui-muted);
   font-size: 12px;
 }
 
@@ -352,7 +352,7 @@ body {
   min-height: 36px;
   align-items: center;
   padding: 0 10px;
-  color: var(--pui-muted);
+  color: var(--ui-muted);
 }
 
 .demo-list-mobile-row__action {
@@ -364,7 +364,7 @@ body {
   width: min(100%, 960px);
   margin-inline: auto;
   padding: 26px 24px;
-  background: var(--pui-surface);
+  background: var(--ui-surface);
 }
 
 .demo-dialog-case__heading,
@@ -376,7 +376,7 @@ body {
   flex-wrap: wrap;
   gap: 12px 18px;
   padding-block: 18px;
-  border-bottom: 1px solid var(--pui-border);
+  border-bottom: 1px solid var(--ui-border);
 }
 
 .demo-dialog-case__heading {
@@ -390,7 +390,7 @@ body {
 
 .demo-dialog-case__heading p {
   margin: 5px 0 0;
-  color: var(--pui-muted);
+  color: var(--ui-muted);
 }
 
 .demo-dialog-case__actions,
@@ -407,7 +407,7 @@ body {
 
 .demo-dialog-case__roles > span:first-child,
 .demo-dialog-case__scenario > span:first-child {
-  color: var(--pui-muted);
+  color: var(--ui-muted);
   font-size: 13px;
 }
 
@@ -425,15 +425,15 @@ body {
 
 .demo-titlebar p {
   margin: 4px 0 0;
-  color: var(--pui-muted);
+  color: var(--ui-muted);
 }
 
 .demo-case,
 .demo-auth-frame {
   overflow: hidden;
-  border: 1px solid var(--pui-border);
-  border-radius: var(--pui-radius-surface);
-  background: var(--pui-surface);
+  border: 1px solid var(--ui-border);
+  border-radius: var(--ui-radius-surface);
+  background: var(--ui-surface);
 }
 
 .demo-scenario-bar {
@@ -443,12 +443,12 @@ body {
   gap: 16px;
   min-height: 58px;
   padding: 10px 18px;
-  border-bottom: 1px solid var(--pui-border);
-  background: var(--pui-surface-subtle);
+  border-bottom: 1px solid var(--ui-border);
+  background: var(--ui-surface-subtle);
 }
 
 .demo-scenario-bar > span {
-  color: var(--pui-muted);
+  color: var(--ui-muted);
   font-size: 12px;
 }
 
@@ -486,7 +486,7 @@ body {
 }
 
 .demo-product-scene__rail span:first-child {
-  background: var(--pui-product-accent);
+  background: var(--ui-product-accent);
 }
 
 .demo-product-scene__canvas {
@@ -534,7 +534,7 @@ body {
 .demo-bars span {
   flex: 1 1 0;
   border-radius: 4px 4px 0 0;
-  background: var(--pui-product-accent);
+  background: var(--ui-product-accent);
 }
 
 .demo-bars span:nth-child(1) { height: 35%; }
@@ -586,7 +586,7 @@ body {
   }
 
   .demo-tabs-scope {
-    --pui-tabs-list-inline-offset: 16px;
+    --ui-tabs-list-inline-offset: 16px;
   }
 
   .demo-case,

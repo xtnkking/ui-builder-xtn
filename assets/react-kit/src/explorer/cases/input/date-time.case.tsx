@@ -1,7 +1,7 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"date-time/overview","exports":["DateField","DateRangeField","TimezoneSelect","DEFAULT_TIMEZONE_OPTIONS"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"date-time/overview","exports":["DateField","DateRangeField","TimezoneSelect","DEFAULT_TIMEZONE_OPTIONS"]}
 import { StatePreview } from "../state-preview";
 import { useState } from "react";
-import { DEFAULT_TIMEZONE_OPTIONS, DateField, DateRangeField, Field, TimezoneSelect, type DateRangeValue } from "../../../personal-ui";
+import { DEFAULT_TIMEZONE_OPTIONS, DateField, DateRangeField, Field, TimezoneSelect, type DateRangeValue } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 function DateTimeExample() {

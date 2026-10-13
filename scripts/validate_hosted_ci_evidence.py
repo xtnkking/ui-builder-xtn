@@ -13,11 +13,11 @@ from typing import Any, Mapping
 
 
 SCHEMA_VERSION = 1
-EVIDENCE_KIND = "personal-ui-release-evidence"
+EVIDENCE_KIND = "ui-release-evidence"
 EVIDENCE_TYPE = "hosted-ci"
-FIXTURE_KIND = "personal-ui-hosted-ci-fixture-evidence"
-BROWSER_KIND = "personal-ui-hosted-ci-browser-evidence"
-SAFARI_KIND = "personal-ui-hosted-ci-safari-evidence"
+FIXTURE_KIND = "ui-hosted-ci-fixture-evidence"
+BROWSER_KIND = "ui-hosted-ci-browser-evidence"
+SAFARI_KIND = "ui-hosted-ci-safari-evidence"
 SHA256_PATTERN = re.compile(r"^[0-9a-f]{64}$")
 COMMIT_PATTERN = re.compile(r"^[0-9a-f]{40}(?:[0-9a-f]{24})?$")
 REQUIRED_BROWSER_PROJECTS = {"chromium", "firefox", "webkit"}

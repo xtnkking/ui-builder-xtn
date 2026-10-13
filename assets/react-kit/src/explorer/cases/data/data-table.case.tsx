@@ -1,4 +1,4 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"data-table/overview","exports":["DataTable","TreeTable"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"data-table/overview","exports":["DataTable","TreeTable"]}
 import { useState } from "react";
 import {
   Checkbox,
@@ -15,7 +15,7 @@ import {
   type DataSort,
   type TreeTableColumn,
   type TreeTableNode,
-} from "../../../personal-ui";
+} from "../../../ui";
 import { StatePreview } from "../state-preview";
 import type { ExplorerCase } from "../types";
 

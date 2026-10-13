@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { createRoot } from "react-dom/client";
-import { CommandPalette, InfiniteScroll, ResizablePanels, Scheduler, Transfer } from "../../src/personal-ui";
-import "../../src/personal-ui/styles.css";
+import { CommandPalette, InfiniteScroll, ResizablePanels, Scheduler, Transfer } from "../../src/ui";
+import "../../src/ui/styles.css";
 import "./m5-adjacent.css";
 
 const events = [

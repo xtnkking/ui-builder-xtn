@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { createRoot } from "react-dom/client";
-import { Button, VirtualList } from "../../src/personal-ui";
-import "../../src/personal-ui/styles.css";
+import { Button, VirtualList } from "../../src/ui";
+import "../../src/ui/styles.css";
 
 declare global {
   interface Window { virtualListEndCalls: number }

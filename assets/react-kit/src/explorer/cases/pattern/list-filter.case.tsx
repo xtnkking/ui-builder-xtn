@@ -1,8 +1,8 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"list-filter/overview","exports":["PageHeading","ListManagementPage","SearchFilterPage","MemberManagementPage"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"list-filter/overview","exports":["PageHeading","ListManagementPage","SearchFilterPage","MemberManagementPage"]}
 import { StatePreview } from "../state-preview";
-import { Box, Button, EmptyState, FilterBar, ListManagementPage, MemberManagementPage, PageHeading, SearchFilterPage, SearchInput, Tabs } from "../../../personal-ui";
+import { Box, Button, EmptyState, FilterBar, ListManagementPage, MemberManagementPage, PageHeading, SearchFilterPage, SearchInput, Tabs } from "../../../ui";
 import { useState } from "react";
-import type { MemberQuery, MemberResult } from "../../../personal-ui";
+import type { MemberQuery, MemberResult } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 const result: MemberResult = {
@@ -96,7 +96,7 @@ const explorerCase: ExplorerCase = {
   ],
   content: <ListFilterExample />,
   previewLayout: "page",
-  code: `import { MemberManagementPage } from "./personal-ui";
+  code: `import { MemberManagementPage } from "./ui";
 
 <MemberManagementPage fetchMembers={fetchMembers} />`,
 };

@@ -5,9 +5,9 @@ import {
   checkLocaleContract,
   collectHardcodedLocaleFindings,
   validateLocaleDictionaries,
-} from "../../tools/personal-ui/check-locale-contract.mjs";
+} from "../../tools/ui/check-locale-contract.mjs";
 
-const localeSource = fs.readFileSync(path.resolve("src/personal-ui/foundation/locale.tsx"), "utf8");
+const localeSource = fs.readFileSync(path.resolve("src/ui/foundation/locale.tsx"), "utf8");
 
 describe("locale source contracts", () => {
   it("keeps dictionaries complete and public source language ownership explicit", () => {
@@ -38,14 +38,14 @@ describe("locale source contracts", () => {
   it("rejects CJK punctuation even when a template contains no Han characters", () => {
     expect(collectHardcodedLocaleFindings(
       "const label = `${name}，${month}`;",
-      "src/personal-ui/fixture.ts",
+      "src/ui/fixture.ts",
     )).toContainEqual(expect.objectContaining({
       kind: "language-string",
       value: "，",
     }));
     expect(collectHardcodedLocaleFindings(
       "const label = `${name}, ${month}`;",
-      "src/personal-ui/fixture.ts",
+      "src/ui/fixture.ts",
     )).toEqual([]);
   });
 });

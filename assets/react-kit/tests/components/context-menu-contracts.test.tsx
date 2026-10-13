@@ -1,8 +1,8 @@
-// @personal-ui-coverage {"kind":"unit","runner":"components","exports":["ContextMenu"]}
+// @ui-coverage {"kind":"unit","runner":"components","exports":["ContextMenu"]}
 import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
-import { ContextMenu } from "../../src/personal-ui";
+import { ContextMenu } from "../../src/ui";
 
 describe("ContextMenu keyboard contract", () => {
   it("opens from a static trigger and roves by enabled identity, typeahead, and action", async () => {
@@ -18,7 +18,7 @@ describe("ContextMenu keyboard contract", () => {
         <span>Record</span>
       </ContextMenu>,
     );
-    const trigger = document.querySelector<HTMLElement>("[data-pui-owner='ContextMenu']")!;
+    const trigger = document.querySelector<HTMLElement>("[data-ui-owner='ContextMenu']")!;
     expect(trigger).toHaveAttribute("tabindex", "0");
     trigger.focus();
     fireEvent.keyDown(trigger, { key: "F10", shiftKey: true });
@@ -64,7 +64,7 @@ describe("ContextMenu keyboard contract", () => {
         <button type="button">Record button</button>
       </ContextMenu>,
     );
-    const root = document.querySelector<HTMLElement>("[data-pui-owner='ContextMenu']")!;
+    const root = document.querySelector<HTMLElement>("[data-ui-owner='ContextMenu']")!;
     const trigger = screen.getByRole("button", { name: "Record button" });
     expect(root).toHaveAttribute("tabindex", "-1");
     trigger.focus();

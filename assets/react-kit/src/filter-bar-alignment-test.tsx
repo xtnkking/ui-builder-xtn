@@ -1,7 +1,7 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { createRoot } from "react-dom/client";
-import { Button, FilterBar, Inline, SearchInput } from "./personal-ui";
-import "./personal-ui/styles.css";
+import { Button, FilterBar, Inline, SearchInput } from "./ui";
+import "./ui/styles.css";
 
 function FilterBarAlignmentTest() {
   const [query, setQuery] = useState("");
@@ -17,7 +17,7 @@ function FilterBarAlignmentTest() {
   };
 
   return (
-    <main className="pui-root">
+    <main className="ui-root">
       <FilterBar
         ariaLabel="权限筛选"
         onSubmit={handleSubmit}

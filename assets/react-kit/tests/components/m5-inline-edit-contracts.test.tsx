@@ -1,8 +1,8 @@
-// @personal-ui-coverage {"kind":"unit","runner":"components","exports":["InlineEdit"]}
+// @ui-coverage {"kind":"unit","runner":"components","exports":["InlineEdit"]}
 import { useState } from "react";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { Field, Form, InlineEdit } from "../../src/personal-ui";
+import { Field, Form, InlineEdit } from "../../src/ui";
 
 function deferred() {
   let resolve!: () => void;

@@ -4,7 +4,7 @@ test.use({ viewport: { width: 1280, height: 800 } });
 
 async function expectUnclippedButtonLabel(button: Locator, expectedHeight: number, loading = false) {
   await expect(button).toBeVisible();
-  const labelSelector = loading ? ".pui-button__loading > span:last-child" : ".pui-button__label";
+  const labelSelector = loading ? ".ui-button__loading > span:last-child" : ".ui-button__label";
   await expect(button.locator(labelSelector)).toBeVisible();
   const metrics = await button.evaluate((element, selector) => {
     const label = element.querySelector<HTMLElement>(selector)!;
@@ -83,7 +83,7 @@ test("keeps Chinese default, disabled, loading and small Button labels unclipped
   const tagPreview = page.locator(".demo-explorer-preview");
   await tagPreview.getByRole("button", { name: "移除即将过期标签", exact: true }).click();
   const small = tagPreview.getByRole("button", { name: "恢复标签", exact: true });
-  await expect(small).toHaveClass(/\bpui-button--small\b/);
+  await expect(small).toHaveClass(/\bui-button--small\b/);
   await expectUnclippedButtonLabel(small, 32);
 });
 
@@ -117,7 +117,7 @@ test("shows runnable previews instead of missing or pending placeholders for all
       const preview = main.locator(".demo-explorer-preview");
       await expect(preview).toHaveCount(1);
       await expect(preview).toBeVisible();
-      await expect(preview.locator("[data-pui-owner]").first()).toBeVisible();
+      await expect(preview.locator("[data-ui-owner]").first()).toBeVisible();
     });
   }
 });

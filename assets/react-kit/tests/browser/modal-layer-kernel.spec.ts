@@ -1,4 +1,4 @@
-// @personal-ui-coverage {"kind":"browser","runner":"browser","exports":["ConfirmDialog","Dialog","Drawer"]}
+// @ui-coverage {"kind":"browser","runner":"browser","exports":["ConfirmDialog","Dialog","Drawer"]}
 import { expect, test } from "@playwright/test";
 import { legacyExplorerCaseTabs, selectExplorerCase } from "../../../../scripts/browser-explorer-case.mjs";
 
@@ -8,7 +8,7 @@ test("keeps nested modal focus, dismissal, inert, and scroll state coherent", as
   const dialogCase = await selectExplorerCase(page, legacyExplorerCaseTabs.dialog);
   const opener = dialogCase.getByRole("button", { name: "分配角色" });
   await opener.click();
-  const dialog = page.locator("[data-pui-owner='Dialog']").filter({ hasText: "分配角色 · xtn" }).first();
+  const dialog = page.locator("[data-ui-owner='Dialog']").filter({ hasText: "分配角色 · xtn" }).first();
   await expect(dialog).toBeVisible();
   await expect(page.locator("#root")).toHaveAttribute("inert", "");
   await expect.poll(() => page.evaluate(() => document.body.style.overflow)).toBe("hidden");
@@ -53,7 +53,7 @@ test("keeps native long-dialog scroll stops reachable in both Tab directions and
   await opener.click();
 
   const dialog = page.getByRole("dialog", { name: "项目配置详情", exact: true });
-  const body = dialog.locator(".pui-dialog__body");
+  const body = dialog.locator(".ui-dialog__body");
   const close = dialog.getByRole("button", { name: "关闭对话框", exact: true });
   const bodyAction = dialog.getByRole("button", { name: "返回项目列表", exact: true });
   const last = dialog.getByRole("button", { name: "完成查看", exact: true });

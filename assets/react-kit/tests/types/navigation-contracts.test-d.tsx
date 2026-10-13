@@ -6,7 +6,7 @@ import {
   type BreadcrumbsProps,
   type PaginationProps,
   type TabsProps,
-} from "../../src/personal-ui";
+} from "../../src/ui";
 
 const items = [
   { id: "overview", label: "Overview", content: "Overview content" },
@@ -61,12 +61,12 @@ const tabsStyle = <Tabs items={items} ariaLabel="Account sections" style={{ colo
 // @ts-expect-error fixed controls do not expose raw DOM refs
 const tabsRef = <Tabs items={items} ariaLabel="Account sections" ref={createRef<HTMLDivElement>()} />;
 // @ts-expect-error reserved ownership attributes are never public
-const tabsOwner = <Tabs items={items} ariaLabel="Account sections" data-pui-owner="Consumer" />;
+const tabsOwner = <Tabs items={items} ariaLabel="Account sections" data-ui-owner="Consumer" />;
 
 // @ts-expect-error Breadcrumbs keeps styling internal
 const breadcrumbsClassName = <Breadcrumbs items={[]} className="foreign" />;
 // @ts-expect-error Breadcrumbs does not expose internal ownership
-const breadcrumbsOwner = <Breadcrumbs items={[]} data-pui-owner="Consumer" />;
+const breadcrumbsOwner = <Breadcrumbs items={[]} data-ui-owner="Consumer" />;
 
 // @ts-expect-error Pagination is controlled and requires onPageChange
 const paginationMissingChange = <Pagination page={1} pageCount={3} />;
@@ -75,7 +75,7 @@ const paginationStyle = <Pagination page={1} pageCount={3} onPageChange={() => u
 // @ts-expect-error Pagination does not expose raw DOM refs
 const paginationRef = <Pagination page={1} pageCount={3} onPageChange={() => undefined} ref={createRef<HTMLElement>()} />;
 // @ts-expect-error Pagination does not expose internal ownership
-const paginationOwner = <Pagination page={1} pageCount={3} onPageChange={() => undefined} data-pui-owner="Consumer" />;
+const paginationOwner = <Pagination page={1} pageCount={3} onPageChange={() => undefined} data-ui-owner="Consumer" />;
 
 void tabsMissingChange;
 void tabsContradictory;

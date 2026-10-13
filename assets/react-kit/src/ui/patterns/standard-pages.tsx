@@ -1,0 +1,282 @@
+import type { FormEvent, ReactNode } from "react";
+import { ArrowLeft, Download, Upload } from "lucide-react";
+import { Button, IconButton } from "../foundation/primitives";
+import { EmptyState } from "../feedback/feedback";
+import { ErrorState } from "../feedback/feedback-extra";
+import { Stepper, type StepperItem } from "../navigation/navigation-extra";
+import { useUILocale } from "../foundation/locale";
+import { assertUniqueIdentities, cx } from "../internal/utils";
+
+export interface PageHeadingProps {
+  title: ReactNode;
+  description?: ReactNode;
+  eyebrow?: ReactNode;
+  actions?: ReactNode;
+  onBack?: () => void;
+  backLabel?: string;
+}
+
+export function PageHeading({ title, description, eyebrow, actions, onBack, backLabel }: PageHeadingProps) {
+  const { message } = useUILocale();
+  const resolvedBackLabel = backLabel ?? message("page.back");
+  return (
+    <header className="ui-page-heading" data-ui-owner="PageHeading">
+      {onBack ? <IconButton aria-label={resolvedBackLabel} icon={<ArrowLeft />} onClick={onBack} /> : null}
+      <div className="ui-page-heading__copy">
+        {eyebrow != null ? <span>{eyebrow}</span> : null}
+        <h1>{title}</h1>
+        {description != null ? <p>{description}</p> : null}
+      </div>
+      {actions != null ? <div className="ui-page-heading__actions">{actions}</div> : null}
+    </header>
+  );
+}
+
+export interface ListManagementPageProps extends PageHeadingProps {
+  filters?: ReactNode;
+  bulkActions?: ReactNode;
+  children: ReactNode;
+  footer?: ReactNode;
+  layoutWidth?: "readable" | "wide";
+  className?: string;
+}
+
+type ListManagementPageRootProps = ListManagementPageProps & {
+  owner: "ListManagementPage" | "SearchFilterPage";
+  variantClassName?: string;
+};
+
+function ListManagementPageRoot({ filters, bulkActions, children, footer, layoutWidth = "readable", className, owner, variantClassName, ...heading }: ListManagementPageRootProps) {
+  const { message } = useUILocale();
+  return (
+    <main className={cx("ui-page", "ui-list-page", layoutWidth === "wide" && "ui-list-page--wide", variantClassName, className)} data-ui-owner={owner}>
+      <PageHeading {...heading} />
+      {filters != null ? <section className="ui-list-page__filters" aria-label={message("page.filters")}>{filters}</section> : null}
+      {bulkActions != null ? <section className="ui-list-page__bulk" aria-label={message("page.bulkActions")}>{bulkActions}</section> : null}
+      <section className="ui-list-page__content">{children}</section>
+      {footer != null ? <footer className="ui-list-page__footer">{footer}</footer> : null}
+    </main>
+  );
+}
+
+export function ListManagementPage(props: ListManagementPageProps) {
+  return <ListManagementPageRoot {...props} owner="ListManagementPage" />;
+}
+
+export type SearchFilterPageProps = ListManagementPageProps;
+
+export function SearchFilterPage(props: SearchFilterPageProps) {
+  return <ListManagementPageRoot {...props} owner="SearchFilterPage" variantClassName="ui-search-filter-page" />;
+}
+
+export interface CreateEditPageProps extends PageHeadingProps {
+  children: ReactNode;
+  onSubmit: (event: FormEvent<HTMLFormElement>) => void;
+  submitLabel?: ReactNode;
+  cancelLabel?: ReactNode;
+  onCancel?: () => void;
+  submitting?: boolean;
+  submitDisabled?: boolean;
+  formId?: string;
+  className?: string;
+}
+
+export function CreateEditPage({ children, onSubmit, submitLabel, cancelLabel, onCancel, submitting, submitDisabled, formId, className, ...heading }: CreateEditPageProps) {
+  const { message } = useUILocale();
+  return (
+    <main className={cx("ui-page", "ui-form-page", className)} data-ui-owner="CreateEditPage">
+      <PageHeading {...heading} />
+      <form id={formId} className="ui-form-page__form" onSubmit={onSubmit} noValidate>
+        <div className="ui-form-page__content">{children}</div>
+        <footer className="ui-form-page__actions">
+          {onCancel ? <Button disabled={submitting} onClick={onCancel}>{cancelLabel ?? message("common.cancel")}</Button> : null}
+          <Button type="submit" variant="primary" loading={submitting} loadingLabel={message("common.saving")} disabled={submitDisabled}>{submitLabel ?? message("common.save")}</Button>
+        </footer>
+      </form>
+    </main>
+  );
+}
+
+export interface DetailSection {
+  id: string;
+  title?: ReactNode;
+  content: ReactNode;
+  actions?: ReactNode;
+}
+
+export interface DetailPageProps extends PageHeadingProps {
+  sections: readonly DetailSection[];
+  aside?: ReactNode;
+  className?: string;
+}
+
+export function DetailPage({ sections, aside, className, ...heading }: DetailPageProps) {
+  assertUniqueIdentities("DetailPage", "section.id", sections.map((section) => section.id));
+  return (
+    <main className={cx("ui-page", "ui-detail-page", className)} data-ui-owner="DetailPage">
+      <PageHeading {...heading} />
+      <div className="ui-detail-page__layout">
+        <div className="ui-detail-page__sections">
+          {sections.map((section) => (
+            <section key={section.id} id={section.id}>
+              {section.title != null || section.actions != null ? <header>{section.title != null ? <h2>{section.title}</h2> : <span />}{section.actions}</header> : null}
+              <div>{section.content}</div>
+            </section>
+          ))}
+        </div>
+        {aside != null ? <aside>{aside}</aside> : null}
+      </div>
+    </main>
+  );
+}
+
+export interface SettingsSection extends DetailSection {
+  label: ReactNode;
+  disabled?: boolean;
+}
+
+export interface SettingsPageProps extends PageHeadingProps {
+  sections: readonly SettingsSection[];
+  currentId: string;
+  onCurrentChange: (id: string) => void;
+  className?: string;
+}
+
+export function SettingsPage({ sections, currentId, onCurrentChange, className, ...heading }: SettingsPageProps) {
+  const { message } = useUILocale();
+  assertUniqueIdentities("SettingsPage", "section.id", sections.map((section) => section.id));
+  const current = sections.find((section) => section.id === currentId);
+  if (!current && sections.length) throw new RangeError(`SettingsPage cannot find currentId ${JSON.stringify(currentId)}.`);
+  return (
+    <main className={cx("ui-page", "ui-settings-page", className)} data-ui-owner="SettingsPage">
+      <PageHeading {...heading} />
+      <div className="ui-settings-page__layout">
+        <nav aria-label={message("page.settings")}>
+          {sections.map((section) => <button key={section.id} type="button" disabled={section.disabled} aria-current={section.id === currentId ? "page" : undefined} onClick={() => onCurrentChange(section.id)}>{section.label}</button>)}
+        </nav>
+        {current ? <section aria-labelledby={`ui-settings-${current.id}`}><header><h2 id={`ui-settings-${current.id}`}>{current.title ?? current.label}</h2>{current.actions}</header><div>{current.content}</div></section> : null}
+      </div>
+    </main>
+  );
+}
+
+export interface WizardFlowProps extends PageHeadingProps {
+  steps: readonly StepperItem[];
+  currentId: string;
+  children: ReactNode;
+  onStepChange?: (id: string) => void;
+  onPrevious?: () => void;
+  onNext?: () => void | Promise<void>;
+  previousLabel?: ReactNode;
+  nextLabel?: ReactNode;
+  nextLoading?: boolean;
+  nextDisabled?: boolean;
+  className?: string;
+}
+
+export function WizardFlow({ steps, currentId, children, onStepChange, onPrevious, onNext, previousLabel, nextLabel, nextLoading, nextDisabled, className, ...heading }: WizardFlowProps) {
+  const { message } = useUILocale();
+  return (
+    <main className={cx("ui-page", "ui-wizard-page", className)} data-ui-owner="WizardFlow">
+      <PageHeading {...heading} />
+      <Stepper steps={steps} currentId={currentId} ariaLabel={message("page.workflowSteps")} onStepChange={onStepChange} />
+      <section className="ui-wizard-page__content">{children}</section>
+      <footer className="ui-wizard-page__actions">
+        <Button disabled={!onPrevious || nextLoading} onClick={onPrevious}>{previousLabel ?? message("tour.previous")}</Button>
+        <Button variant="primary" loading={nextLoading} loadingLabel={message("common.processing")} disabled={!onNext || nextDisabled} onClick={onNext}>{nextLabel ?? message("tour.next")}</Button>
+      </footer>
+    </main>
+  );
+}
+
+export interface MasterDetailProps extends PageHeadingProps {
+  master: ReactNode;
+  detail: ReactNode;
+  detailOpen?: boolean;
+  emptyDetail?: ReactNode;
+  className?: string;
+}
+
+export function MasterDetail({ master, detail, detailOpen = true, emptyDetail, className, ...heading }: MasterDetailProps) {
+  const { message } = useUILocale();
+  return (
+    <main className={cx("ui-page", "ui-master-detail", className)} data-ui-owner="MasterDetail">
+      <PageHeading {...heading} />
+      <div className="ui-master-detail__layout" data-detail-open={detailOpen || undefined}>
+        <section className="ui-master-detail__master" aria-label={message("page.master")}>{master}</section>
+        <section className="ui-master-detail__detail" aria-label={message("page.detail")}>{detailOpen ? detail : emptyDetail}</section>
+      </div>
+    </main>
+  );
+}
+
+export interface ImportExportPageProps extends PageHeadingProps {
+  importContent: ReactNode;
+  exportContent: ReactNode;
+  onImport?: () => void | Promise<void>;
+  onExport?: () => void | Promise<void>;
+  importing?: boolean;
+  exporting?: boolean;
+  className?: string;
+}
+
+export function ImportExportPage({ importContent, exportContent, onImport, onExport, importing, exporting, className, ...heading }: ImportExportPageProps) {
+  const { message } = useUILocale();
+  return (
+    <main className={cx("ui-page", "ui-import-export-page", className)} data-ui-owner="ImportExportPage">
+      <PageHeading {...heading} />
+      <div className="ui-import-export-page__grid">
+        <section><header><Upload aria-hidden="true" /><h2>{message("page.import")}</h2></header><div>{importContent}</div>{onImport ? <Button variant="primary" icon={<Upload />} loading={importing} loadingLabel={message("page.importing")} onClick={onImport}>{message("page.startImport")}</Button> : null}</section>
+        <section><header><Download aria-hidden="true" /><h2>{message("page.export")}</h2></header><div>{exportContent}</div>{onExport ? <Button icon={<Download />} loading={exporting} loadingLabel={message("page.exporting")} onClick={onExport}>{message("page.exportFile")}</Button> : null}</section>
+      </div>
+    </main>
+  );
+}
+
+export interface StatusPageProps extends PageHeadingProps {
+  kind?: "empty" | "error" | "permission" | "offline";
+  statusTitle: ReactNode;
+  statusDescription?: ReactNode;
+  action?: ReactNode;
+  onRetry?: () => void | Promise<void>;
+  className?: string;
+}
+
+export function StatusPage({ kind = "empty", statusTitle, statusDescription, action, onRetry, className, ...heading }: StatusPageProps) {
+  return (
+    <main className={cx("ui-page", "ui-status-page", className)} data-ui-owner="StatusPage">
+      <PageHeading {...heading} />
+      {kind === "empty" ? <EmptyState title={statusTitle} description={statusDescription} action={action} /> : <ErrorState kind={kind} title={statusTitle} description={statusDescription} onRetry={onRetry} />}
+    </main>
+  );
+}
+
+export interface AuthenticationPageProps {
+  company: ReactNode;
+  product?: ReactNode;
+  visual?: ReactNode;
+  /** Full viewport page by default; embedded surfaces use a bounded minimum height. */
+  layout?: "page" | "embedded";
+  title: ReactNode;
+  description?: ReactNode;
+  children: ReactNode;
+  footer?: ReactNode;
+  className?: string;
+}
+
+export function AuthenticationPage({ company, product, visual, layout = "page", title, description, children, footer, className }: AuthenticationPageProps) {
+  return (
+    <main className={cx("ui-auth-page", className)} data-ui-owner="AuthenticationPage" data-layout={layout} data-has-visual={visual != null || undefined}>
+      <div className="ui-auth-page__layout">
+        {visual != null ? <section className="ui-auth-page__visual">{visual}</section> : null}
+        <section className="ui-auth-page__form">
+          <div className="ui-auth-page__content">
+            <header><div className="ui-auth-page__identity">{company}{product != null ? <span>{product}</span> : null}</div><h1>{title}</h1>{description != null ? <p>{description}</p> : null}</header>
+            <div className="ui-auth-page__fields">{children}</div>
+            {footer != null ? <footer>{footer}</footer> : null}
+          </div>
+        </section>
+      </div>
+    </main>
+  );
+}

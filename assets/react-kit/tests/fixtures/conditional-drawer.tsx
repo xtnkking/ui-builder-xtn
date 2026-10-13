@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { Eye } from "lucide-react";
-import { Button, Drawer, IconButton, Input } from "../../src/personal-ui";
-import "../../src/personal-ui/styles.css";
+import { Button, Drawer, IconButton, Input } from "../../src/ui";
+import "../../src/ui/styles.css";
 
 function ConditionalDrawerFixture() {
   const [source, setSource] = useState<"button" | "icon" | "shortcut" | null>(null);

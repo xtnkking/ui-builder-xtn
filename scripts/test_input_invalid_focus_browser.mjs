@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { isPersonalUiRegressionMain, runPersonalUiRegression } from "./browser-test-harness.mjs";
+import { isUIRegressionMain, runUIRegression } from "./browser-test-harness.mjs";
 import { legacyExplorerCaseTabs, selectExplorerCase } from "./browser-explorer-case.mjs";
 
 const danger = "rgb(201, 54, 43)";
@@ -29,7 +29,7 @@ async function inspectFocus(input, target, expectedColor, label) {
         border: controlStyle.borderColor,
         shadow: controlStyle.boxShadow,
         invalid: element.getAttribute("aria-invalid"),
-        autofillStateShadow: getComputedStyle(element).getPropertyValue("--_pui-input-autofill-state-shadow").trim().toLowerCase(),
+        autofillStateShadow: getComputedStyle(element).getPropertyValue("--_ui-input-autofill-state-shadow").trim().toLowerCase(),
       };
     };
     const deadline = performance.now() + 1500;
@@ -67,8 +67,8 @@ export async function runInputInvalidFocusRegression({ page, baseURL }) {
     await page.setViewportSize({ width, height: 800 });
       await page.goto(`${baseURL}/?regressionWidth=${width}#/patterns/authentication`);
       const authCase = await selectExplorerCase(page, legacyExplorerCaseTabs.authentication);
-      const email = authCase.locator('.pui-auth__form input[name="email"]');
-      const password = authCase.locator('.pui-auth__form input[name="password"]');
+      const email = authCase.locator('.ui-auth__form input[name="email"]');
+      const password = authCase.locator('.ui-auth__form input[name="password"]');
       await authCase.getByRole("button", { name: "登录", exact: true }).click();
       assert.equal(await email.getAttribute("aria-invalid"), "true", `${width}px: email validation did not run`);
       assert.equal(await password.getAttribute("aria-invalid"), "true", `${width}px: password validation did not run`);
@@ -77,10 +77,10 @@ export async function runInputInvalidFocusRegression({ page, baseURL }) {
       await page.keyboard.press("Shift+Tab");
       await inspectFocus(email, null, danger, `${width}px invalid Input`);
       await page.keyboard.press("Tab");
-      await inspectFocus(password, ".pui-input-shell", danger, `${width}px invalid PasswordInput`);
-      assert.equal(await password.locator("..").getAttribute("data-pui-owner"), "PasswordInput", `${width}px: password adornment is not owned by the source-kit component`);
-      if (process.env.PERSONAL_UI_INPUT_FOCUS_SCREENSHOT_PREFIX) {
-        await page.screenshot({ path: `${process.env.PERSONAL_UI_INPUT_FOCUS_SCREENSHOT_PREFIX}-invalid-${width}.png` });
+      await inspectFocus(password, ".ui-input-shell", danger, `${width}px invalid PasswordInput`);
+      assert.equal(await password.locator("..").getAttribute("data-ui-owner"), "PasswordInput", `${width}px: password adornment is not owned by the source-kit component`);
+      if (process.env.UI_INPUT_FOCUS_SCREENSHOT_PREFIX) {
+        await page.screenshot({ path: `${process.env.UI_INPUT_FOCUS_SCREENSHOT_PREFIX}-invalid-${width}.png` });
       }
 
       await email.fill("member@example.com");
@@ -91,14 +91,14 @@ export async function runInputInvalidFocusRegression({ page, baseURL }) {
       await page.keyboard.press("Shift+Tab");
       await inspectFocus(email, null, primary, `${width}px normal Input`);
       await page.keyboard.press("Tab");
-      await inspectFocus(password, ".pui-input-shell", primary, `${width}px normal PasswordInput`);
-      if (process.env.PERSONAL_UI_INPUT_FOCUS_SCREENSHOT_PREFIX) {
-        await page.screenshot({ path: `${process.env.PERSONAL_UI_INPUT_FOCUS_SCREENSHOT_PREFIX}-normal-${width}.png` });
+      await inspectFocus(password, ".ui-input-shell", primary, `${width}px normal PasswordInput`);
+      if (process.env.UI_INPUT_FOCUS_SCREENSHOT_PREFIX) {
+        await page.screenshot({ path: `${process.env.UI_INPUT_FOCUS_SCREENSHOT_PREFIX}-normal-${width}.png` });
       }
   }
   console.log("Input and PasswordInput uniform invalid focus regression passed at 2560, 1440, 1024, 736, 360, and 320px.");
 }
 
-if (isPersonalUiRegressionMain(import.meta.url)) {
-  await runPersonalUiRegression(runInputInvalidFocusRegression);
+if (isUIRegressionMain(import.meta.url)) {
+  await runUIRegression(runInputInvalidFocusRegression);
 }

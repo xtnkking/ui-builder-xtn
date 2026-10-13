@@ -1,4 +1,4 @@
-// @personal-ui-coverage {"kind":"unit","runner":"components","exports":["DataTable"]}
+// @ui-coverage {"kind":"unit","runner":"components","exports":["DataTable"]}
 import { createElement } from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
@@ -6,7 +6,7 @@ import {
   DataTable,
   type DataColumn,
   type DataTableProps,
-} from "../../src/personal-ui";
+} from "../../src/ui";
 
 type Row = {
   id: string;
@@ -30,9 +30,9 @@ function escapedProps(testId: string, rows: Row[], onMouseEnter: () => void) {
     tw: "foreign-tw",
     dangerouslySetInnerHTML: { __html: "<b>unsafe</b>" },
     children: "Injected child",
-    "data-pui-owner": "Consumer",
-    "data-pui-slot": "foreign",
-    "data-pui-private": "foreign",
+    "data-ui-owner": "Consumer",
+    "data-ui-slot": "foreign",
+    "data-ui-private": "foreign",
     "data-state": "consumer",
     "data-testid": testId,
     "data-track": "preserved",
@@ -42,15 +42,15 @@ function escapedProps(testId: string, rows: Row[], onMouseEnter: () => void) {
 }
 
 function expectClosedRoot(root: HTMLElement, expectedState: "ready" | "empty") {
-  expect(root).toHaveClass("pui-data-table");
+  expect(root).toHaveClass("ui-data-table");
   expect(root).not.toHaveClass("foreign-table");
   expect(root).not.toHaveAttribute("style");
   expect(root).not.toHaveAttribute("css");
   expect(root).not.toHaveAttribute("sx");
   expect(root).not.toHaveAttribute("tw");
-  expect(root).not.toHaveAttribute("data-pui-slot");
-  expect(root).not.toHaveAttribute("data-pui-private");
-  expect(root).toHaveAttribute("data-pui-owner", "DataTable");
+  expect(root).not.toHaveAttribute("data-ui-slot");
+  expect(root).not.toHaveAttribute("data-ui-private");
+  expect(root).toHaveAttribute("data-ui-owner", "DataTable");
   expect(root).toHaveAttribute("data-state", expectedState);
   expect(root).toHaveAttribute("data-track", "preserved");
   expect(root).toHaveAttribute("aria-describedby", "accounts-description");
@@ -86,7 +86,7 @@ describe("DataTable public-control contract", () => {
 
     const root = screen.getByTestId("empty-table");
     expectClosedRoot(root, "empty");
-    expect(root).toHaveClass("pui-data-table--empty");
+    expect(root).toHaveClass("ui-data-table--empty");
     expect(screen.getByText("没有匹配数据")).toBeInTheDocument();
     fireEvent.mouseEnter(root);
     expect(onMouseEnter).toHaveBeenCalledTimes(1);

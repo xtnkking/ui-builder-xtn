@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { isPersonalUiRegressionMain, runPersonalUiRegression } from "./browser-test-harness.mjs";
+import { isUIRegressionMain, runUIRegression } from "./browser-test-harness.mjs";
 import { legacyExplorerCaseTabs, selectExplorerCase } from "./browser-explorer-case.mjs";
 
 async function focusWithKeyboard(page, target, label) {
@@ -32,14 +32,14 @@ export async function runListPageWidthRegression({ page, baseURL }) {
     await page.setViewportSize({ width, height: 900 });
     await page.goto(`${baseURL}/?legacy=list-width-${width}#/components/data-table`);
       const dataTableCase = await selectExplorerCase(page, legacyExplorerCaseTabs.dataTable);
-      const root = dataTableCase.locator(".demo-list-frame .pui-list-page");
+      const root = dataTableCase.locator(".demo-list-frame .ui-list-page");
       await root.waitFor();
       const measure = (expectedState) => root.evaluate(async (element, state) => {
         if (state) {
           await new Promise((resolve, reject) => {
             const deadline = performance.now() + 5_000;
             const sample = () => {
-              if (element.querySelector(`.pui-data-table[data-state="${state}"]`)) return resolve();
+              if (element.querySelector(`.ui-data-table[data-state="${state}"]`)) return resolve();
               if (performance.now() >= deadline) return reject(new Error(`Table did not enter ${state} state`));
               requestAnimationFrame(sample);
             };
@@ -47,26 +47,26 @@ export async function runListPageWidthRegression({ page, baseURL }) {
           });
         }
         const container = element.getBoundingClientRect();
-        const frame = element.querySelector(".pui-data-table__frame");
+        const frame = element.querySelector(".ui-data-table__frame");
         const frameRect = frame.getBoundingClientRect();
         const frameStyle = getComputedStyle(frame);
-        const scroller = element.querySelector(".pui-data-table__scroller");
-        const mobile = element.querySelector(".pui-data-table__mobile");
+        const scroller = element.querySelector(".ui-data-table__scroller");
+        const mobile = element.querySelector(".ui-data-table__mobile");
         const surface = getComputedStyle(scroller).display === "none" ? mobile : scroller;
         const surfaceStyle = getComputedStyle(surface);
         const table = scroller.querySelector("table");
-        const pagerWrap = frame.querySelector(".pui-data-table__pagination");
-        const pagination = pagerWrap?.querySelector(".pui-pagination");
+        const pagerWrap = frame.querySelector(".ui-data-table__pagination");
+        const pagination = pagerWrap?.querySelector(".ui-pagination");
         const headers = [...table.querySelectorAll("thead th")].map((header) => header.getBoundingClientRect().width);
-        const firstStatus = table.querySelector("tbody tr:first-child td:nth-child(4) .pui-tag");
+        const firstStatus = table.querySelector("tbody tr:first-child td:nth-child(4) .ui-tag");
         const firstAction = table.querySelector("tbody tr:first-child td:last-child");
         return {
           root: { left: container.left, right: container.right, width: container.width },
           frame: { left: frameRect.left, right: frameRect.right, top: frameRect.top, bottom: frameRect.bottom },
           frameRadii: [frameStyle.borderTopLeftRadius, frameStyle.borderTopRightRadius, frameStyle.borderBottomRightRadius, frameStyle.borderBottomLeftRadius],
           frameBorders: [frameStyle.borderTopWidth, frameStyle.borderRightWidth, frameStyle.borderBottomWidth, frameStyle.borderLeftWidth],
-          paginated: frame.classList.contains("pui-data-table__frame--paginated"),
-          fixedViewport: frame.classList.contains("pui-data-table__frame--fixed-viewport"),
+          paginated: frame.classList.contains("ui-data-table__frame--paginated"),
+          fixedViewport: frame.classList.contains("ui-data-table__frame--fixed-viewport"),
           scroller: { left: scroller.getBoundingClientRect().left, right: scroller.getBoundingClientRect().right },
           surfaceHeight: surface.getBoundingClientRect().height,
           surfaceClientHeight: surface.clientHeight,
@@ -95,7 +95,7 @@ export async function runListPageWidthRegression({ page, baseURL }) {
       const ready = await measure();
       if (ready.documentWidth > ready.viewportWidth) {
         const offenders = await page.evaluate(() => [...document.querySelectorAll("*")]
-          .map((element) => ({ tag: element.tagName, className: typeof element.className === "string" ? element.className : "", right: element.getBoundingClientRect().right, label: element.getAttribute("aria-label"), pagination: element.closest(".pui-pagination")?.getBoundingClientRect().toJSON(), controls: element.closest(".pui-pagination__controls")?.getBoundingClientRect().toJSON(), hidden: Boolean(element.closest("[hidden]")) }))
+          .map((element) => ({ tag: element.tagName, className: typeof element.className === "string" ? element.className : "", right: element.getBoundingClientRect().right, label: element.getAttribute("aria-label"), pagination: element.closest(".ui-pagination")?.getBoundingClientRect().toJSON(), controls: element.closest(".ui-pagination__controls")?.getBoundingClientRect().toJSON(), hidden: Boolean(element.closest("[hidden]")) }))
           .filter(({ right }) => right > window.innerWidth + 1)
           .slice(0, 12));
         assert.fail(`document overflow at ${width}px: ${JSON.stringify({ ready, offenders })}`);
@@ -132,18 +132,18 @@ export async function runListPageWidthRegression({ page, baseURL }) {
           assert.ok(ready.statusRight <= ready.actionLeft, "status chip is obscured by pinned actions at 736px");
         }
       } else {
-        assert.equal(await root.locator(".pui-data-table__mobile").isVisible(), true);
-        assert.equal(await root.locator(".pui-mobile-data-row").count(), 5);
-        const firstMobileRow = root.locator(".pui-mobile-data-row").first();
+        assert.equal(await root.locator(".ui-data-table__mobile").isVisible(), true);
+        assert.equal(await root.locator(".ui-mobile-data-row").count(), 5);
+        const firstMobileRow = root.locator(".ui-mobile-data-row").first();
         assert.match(await firstMobileRow.innerText(), /平台 · 管理员/);
         assert.match(await firstMobileRow.innerText(), /加入 2026-09-08/);
       }
       const focusTarget = root.locator(width <= 640
-        ? ".pui-data-table__mobile .pui-mobile-data-row:first-child .pui-icon-button"
-        : ".pui-data-table__scroller tbody tr:first-child td:last-child .pui-icon-button");
+        ? ".ui-data-table__mobile .ui-mobile-data-row:first-child .ui-icon-button"
+        : ".ui-data-table__scroller tbody tr:first-child td:last-child .ui-icon-button");
       await focusWithKeyboard(page, focusTarget, `first row action at ${width}px`);
       const focusClearance = await focusTarget.evaluate((button) => {
-        const frame = button.closest(".pui-data-table__frame").getBoundingClientRect();
+        const frame = button.closest(".ui-data-table__frame").getBoundingClientRect();
         const box = button.getBoundingClientRect();
         const style = getComputedStyle(button);
         const outlineWidth = parseFloat(style.outlineWidth);
@@ -162,14 +162,14 @@ export async function runListPageWidthRegression({ page, baseURL }) {
       assert.equal(focusClearance.outlineStyle, "solid", `first row action lost focus outline at ${width}px`);
       assert.ok(focusClearance.outlineWidth >= 2, `first row action focus outline is too thin at ${width}px`);
       assert.ok(focusClearance.clearances.every((clearance) => clearance >= focusClearance.outwardRing), `first row action focus outline clipped by table at ${width}px: ${JSON.stringify(focusClearance)}`);
-      if (process.env.PERSONAL_UI_LIST_SCREENSHOT_PREFIX && [2560, 736, 320].includes(width)) {
+      if (process.env.UI_LIST_SCREENSHOT_PREFIX && [2560, 736, 320].includes(width)) {
         await page.screenshot({
-          path: `${process.env.PERSONAL_UI_LIST_SCREENSHOT_PREFIX}-${width === 320 ? "320-paged-full" : width}.png`,
+          path: `${process.env.UI_LIST_SCREENSHOT_PREFIX}-${width === 320 ? "320-paged-full" : width}.png`,
           fullPage: width === 320,
         });
       }
       if (width === 736) {
-        const scrollResult = await root.locator(".pui-data-table__scroller").evaluate((scroller) => {
+        const scrollResult = await root.locator(".ui-data-table__scroller").evaluate((scroller) => {
           scroller.scrollLeft = scroller.scrollWidth;
           const dateCell = scroller.querySelector("tbody tr:first-child td:nth-child(5)");
           const pinnedAction = scroller.querySelector("tbody tr:first-child td:last-child");
@@ -190,8 +190,8 @@ export async function runListPageWidthRegression({ page, baseURL }) {
         await page.getByRole("button", { name: "编辑陈沐" }).click();
         const drawer = page.getByRole("dialog", { name: "编辑陈沐的权限" });
         await drawer.waitFor();
-        if (process.env.PERSONAL_UI_LIST_SCREENSHOT_PREFIX && width === 320) {
-          await page.screenshot({ path: `${process.env.PERSONAL_UI_LIST_SCREENSHOT_PREFIX}-drawer-320.png` });
+        if (process.env.UI_LIST_SCREENSHOT_PREFIX && width === 320) {
+          await page.screenshot({ path: `${process.env.UI_LIST_SCREENSHOT_PREFIX}-drawer-320.png` });
         }
         await drawer.getByRole("combobox", { name: "角色" }).click();
         await page.getByRole("option", { name: "查看者" }).click();
@@ -201,7 +201,7 @@ export async function runListPageWidthRegression({ page, baseURL }) {
         await drawer.getByRole("button", { name: "保存中" }).waitFor();
         await drawer.waitFor({ state: "detached" });
         const firstRow = width === 320
-          ? root.locator(".pui-mobile-data-row").first()
+          ? root.locator(".ui-mobile-data-row").first()
           : root.getByRole("row", { name: /陈沐/ });
         assert.match(await firstRow.innerText(), /查看者/);
         assert.match(await firstRow.innerText(), /已停用/);
@@ -217,9 +217,9 @@ export async function runListPageWidthRegression({ page, baseURL }) {
       assert.ok(Math.abs(loading.scrollerHeight - ready.scrollerHeight) <= 1, `table surface shifted while loading at ${width}px`);
       assert.ok(Math.abs(loading.pager.top - ready.pager.top) <= 1, `pagination jumped while loading at ${width}px`);
       if (width <= 640) assert.ok(loading.mobileHeight >= ready.mobileHeight - 1, `mobile rows shrank while loading at ${width}px`);
-      await page.locator('.demo-list-frame .pui-data-table[data-state="ready"]').waitFor();
+      await page.locator('.demo-list-frame .ui-data-table[data-state="ready"]').waitFor();
 
-      const pageSurface = root.locator(width <= 640 ? ".pui-data-table__mobile" : ".pui-data-table__scroller");
+      const pageSurface = root.locator(width <= 640 ? ".ui-data-table__mobile" : ".ui-data-table__scroller");
       const beforePageChange = width > 640 ? await pageSurface.evaluate((element) => {
         element.scrollTop = element.scrollHeight;
         return { scrollTop: element.scrollTop, range: element.scrollHeight - element.clientHeight };
@@ -265,7 +265,7 @@ export async function runListPageWidthRegression({ page, baseURL }) {
       assert.ok(Math.abs(allFixed.surfaceHeight - ready.surfaceHeight) <= 1, `numeric unpaginated viewport differs from the paged viewport at ${width}px`);
       assert.ok(allFixed.surfaceScrollHeight > allFixed.surfaceClientHeight, `numeric unpaginated viewport did not scroll at ${width}px`);
       assert.equal(allFixed.surfaceTabIndex, 0, `fixed unpaginated table is not keyboard scrollable at ${width}px`);
-      assert.equal(await root.locator(width <= 640 ? ".pui-mobile-data-row" : "tbody tr").count(), 23, `fixed unpaginated mode truncated rows at ${width}px`);
+      assert.equal(await root.locator(width <= 640 ? ".ui-mobile-data-row" : "tbody tr").count(), 23, `fixed unpaginated mode truncated rows at ${width}px`);
 
       await heightMode.getByRole("button", { name: "跟随内容" }).click();
       const all = await measure();
@@ -278,12 +278,12 @@ export async function runListPageWidthRegression({ page, baseURL }) {
       );
       assert.deepEqual(all.frameRadii, ready.frameRadii, `unpaginated table changed outer corners at ${width}px`);
       assert.deepEqual(all.surfaceRadii, ["11px", "11px", "11px", "11px"], `unpaginated table surface corners differ at ${width}px`);
-      assert.equal(await root.locator(width <= 640 ? ".pui-mobile-data-row" : "tbody tr").count(), 23, `unpaginated mode truncated rows at ${width}px`);
+      assert.equal(await root.locator(width <= 640 ? ".ui-mobile-data-row" : "tbody tr").count(), 23, `unpaginated mode truncated rows at ${width}px`);
       assert.ok(Math.abs(all.surfaceBottom - (all.frame.bottom - 1)) <= 1, `unpaginated surface detached from bottom edge at ${width}px`);
       assert.ok(all.documentWidth <= all.viewportWidth, `unpaginated mode overflowed at ${width}px`);
-      if (process.env.PERSONAL_UI_LIST_SCREENSHOT_PREFIX && width === 320) {
-        await page.locator(".pui-toast").first().waitFor({ state: "detached" });
-        await page.screenshot({ path: `${process.env.PERSONAL_UI_LIST_SCREENSHOT_PREFIX}-320-all-full.png`, fullPage: true });
+      if (process.env.UI_LIST_SCREENSHOT_PREFIX && width === 320) {
+        await page.locator(".ui-toast").first().waitFor({ state: "detached" });
+        await page.screenshot({ path: `${process.env.UI_LIST_SCREENSHOT_PREFIX}-320-all-full.png`, fullPage: true });
       }
       const [allLoading] = await Promise.all([
         measure("loading"),
@@ -291,15 +291,15 @@ export async function runListPageWidthRegression({ page, baseURL }) {
       ]);
       assert.equal(allLoading.pager, null, `unpaginated loading gained a pager at ${width}px`);
       assert.ok(Math.abs(allLoading.frame.bottom - all.frame.bottom) <= 1, `unpaginated loading changed table height at ${width}px`);
-      await page.locator('.demo-list-frame .pui-data-table[data-state="ready"]').waitFor();
+      await page.locator('.demo-list-frame .ui-data-table[data-state="ready"]').waitFor();
       await heightMode.getByRole("button", { name: "固定高度" }).click();
       await view.getByRole("button", { name: "分页" }).click();
-      assert.equal(await root.locator(".pui-data-table__pagination").count(), 1, `paged mode did not restore pagination at ${width}px`);
-      assert.equal(await root.locator(width <= 640 ? ".pui-mobile-data-row" : "tbody tr").count(), 5, `paged mode did not reset to five rows at ${width}px`);
+      assert.equal(await root.locator(".ui-data-table__pagination").count(), 1, `paged mode did not restore pagination at ${width}px`);
+      assert.equal(await root.locator(width <= 640 ? ".ui-mobile-data-row" : "tbody tr").count(), 5, `paged mode did not reset to five rows at ${width}px`);
   }
   console.log("List/table page width browser regression passed at 2560, 1440, 1024, 736, 360, and 320px.");
 }
 
-if (isPersonalUiRegressionMain(import.meta.url)) {
-  await runPersonalUiRegression(runListPageWidthRegression);
+if (isUIRegressionMain(import.meta.url)) {
+  await runUIRegression(runListPageWidthRegression);
 }

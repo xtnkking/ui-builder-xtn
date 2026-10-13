@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"progress/overview","exports":["Progress","ProgressRing"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"progress/overview","exports":["Progress","ProgressRing"]}
 import { StatePreview } from "../state-preview";
-import { Inline, Progress, ProgressRing, Stack } from "../../../personal-ui";
+import { Inline, Progress, ProgressRing, Stack } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 function ProgressExample() {

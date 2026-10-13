@@ -76,7 +76,7 @@ def valid_evidence(
     }
     rules_document = {
         "schemaVersion": 1,
-        "kind": "personal-ui-m8-acceptance-rules",
+        "kind": "ui-m8-acceptance-rules",
         "visibility": "organizer-only",
         "attributionEnum": list(validator.M8_ATTRIBUTIONS[1:]),
         "scenarioRules": [
@@ -94,7 +94,7 @@ def valid_evidence(
     }
     scenario_document = {
         "schemaVersion": 1,
-        "kind": "personal-ui-m8-scenarios",
+        "kind": "ui-m8-scenarios",
         "scenarios": [
             {
                 "id": scenario_id,
@@ -114,7 +114,7 @@ def valid_evidence(
     support_matrix_bytes = json_bytes(
         {
             "schemaVersion": 1,
-            "kind": "personal-ui-support-matrix",
+            "kind": "ui-support-matrix",
             "baseline": {"version": "0.2.19"},
         }
     )
@@ -169,7 +169,7 @@ def valid_evidence(
         "packageManager": "npm 10.9.3",
         "browser": "Chromium 140 / Firefox 142 / WebKit 26",
         "python": "3.13.7",
-        "installerCommand": "python install_personal_ui.py install",
+        "installerCommand": "python install_ui.py install",
     }
     for index, scenario_id in enumerate(validator.M8_SCENARIOS, start=1):
         prefix = f"runs/{scenario_id}"
@@ -189,7 +189,7 @@ def valid_evidence(
             f"{prefix}/visible-inputs.json",
             {
                 "schemaVersion": 1,
-                "kind": "personal-ui-m8-evaluator-inputs",
+                "kind": "ui-m8-evaluator-inputs",
                 "official": True,
                 "run": {"id": run_id, "createdAt": TIMESTAMP},
                 "candidate": candidate,
@@ -228,7 +228,7 @@ def valid_evidence(
             f"{prefix}/evidence/commands/0001.json",
             {
                 "schemaVersion": 1,
-                "kind": "personal-ui-m8-command",
+                "kind": "ui-m8-command",
                 "runId": run_id,
                 "sequence": 1,
                 "argv": ["npm", "run", "build"],
@@ -245,7 +245,7 @@ def valid_evidence(
             f"{prefix}/evidence/run-start.json",
             {
                 "schemaVersion": 1,
-                "kind": "personal-ui-m8-run-start",
+                "kind": "ui-m8-run-start",
                 "runId": run_id,
                 "scenarioId": scenario_id,
                 "startedAt": TIMESTAMP,
@@ -262,7 +262,7 @@ def valid_evidence(
             f"{prefix}/evidence/initial/source-inventory.json",
             {
                 "schemaVersion": 1,
-                "kind": "personal-ui-m8-source-inventory",
+                "kind": "ui-m8-source-inventory",
                 "contentDigest": "1" * 64,
                 "files": [{"path": "src/App.tsx", "size": 1, "sha256": "2" * 64}],
             },
@@ -277,7 +277,7 @@ def valid_evidence(
             f"{prefix}/evidence/initial/result.json",
             {
                 "schemaVersion": 1,
-                "kind": "personal-ui-m8-initial-result",
+                "kind": "ui-m8-initial-result",
                 "runId": run_id,
                 "result": "passed",
                 "frozenAt": TIMESTAMP,
@@ -292,7 +292,7 @@ def valid_evidence(
             f"{prefix}/evidence/review/review.json",
             {
                 "schemaVersion": 1,
-                "kind": "personal-ui-m8-organizer-review",
+                "kind": "ui-m8-organizer-review",
                 "runId": run_id,
                 "result": "passed",
                 "attribution": "none",
@@ -307,7 +307,7 @@ def valid_evidence(
             f"{prefix}/evidence/command-index.json",
             {
                 "schemaVersion": 1,
-                "kind": "personal-ui-m8-command-index",
+                "kind": "ui-m8-command-index",
                 "runId": run_id,
                 "commands": [command],
             },
@@ -317,7 +317,7 @@ def valid_evidence(
             f"{prefix}/evidence/repair-trace.json",
             {
                 "schemaVersion": 1,
-                "kind": "personal-ui-m8-repair-trace",
+                "kind": "ui-m8-repair-trace",
                 "runId": run_id,
                 "repairs": [],
             },
@@ -328,7 +328,7 @@ def valid_evidence(
             f"{prefix}/evidence/final/source-inventory.json",
             {
                 "schemaVersion": 1,
-                "kind": "personal-ui-m8-source-inventory",
+                "kind": "ui-m8-source-inventory",
                 "contentDigest": "3" * 64,
                 "files": [{"path": "src/App.tsx", "size": 1, "sha256": "4" * 64}],
             },
@@ -343,7 +343,7 @@ def valid_evidence(
             f"{prefix}/evidence/final/result.json",
             {
                 "schemaVersion": 1,
-                "kind": "personal-ui-m8-final-result",
+                "kind": "ui-m8-final-result",
                 "runId": run_id,
                 "result": "passed",
                 "frozenAt": TIMESTAMP,
@@ -422,7 +422,7 @@ def valid_evidence(
         "migration/migration-report.json",
         {
             "schemaVersion": 1,
-            "kind": "personal-ui-m8-migration-report",
+            "kind": "ui-m8-migration-report",
             "result": "passed",
             "recordedAt": TIMESTAMP,
             "candidate": migration_candidate,
@@ -446,7 +446,7 @@ def valid_evidence(
         "migration/artifact-inventory.json",
         {
             "schemaVersion": 1,
-            "kind": "personal-ui-m8-migration-artifact-inventory",
+            "kind": "ui-m8-migration-artifact-inventory",
             "result": "passed",
             "candidate": migration_candidate,
             "baseline": migration_baseline,
@@ -472,7 +472,7 @@ def valid_evidence(
                 f"quality/{scenario_id}.json",
                 {
                     "schemaVersion": 1,
-                    "kind": "personal-ui-m8-quality-scenario",
+                    "kind": "ui-m8-quality-scenario",
                     "scenarioId": scenario_id,
                     "result": "passed",
                     "candidate": migration_candidate,
@@ -501,7 +501,7 @@ def valid_evidence(
             "quality/matrix.json",
             {
                 "schemaVersion": 1,
-                "kind": "personal-ui-m8-quality-matrix",
+                "kind": "ui-m8-quality-matrix",
                 "result": "passed",
                 "candidate": migration_candidate,
                 "widths": list(validator.REQUIRED_WIDTHS),
@@ -514,7 +514,7 @@ def valid_evidence(
             "quality/browserVersions.json",
             {
                 "schemaVersion": 1,
-                "kind": "personal-ui-m8-browser-versions",
+                "kind": "ui-m8-browser-versions",
                 "candidate": migration_candidate,
                 "browsers": [
                     {"project": engine, "version": f"{index}.0", "realSafari": False}
@@ -527,7 +527,7 @@ def valid_evidence(
             "quality/responsiveReview.json",
             {
                 "schemaVersion": 1,
-                "kind": "personal-ui-m8-responsive-review",
+                "kind": "ui-m8-responsive-review",
                 "result": "passed",
                 "candidate": migration_candidate,
                 "widths": list(validator.REQUIRED_WIDTHS),
@@ -540,7 +540,7 @@ def valid_evidence(
         "quality/safari.json",
         {
             "schemaVersion": 1,
-            "kind": "personal-ui-real-safari-smoke",
+            "kind": "ui-real-safari-smoke",
             "result": "passed",
             "safari": {
                 "product": "Safari",
@@ -570,7 +570,7 @@ def valid_evidence(
         "quality/axe.json",
         {
             "schemaVersion": 1,
-            "kind": "personal-ui-m8-axe-report",
+            "kind": "ui-m8-axe-report",
             "result": "passed",
             "candidate": migration_candidate,
             "critical": 0,
@@ -597,7 +597,7 @@ def valid_evidence(
             "review/independent-consumer-report.json",
             {
                 "schemaVersion": 1,
-                "kind": "personal-ui-m8-independent-consumer-report",
+                "kind": "ui-m8-independent-consumer-report",
                 "result": "passed",
                 "candidate": migration_candidate,
                 "scenarios": list(validator.M8_SCENARIOS),
@@ -610,7 +610,7 @@ def valid_evidence(
             "review/release-checklist.json",
             {
                 "schemaVersion": 1,
-                "kind": "personal-ui-m8-release-checklist",
+                "kind": "ui-m8-release-checklist",
                 "result": "passed",
                 "candidate": migration_candidate,
                 "checks": ["candidate", "migration", "quality", "review"],
@@ -619,7 +619,7 @@ def valid_evidence(
     }
     return {
         "schemaVersion": 1,
-        "kind": "personal-ui-release-evidence",
+        "kind": "ui-release-evidence",
         "type": "m8-acceptance",
         "planDigest": candidate["planDigest"],
         "sourceCommit": candidate["sourceCommit"],
@@ -673,7 +673,7 @@ class M8EvidenceContracts(unittest.TestCase):
         self.assertEqual(validator.M8_ATTRIBUTIONS, ("none", *rules["attributionEnum"]))
 
     def test_complete_file_backed_evidence_is_accepted(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-evidence-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-evidence-") as temporary:
             root = Path(temporary)
             evidence = valid_evidence(root)
             result = validator.validate_m8_evidence(
@@ -688,7 +688,7 @@ class M8EvidenceContracts(unittest.TestCase):
             self.assertTrue(result.accepted, result.errors)
 
     def test_artifact_bytes_are_verified(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-evidence-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-evidence-") as temporary:
             root = Path(temporary)
             evidence = valid_evidence(root)
             request = evidence["scenarios"][0]["run"]["artifacts"]["request"]
@@ -698,7 +698,7 @@ class M8EvidenceContracts(unittest.TestCase):
             self.assertTrue(any("does not match the artifact bytes" in error for error in result.errors))
 
     def test_evidence_file_rejects_a_linked_bundle_ancestor(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-evidence-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-evidence-") as temporary:
             root = Path(temporary)
             bundle = root / "bundle"
             bundle.mkdir()
@@ -716,7 +716,7 @@ class M8EvidenceContracts(unittest.TestCase):
 
     def test_migration_quality_and_review_are_hard_gates(self) -> None:
         for section in ("migration", "qualityMatrix", "reviewBundle"):
-            with self.subTest(section=section), tempfile.TemporaryDirectory(prefix="pui-m8-evidence-") as temporary:
+            with self.subTest(section=section), tempfile.TemporaryDirectory(prefix="ui-m8-evidence-") as temporary:
                 root = Path(temporary)
                 evidence = valid_evidence(root)
                 evidence.pop(section)
@@ -725,7 +725,7 @@ class M8EvidenceContracts(unittest.TestCase):
                 self.assertTrue(any(section in error for error in result.errors))
 
     def test_webkit_cannot_claim_real_safari(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-evidence-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-evidence-") as temporary:
             root = Path(temporary)
             evidence = valid_evidence(root)
             evidence["qualityMatrix"]["realSafari"]["playwrightWebKit"] = True
@@ -734,7 +734,7 @@ class M8EvidenceContracts(unittest.TestCase):
             self.assertTrue(any("real Safari 18+" in error for error in result.errors))
 
     def test_rehashed_request_cannot_replace_the_frozen_candidate_request(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-evidence-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-evidence-") as temporary:
             root = Path(temporary)
             evidence = valid_evidence(root)
             run = evidence["scenarios"][0]["run"]
@@ -754,7 +754,7 @@ class M8EvidenceContracts(unittest.TestCase):
 
     def test_thin_quality_and_safari_claims_are_not_evidence(self) -> None:
         for selector in ("scenario", "safari", "axe"):
-            with self.subTest(selector=selector), tempfile.TemporaryDirectory(prefix="pui-m8-evidence-") as temporary:
+            with self.subTest(selector=selector), tempfile.TemporaryDirectory(prefix="ui-m8-evidence-") as temporary:
                 root = Path(temporary)
                 evidence = valid_evidence(root)
                 quality = evidence["qualityMatrix"]
@@ -773,7 +773,7 @@ class M8EvidenceContracts(unittest.TestCase):
 
     def test_thin_migration_report_and_review_placeholders_are_rejected(self) -> None:
         for section, name in (("migration", "report"), ("reviewBundle", "migrationGuide")):
-            with self.subTest(section=section), tempfile.TemporaryDirectory(prefix="pui-m8-evidence-") as temporary:
+            with self.subTest(section=section), tempfile.TemporaryDirectory(prefix="ui-m8-evidence-") as temporary:
                 root = Path(temporary)
                 evidence = valid_evidence(root)
                 descriptor = evidence[section]["artifacts"][name]
@@ -783,7 +783,7 @@ class M8EvidenceContracts(unittest.TestCase):
                 self.assertTrue(any(section in error for error in result.errors), result.errors)
 
     def test_first_result_cannot_claim_pass_with_failed_checks(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-evidence-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-evidence-") as temporary:
             root = Path(temporary)
             evidence = valid_evidence(root)
             descriptor = evidence["scenarios"][0]["run"]["artifacts"]["first-verification"]
@@ -796,7 +796,7 @@ class M8EvidenceContracts(unittest.TestCase):
             self.assertTrue(any("first-result checks" in error for error in result.errors))
 
     def test_passed_first_result_rejects_commands_recorded_later(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-evidence-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-evidence-") as temporary:
             root = Path(temporary)
             evidence = valid_evidence(root)
             evidence["scenarios"][0]["run"]["firstResult"]["frozenAt"] = (
@@ -812,7 +812,7 @@ class M8EvidenceContracts(unittest.TestCase):
             )
 
     def test_scenarios_must_be_unique_and_complete(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-evidence-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-evidence-") as temporary:
             root = Path(temporary)
             evidence = valid_evidence(root)
             evidence["scenarios"][-1] = copy.deepcopy(evidence["scenarios"][0])
@@ -822,7 +822,7 @@ class M8EvidenceContracts(unittest.TestCase):
             self.assertTrue(any("missing M8 scenarios" in error for error in result.errors))
 
     def test_repaired_first_result_requires_attribution(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-evidence-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-evidence-") as temporary:
             root = Path(temporary)
             evidence = valid_evidence(root)
             evidence["scenarios"][0]["run"]["firstResult"]["status"] = "failed"
@@ -831,7 +831,7 @@ class M8EvidenceContracts(unittest.TestCase):
             self.assertTrue(any("first-pass failure" in error for error in result.errors))
 
     def test_binding_mismatch_and_failed_result_remain_distinct(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-evidence-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-evidence-") as temporary:
             root = Path(temporary)
             evidence = valid_evidence(root)
             mismatch = validator.validate_m8_evidence(

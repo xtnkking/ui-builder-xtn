@@ -1,5 +1,5 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"menu/overview","exports":["Menu","DropdownMenu","ContextMenu"]}
-import { ContextMenu, DropdownMenu, Menu, Stack, type MenuItem } from "../../../personal-ui";
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"menu/overview","exports":["Menu","DropdownMenu","ContextMenu"]}
+import { ContextMenu, DropdownMenu, Menu, Stack, type MenuItem } from "../../../ui";
 import { StatePreview } from "../state-preview";
 import type { ExplorerCase } from "../types";
 

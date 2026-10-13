@@ -1,4 +1,4 @@
-// @personal-ui-coverage {"kind":"unit","runner":"components","exports":["Checkbox","Combobox","DateField","Field","Input","PasswordInput","Radio","SearchInput","SegmentedControl","Select","Switch","Textarea"]}
+// @ui-coverage {"kind":"unit","runner":"components","exports":["Checkbox","Combobox","DateField","Field","Input","PasswordInput","Radio","SearchInput","SegmentedControl","Select","Switch","Textarea"]}
 import { createElement, createRef, useState } from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -25,7 +25,7 @@ import {
   type TextareaProps,
   type TextControlHandle,
   type ValidityControlHandle,
-} from "../../src/personal-ui";
+} from "../../src/ui";
 
 function forcedEscapeProps(testId: string) {
   return {
@@ -35,23 +35,23 @@ function forcedEscapeProps(testId: string) {
     sx: "foreign-sx",
     tw: "foreign-tw",
     dangerouslySetInnerHTML: { __html: "<b>unsafe control</b>" },
-    "data-pui-owner": "Consumer",
-    "data-pui-slot": "foreign",
-    "data-pui-private": "foreign",
+    "data-ui-owner": "Consumer",
+    "data-ui-slot": "foreign",
+    "data-ui-private": "foreign",
     "data-testid": testId,
     "data-track": "preserved",
   };
 }
 
 function expectEscapesRemoved(element: HTMLElement, owner: string) {
-  expect(element).toHaveAttribute("data-pui-owner", owner);
+  expect(element).toHaveAttribute("data-ui-owner", owner);
   expect(element).not.toHaveClass("foreign-control");
   expect(element).not.toHaveAttribute("style");
   expect(element).not.toHaveAttribute("css");
   expect(element).not.toHaveAttribute("sx");
   expect(element).not.toHaveAttribute("tw");
-  expect(element).not.toHaveAttribute("data-pui-slot");
-  expect(element).not.toHaveAttribute("data-pui-private");
+  expect(element).not.toHaveAttribute("data-ui-slot");
+  expect(element).not.toHaveAttribute("data-ui-private");
   expect(element).not.toHaveTextContent("unsafe control");
 }
 
@@ -75,7 +75,7 @@ describe("form control public and private composition contracts", () => {
     const input = render(createElement(Input, inputProps as unknown as InputProps));
     const inputElement = screen.getByTestId("account-input");
     expectEscapesRemoved(inputElement, "Input");
-    expect(inputElement).toHaveClass("pui-input");
+    expect(inputElement).toHaveClass("ui-input");
     expect(inputElement).toHaveAttribute("name", "account");
     expect(inputElement).toHaveAttribute("data-track", "preserved");
     expect(inputElement).toHaveValue("Ada");
@@ -90,7 +90,7 @@ describe("form control public and private composition contracts", () => {
     render(createElement(Textarea, textareaProps as unknown as TextareaProps));
     const textarea = screen.getByTestId("notes-input");
     expectEscapesRemoved(textarea, "Textarea");
-    expect(textarea).toHaveClass("pui-textarea");
+    expect(textarea).toHaveClass("ui-textarea");
     expect(textarea).toHaveAttribute("data-track", "preserved");
     expect(textarea).toHaveValue("Draft");
   });
@@ -108,9 +108,9 @@ describe("form control public and private composition contracts", () => {
     const password = screen.getByLabelText("Password");
     const search = screen.getByLabelText("Search");
     const date = screen.getByLabelText("Date");
-    expect(password.closest("[data-pui-owner='PasswordInput']")).not.toBeNull();
-    expect(search.closest("[data-pui-owner='SearchInput']")).not.toBeNull();
-    expect(date.closest("[data-pui-owner='DateField']")).not.toBeNull();
+    expect(password.closest("[data-ui-owner='PasswordInput']")).not.toBeNull();
+    expect(search.closest("[data-ui-owner='SearchInput']")).not.toBeNull();
+    expect(date.closest("[data-ui-owner='DateField']")).not.toBeNull();
     expect(Object.keys(dateControlRef.current ?? {})).toEqual([
       "focus",
       "setCustomValidity",
@@ -119,7 +119,7 @@ describe("form control public and private composition contracts", () => {
     ]);
     expect("select" in (dateControlRef.current ?? {})).toBe(false);
     expect(screen.getAllByRole("button", { name: /密码|搜索/ })).toHaveLength(2);
-    expect(document.querySelector("[data-pui-owner='Consumer']")).toBeNull();
+    expect(document.querySelector("[data-ui-owner='Consumer']")).toBeNull();
   });
 
   it("filters forced escape props at PasswordInput and SearchInput wrapper boundaries", () => {
@@ -129,10 +129,10 @@ describe("form control public and private composition contracts", () => {
       defaultValue: "secret",
     } as never));
     const passwordInput = screen.getByTestId("password-wrapper");
-    const passwordRoot = passwordInput.closest<HTMLElement>("[data-pui-owner='PasswordInput']")!;
+    const passwordRoot = passwordInput.closest<HTMLElement>("[data-ui-owner='PasswordInput']")!;
     expectEscapesRemoved(passwordRoot, "PasswordInput");
-    expect(passwordInput).not.toHaveAttribute("data-pui-slot");
-    expect(passwordInput).not.toHaveAttribute("data-pui-private");
+    expect(passwordInput).not.toHaveAttribute("data-ui-slot");
+    expect(passwordInput).not.toHaveAttribute("data-ui-private");
     passwordResult.unmount();
 
     render(createElement(SearchInput, {
@@ -143,10 +143,10 @@ describe("form control public and private composition contracts", () => {
       onClear: () => undefined,
     } as never));
     const searchInput = screen.getByTestId("search-wrapper");
-    const searchRoot = searchInput.closest<HTMLElement>("[data-pui-owner='SearchInput']")!;
+    const searchRoot = searchInput.closest<HTMLElement>("[data-ui-owner='SearchInput']")!;
     expectEscapesRemoved(searchRoot, "SearchInput");
-    expect(searchInput).not.toHaveAttribute("data-pui-slot");
-    expect(searchInput).not.toHaveAttribute("data-pui-private");
+    expect(searchInput).not.toHaveAttribute("data-ui-slot");
+    expect(searchInput).not.toHaveAttribute("data-ui-private");
   });
 
   it("exposes a limited text-control handle with focus, selection, and validity operations", () => {
@@ -192,9 +192,9 @@ describe("form control public and private composition contracts", () => {
       children: <Input id="account" />,
     };
     const field = render(createElement(Field, fieldProps as unknown as FieldProps));
-    const fieldRoot = document.querySelector<HTMLElement>("[data-pui-owner='Field']")!;
+    const fieldRoot = document.querySelector<HTMLElement>("[data-ui-owner='Field']")!;
     expectEscapesRemoved(fieldRoot, "Field");
-    expect(fieldRoot).toHaveClass("pui-field");
+    expect(fieldRoot).toHaveClass("ui-field");
     expect(fieldRoot).not.toHaveAttribute("data-testid");
     field.unmount();
 
@@ -204,9 +204,9 @@ describe("form control public and private composition contracts", () => {
       defaultChecked: true,
     };
     render(createElement(Checkbox, choiceProps as unknown as CheckboxProps));
-    const choice = document.querySelector<HTMLElement>("[data-pui-owner='Checkbox']")!;
+    const choice = document.querySelector<HTMLElement>("[data-ui-owner='Checkbox']")!;
     expectEscapesRemoved(choice, "Checkbox");
-    expect(choice).toHaveClass("pui-choice");
+    expect(choice).toHaveClass("ui-choice");
     expect(screen.getByRole("checkbox", { name: "Remember" })).toBeChecked();
   });
 
@@ -219,9 +219,9 @@ describe("form control public and private composition contracts", () => {
       </>,
     );
 
-    expect(document.querySelector("[data-pui-owner='Checkbox']")).toHaveClass("pui-choice");
-    expect(document.querySelector("[data-pui-owner='Radio']")).toHaveClass("pui-choice");
-    expect(document.querySelector("[data-pui-owner='Switch']")).toHaveClass("pui-switch");
+    expect(document.querySelector("[data-ui-owner='Checkbox']")).toHaveClass("ui-choice");
+    expect(document.querySelector("[data-ui-owner='Radio']")).toHaveClass("ui-choice");
+    expect(document.querySelector("[data-ui-owner='Switch']")).toHaveClass("ui-switch");
   });
 
   it("filters forced escape props from select controls while retaining their owners", () => {
@@ -233,9 +233,9 @@ describe("form control public and private composition contracts", () => {
       onValueChange: () => undefined,
       ariaLabel: "Country",
     } as unknown as SelectProps));
-    const selectRoot = document.querySelector<HTMLElement>("[data-pui-owner='Select']")!;
+    const selectRoot = document.querySelector<HTMLElement>("[data-ui-owner='Select']")!;
     expectEscapesRemoved(selectRoot, "Select");
-    expect(selectRoot).toHaveClass("pui-select-shell");
+    expect(selectRoot).toHaveClass("ui-select-shell");
     select.unmount();
 
     const combobox = render(createElement(Combobox, {
@@ -245,9 +245,9 @@ describe("form control public and private composition contracts", () => {
       onValueChange: () => undefined,
       ariaLabel: "Country search",
     } as unknown as ComboboxProps));
-    const comboboxRoot = document.querySelector<HTMLElement>("[data-pui-owner='Combobox']")!;
+    const comboboxRoot = document.querySelector<HTMLElement>("[data-ui-owner='Combobox']")!;
     expectEscapesRemoved(comboboxRoot, "Combobox");
-    expect(comboboxRoot).toHaveClass("pui-combobox");
+    expect(comboboxRoot).toHaveClass("ui-combobox");
     combobox.unmount();
 
     render(createElement(SegmentedControl, {
@@ -257,9 +257,9 @@ describe("form control public and private composition contracts", () => {
       onValueChange: () => undefined,
       ariaLabel: "View",
     } as unknown as SegmentedControlProps<string>));
-    const segmented = document.querySelector<HTMLElement>("[data-pui-owner='SegmentedControl']")!;
+    const segmented = document.querySelector<HTMLElement>("[data-ui-owner='SegmentedControl']")!;
     expectEscapesRemoved(segmented, "SegmentedControl");
-    expect(segmented).toHaveClass("pui-segmented");
+    expect(segmented).toHaveClass("ui-segmented");
   });
 
   it("rejects contradictory native state props and controlled-mode switching", () => {

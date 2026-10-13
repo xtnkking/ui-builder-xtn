@@ -18,7 +18,7 @@ from typing import Any, Mapping, Sequence
 
 
 SCHEMA_VERSION = 1
-EVIDENCE_KIND = "personal-ui-release-evidence"
+EVIDENCE_KIND = "ui-release-evidence"
 EVIDENCE_TYPE = "m8-acceptance"
 M8_SCENARIOS = (
     "family-login",
@@ -351,10 +351,10 @@ def _load_candidate_materials(
     rule_entries = rules.get("scenarioRules")
     if (
         catalog.get("schemaVersion") != SCHEMA_VERSION
-        or catalog.get("kind") != "personal-ui-m8-scenarios"
+        or catalog.get("kind") != "ui-m8-scenarios"
         or not isinstance(scenario_entries, list)
         or rules.get("schemaVersion") != SCHEMA_VERSION
-        or rules.get("kind") != "personal-ui-m8-acceptance-rules"
+        or rules.get("kind") != "ui-m8-acceptance-rules"
         or rules.get("visibility") != "organizer-only"
         or rules.get("attributionEnum") != list(M8_ATTRIBUTIONS[1:])
         or not isinstance(rule_entries, list)
@@ -519,7 +519,7 @@ def _validate_command_record(
     record = _json_artifact(value, label, errors, bundle_root)
     if record is None:
         return None
-    if record.get("kind") != "personal-ui-m8-command" or record.get("runId") != run_id:
+    if record.get("kind") != "ui-m8-command" or record.get("runId") != run_id:
         errors.append(f"{label} is not a command for this run")
     if record.get("sequence") != sequence:
         errors.append(f"{label}.sequence must equal {sequence}")
@@ -549,7 +549,7 @@ def _validate_repair_record(
     record = _json_artifact(value, label, errors, bundle_root)
     if record is None:
         return None
-    if record.get("kind") != "personal-ui-m8-repair" or record.get("runId") != run_id:
+    if record.get("kind") != "ui-m8-repair" or record.get("runId") != run_id:
         errors.append(f"{label} is not a repair for this run")
     if record.get("sequence") != sequence:
         errors.append(f"{label}.sequence must equal {sequence}")
@@ -578,7 +578,7 @@ def _validate_result_record(
     errors: list[str],
     bundle_root: Path | None,
 ) -> None:
-    expected_kind = f"personal-ui-m8-{stage}-result"
+    expected_kind = f"ui-m8-{stage}-result"
     if (
         document.get("schemaVersion") != SCHEMA_VERSION
         or document.get("kind") != expected_kind
@@ -605,7 +605,7 @@ def _validate_result_record(
         files = inventory.get("files")
         if (
             inventory.get("schemaVersion") != SCHEMA_VERSION
-            or inventory.get("kind") != "personal-ui-m8-source-inventory"
+            or inventory.get("kind") != "ui-m8-source-inventory"
             or not _is_sha256(inventory.get("contentDigest"))
             or not isinstance(files, list)
             or not files
@@ -762,7 +762,7 @@ def _validate_scenarios(
             )
             if (
                 visible.get("schemaVersion") != SCHEMA_VERSION
-                or visible.get("kind") != "personal-ui-m8-evaluator-inputs"
+                or visible.get("kind") != "ui-m8-evaluator-inputs"
             ):
                 errors.append(f"{label} visible inputs schema or kind is unsupported")
             if visible.get("official") is not True:
@@ -828,10 +828,10 @@ def _validate_scenarios(
                     errors.append(f"{label} organizer rules differ from the frozen candidate")
 
         for name, kind in {
-            "run-start": "personal-ui-m8-run-start",
-            "first-verification": "personal-ui-m8-initial-result",
-            "organizer-review": "personal-ui-m8-organizer-review",
-            "final-verification": "personal-ui-m8-final-result",
+            "run-start": "ui-m8-run-start",
+            "first-verification": "ui-m8-initial-result",
+            "organizer-review": "ui-m8-organizer-review",
+            "final-verification": "ui-m8-final-result",
         }.items():
             document = documents.get(name)
             if document is not None and (
@@ -983,7 +983,7 @@ def _validate_scenarios(
         command_index_document = documents.get("command-index")
         if command_index_document is not None and (
             command_index_document.get("schemaVersion") != SCHEMA_VERSION
-            or command_index_document.get("kind") != "personal-ui-m8-command-index"
+            or command_index_document.get("kind") != "ui-m8-command-index"
             or command_index_document.get("runId") != run_id
             or command_index_document.get("commands") != commands
         ):
@@ -1008,7 +1008,7 @@ def _validate_scenarios(
         if repair_trace_document is not None:
             if (
                 repair_trace_document.get("schemaVersion") != SCHEMA_VERSION
-                or repair_trace_document.get("kind") != "personal-ui-m8-repair-trace"
+                or repair_trace_document.get("kind") != "ui-m8-repair-trace"
                 or repair_trace_document.get("runId") != run_id
                 or repair_trace_document.get("repairs") != repairs
             ):
@@ -1169,7 +1169,7 @@ def _validate_migration(
         commands = report.get("commands")
         if (
             report.get("schemaVersion") != SCHEMA_VERSION
-            or report.get("kind") != "personal-ui-m8-migration-report"
+            or report.get("kind") != "ui-m8-migration-report"
             or report.get("result") != "passed"
             or not _is_timestamp(report.get("recordedAt"))
             or report.get("candidate") != candidate_summary
@@ -1204,7 +1204,7 @@ def _validate_migration(
         baseline = report.get("baseline") if isinstance(report, dict) else None
         if (
             inventory.get("schemaVersion") != SCHEMA_VERSION
-            or inventory.get("kind") != "personal-ui-m8-migration-artifact-inventory"
+            or inventory.get("kind") != "ui-m8-migration-artifact-inventory"
             or inventory.get("result") != "passed"
             or inventory.get("candidate") != candidate_summary
             or inventory.get("baseline") != baseline
@@ -1325,7 +1325,7 @@ def _validate_quality(
         if record is not None:
             if (
                 record.get("schemaVersion") != SCHEMA_VERSION
-                or record.get("kind") != "personal-ui-m8-quality-scenario"
+                or record.get("kind") != "ui-m8-quality-scenario"
                 or record.get("scenarioId") != scenario_id
                 or record.get("result") != "passed"
                 or record.get("candidate") != candidate_summary
@@ -1394,7 +1394,7 @@ def _validate_quality(
             tools = safari_record.get("actualTools")
             if (
                 safari_record.get("schemaVersion") != SCHEMA_VERSION
-                or safari_record.get("kind") != "personal-ui-real-safari-smoke"
+                or safari_record.get("kind") != "ui-real-safari-smoke"
                 or safari_record.get("result") != "passed"
                 or not isinstance(safari_details, dict)
                 or safari_details.get("product") != "Safari"
@@ -1441,7 +1441,7 @@ def _validate_quality(
                         axe_entries_valid = False
             if (
                 axe_record.get("schemaVersion") != SCHEMA_VERSION
-                or axe_record.get("kind") != "personal-ui-m8-axe-report"
+                or axe_record.get("kind") != "ui-m8-axe-report"
                 or axe_record.get("result") != "passed"
                 or axe_record.get("candidate") != candidate_summary
                 or axe_record.get("critical") != 0
@@ -1463,7 +1463,7 @@ def _validate_quality(
     matrix = quality_records.get("matrix")
     if matrix is not None and (
         matrix.get("schemaVersion") != SCHEMA_VERSION
-        or matrix.get("kind") != "personal-ui-m8-quality-matrix"
+        or matrix.get("kind") != "ui-m8-quality-matrix"
         or matrix.get("result") != "passed"
         or matrix.get("candidate") != candidate_summary
         or matrix.get("widths") != list(REQUIRED_WIDTHS)
@@ -1490,7 +1490,7 @@ def _validate_quality(
                     valid_versions = False
         if (
             versions.get("schemaVersion") != SCHEMA_VERSION
-            or versions.get("kind") != "personal-ui-m8-browser-versions"
+            or versions.get("kind") != "ui-m8-browser-versions"
             or versions.get("candidate") != candidate_summary
             or not valid_versions
             or projects != list(REQUIRED_ENGINES)
@@ -1499,7 +1499,7 @@ def _validate_quality(
     responsive = quality_records.get("responsiveReview")
     if responsive is not None and (
         responsive.get("schemaVersion") != SCHEMA_VERSION
-        or responsive.get("kind") != "personal-ui-m8-responsive-review"
+        or responsive.get("kind") != "ui-m8-responsive-review"
         or responsive.get("result") != "passed"
         or responsive.get("candidate") != candidate_summary
         or responsive.get("widths") != list(REQUIRED_WIDTHS)
@@ -1584,7 +1584,7 @@ def _validate_review_bundle(
     )
     if report is not None and (
         report.get("schemaVersion") != SCHEMA_VERSION
-        or report.get("kind") != "personal-ui-m8-independent-consumer-report"
+        or report.get("kind") != "ui-m8-independent-consumer-report"
         or report.get("result") != "passed"
         or report.get("candidate") != _candidate_summary(candidate)
         or report.get("scenarios") != list(M8_SCENARIOS)
@@ -1606,7 +1606,7 @@ def _validate_review_bundle(
         checks = checklist.get("checks")
         if (
             checklist.get("schemaVersion") != SCHEMA_VERSION
-            or checklist.get("kind") != "personal-ui-m8-release-checklist"
+            or checklist.get("kind") != "ui-m8-release-checklist"
             or checklist.get("result") != "passed"
             or checklist.get("candidate") != _candidate_summary(candidate)
             or not isinstance(checks, list)

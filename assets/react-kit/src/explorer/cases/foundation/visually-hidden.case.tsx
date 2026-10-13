@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"visually-hidden/overview","exports":["VisuallyHidden"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"visually-hidden/overview","exports":["VisuallyHidden"]}
 import { StatePreview } from "../state-preview";
-import { IconButton, VisuallyHidden } from "../../../personal-ui";
+import { IconButton, VisuallyHidden } from "../../../ui";
 import { Search } from "lucide-react";
 import type { ExplorerCase } from "../types";
 

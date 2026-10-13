@@ -1,7 +1,7 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"result/overview","exports":["EmptyState","ErrorState","NoResults","RetryButton","AsyncAction"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"result/overview","exports":["EmptyState","ErrorState","NoResults","RetryButton","AsyncAction"]}
 import { StatePreview } from "../state-preview";
 import { useState } from "react";
-import { AsyncAction, EmptyState, ErrorState, Inline, InlineMessage, NoResults, RetryButton, Stack } from "../../../personal-ui";
+import { AsyncAction, EmptyState, ErrorState, Inline, InlineMessage, NoResults, RetryButton, Stack } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 async function wait() { await new Promise<void>((resolve) => setTimeout(resolve, 1200)); }

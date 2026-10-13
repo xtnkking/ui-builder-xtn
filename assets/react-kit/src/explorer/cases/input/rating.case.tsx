@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"rating/overview","exports":["Rating"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"rating/overview","exports":["Rating"]}
 import { useState } from "react";
-import { Field, Rating } from "../../../personal-ui";
+import { Field, Rating } from "../../../ui";
 import type { ExplorerCase } from "../types";
 import { StatePreview } from "../state-preview";
 

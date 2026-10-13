@@ -1,10 +1,10 @@
-# UI Builder XTN
+# ui-builder-xtn
 
 `ui-builder-xtn` 是一个带完整 React + TypeScript 源码的 Codex Skill，用于构建风格一致、交互稳定的产品界面。
 
 [在线组件预览](https://xtnkking.github.io/ui-builder-xtn/) · [组件目录](references/component-catalog.md) · [组件 API](references/component-api.md)
 
-它不是一份只靠提示词约束的视觉规范。Personal UI 源码、公开导出、组件清单、安装器和来源校验器组成同一个闭环：使用者提出功能后，页面中的控件必须直接使用本仓库提供的组件代码。
+它不是一份只靠提示词约束的视觉规范。ui-builder-xtn 源码、公开导出、组件清单、安装器和来源校验器组成同一个闭环：使用者提出功能后，页面中的控件必须直接使用本仓库提供的组件代码。
 
 最新公开版本为 [v0.3.1](https://github.com/xtnkking/ui-builder-xtn/releases/tag/v0.3.1)，已于 2026-10-10 发布并完成公开附件的干净安装核验。`main` 的后续开发与该不可变发行版分开记录，具体改动见 [CHANGELOG.md](CHANGELOG.md)。
 
@@ -12,17 +12,17 @@ M1–M8 的当前交付范围、原目标差异和验收依据见 [目标收口�
 
 ## 强制源码模式
 
-- `assets/react-kit/src/personal-ui/` 是唯一 canonical 组件源码。
-- 安装器会把完整、带版本的源码复制到目标项目 `src/personal-ui/`。
-- 业务代码只能从 `src/personal-ui/index.ts` 的公开 barrel 导入运行时组件和页面模式。
-- 目标项目不得临时仿写控件、深层导入实现文件、修改已安装组件、添加本地扩展，或用第三方 JSX 组件绕开 Personal UI。
+- `assets/react-kit/src/ui/` 是唯一 canonical 组件源码。
+- 安装器会把完整、带版本的源码复制到目标项目 `src/ui/`。
+- 业务代码只能从 `src/ui/index.ts` 的公开 barrel 导入运行时组件和页面模式。
+- 目标项目不得临时仿写控件、深层导入实现文件、修改已安装组件、添加本地扩展，或用第三方 JSX 组件绕开 ui-builder-xtn。
 - `component-manifest.json` 将 119 个基础、组件和页面模式家族以及 130 个目录别名绑定到真实源文件，并覆盖 142 个 runtime export。
 - `component-manifest.json` 还保存全部 42 个 managed source 文件的 SHA-256，任何缺失、修改或额外文件都会失败。
-- 安装器会把固定的 `verify:personal-ui` 直接前置到现有 `build` 命令，同时保留调用方自己的 `prebuild`；npm、pnpm 或 Yarn 的常规 build 都必须先通过源码完整性和组件来源门禁。
+- 安装器会把固定的 `verify:ui` 直接前置到现有 `build` 命令，同时保留调用方自己的 `prebuild`；npm、pnpm 或 Yarn 的常规 build 都必须先通过源码完整性和组件来源门禁。
 - 校验器扫描项目中的脚本、JSX/TSX、MDX、HTML、CSS、PostCSS、SCSS、Sass 和 Less，并识别实际使用的公开导出；不需要靠人工列出组件，也没有允许源码漂移的绕过开关。
-- 业务样式可以负责非交互布局和文档允许的主题 token，但不能用通用控件选择器、私有 `.pui-*` / `data-pui-*` 选择器、CSS-in-JS 包装、预处理器注入、动态 `<style>`、外部全局样式、DOM/CSSOM 修改，或受保护组件的 `className`、`style`、`css`、`sx`、`tw`、`ref` / `cloneElement` 改写组件皮肤和几何。类型可解析的安全公共属性展开走同一门禁，不能借展开注入这些覆盖属性；具体见集成指南。
+- 业务样式可以负责非交互布局和文档允许的主题 token，但不能用通用控件选择器、私有 `.ui-*` / `data-ui-*` 选择器、CSS-in-JS 包装、预处理器注入、动态 `<style>`、外部全局样式、DOM/CSSOM 修改，或受保护组件的 `className`、`style`、`css`、`sx`、`tw`、`ref` / `cloneElement` 改写组件皮肤和几何。类型可解析的安全公共属性展开走同一门禁，不能借展开注入这些覆盖属性；具体见集成指南。
 
-业务代码仍然可以负责数据请求、状态、文案、产品图片、非交互布局和文档允许的 token 配置。按钮、输入、选择、导航、反馈、弹层、数据展示和复用页面模式必须由 Personal UI 公开组件负责。
+业务代码仍然可以负责数据请求、状态、文案、产品图片、非交互布局和文档允许的 token 配置。按钮、输入、选择、导航、反馈、弹层、数据展示和复用页面模式必须由 ui-builder-xtn 公开组件负责。
 
 ## 主要能力
 
@@ -42,7 +42,7 @@ M1–M8 的当前交付范围、原目标差异和验收依据见 [目标收口�
 
 在线站点由 GitHub Pages 展示 `main` 最近一次成功部署的代码，组件或预览源码更新后自动构建部署。它与固定版本的 Release 附件分别维护；每个组件的 hash 路由可以直接分享和刷新。部署入口为 [Component Preview 工作流](https://github.com/xtnkking/ui-builder-xtn/actions/workflows/preview.yml)。
 
-`assets/react-kit` 中的 React 实例和 `src/personal-ui/` 是实际可安装、可运行的组件来源。旧的 `personal-ui-library-preview.html` 是独立的静态设计稿，其原生控件和演示交互不会随 Skill 源码自动更新，也不能被复制到业务页面。自 v0.2.8 起，基础控件高度、圆角、主色和弹窗间距已向该设计稿的默认浅色模式对齐；复杂表单弹窗、嵌套确认和桌面端默认贴边抽屉等新场景则以 React 预览及公开组件 API 为准。
+`assets/react-kit` 中的 React 实例和 `src/ui/` 是实际可安装、可运行的组件来源。旧的 `ui-library-preview.html` 是独立的静态设计稿，其原生控件和演示交互不会随 Skill 源码自动更新，也不能被复制到业务页面。自 v0.2.8 起，基础控件高度、圆角、主色和弹窗间距已向该设计稿的默认浅色模式对齐；复杂表单弹窗、嵌套确认和桌面端默认贴边抽屉等新场景则以 React 预览及公开组件 API 为准。
 
 在仓库中运行 `npm --prefix assets/react-kit run dev` 查看最新实例。检查视觉问题时请同时查看真实业务场景、对应的公开组件源码和浏览器中的 React 实例，不要仅从旧设计稿截图推断当前 Skill 的行为。
 
@@ -83,7 +83,7 @@ $ui-builder-xtn 使用现有组件做一个带筛选、手动查询、分页和�
 在 Skill 仓库根目录执行：
 
 ```powershell
-python scripts/install_personal_ui.py --mode starter --target <destination>
+python scripts/install_ui.py --mode starter --target <destination>
 cd <destination>
 npm ci
 npm run dev
@@ -94,34 +94,34 @@ npm run dev
 先预览完整替换计划：
 
 ```powershell
-python scripts/install_personal_ui.py --mode integrate --target <project-root> --force --dry-run
+python scripts/install_ui.py --mode integrate --target <project-root> --force --dry-run
 ```
 
 确认后安装：
 
 ```powershell
-python scripts/install_personal_ui.py --mode integrate --target <project-root> --force
+python scripts/install_ui.py --mode integrate --target <project-root> --force
 ```
 
 在应用入口只引入一次样式：
 
 ```tsx
-import "./personal-ui/styles.css";
+import "./ui/styles.css";
 ```
 
 所有组件从统一出口导入：
 
 ```tsx
-import { Button, DataTable, Drawer, SearchInput } from "./personal-ui";
+import { Button, DataTable, Drawer, SearchInput } from "./ui";
 ```
 
-不要从 `./personal-ui/primitives`、`./personal-ui/forms` 等内部路径导入。目标项目已有另一套 UI 系统时，应先确定迁移或项目隔离方案；严格来源扫描不会把两套控件混用视为合格结果。
+不要从 `./ui/primitives`、`./ui/forms` 等内部路径导入。目标项目已有另一套 UI 系统时，应先确定迁移或项目隔离方案；严格来源扫描不会把两套控件混用视为合格结果。
 
 ## 缺失组件怎么处理
 
 缺失能力必须先进入 canonical 组件库，不能在业务页面里做一个临时版本：
 
-1. 在 `assets/react-kit/src/personal-ui/` 实现可复用组件及样式。
+1. 在 `assets/react-kit/src/ui/` 实现可复用组件及样式。
 2. 从 canonical `index.ts` 公开导出。
 3. 更新 `component-manifest.json` 的家族、源文件、别名和 ownership marker。
 4. 更新 `registry.json` 的运行时导出。
@@ -138,17 +138,17 @@ import { Button, DataTable, Drawer, SearchInput } from "./personal-ui";
 
 ```powershell
 npm run build
-python scripts/verify_personal_ui.py --target <project-root>
+python scripts/verify_ui.py --target <project-root>
 ```
 
 校验器会自动检查：
 
 - installed 与 bundled 版本、registry 和支持文件一致
 - `component-manifest.json` 有效，且所有公开导出都由真实源码覆盖
-- `src/personal-ui/` 没有 missing、changed 或 extra 文件
-- `package.json` 保留 installer 管理的固定 `verify:personal-ui`，且现有 `build` 仍以前置来源校验开头；调用方自己的 `prebuild` 不被接管
-- 业务源码仅从公开 barrel 使用 Personal UI
-- 没有原生受保护控件、交互 role、深层导入、私有导出、伪造 `.pui-*` / `data-pui-*`、危险通用/预处理器控件 CSS、CSS-in-JS 包装、动态或外部全局样式、DOM/CSSOM 改写、组件克隆、受保护组件外观覆盖或未允许的外部 JSX 控件
+- `src/ui/` 没有 missing、changed 或 extra 文件
+- `package.json` 保留 installer 管理的固定 `verify:ui`，且现有 `build` 仍以前置来源校验开头；调用方自己的 `prebuild` 不被接管
+- 业务源码仅从公开 barrel 使用 ui-builder-xtn
+- 没有原生受保护控件、交互 role、深层导入、私有导出、伪造 `.ui-*` / `data-ui-*`、危险通用/预处理器控件 CSS、CSS-in-JS 包装、动态或外部全局样式、DOM/CSSOM 改写、组件克隆、受保护组件外观覆盖或未允许的外部 JSX 控件
 - 样式入口只引入一次，依赖版本兼容
 
 只有报告中的 `upToDate`、`componentManifest.valid` 和 `provenance.valid` 全部为 `true`，`errors` 与全部 `sourceDrift` 列表为空，才可以交付。`--require-component` 只是兼容旧调用的附加断言，不能替代自动扫描；`--allow-unreferenced` 只允许在刚安装、尚未组合页面时做中间检查。
@@ -164,7 +164,7 @@ npm --prefix assets/react-kit run test:components
 npm --prefix assets/react-kit run build
 ```
 
-`component-coverage.json` 的 API 单元来自生成的公开 API report。测试覆盖只接受位于对应 runner 收集目录内的结构化 `@personal-ui-coverage` 元数据；普通 import、注释、测试名称或组件名称文本不会被计为 unit、browser 或 a11y 证据。页面级 axe 扫描在明确绑定到具体公开 export 前不会虚报为组件级无障碍覆盖。
+`component-coverage.json` 的 API 单元来自生成的公开 API report。测试覆盖只接受位于对应 runner 收集目录内的结构化 `@ui-coverage` 元数据；普通 import、注释、测试名称或组件名称文本不会被计为 unit、browser 或 a11y 证据。页面级 axe 扫描在明确绑定到具体公开 export 前不会虚报为组件级无障碍覆盖。
 
 完整发布候选门禁还会在 Chromium、Firefox 和 WebKit 中运行行为与 axe 检查；首次运行前需安装仓库锁定版本对应的浏览器：
 
@@ -175,7 +175,7 @@ npm --prefix assets/react-kit run release:check
 
 ## 命名说明
 
-Codex Skill 的调用名是 `ui-builder-xtn`。组件目录、CSS 命名空间和安装脚本继续使用 `personal-ui`，用于保持已安装项目的稳定导入路径。
+Codex Skill 的调用名是 `ui-builder-xtn`。组件目录、CSS 命名空间和安装脚本继续使用 `ui`，用于保持已安装项目的稳定导入路径。
 
 ## License
 

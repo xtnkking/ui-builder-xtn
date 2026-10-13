@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"chart/overview","exports":["BarChart"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"chart/overview","exports":["BarChart"]}
 import { StatePreview } from "../state-preview";
-import { BarChart } from "../../../personal-ui";
+import { BarChart } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 const explorerCase = {

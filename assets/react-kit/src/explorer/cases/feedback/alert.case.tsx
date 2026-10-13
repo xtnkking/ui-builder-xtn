@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"alert/overview","exports":["Alert"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"alert/overview","exports":["Alert"]}
 import { StatePreview } from "../state-preview";
-import { Alert } from "../../../personal-ui";
+import { Alert } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 

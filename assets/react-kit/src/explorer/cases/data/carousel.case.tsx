@@ -1,7 +1,7 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"carousel/overview","exports":["Carousel"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"carousel/overview","exports":["Carousel"]}
 import { StatePreview } from "../state-preview";
 import { useState } from "react";
-import { Carousel, Card } from "../../../personal-ui";
+import { Carousel, Card } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 const slides = [

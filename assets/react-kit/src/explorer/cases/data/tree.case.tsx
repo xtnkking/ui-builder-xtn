@@ -1,7 +1,7 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"tree/overview","exports":["Tree"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"tree/overview","exports":["Tree"]}
 import { StatePreview } from "../state-preview";
 import { useState } from "react";
-import { Tree } from "../../../personal-ui";
+import { Tree } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 function TreeExample() {

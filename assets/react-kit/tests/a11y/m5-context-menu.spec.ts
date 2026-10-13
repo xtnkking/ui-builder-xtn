@@ -9,7 +9,7 @@ test("ContextMenu exposed standalone and inside a modal has no blocking axe find
       .map((violation) => ({ id: violation.id, targets: violation.nodes.map((node) => node.target) }))).toEqual([]);
   };
 
-  const staticTrigger = page.locator("[data-pui-owner='ContextMenu']").filter({ hasText: "Static record" });
+  const staticTrigger = page.locator("[data-ui-owner='ContextMenu']").filter({ hasText: "Static record" });
   await staticTrigger.focus();
   await page.keyboard.press("Shift+F10");
   await expect(page.getByRole("menu", { name: "Record actions" })).toBeVisible();

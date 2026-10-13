@@ -1,7 +1,7 @@
-// @personal-ui-coverage {"kind":"unit","runner":"components","exports":["DragDrop"]}
+// @ui-coverage {"kind":"unit","runner":"components","exports":["DragDrop"]}
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { DragDrop } from "../../src/personal-ui";
+import { DragDrop } from "../../src/ui";
 
 describe("DragDrop file acceptance", () => {
   it("passes only accepted dropped files and reports rejected ones", () => {

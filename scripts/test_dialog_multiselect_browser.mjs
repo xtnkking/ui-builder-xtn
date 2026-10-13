@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { isPersonalUiRegressionMain, runPersonalUiRegression } from "./browser-test-harness.mjs";
+import { isUIRegressionMain, runUIRegression } from "./browser-test-harness.mjs";
 import { legacyExplorerCaseTabs, selectExplorerCase } from "./browser-explorer-case.mjs";
 
 async function waitForFocus(page, target, label) {
@@ -51,9 +51,9 @@ async function inspectMoreSelectorsFocus(page, dialog, label) {
 async function inspectCompactConfirmation(dialog, label) {
   const geometry = await dialog.evaluate((element) => {
     const panel = element.getBoundingClientRect();
-    const header = element.querySelector(".pui-dialog__header").getBoundingClientRect();
-    const footer = element.querySelector(".pui-dialog__footer").getBoundingClientRect();
-    const actions = [...element.querySelectorAll(".pui-dialog__footer button")].map((button) => {
+    const header = element.querySelector(".ui-dialog__header").getBoundingClientRect();
+    const footer = element.querySelector(".ui-dialog__footer").getBoundingClientRect();
+    const actions = [...element.querySelectorAll(".ui-dialog__footer button")].map((button) => {
       const rect = button.getBoundingClientRect();
       return { left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom };
     });
@@ -62,7 +62,7 @@ async function inspectCompactConfirmation(dialog, label) {
       header: { bottom: header.bottom, height: header.height },
       footer: { top: footer.top, bottom: footer.bottom, height: footer.height },
       actions,
-      bodyCount: element.querySelectorAll(".pui-dialog__body").length,
+      bodyCount: element.querySelectorAll(".ui-dialog__body").length,
       viewport: { width: innerWidth, height: innerHeight },
     };
   });
@@ -81,14 +81,14 @@ async function inspectCompactConfirmation(dialog, label) {
 
 async function inspectRoleForm(dialog, label) {
   const geometry = await dialog.evaluate((element) => {
-    const body = element.querySelector(".pui-dialog__body");
+    const body = element.querySelector(".ui-dialog__body");
     const bodyBox = body.getBoundingClientRect();
     const form = body.querySelector(".demo-dialog-form");
     const rows = [...form.children].map((child) => {
       const box = child.getBoundingClientRect();
       return { left: box.left, right: box.right, top: box.top, bottom: box.bottom };
     });
-    const footer = element.querySelector(".pui-dialog__footer").getBoundingClientRect();
+    const footer = element.querySelector(".ui-dialog__footer").getBoundingClientRect();
     return {
       body: { left: bodyBox.left, right: bodyBox.right, top: bodyBox.top, bottom: bodyBox.bottom, scrollHeight: body.scrollHeight, clientHeight: body.clientHeight },
       rows,
@@ -112,16 +112,16 @@ async function inspectRoleForm(dialog, label) {
 
 async function inspectVisualTokens(dialog, width) {
   const measured = await dialog.evaluate((element) => {
-    const multi = element.querySelector(".pui-multi-select__trigger");
-    const country = element.querySelector(".pui-async-select .pui-combobox__trigger");
-    const save = element.querySelector(".pui-dialog__footer .pui-button--primary");
-    const cancel = element.querySelector(".pui-dialog__footer .pui-button:not(.pui-button--primary)");
+    const multi = element.querySelector(".ui-multi-select__trigger");
+    const country = element.querySelector(".ui-async-select .ui-combobox__trigger");
+    const save = element.querySelector(".ui-dialog__footer .ui-button--primary");
+    const cancel = element.querySelector(".ui-dialog__footer .ui-button:not(.ui-button--primary)");
     return {
       multi: { height: multi.getBoundingClientRect().height, radius: getComputedStyle(multi).borderTopLeftRadius },
       country: { height: country.getBoundingClientRect().height, radius: getComputedStyle(country).borderTopLeftRadius },
       save: { height: save.getBoundingClientRect().height, background: getComputedStyle(save).backgroundColor },
       cancel: { height: cancel.getBoundingClientRect().height },
-      primaryToken: getComputedStyle(element).getPropertyValue("--pui-primary").trim(),
+      primaryToken: getComputedStyle(element).getPropertyValue("--ui-primary").trim(),
     };
   });
   assert.deepEqual(measured.multi, { height: 44, radius: "12px" }, `${width}px: MultiSelect differs from source-kit control geometry`);
@@ -133,12 +133,12 @@ async function inspectVisualTokens(dialog, width) {
 }
 
 async function inspectPopup(page, dialog, popup, label) {
-  await page.locator('.pui-overlay > .pui-multi-select__popover[data-positioned="true"]').waitFor();
+  await page.locator('.ui-overlay > .ui-multi-select__popover[data-positioned="true"]').waitFor();
   const geometry = await popup.evaluate((element) => {
     const box = element.getBoundingClientRect();
-    const list = element.querySelector(".pui-multi-select__list");
+    const list = element.querySelector(".ui-multi-select__list");
     const listBox = list.getBoundingClientRect();
-    const footer = element.querySelector(".pui-multi-select__footer");
+    const footer = element.querySelector(".ui-multi-select__footer");
     const footerBox = footer.getBoundingClientRect();
     const visibleOptions = [...list.querySelectorAll('[role="option"]')].filter((option) => {
       const optionBox = option.getBoundingClientRect();
@@ -146,7 +146,7 @@ async function inspectPopup(page, dialog, popup, label) {
     }).length;
     const hit = document.elementFromPoint(Math.min(innerWidth - 1, box.left + box.width / 2), Math.min(innerHeight - 1, box.top + 20));
     return {
-      portal: element.parentElement?.classList.contains("pui-overlay") === true,
+      portal: element.parentElement?.classList.contains("ui-overlay") === true,
       visible: getComputedStyle(element).visibility === "visible",
       onTop: Boolean(hit && element.contains(hit)),
       bounds: { left: box.left, right: box.right, top: box.top, bottom: box.bottom, height: box.height },
@@ -162,7 +162,7 @@ async function inspectPopup(page, dialog, popup, label) {
   assert.ok(geometry.bounds.top >= 11 && geometry.bounds.bottom <= geometry.viewport.height - 11, `${label}: popup outside vertical viewport`);
   assert.ok(geometry.list.height > 70 && geometry.visibleOptions >= 2, `${label}: options are not meaningfully visible`);
   assert.ok(geometry.footer.top >= geometry.bounds.top && geometry.footer.bottom <= geometry.bounds.bottom + 1, `${label}: footer escaped popup`);
-  assert.equal(await dialog.locator(".pui-multi-select__popover").count(), 0, `${label}: dialog owns clipped popup DOM`);
+  assert.equal(await dialog.locator(".ui-multi-select__popover").count(), 0, `${label}: dialog owns clipped popup DOM`);
   await noHorizontalOverflow(page, label);
   return geometry;
 }
@@ -177,11 +177,11 @@ export async function runDialogMultiSelectRegression({ page, baseURL }) {
       const memberAction = listFilterCase.getByRole("button", { name: "陈沐的更多操作" });
       await memberAction.click();
       const memberDrawer = page.getByRole("dialog", { name: "陈沐" });
-      const descriptionList = memberDrawer.locator('[data-pui-owner="DescriptionList"]');
+      const descriptionList = memberDrawer.locator('[data-ui-owner="DescriptionList"]');
       await descriptionList.waitFor();
       const descriptionGeometry = await descriptionList.evaluate((element) => {
         const listBounds = element.getBoundingClientRect();
-        const items = [...element.querySelectorAll(".pui-description-list__item")];
+        const items = [...element.querySelectorAll(".ui-description-list__item")];
         const itemBounds = items.map((item) => {
           const bounds = item.getBoundingClientRect();
           return { left: bounds.left, right: bounds.right, top: bounds.top, bottom: bounds.bottom, width: bounds.width };
@@ -222,9 +222,9 @@ export async function runDialogMultiSelectRegression({ page, baseURL }) {
       const compact = await inspectCompactConfirmation(confirm, `${width}px initial confirmation`);
       assert.ok(Math.abs(compact.panel.width - Math.min(420, width - 40)) <= 1, `${width}px: compact confirmation width drifted from source-kit geometry`);
       const spacing = await confirm.evaluate((dialog) => {
-        const header = dialog.querySelector(".pui-dialog__header").getBoundingClientRect();
-        const footer = dialog.querySelector(".pui-dialog__footer").getBoundingClientRect();
-        const closeButton = dialog.querySelector('.pui-dialog__header button');
+        const header = dialog.querySelector(".ui-dialog__header").getBoundingClientRect();
+        const footer = dialog.querySelector(".ui-dialog__footer").getBoundingClientRect();
+        const closeButton = dialog.querySelector('.ui-dialog__header button');
         return {
           gap: footer.top - header.bottom,
           closeFocusVisible: closeButton.matches(":focus-visible"),
@@ -235,8 +235,8 @@ export async function runDialogMultiSelectRegression({ page, baseURL }) {
       assert.equal(spacing.closeFocusVisible, false, `${width}px: close button shows initial keyboard focus ring`);
       if (width === 1440 || width === 320) {
         console.log(`${width}px ConfirmDialog ${Math.round(compact.panel.width)}x${Math.round(compact.panel.height)}, initial focus: ${spacing.focused}; close focus-visible: ${spacing.closeFocusVisible}`);
-        if (process.env.PERSONAL_UI_DIALOG_SCREENSHOT_PREFIX) {
-          await page.screenshot({ path: `${process.env.PERSONAL_UI_DIALOG_SCREENSHOT_PREFIX}-confirm-${width}.png` });
+        if (process.env.UI_DIALOG_SCREENSHOT_PREFIX) {
+          await page.screenshot({ path: `${process.env.UI_DIALOG_SCREENSHOT_PREFIX}-confirm-${width}.png` });
         }
       }
       await waitForFocus(page, cancel, `${width}px initial safe focus`);
@@ -258,7 +258,7 @@ export async function runDialogMultiSelectRegression({ page, baseURL }) {
       await danger.click();
       const failed = page.getByRole("dialog", { name: "停用用户" });
       await failed.getByRole("alert").waitFor();
-      assert.ok((await failed.locator(".pui-dialog__body").boundingBox())?.height > 0, `${width}px: error body not visible`);
+      assert.ok((await failed.locator(".ui-dialog__body").boundingBox())?.height > 0, `${width}px: error body not visible`);
       await failed.getByRole("button", { name: "取消" }).click();
       await failed.waitFor({ state: "detached" });
       await opener.click();
@@ -282,8 +282,8 @@ export async function runDialogMultiSelectRegression({ page, baseURL }) {
       await inspectVisualTokens(roleDialog, width);
       if (width === 1440 || width === 320) {
         console.log(`${width}px role form gap: ${roleForm.formGap}px, body scroll: ${roleForm.body.scrollHeight}/${roleForm.body.clientHeight}`);
-        if (process.env.PERSONAL_UI_DIALOG_SCREENSHOT_PREFIX) {
-          await page.screenshot({ path: `${process.env.PERSONAL_UI_DIALOG_SCREENSHOT_PREFIX}-role-${width}.png` });
+        if (process.env.UI_DIALOG_SCREENSHOT_PREFIX) {
+          await page.screenshot({ path: `${process.env.UI_DIALOG_SCREENSHOT_PREFIX}-role-${width}.png` });
         }
       }
       if (width === 1440 || width === 320) {
@@ -294,11 +294,11 @@ export async function runDialogMultiSelectRegression({ page, baseURL }) {
         }));
         console.log(`${width}px regular Dialog initial focus: ${JSON.stringify(panelFocus)}`);
       }
-      const body = roleDialog.locator(".pui-dialog__body");
-      const footer = roleDialog.locator(".pui-dialog__footer");
+      const body = roleDialog.locator(".ui-dialog__body");
+      const footer = roleDialog.locator(".ui-dialog__footer");
       const trigger = roleDialog.getByRole("combobox", { name: /角色，已选择/ });
       await trigger.click();
-      const popup = page.locator(".pui-overlay > .pui-multi-select__popover");
+      const popup = page.locator(".ui-overlay > .ui-multi-select__popover");
       await popup.waitFor();
       const list = popup.getByRole("listbox", { name: "角色" });
       assert.equal(await list.getByRole("option").count(), 8, `${width}px: options missing`);
@@ -306,8 +306,8 @@ export async function runDialogMultiSelectRegression({ page, baseURL }) {
       const initial = await inspectPopup(page, roleDialog, popup, `${width}px initial`);
       if (width === 1440 || width === 320) {
         console.log(`${width}px MultiSelect popup: ${JSON.stringify(initial.bounds)}, visible options: ${initial.visibleOptions}`);
-        if (process.env.PERSONAL_UI_DIALOG_SCREENSHOT_PREFIX) {
-          await page.screenshot({ path: `${process.env.PERSONAL_UI_DIALOG_SCREENSHOT_PREFIX}-multi-${width}.png` });
+        if (process.env.UI_DIALOG_SCREENSHOT_PREFIX) {
+          await page.screenshot({ path: `${process.env.UI_DIALOG_SCREENSHOT_PREFIX}-multi-${width}.png` });
         }
       }
       const fixedFooter = await footer.boundingBox();
@@ -344,15 +344,15 @@ export async function runDialogMultiSelectRegression({ page, baseURL }) {
       assert.equal(await trigger.getAttribute("aria-label"), "角色，已选择 4 项", `${width}px: selected role count changed`);
       const country = roleDialog.getByRole("combobox", { name: "国家或地区" });
       await country.click();
-      const countryPopup = page.locator(".pui-overlay > .pui-async-select__popover");
+      const countryPopup = page.locator(".ui-overlay > .ui-async-select__popover");
       await countryPopup.waitFor({ state: "visible" });
       await countryPopup.getByRole("combobox", { name: "搜索国家或地区" }).fill("日本");
       await countryPopup.getByRole("option", { name: /日本/ }).click();
       await countryPopup.waitFor({ state: "detached" });
       assert.ok((await country.textContent())?.includes("日本"), `${width}px: selected country is not rendered`);
       await inspectRoleForm(roleDialog, `${width}px selected role dialog`);
-      if ((width === 1440 || width === 320) && process.env.PERSONAL_UI_DIALOG_SCREENSHOT_PREFIX) {
-        await page.screenshot({ path: `${process.env.PERSONAL_UI_DIALOG_SCREENSHOT_PREFIX}-role-selected-${width}.png` });
+      if ((width === 1440 || width === 320) && process.env.UI_DIALOG_SCREENSHOT_PREFIX) {
+        await page.screenshot({ path: `${process.env.UI_DIALOG_SCREENSHOT_PREFIX}-role-selected-${width}.png` });
       }
       await body.evaluate((element) => { element.scrollTop = element.scrollHeight; });
       const scrolledDialogFooter = await footer.boundingBox();
@@ -361,10 +361,10 @@ export async function runDialogMultiSelectRegression({ page, baseURL }) {
       const nested = page.getByRole("dialog", { name: "确认国家范围" });
       await nested.waitFor();
       const nestedGeometry = await inspectCompactConfirmation(nested, `${width}px nested confirmation`);
-      const coveredParent = page.locator('.pui-dialog[aria-hidden="true"][inert]');
+      const coveredParent = page.locator('.ui-dialog[aria-hidden="true"][inert]');
       assert.equal(await coveredParent.count(), 1, `${width}px: parent dialog was not retained inert beneath nested confirmation`);
       assert.equal(await coveredParent.isVisible(), true, `${width}px: parent dialog vanished beneath nested confirmation`);
-      assert.equal(await nested.locator(".pui-dialog__footer button").count(), 2, `${width}px: nested confirmation missing cancel action`);
+      assert.equal(await nested.locator(".ui-dialog__footer button").count(), 2, `${width}px: nested confirmation missing cancel action`);
       const nestedOnTop = await nested.evaluate((element) => {
         const rect = element.getBoundingClientRect();
         const hit = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
@@ -373,8 +373,8 @@ export async function runDialogMultiSelectRegression({ page, baseURL }) {
       assert.equal(nestedOnTop, true, `${width}px: nested confirmation is covered by parent dialog`);
       if (width === 1440 || width === 320) {
         console.log(`${width}px nested confirmation ${Math.round(nestedGeometry.panel.width)}x${Math.round(nestedGeometry.panel.height)}`);
-        if (process.env.PERSONAL_UI_DIALOG_SCREENSHOT_PREFIX) {
-          await page.screenshot({ path: `${process.env.PERSONAL_UI_DIALOG_SCREENSHOT_PREFIX}-nested-${width}.png` });
+        if (process.env.UI_DIALOG_SCREENSHOT_PREFIX) {
+          await page.screenshot({ path: `${process.env.UI_DIALOG_SCREENSHOT_PREFIX}-nested-${width}.png` });
         }
       }
       await clickBackdrop(nested, `${width}px nested confirmation`);
@@ -438,8 +438,8 @@ export async function runDialogMultiSelectRegression({ page, baseURL }) {
       });
       const drawerBounds = drawerGeometry.bounds;
       assert.ok(drawerBounds.left >= -1 && drawerBounds.right <= width + 1 && drawerBounds.top >= -1 && drawerBounds.bottom <= height + 1, `${width}px: drawer outside viewport ${JSON.stringify(drawerBounds)}`);
-      assert.match(drawerGeometry.className, /(?:^|\s)pui-drawer--edge(?:\s|$)/, `${width}px: Drawer default is not the edge variant`);
-      assert.match(drawerGeometry.overlayClassName, /(?:^|\s)pui-overlay--drawer-edge(?:\s|$)/, `${width}px: Drawer overlay default is not the edge variant`);
+      assert.match(drawerGeometry.className, /(?:^|\s)ui-drawer--edge(?:\s|$)/, `${width}px: Drawer default is not the edge variant`);
+      assert.match(drawerGeometry.overlayClassName, /(?:^|\s)ui-overlay--drawer-edge(?:\s|$)/, `${width}px: Drawer overlay default is not the edge variant`);
       if (width > 640) {
         assert.ok(Math.abs(drawerBounds.top) <= 1, `${width}px: desktop Drawer is not flush to the top`);
         assert.ok(Math.abs(drawerBounds.right - width) <= 1, `${width}px: desktop Drawer is not flush to the right`);
@@ -457,7 +457,7 @@ export async function runDialogMultiSelectRegression({ page, baseURL }) {
         assert.equal(drawerGeometry.radii.bottomRight, "0px", `${width}px: mobile Drawer bottom-right corner is rounded`);
         assert.equal(drawerGeometry.radii.bottomLeft, "0px", `${width}px: mobile Drawer bottom-left corner is rounded`);
       }
-      assert.ok(await drawer.locator(".pui-drawer__footer").isVisible(), `${width}px: drawer actions clipped`);
+      assert.ok(await drawer.locator(".ui-drawer__footer").isVisible(), `${width}px: drawer actions clipped`);
       await clickBackdrop(drawer, `${width}px editing drawer`);
       assert.equal(await drawer.isVisible(), true, `${width}px: backdrop closed the Drawer`);
       await drawer.getByRole("button", { name: "关闭抽屉" }).click();
@@ -472,6 +472,6 @@ export async function runDialogMultiSelectRegression({ page, baseURL }) {
   console.log("Dialog, ConfirmDialog, MultiSelect, and Drawer browser regression passed at 2560, 1440, 1024, 736, 360, and 320px.");
 }
 
-if (isPersonalUiRegressionMain(import.meta.url)) {
-  await runPersonalUiRegression(runDialogMultiSelectRegression);
+if (isUIRegressionMain(import.meta.url)) {
+  await runUIRegression(runDialogMultiSelectRegression);
 }

@@ -137,7 +137,7 @@ def make_workspace(
     )
     manifest = {
         "schemaVersion": 1,
-        "kind": "personal-ui-m8-evaluator-inputs",
+        "kind": "ui-m8-evaluator-inputs",
         "official": True,
         "run": {"id": run_id, "createdAt": TIMESTAMP_START},
         "candidate": binding,
@@ -149,7 +149,7 @@ def make_workspace(
     visible = write_workspace_json(workspace, "visible-inputs.json", manifest)
     run_start = {
         "schemaVersion": 1,
-        "kind": "personal-ui-m8-run-start",
+        "kind": "ui-m8-run-start",
         "runId": run_id,
         "scenarioId": scenario_id,
         "startedAt": TIMESTAMP_START,
@@ -179,7 +179,7 @@ def make_workspace(
         "evidence/final/source-inventory.json",
         {
             "schemaVersion": 1,
-            "kind": "personal-ui-m8-source-inventory",
+            "kind": "ui-m8-source-inventory",
             "contentDigest": quality.release.digest_file_map(source_files),
             "files": quality.release.file_inventory(source_files),
         },
@@ -195,7 +195,7 @@ def make_workspace(
         "evidence/commands/0001.json",
         {
             "schemaVersion": 1,
-            "kind": "personal-ui-m8-command",
+            "kind": "ui-m8-command",
             "runId": run_id,
             "sequence": 1,
             "argv": ["npm", "run", "verify"],
@@ -212,7 +212,7 @@ def make_workspace(
         "evidence/command-index.json",
         {
             "schemaVersion": 1,
-            "kind": "personal-ui-m8-command-index",
+            "kind": "ui-m8-command-index",
             "runId": run_id,
             "commands": [recorded_command],
         },
@@ -222,7 +222,7 @@ def make_workspace(
         "evidence/final/verification.json",
         {
             "schemaVersion": 1,
-            "kind": "personal-ui-m8-quality-verification",
+            "kind": "ui-m8-quality-verification",
             "runId": run_id,
             "candidate": binding,
             "result": "passed",
@@ -235,7 +235,7 @@ def make_workspace(
         "evidence/final/result.json",
         {
             "schemaVersion": 1,
-            "kind": "personal-ui-m8-final-result",
+            "kind": "ui-m8-final-result",
             "runId": run_id,
             "result": "passed",
             "frozenAt": TIMESTAMP_END,
@@ -651,7 +651,7 @@ class M8QualityContracts(unittest.TestCase):
             )
 
     def test_complete_raw_evidence_builds_a_validator_accepted_fragment(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-quality-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-quality-") as temporary:
             root = Path(temporary)
             binding, candidate, repository, pairs, safari = self.setup_fixture(root)
             output = root / "quality-bundle"
@@ -704,7 +704,7 @@ class M8QualityContracts(unittest.TestCase):
             )
 
     def test_missing_measurement_is_rejected_without_partial_output(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-quality-missing-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-quality-missing-") as temporary:
             root = Path(temporary)
             binding, candidate, repository, pairs, safari = self.setup_fixture(root)
             report_path = pairs[0][1]
@@ -724,7 +724,7 @@ class M8QualityContracts(unittest.TestCase):
             self.assertFalse(output.exists())
 
     def test_tampered_artifact_and_webkit_safari_are_rejected(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-quality-tamper-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-quality-tamper-") as temporary:
             root = Path(temporary)
             binding, candidate, repository, pairs, safari = self.setup_fixture(root)
             report = json.loads(pairs[0][1].read_text("utf-8"))
@@ -758,7 +758,7 @@ class M8QualityContracts(unittest.TestCase):
                 )
 
     def test_raw_or_unbound_hosted_safari_evidence_is_rejected(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-quality-safari-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-quality-safari-") as temporary:
             root = Path(temporary)
             binding = candidate_binding()
             raw = root / "self-reported-safari.json"
@@ -799,7 +799,7 @@ class M8QualityContracts(unittest.TestCase):
                 )
 
     def test_candidate_mismatch_and_linked_artifact_are_rejected(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-quality-boundary-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-quality-boundary-") as temporary:
             root = Path(temporary)
             binding, candidate, repository, pairs, safari = self.setup_fixture(root)
             report = json.loads(pairs[0][1].read_text("utf-8"))

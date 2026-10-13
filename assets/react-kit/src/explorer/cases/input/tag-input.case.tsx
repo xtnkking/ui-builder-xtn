@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"tag-input/overview","exports":["TagInput"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"tag-input/overview","exports":["TagInput"]}
 import { useState } from "react";
-import { Field, TagInput } from "../../../personal-ui";
+import { Field, TagInput } from "../../../ui";
 import type { ExplorerCase } from "../types";
 import { StatePreview } from "../state-preview";
 

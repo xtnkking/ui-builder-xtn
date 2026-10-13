@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"responsive-visibility/overview","exports":["ResponsiveVisibility"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"responsive-visibility/overview","exports":["ResponsiveVisibility"]}
 import { StatePreview } from "../state-preview";
-import { ResponsiveVisibility, Tag } from "../../../personal-ui";
+import { ResponsiveVisibility, Tag } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 const explorerCase = {

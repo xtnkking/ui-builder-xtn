@@ -1,4 +1,4 @@
-// @personal-ui-coverage {"kind":"unit","runner":"components","exports":["AsyncSelect","Autocomplete","Cascader","CodeEditor","FileUpload","Form","InlineEdit","MultiSelect","NumberInput","OtpInput","RichTextEditor","SearchableSelect","TagInput","Transfer","TreeSelect"]}
+// @ui-coverage {"kind":"unit","runner":"components","exports":["AsyncSelect","Autocomplete","Cascader","CodeEditor","FileUpload","Form","InlineEdit","MultiSelect","NumberInput","OtpInput","RichTextEditor","SearchableSelect","TagInput","Transfer","TreeSelect"]}
 import { createElement, createRef, useState, type ComponentType } from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
@@ -36,7 +36,7 @@ import {
   type TransferProps,
   type TreeSelectProps,
   type ValidityControlHandle,
-} from "../../src/personal-ui";
+} from "../../src/ui";
 
 const forcedEscapes = {
   className: "foreign-control",
@@ -45,8 +45,8 @@ const forcedEscapes = {
   sx: "foreign-sx",
   tw: "foreign-tw",
   dangerouslySetInnerHTML: { __html: "<b>unsafe</b>" },
-  "data-pui-owner": "Consumer",
-  "data-pui-slot": "foreign",
+  "data-ui-owner": "Consumer",
+  "data-ui-slot": "foreign",
 };
 
 function expectDevelopmentError(run: () => void, message: RegExp) {
@@ -68,10 +68,10 @@ describe("extra input public and private composition contracts", () => {
     };
     const number = render(createElement(NumberInput, numberProps as unknown as NumberInputProps));
     const spinbutton = screen.getByRole("spinbutton", { name: "Amount" });
-    const numberOwner = spinbutton.closest<HTMLElement>("[data-pui-owner='NumberInput']");
-    expect(numberOwner).toHaveClass("pui-input-shell", "pui-number-input");
+    const numberOwner = spinbutton.closest<HTMLElement>("[data-ui-owner='NumberInput']");
+    expect(numberOwner).toHaveClass("ui-input-shell", "ui-number-input");
     expect(numberOwner).not.toHaveClass("foreign-control");
-    expect(document.querySelector("[data-pui-owner='Consumer']")).toBeNull();
+    expect(document.querySelector("[data-ui-owner='Consumer']")).toBeNull();
     number.unmount();
 
     const richProps = {
@@ -82,8 +82,8 @@ describe("extra input public and private composition contracts", () => {
     };
     const rich = render(createElement(RichTextEditor, richProps as unknown as RichTextEditorProps));
     const richTextarea = screen.getByLabelText("Rich notes");
-    expect(richTextarea).toHaveAttribute("data-pui-owner", "RichTextEditor");
-    expect(richTextarea).toHaveClass("pui-textarea");
+    expect(richTextarea).toHaveAttribute("data-ui-owner", "RichTextEditor");
+    expect(richTextarea).toHaveClass("ui-textarea");
     expect(richTextarea).not.toHaveClass("foreign-control");
     expect(richTextarea).not.toHaveAttribute("style");
     rich.unmount();
@@ -96,8 +96,8 @@ describe("extra input public and private composition contracts", () => {
     };
     render(createElement(CodeEditor, codeProps as unknown as CodeEditorProps));
     const codeTextarea = screen.getByLabelText("Source code");
-    expect(codeTextarea).toHaveAttribute("data-pui-owner", "CodeEditor");
-    expect(codeTextarea).toHaveClass("pui-textarea", "pui-code-editor__input");
+    expect(codeTextarea).toHaveAttribute("data-ui-owner", "CodeEditor");
+    expect(codeTextarea).toHaveClass("ui-textarea", "ui-code-editor__input");
     expect(codeTextarea).not.toHaveClass("foreign-control");
   });
 
@@ -171,8 +171,8 @@ describe("extra input public and private composition contracts", () => {
       ariaLabel: "Country",
     };
     const asyncSelect = render(createElement(AsyncSelect, asyncProps as unknown as AsyncSelectProps));
-    expect(document.querySelector("[data-pui-owner='AsyncSelect']")).toHaveClass("pui-async-select");
-    expect(document.querySelector("[data-pui-owner='AsyncSelect']")).not.toHaveClass("foreign-control");
+    expect(document.querySelector("[data-ui-owner='AsyncSelect']")).toHaveClass("ui-async-select");
+    expect(document.querySelector("[data-ui-owner='AsyncSelect']")).not.toHaveClass("foreign-control");
     asyncSelect.unmount();
 
     const multiProps = {
@@ -183,8 +183,8 @@ describe("extra input public and private composition contracts", () => {
       ariaLabel: "Countries",
     };
     const multiSelect = render(createElement(MultiSelect, multiProps as unknown as MultiSelectProps));
-    expect(document.querySelector("[data-pui-owner='MultiSelect']")).toHaveClass("pui-multi-select");
-    expect(document.querySelector("[data-pui-owner='MultiSelect']")).not.toHaveClass("foreign-control");
+    expect(document.querySelector("[data-ui-owner='MultiSelect']")).toHaveClass("ui-multi-select");
+    expect(document.querySelector("[data-ui-owner='MultiSelect']")).not.toHaveClass("foreign-control");
     multiSelect.unmount();
 
     render(<InlineEdit value="Ada" onCommit={() => undefined} />);
@@ -253,7 +253,7 @@ describe("extra input public and private composition contracts", () => {
       if (id === "upload-field" || id === "inline-field") {
         expect(control).not.toHaveAttribute("aria-required");
         if (id === "upload-field") {
-          expect(control.closest("[data-pui-owner='FileUpload']")).not.toHaveAttribute("aria-required");
+          expect(control.closest("[data-ui-owner='FileUpload']")).not.toHaveAttribute("aria-required");
         }
       } else {
         expect(control).toHaveAttribute("aria-required", "true");
@@ -349,24 +349,24 @@ describe("extra input public and private composition contracts", () => {
     );
 
     const expectedOwners = [
-      ["OtpInput", "pui-otp"],
-      ["FileUpload", "pui-file-upload"],
-      ["Autocomplete", "pui-autocomplete"],
-      ["SearchableSelect", "pui-form-control-bridge"],
-      ["TagInput", "pui-tag-input"],
-      ["Cascader", "pui-cascader"],
-      ["TreeSelect", "pui-tree-select"],
-      ["Transfer", "pui-transfer"],
+      ["OtpInput", "ui-otp"],
+      ["FileUpload", "ui-file-upload"],
+      ["Autocomplete", "ui-autocomplete"],
+      ["SearchableSelect", "ui-form-control-bridge"],
+      ["TagInput", "ui-tag-input"],
+      ["Cascader", "ui-cascader"],
+      ["TreeSelect", "ui-tree-select"],
+      ["Transfer", "ui-transfer"],
     ] as const;
     expectedOwners.forEach(([ownerName, className]) => {
-      const owner = document.querySelector<HTMLElement>(`[data-pui-owner='${ownerName}']`);
+      const owner = document.querySelector<HTMLElement>(`[data-ui-owner='${ownerName}']`);
       expect(owner).not.toBeNull();
       expect(owner).toHaveClass(className);
       expect(owner).not.toHaveClass("foreign-control");
       expect(owner).not.toHaveAttribute("style");
     });
-    expect(document.querySelector("[data-pui-owner='Consumer']")).toBeNull();
-    expect(document.querySelector("[data-pui-slot='foreign']")).toBeNull();
+    expect(document.querySelector("[data-ui-owner='Consumer']")).toBeNull();
+    expect(document.querySelector("[data-ui-slot='foreign']")).toBeNull();
   });
 
   it("filters forced form escape props without losing native behavior", () => {
@@ -379,10 +379,10 @@ describe("extra input public and private composition contracts", () => {
     };
     render(createElement(Form, props as unknown as FormProps));
     const form = screen.getByRole("form", { name: "Profile" });
-    expect(form).toHaveClass("pui-form");
+    expect(form).toHaveClass("ui-form");
     expect(form).not.toHaveClass("foreign-control");
     expect(form).not.toHaveAttribute("style");
-    expect(form).toHaveAttribute("data-pui-owner", "Form");
+    expect(form).toHaveAttribute("data-ui-owner", "Form");
   });
 
   it("owns uncontrolled async and multi-select queries while reporting changes", () => {

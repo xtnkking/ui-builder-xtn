@@ -1,5 +1,5 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"split-button/overview","exports":["SplitButton"]}
-import { SplitButton } from "../../../personal-ui";
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"split-button/overview","exports":["SplitButton"]}
+import { SplitButton } from "../../../ui";
 import { useState } from "react";
 import { StatePreview } from "../state-preview";
 import type { ExplorerCase } from "../types";

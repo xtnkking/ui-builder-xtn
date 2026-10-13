@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"media/overview","exports":["Media"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"media/overview","exports":["Media"]}
 import { StatePreview } from "../state-preview";
-import { Media } from "../../../personal-ui";
+import { Media } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 const dashboardPreview = new URL("../../assets/dashboard-preview.svg", import.meta.url).href;

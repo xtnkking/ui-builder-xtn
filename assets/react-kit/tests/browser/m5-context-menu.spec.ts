@@ -1,9 +1,9 @@
-// @personal-ui-coverage {"kind":"browser","runner":"browser","exports":["ContextMenu"]}
+// @ui-coverage {"kind":"browser","runner":"browser","exports":["ContextMenu"]}
 import { expect, test } from "@playwright/test";
 
 test("ContextMenu keyboard opening, roving focus, typeahead, action, and Tab", async ({ page }) => {
   await page.goto("/tests/fixtures/m5-context-menu.html");
-  const staticTrigger = page.locator("[data-pui-owner='ContextMenu']").filter({ hasText: "Static record" });
+  const staticTrigger = page.locator("[data-ui-owner='ContextMenu']").filter({ hasText: "Static record" });
   await expect(staticTrigger).toHaveAttribute("tabindex", "0");
   await staticTrigger.focus();
   await page.keyboard.press("Shift+F10");
@@ -86,7 +86,7 @@ test("ContextMenu inside Dialog consumes Escape before the parent and yields to 
   const opener = page.getByRole("button", { name: "Open dialog" });
   await opener.click();
   const dialog = page.getByRole("dialog", { name: "Records dialog" });
-  const dialogPanel = page.locator("[data-pui-owner='Dialog']").first();
+  const dialogPanel = page.locator("[data-ui-owner='Dialog']").first();
   const trigger = dialog.getByRole("button", { name: "Dialog record" });
   await trigger.focus();
   await page.keyboard.press("Shift+F10");

@@ -1,5 +1,5 @@
 import { createRoot } from "react-dom/client";
-import { Carousel } from "../../src/personal-ui";
+import { Carousel } from "../../src/ui";
 import "./m5-carousel.css";
 
 const slides = [

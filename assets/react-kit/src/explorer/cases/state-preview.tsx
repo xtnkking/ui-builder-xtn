@@ -1,5 +1,5 @@
 import { useState as useStateForPreview, type ReactNode as PreviewNode } from "react";
-import { Box as PreviewBox, Button as PreviewButton, Dialog as PreviewDialog, LocaleProvider as PreviewLocaleProvider, ThemeProvider as PreviewThemeProvider } from "../../personal-ui";
+import { Box as PreviewBox, Button as PreviewButton, Dialog as PreviewDialog, LocaleProvider as PreviewLocaleProvider, ThemeProvider as PreviewThemeProvider } from "../../ui";
 
 /** Runnable host contexts, not certificates of keyboard or viewport behavior. */
 export function StatePreview({ state, children }: {

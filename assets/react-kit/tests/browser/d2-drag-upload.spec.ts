@@ -1,4 +1,4 @@
-// @personal-ui-coverage {"kind":"browser","runner":"browser","exports":["DragDrop","FileUpload"]}
+// @ui-coverage {"kind":"browser","runner":"browser","exports":["DragDrop","FileUpload"]}
 import { expect, test, type Locator, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
@@ -34,7 +34,7 @@ test("D2 keyboard activates chooser, removes a queued file and leaves the offici
   await page.keyboard.press("Tab");
   await expect(browse).toBeFocused();
   await chooseWithKeyboard(page, [{ name: "keyboard.csv", mimeType: "text/csv", content: "abc" }]);
-  const upload = page.locator("[data-pui-owner='FileUpload']");
+  const upload = page.locator("[data-ui-owner='FileUpload']");
   await expect(upload.getByRole("listitem")).toHaveText(/keyboard.csv.*3 B/s);
   await expect(upload.locator("[data-status='queued']")).toHaveCount(1);
   // Re-establish browser focus explicitly; this does not certify OS-dialog focus restoration.
@@ -61,7 +61,7 @@ test("D2 both entry points preserve accept OR, share rejections and keep same-na
     { name: "mime.txt", mimeType: "text/csv", content: "b" },
     { name: "denied.txt", mimeType: "text/plain", content: "x" },
   ]);
-  const upload = page.locator("[data-pui-owner='FileUpload']");
+  const upload = page.locator("[data-ui-owner='FileUpload']");
   await expect(upload.getByRole("listitem")).toHaveCount(2);
   await expect(page.getByRole("alert", { name: "文件拒绝反馈" })).toContainText("denied.txt");
   await dropFiles(page.getByRole("group", { name: "接收CSV文件" }), [
@@ -86,7 +86,7 @@ test("D2 shared disabled state blocks browse, both drop surfaces and removal unt
   const lock = page.getByRole("switch", { name: "锁定文件操作" });
   await lock.focus();
   await page.keyboard.press("Space");
-  const upload = page.locator("[data-pui-owner='FileUpload']");
+  const upload = page.locator("[data-ui-owner='FileUpload']");
   await expect(lock).toBeChecked();
   await expect(page.getByRole("button", { name: "选择CSV文件" })).toBeDisabled();
   await expect(upload.locator("input[type=file]")).toBeDisabled();
@@ -97,7 +97,7 @@ test("D2 shared disabled state blocks browse, both drop surfaces and removal unt
     { name: "blocked.png", mimeType: "image/png", content: "x" },
   ];
   await dropFiles(page.getByRole("group", { name: "接收CSV文件" }), blocked);
-  await dropFiles(upload.locator(".pui-file-upload__dropzone"), blocked);
+  await dropFiles(upload.locator(".ui-file-upload__dropzone"), blocked);
   await remove.evaluate((button) => button.dispatchEvent(new MouseEvent("click", { bubbles: true })));
   await expect(upload.getByRole("listitem")).toHaveCount(1);
   await expect(upload.getByRole("listitem")).toContainText("retained.csv");

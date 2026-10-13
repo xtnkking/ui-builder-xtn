@@ -18,7 +18,7 @@
         "locale"
       ],
       "reason": "value/onValueChange is required and NumberInput invokes useControlledOnlyValueMode; readOnly and invalid are real public props.",
-      "source": "src/personal-ui/input/inputs-extra.tsx:183",
+      "source": "src/ui/input/inputs-extra.tsx:183",
       "inapplicableIndependentStates": {
         "uncontrolled": "No defaultValue contract; supplying it is rejected."
       },
@@ -38,7 +38,7 @@
         "locale"
       ],
       "reason": "Public native checked or ControllableValueProps mode permits a real default* fixture; Field validation is delegated through native/composite field context.",
-      "source": "src/personal-ui/input/inputs-extra.tsx:266",
+      "source": "src/ui/input/inputs-extra.tsx:266",
       "inapplicableIndependentStates": {
         "readOnly": "No independent readOnly public prop."
       },
@@ -58,7 +58,7 @@
         "locale"
       ],
       "reason": "Public native checked or ControllableValueProps mode permits a real default* fixture; Field validation is delegated through native/composite field context.",
-      "source": "src/personal-ui/input/forms.tsx:1332",
+      "source": "src/ui/input/forms.tsx:1332",
       "inapplicableIndependentStates": {
         "readOnly": "ChoiceBaseProps explicitly omits readOnly and runtime sanitizes it."
       },
@@ -78,7 +78,7 @@
         "locale"
       ],
       "reason": "Public native checked or ControllableValueProps mode permits a real default* fixture; Field validation is delegated through native/composite field context.",
-      "source": "src/personal-ui/input/forms.tsx:1332",
+      "source": "src/ui/input/forms.tsx:1332",
       "inapplicableIndependentStates": {
         "readOnly": "ChoiceBaseProps explicitly omits readOnly and runtime sanitizes it."
       },
@@ -98,7 +98,7 @@
         "locale"
       ],
       "reason": "Public native checked or ControllableValueProps mode permits a real default* fixture; Field validation is delegated through native/composite field context.",
-      "source": "src/personal-ui/input/forms.tsx:1332",
+      "source": "src/ui/input/forms.tsx:1332",
       "inapplicableIndependentStates": {
         "readOnly": "ChoiceBaseProps explicitly omits readOnly and runtime sanitizes it."
       },
@@ -117,7 +117,7 @@
         "locale"
       ],
       "reason": "value/onValueChange is required; component asserts controlled-only mode; native/project-level disabled and composite Field validity are real.",
-      "source": "src/personal-ui/input/forms.tsx:1564",
+      "source": "src/ui/input/forms.tsx:1564",
       "inapplicableIndependentStates": {
         "readOnly": "No readOnly public prop or root behavior.",
         "uncontrolled": "No defaultValue and runtime controlledOnly assertion."
@@ -138,7 +138,7 @@
         "locale"
       ],
       "reason": "Public native checked or ControllableValueProps mode permits a real default* fixture; Field validation is delegated through native/composite field context.",
-      "source": "src/personal-ui/input/value-controls.tsx:31",
+      "source": "src/ui/input/value-controls.tsx:31",
       "inapplicableIndependentStates": {
         "readOnly": "No independent readOnly public prop."
       },
@@ -159,7 +159,7 @@
         "locale"
       ],
       "reason": "Real readOnly prop and ControllableValueProps; Field supplies business-validation and long-label contexts.",
-      "source": "src/personal-ui/input/value-controls.tsx:31",
+      "source": "src/ui/input/value-controls.tsx:31",
       "inapplicableIndependentStates": {},
       "stateMode": "controlled-uncontrolled"
     },
@@ -177,7 +177,7 @@
         "locale"
       ],
       "reason": "Public native checked or ControllableValueProps mode permits a real default* fixture; Field validation is delegated through native/composite field context.",
-      "source": "src/personal-ui/input/value-controls.tsx:31",
+      "source": "src/ui/input/value-controls.tsx:31",
       "inapplicableIndependentStates": {
         "readOnly": "No independent readOnly public prop."
       },
@@ -197,7 +197,7 @@
         "locale"
       ],
       "reason": "Public native checked or ControllableValueProps mode permits a real default* fixture; Field validation is delegated through native/composite field context.",
-      "source": "src/personal-ui/input/inputs-extra.tsx:1564",
+      "source": "src/ui/input/inputs-extra.tsx:1564",
       "inapplicableIndependentStates": {
         "readOnly": "No independent readOnly public prop."
       },
@@ -217,7 +217,7 @@
         "locale"
       ],
       "reason": "busy supplies actual loading semantics; error/validation fixtures compose actual Field/Input errors and form aria-invalid. Long content is a visible form instruction.",
-      "source": "src/personal-ui/input/inputs-extra.tsx:151",
+      "source": "src/ui/input/inputs-extra.tsx:151",
       "inapplicableIndependentStates": {
         "empty": "Form has no data-empty mode; an empty descendant input is that child's value state."
       },
@@ -233,7 +233,7 @@
         "locale"
       ],
       "reason": "Owns labels, messages and invalid-field association. Direct error is both error feedback and validation; long labels/hints are visible.",
-      "source": "src/personal-ui/input/forms.tsx:241",
+      "source": "src/ui/input/forms.tsx:241",
       "inapplicableIndependentStates": {
         "empty": "Field owns label/message association, not its child's input value; no independent empty contract."
       },
@@ -255,7 +255,7 @@
         "locale"
       ],
       "reason": "Mandatory items/onFiles makes the caller own queue updates. Uploading/error item statuses are actual public data contracts; items=[] is an empty queue; Field supplies validation context.",
-      "source": "src/personal-ui/input/inputs-extra.tsx:402",
+      "source": "src/ui/input/inputs-extra.tsx:402",
       "inapplicableIndependentStates": {
         "uncontrolled": "No defaultItems/defaultValue queue contract. Native file chooser internal state is not an uncontrolled queue."
       },
@@ -275,7 +275,7 @@
         "locale"
       ],
       "reason": "Public value/onValueChange is required; implementation checks controlled-only mode. Real textarea readOnly/disabled/aria-invalid states and long source content are demonstrated.",
-      "source": "src/personal-ui/input/inputs-extra.tsx:574",
+      "source": "src/ui/input/inputs-extra.tsx:574",
       "inapplicableIndependentStates": {
         "uncontrolled": "defaultValue is omitted and runtime rejects uncontrolled value mode."
       },
@@ -295,7 +295,7 @@
         "locale"
       ],
       "reason": "Public value/onValueChange is required; implementation checks controlled-only mode. Real textarea readOnly/disabled/aria-invalid states and long source content are demonstrated.",
-      "source": "src/personal-ui/input/inputs-extra.tsx:574",
+      "source": "src/ui/input/inputs-extra.tsx:574",
       "inapplicableIndependentStates": {
         "uncontrolled": "defaultValue is omitted and runtime rejects uncontrolled value mode."
       },
@@ -315,7 +315,7 @@
         "locale"
       ],
       "reason": "Public value/onValueChange is required; implementation checks controlled-only mode. Real textarea readOnly/disabled/aria-invalid states and long source content are demonstrated.",
-      "source": "src/personal-ui/input/inputs-extra.tsx:662",
+      "source": "src/ui/input/inputs-extra.tsx:662",
       "inapplicableIndependentStates": {
         "uncontrolled": "defaultValue is omitted and runtime rejects uncontrolled value mode."
       },
@@ -337,7 +337,7 @@
         "locale"
       ],
       "reason": "Persisted value/onCommit is controlled-only. New fixtures exercise awaited save delay, actual rejected commit, empty value, validate and long committed name.",
-      "source": "src/personal-ui/input/inputs-extra.tsx:770",
+      "source": "src/ui/input/inputs-extra.tsx:770",
       "inapplicableIndependentStates": {
         "readOnly": "No readOnly public prop; async saving temporarily locks draft internally.",
         "uncontrolled": "Internal draft is not an uncontrolled persisted value; value/onCommit are required."
@@ -359,7 +359,7 @@
         "locale"
       ],
       "reason": "Implementation asserts controlled-only selection. loading is explicit; empty options and disabled options/root are real; validation comes from Field.",
-      "source": "src/personal-ui/input/forms.tsx:687",
+      "source": "src/ui/input/forms.tsx:687",
       "inapplicableIndependentStates": {
         "readOnly": "No readOnly prop.",
         "uncontrolled": "No defaultValue; runtime asserts controlled-only.",
@@ -381,7 +381,7 @@
         "locale"
       ],
       "reason": "Delegates to controlled-only Combobox; no loading prop. Empty options, disabled root and Field validation are real.",
-      "source": "src/personal-ui/input/inputs-extra.tsx:1091",
+      "source": "src/ui/input/inputs-extra.tsx:1091",
       "inapplicableIndependentStates": {
         "readOnly": "No readOnly prop.",
         "uncontrolled": "No defaultValue; delegated Combobox asserts controlled-only.",
@@ -407,7 +407,7 @@
         "locale"
       ],
       "reason": "ControllableValueProps/Query plus explicit loading/error/onRetry and options/loadOptions contracts support actual states; retry fixture updates failed -> ready.",
-      "source": "src/personal-ui/input/inputs-extra.tsx:1134",
+      "source": "src/ui/input/inputs-extra.tsx:1134",
       "inapplicableIndependentStates": {
         "readOnly": "No independent readOnly prop."
       },
@@ -426,7 +426,7 @@
         "locale"
       ],
       "reason": "Selection asserts controlled-only value mode; disabled and Field validity are real, with long options and actual setters.",
-      "source": "src/personal-ui/input/forms.tsx:1000",
+      "source": "src/ui/input/forms.tsx:1000",
       "inapplicableIndependentStates": {
         "readOnly": "No readOnly prop.",
         "uncontrolled": "No defaultValue; runtime asserts controlled-only."
@@ -448,7 +448,7 @@
         "locale"
       ],
       "reason": "ControllableValueProps/Query supports defaultValue; explicit loading exists. Field validation and long option text are rendered.",
-      "source": "src/personal-ui/input/inputs-extra.tsx:924",
+      "source": "src/ui/input/inputs-extra.tsx:924",
       "inapplicableIndependentStates": {
         "readOnly": "No readOnly prop."
       },
@@ -468,7 +468,7 @@
         "locale"
       ],
       "reason": "Actual ControllableListValueProps/ValueProps supports value and defaultValue. Disabled data/root and composite Field validity are implemented; long options are visible.",
-      "source": "src/personal-ui/input/inputs-extra.tsx:1416",
+      "source": "src/ui/input/inputs-extra.tsx:1416",
       "inapplicableIndependentStates": {
         "readOnly": "No independent readOnly prop."
       },
@@ -488,7 +488,7 @@
         "locale"
       ],
       "reason": "Actual ControllableListValueProps/ValueProps supports value and defaultValue. Disabled data/root and composite Field validity are implemented; long options are visible.",
-      "source": "src/personal-ui/input/inputs-extra.tsx:1696",
+      "source": "src/ui/input/inputs-extra.tsx:1696",
       "inapplicableIndependentStates": {
         "readOnly": "No independent readOnly prop."
       },
@@ -508,7 +508,7 @@
         "locale"
       ],
       "reason": "Actual ControllableListValueProps/ValueProps supports value and defaultValue. Disabled data/root and composite Field validity are implemented; long options are visible.",
-      "source": "src/personal-ui/input/inputs-extra.tsx:1781",
+      "source": "src/ui/input/inputs-extra.tsx:1781",
       "inapplicableIndependentStates": {
         "readOnly": "No independent readOnly prop."
       },
@@ -528,7 +528,7 @@
         "locale"
       ],
       "reason": "ControllableListValueProps supports both value and defaultValue, even though the old shared profile omitted uncontrolled. Composite Field validity and long option labels are real.",
-      "source": "src/personal-ui/input/inputs-extra.tsx:1998",
+      "source": "src/ui/input/inputs-extra.tsx:1998",
       "inapplicableIndependentStates": {
         "readOnly": "No independent readOnly prop."
       },
@@ -549,7 +549,7 @@
         "locale"
       ],
       "reason": "Native DateFieldValueProps has controlled and defaultValue branches; native readOnly/disabled/aria-invalid and visible Field long label are real.",
-      "source": "src/personal-ui/input/date-field.tsx:11",
+      "source": "src/ui/input/date-field.tsx:11",
       "inapplicableIndependentStates": {},
       "stateMode": "controlled-uncontrolled"
     },
@@ -568,7 +568,7 @@
         "locale"
       ],
       "reason": "ControllableValueProps and explicit disabled/readOnly/invalid/rangeError support actual date-range states.",
-      "source": "src/personal-ui/input/value-controls.tsx:324",
+      "source": "src/ui/input/value-controls.tsx:324",
       "inapplicableIndependentStates": {},
       "stateMode": "controlled-uncontrolled"
     },
@@ -586,7 +586,7 @@
         "locale"
       ],
       "reason": "ControllableValueProps plus disabled and Field context provides real defaultValue/validation behavior; long content is an associated visible label.",
-      "source": "src/personal-ui/input/value-controls.tsx:422",
+      "source": "src/ui/input/value-controls.tsx:422",
       "inapplicableIndependentStates": {
         "readOnly": "No readOnly public prop."
       },
@@ -597,7 +597,7 @@
         "usage"
       ],
       "reason": "Nonvisual constant data, demonstrated by passing it to actual TimezoneSelect options.",
-      "source": "src/personal-ui/input/value-controls.tsx:438",
+      "source": "src/ui/input/value-controls.tsx:438",
       "inapplicableIndependentStates": {},
       "stateMode": "constant"
     },
@@ -611,7 +611,7 @@
         "locale"
       ],
       "reason": "Only add actual disabled and long-content demonstrations. Existing keyboard fixture remains the official DragDrop+FileUpload composition; no M5 capability expansion or closure.",
-      "source": "src/personal-ui/data/data-extra.tsx:1113",
+      "source": "src/ui/data/data-extra.tsx:1113",
       "inapplicableIndependentStates": {},
       "stateMode": "stateless"
     }

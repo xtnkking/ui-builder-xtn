@@ -1,9 +1,9 @@
-// @personal-ui-coverage {"kind":"unit","runner":"components","exports":["Tree","TreeSelect"]}
+// @ui-coverage {"kind":"unit","runner":"components","exports":["Tree","TreeSelect"]}
 import { useState } from "react";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
-import { Tree, TreeSelect } from "../../src/personal-ui";
+import { Tree, TreeSelect } from "../../src/ui";
 
 const nodes = [
   { id: "account", label: "Account", children: [

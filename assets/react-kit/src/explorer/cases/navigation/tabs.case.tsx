@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"tabs/overview","exports":["Tabs"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"tabs/overview","exports":["Tabs"]}
 import { useState } from "react";
-import { Tabs } from "../../../personal-ui";
+import { Tabs } from "../../../ui";
 import { StatePreview } from "../state-preview";
 import type { ExplorerCase } from "../types";
 

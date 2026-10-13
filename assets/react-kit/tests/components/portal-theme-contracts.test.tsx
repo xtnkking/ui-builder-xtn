@@ -1,10 +1,10 @@
-// @personal-ui-coverage {"kind":"unit","runner":"components","exports":["GuidedTour","Lightbox","Tooltip"]}
+// @ui-coverage {"kind":"unit","runner":"components","exports":["GuidedTour","Lightbox","Tooltip"]}
 import { createPortal } from "react-dom";
 import { act, cleanup, fireEvent, render } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { useRef, type CSSProperties } from "react";
-import { GuidedTour, Lightbox, Tooltip } from "../../src/personal-ui";
-import { usePersonalUiPortalTokens } from "../../src/personal-ui/internal/portal-tokens";
+import { GuidedTour, Lightbox, Tooltip } from "../../src/ui";
+import { useUIPortalTokens } from "../../src/ui/internal/portal-tokens";
 
 afterEach(() => {
   vi.useRealTimers();
@@ -14,14 +14,14 @@ afterEach(() => {
 function PortalThemeProbe() {
   const sourceRef = useRef<HTMLSpanElement>(null);
   const portalRef = useRef<HTMLDivElement>(null);
-  usePersonalUiPortalTokens(true, sourceRef, portalRef);
+  useUIPortalTokens(true, sourceRef, portalRef);
   return (
     <>
       <span
         ref={sourceRef}
         style={{
-          "--pui-primary": "rgb(12, 34, 56)",
-          "--pui-radius-control": "99px",
+          "--ui-primary": "rgb(12, 34, 56)",
+          "--ui-radius-control": "99px",
           colorScheme: "dark",
         } as CSSProperties}
       />
@@ -59,8 +59,8 @@ describe("portal theme inheritance", () => {
     const { getByTestId } = render(<PortalThemeProbe />);
     const portal = getByTestId("portal-theme-probe");
 
-    expect(portal.style.getPropertyValue("--pui-primary")).toBe("rgb(12, 34, 56)");
-    expect(portal.style.getPropertyValue("--pui-radius-control")).toBe("");
+    expect(portal.style.getPropertyValue("--ui-primary")).toBe("rgb(12, 34, 56)");
+    expect(portal.style.getPropertyValue("--ui-radius-control")).toBe("");
     expect(portal).toHaveAttribute("data-color-scheme", "dark");
     expect(portal.style.colorScheme).toBe("dark");
   });
@@ -68,9 +68,9 @@ describe("portal theme inheritance", () => {
   it("gives body-level Lightbox and GuidedTour portals a logical theme source", () => {
     const sourceStyles = document.createElement("style");
     sourceStyles.textContent = `
-      [data-pui-portal-source="lightbox"],
-      [data-pui-portal-source="guided-tour"] {
-        --pui-primary: rgb(21, 43, 65);
+      [data-ui-portal-source="lightbox"],
+      [data-ui-portal-source="guided-tour"] {
+        --ui-primary: rgb(21, 43, 65);
         color-scheme: dark;
       }
     `;
@@ -95,10 +95,10 @@ describe("portal theme inheritance", () => {
     );
 
     ["Lightbox", "GuidedTour"].forEach((owner) => {
-      const surface = document.querySelector<HTMLElement>(`[data-pui-owner='${owner}']`);
-      const portal = surface?.closest<HTMLElement>(".pui-portal") ?? null;
+      const surface = document.querySelector<HTMLElement>(`[data-ui-owner='${owner}']`);
+      const portal = surface?.closest<HTMLElement>(".ui-portal") ?? null;
       expect(portal).not.toBeNull();
-      expect(portal?.style.getPropertyValue("--pui-primary")).toBe("rgb(21, 43, 65)");
+      expect(portal?.style.getPropertyValue("--ui-primary")).toBe("rgb(21, 43, 65)");
       expect(portal).toHaveAttribute("data-color-scheme", "dark");
     });
     sourceStyles.remove();
@@ -118,7 +118,7 @@ describe("portal theme inheritance", () => {
         ))}
       </div>,
     );
-    const roots = Array.from(container.querySelectorAll<HTMLElement>("[data-pui-owner='Tooltip']"));
+    const roots = Array.from(container.querySelectorAll<HTMLElement>("[data-ui-owner='Tooltip']"));
 
     expect(TrackingMutationObserver.instances.some((observer) => (
       observer.observeCalls.some(({ target }) => target === document.head)

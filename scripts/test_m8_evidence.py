@@ -21,7 +21,7 @@ ACTUAL_ENVIRONMENT = {
     "packageManager": "npm 10.9.3",
     "browser": "Chromium 140",
     "python": "3.13.7",
-    "installerCommand": "python install_personal_ui.py install",
+    "installerCommand": "python install_ui.py install",
 }
 PASSED_CHECKS = {name: "passed" for name in evidence.CHECKS}
 
@@ -54,7 +54,7 @@ def acceptance_rules(root: Path) -> Path:
 
 class M8AppendOnlyEvidenceContracts(unittest.TestCase):
     def test_source_snapshot_excludes_next_build_cache(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-next-source-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-next-source-") as temporary:
             project = Path(temporary)
             (project / "app").mkdir()
             (project / "app" / "page.tsx").write_bytes(b"export default function Page() {}\n")
@@ -67,7 +67,7 @@ class M8AppendOnlyEvidenceContracts(unittest.TestCase):
             )
 
     def test_full_first_pass_lifecycle_produces_scenario_fragment(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-record-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-record-") as temporary:
             root = Path(temporary)
             output = workspace(root)
             project = output / "consumer" / "project"
@@ -190,7 +190,7 @@ class M8AppendOnlyEvidenceContracts(unittest.TestCase):
             )
 
     def test_passed_initial_requires_producer_report_and_seals_commands(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-record-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-record-") as temporary:
             root = Path(temporary)
             output = workspace(root)
             project = output / "consumer" / "project"
@@ -290,7 +290,7 @@ class M8AppendOnlyEvidenceContracts(unittest.TestCase):
                 )
 
     def test_records_are_create_once_and_repairs_are_contiguous(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-record-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-record-") as temporary:
             root = Path(temporary)
             output = workspace(root)
             project = output / "consumer" / "project"
@@ -361,7 +361,7 @@ class M8AppendOnlyEvidenceContracts(unittest.TestCase):
             self.assertEqual(record["sequence"], 1)
 
     def test_rehearsal_workspace_cannot_start_acceptance_evidence(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-record-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-record-") as temporary:
             output = workspace(Path(temporary), official=False)
             with self.assertRaisesRegex(evidence.M8EvidenceError, "rehearsal"):
                 evidence.start_run(
@@ -371,7 +371,7 @@ class M8AppendOnlyEvidenceContracts(unittest.TestCase):
                 )
 
     def test_passed_result_rejects_failed_checks_before_writing_artifacts(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-record-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-record-") as temporary:
             root = Path(temporary)
             output = workspace(root)
             project = output / "consumer" / "project"

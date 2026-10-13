@@ -1,5 +1,5 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"hover-card/overview","exports":["HoverCard"]}
-import { Avatar, HoverCard, Inline, Stack, Tag } from "../../../personal-ui";
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"hover-card/overview","exports":["HoverCard"]}
+import { Avatar, HoverCard, Inline, Stack, Tag } from "../../../ui";
 import { useState } from "react";
 import { StatePreview } from "../state-preview";
 import type { ExplorerCase } from "../types";
@@ -41,7 +41,7 @@ const explorerCase: ExplorerCase = {
     { state: "dark", exports: ["HoverCard"], content: <StatePreview state="dark"><HoverCardExample /></StatePreview> },
     { state: "locale", exports: ["HoverCard"], content: <StatePreview state="locale"><HoverCard triggerLabel="View Alex's profile" ariaLabel="Alex's profile"><strong>Alex</strong><p>Customer success · alex@example.com</p></HoverCard></StatePreview> },
   ],
-  code: `import { HoverCard } from "./personal-ui";
+  code: `import { HoverCard } from "./ui";
 
 <HoverCard triggerLabel="查看林夏资料" ariaLabel="林夏的资料卡">
   {profileSummary}

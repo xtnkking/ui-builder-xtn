@@ -1,11 +1,11 @@
-// @personal-ui-coverage {"kind":"unit","runner":"components","exports":["ConfirmDialog","Dialog","Drawer"]}
+// @ui-coverage {"kind":"unit","runner":"components","exports":["ConfirmDialog","Dialog","Drawer"]}
 import { useState, type ReactElement, type ReactNode } from "react";
 import { hydrateRoot } from "react-dom/client";
 import { renderToString } from "react-dom/server";
 import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
-import { Button, ConfirmDialog, Dialog, Drawer } from "../../src/personal-ui";
+import { Button, ConfirmDialog, Dialog, Drawer } from "../../src/ui";
 
 interface BackdropPolicyCase {
   name: string;
@@ -304,9 +304,9 @@ describe.each(hydrationCases)("$name SSR hydration", ({ title, renderOverlay, ex
       const panel = await screen.findByRole("dialog", { name: title });
       await waitFor(() => expect(background).toHaveAttribute("inert"));
       await waitFor(() => expect(focusHistory.find((element) => panel.contains(element))).toBe(expectedFocus(panel)));
-      expect(host.querySelector("[data-pui-portal-source]")).not.toBeNull();
+      expect(host.querySelector("[data-ui-portal-source]")).not.toBeNull();
       expect(host.contains(panel)).toBe(false);
-      expect(panel.parentElement).toHaveClass("pui-overlay");
+      expect(panel.parentElement).toHaveClass("ui-overlay");
       expect(document.body.style.overflow).toBe("hidden");
 
       const hydrationErrors = consoleError.mock.calls

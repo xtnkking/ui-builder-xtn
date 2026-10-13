@@ -1,4 +1,4 @@
-// @personal-ui-coverage {"kind":"browser","runner":"browser","exports":["AsyncSelect"]}
+// @ui-coverage {"kind":"browser","runner":"browser","exports":["AsyncSelect"]}
 import { expect, test } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 

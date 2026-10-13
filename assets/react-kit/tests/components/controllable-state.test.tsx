@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { useControllableState } from "../../src/personal-ui/internal/controllable-state";
+import { useControllableState } from "../../src/ui/internal/controllable-state";
 
 interface HarnessProps {
   value?: string;

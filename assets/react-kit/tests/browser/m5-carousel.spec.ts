@@ -1,10 +1,10 @@
-// @personal-ui-coverage {"kind":"browser","runner":"browser","exports":["Carousel"]}
+// @ui-coverage {"kind":"browser","runner":"browser","exports":["Carousel"]}
 import { expect, test } from "@playwright/test";
 
 test("Carousel keyboard controls expose one slide, positions, and boundaries", async ({ page }) => {
   await page.goto("/tests/fixtures/m5-carousel.html");
   const carousel = page.getByRole("region", { name: "Manual highlights" });
-  const stage = carousel.locator(".pui-carousel__stage");
+  const stage = carousel.locator(".ui-carousel__stage");
   await expect(stage).toHaveAttribute("aria-label", "1 / 3: First");
   await expect(carousel.getByRole("button", { name: "上一项" })).toBeDisabled();
   await carousel.getByRole("button", { name: "下一项" }).focus();
@@ -27,7 +27,7 @@ test("Carousel manual pause survives hover and reacts to reduced motion", async 
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await page.goto("/tests/fixtures/m5-carousel.html");
   const carousel = page.getByRole("region", { name: "Auto highlights" });
-  const stage = carousel.locator(".pui-carousel__stage");
+  const stage = carousel.locator(".ui-carousel__stage");
   await expect(stage).toHaveAttribute("aria-live", "off");
   await carousel.hover();
   await expect(stage).toHaveAttribute("aria-live", "polite");

@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"otp/overview","exports":["OtpInput"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"otp/overview","exports":["OtpInput"]}
 import { useState } from "react";
-import { Field, OtpInput } from "../../../personal-ui";
+import { Field, OtpInput } from "../../../ui";
 import type { ExplorerCase } from "../types";
 import { StatePreview } from "../state-preview";
 

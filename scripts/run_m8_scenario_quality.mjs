@@ -8,9 +8,9 @@ import path from "node:path";
 import process from "node:process";
 import { pathToFileURL } from "node:url";
 
-const CONFIG_KIND = "personal-ui-m8-browser-quality-worker-config";
-const BEHAVIOR_KIND = "personal-ui-m8-browser-behavior";
-const RESPONSIVE_KIND = "personal-ui-m8-responsive-measurement";
+const CONFIG_KIND = "ui-m8-browser-quality-worker-config";
+const BEHAVIOR_KIND = "ui-m8-browser-behavior";
+const RESPONSIVE_KIND = "ui-m8-responsive-measurement";
 const PRODUCTS = {
   chromium: "Playwright Chromium",
   firefox: "Playwright Firefox",

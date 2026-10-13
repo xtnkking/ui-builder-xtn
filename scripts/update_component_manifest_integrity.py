@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Refresh managed Personal UI SHA-256 hashes in the component manifest."""
+"""Refresh managed UI SHA-256 hashes in the component manifest."""
 
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ from pathlib import Path
 
 SKILL_ROOT = Path(__file__).resolve().parent.parent
 KIT_ROOT = SKILL_ROOT / "assets" / "react-kit"
-SOURCE_ROOT = KIT_ROOT / "src" / "personal-ui"
+SOURCE_ROOT = KIT_ROOT / "src" / "ui"
 MANIFEST_PATH = KIT_ROOT / "component-manifest.json"
 
 

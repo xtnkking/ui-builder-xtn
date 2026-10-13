@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { createRoot } from "react-dom/client";
-import { Button, CodeEditor } from "../../src/personal-ui";
-import "../../src/personal-ui/styles.css";
+import { Button, CodeEditor } from "../../src/ui";
+import "../../src/ui/styles.css";
 
 function CodeEditorFixture() {
   const [plain, setPlain] = useState("plain");

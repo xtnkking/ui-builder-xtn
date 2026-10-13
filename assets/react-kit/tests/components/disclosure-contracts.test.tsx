@@ -1,4 +1,4 @@
-// @personal-ui-coverage {"kind":"unit","runner":"components","exports":["Accordion","Collapse","KeyboardShortcut"]}
+// @ui-coverage {"kind":"unit","runner":"components","exports":["Accordion","Collapse","KeyboardShortcut"]}
 import { createElement } from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -10,7 +10,7 @@ import {
   type AccordionProps,
   type CollapseProps,
   type KeyboardShortcutProps,
-} from "../../src/personal-ui";
+} from "../../src/ui";
 
 const accordionItems = [
   { id: "profile", title: "Profile", content: "Profile content" },
@@ -26,8 +26,8 @@ function escapedProps(testId: string) {
     sx: "foreign-sx",
     tw: "foreign-tw",
     dangerouslySetInnerHTML: { __html: "<b>unsafe</b>" },
-    "data-pui-owner": "Consumer",
-    "data-pui-slot": "foreign",
+    "data-ui-owner": "Consumer",
+    "data-ui-slot": "foreign",
     "data-testid": testId,
     "data-track": "preserved",
   };
@@ -39,8 +39,8 @@ function expectClosedRoot(element: HTMLElement, owner: string) {
   expect(element).not.toHaveAttribute("css");
   expect(element).not.toHaveAttribute("sx");
   expect(element).not.toHaveAttribute("tw");
-  expect(element).not.toHaveAttribute("data-pui-slot");
-  expect(element).toHaveAttribute("data-pui-owner", owner);
+  expect(element).not.toHaveAttribute("data-ui-slot");
+  expect(element).toHaveAttribute("data-ui-owner", owner);
   expect(element).toHaveAttribute("data-track", "preserved");
 }
 
@@ -74,7 +74,7 @@ describe("disclosure contracts", () => {
     expectClosedRoot(screen.getByTestId("collapse"), "Collapse");
     expectClosedRoot(screen.getByTestId("accordion"), "Accordion");
     expectClosedRoot(screen.getByTestId("shortcut"), "KeyboardShortcut");
-    expect(screen.getByTestId("accordion").querySelector(".pui-accordion__item")).not.toBeNull();
+    expect(screen.getByTestId("accordion").querySelector(".ui-accordion__item")).not.toBeNull();
   });
 
   it("owns Collapse state in uncontrolled mode", async () => {

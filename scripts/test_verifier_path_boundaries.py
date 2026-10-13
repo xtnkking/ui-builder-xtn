@@ -14,9 +14,9 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-import install_personal_ui as installer
-import verify_personal_ui as verifier
-from personal_ui_installation import resolve_context
+import install_ui as installer
+import verify_ui as verifier
+from ui_installation import resolve_context
 
 
 def write_json(path: Path, value: object) -> None:
@@ -116,21 +116,21 @@ class VerifierPathBoundaryContracts(unittest.TestCase):
         cls.registry = installer.load_registry()
 
     def test_verify_rejects_linked_tools_parent_before_external_file_io(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-verify-boundary-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-verify-boundary-") as temporary:
             parent = Path(temporary)
             package = parent / "app"
             outside = parent / "outside-tools"
             make_package(package)
             outside.mkdir()
             write_json(
-                outside / "personal-ui" / "install-state.json",
+                outside / "ui" / "install-state.json",
                 {"sourceRoot": "../../outside-source"},
             )
             write_json(
-                outside / "personal-ui" / "component-manifest.json",
+                outside / "ui" / "component-manifest.json",
                 {"sourceIntegrity": {}},
             )
-            (outside / "personal-ui" / "verify-provenance.mjs").write_text(
+            (outside / "ui" / "verify-provenance.mjs").write_text(
                 "throw new Error('must not execute');\n", encoding="utf-8"
             )
             sentinel = outside / "sentinel.txt"
@@ -159,7 +159,7 @@ class VerifierPathBoundaryContracts(unittest.TestCase):
                 self.assertEqual(result, 1, report)
                 self.assertTrue(
                     any(
-                        "Personal UI install state" in error
+                        "UI install state" in error
                         and (
                             "escapes the project boundary" in error
                             or "symbolic link or junction" in error
@@ -173,7 +173,7 @@ class VerifierPathBoundaryContracts(unittest.TestCase):
                 remove_directory_link(link)
 
     def test_dry_run_rejects_linked_tools_parent_for_force_modes(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-dry-run-boundary-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-dry-run-boundary-") as temporary:
             parent = Path(temporary)
             package = parent / "app"
             outside = parent / "outside-tools"
@@ -182,7 +182,7 @@ class VerifierPathBoundaryContracts(unittest.TestCase):
                 target=package,
                 project_root=None,
                 package_root=None,
-                source_root=Path("src/personal-ui"),
+                source_root=Path("src/ui"),
                 package_manager="auto",
                 framework="vite",
             )

@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"sticky/overview","exports":["StickyHeaderActionBar"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"sticky/overview","exports":["StickyHeaderActionBar"]}
 import { StatePreview } from "../state-preview";
-import { Button, StickyHeaderActionBar } from "../../../personal-ui";
+import { Button, StickyHeaderActionBar } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 const explorerCase = {

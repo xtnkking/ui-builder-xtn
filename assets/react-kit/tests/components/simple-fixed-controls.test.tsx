@@ -1,4 +1,4 @@
-// @personal-ui-coverage {"kind":"unit","runner":"components","exports":["Skeleton","Spinner","Tag"]}
+// @ui-coverage {"kind":"unit","runner":"components","exports":["Skeleton","Spinner","Tag"]}
 import { createElement } from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
@@ -9,7 +9,7 @@ import {
   type SkeletonProps,
   type SpinnerProps,
   type TagProps,
-} from "../../src/personal-ui";
+} from "../../src/ui";
 
 function escapedProps(testId: string, onMouseEnter: () => void) {
   return {
@@ -19,8 +19,8 @@ function escapedProps(testId: string, onMouseEnter: () => void) {
     sx: "foreign-sx",
     tw: "foreign-tw",
     dangerouslySetInnerHTML: { __html: "<b>unsafe</b>" },
-    "data-pui-owner": "Consumer",
-    "data-pui-slot": "foreign",
+    "data-ui-owner": "Consumer",
+    "data-ui-slot": "foreign",
     "data-testid": testId,
     "data-track": "preserved",
     "aria-label": `${testId} label`,
@@ -34,8 +34,8 @@ function expectEscapePropsRemoved(element: HTMLElement, owner: string) {
   expect(element).not.toHaveAttribute("css");
   expect(element).not.toHaveAttribute("sx");
   expect(element).not.toHaveAttribute("tw");
-  expect(element).not.toHaveAttribute("data-pui-slot");
-  expect(element).toHaveAttribute("data-pui-owner", owner);
+  expect(element).not.toHaveAttribute("data-ui-slot");
+  expect(element).toHaveAttribute("data-ui-owner", owner);
   expect(element).toHaveAttribute("data-track", "preserved");
 }
 
@@ -48,7 +48,7 @@ describe("simple fixed-control contracts", () => {
     render(createElement(Spinner, rawProps as unknown as SpinnerProps));
 
     const spinner = screen.getByTestId("spinner");
-    expect(spinner).toHaveClass("pui-spinner-wrap");
+    expect(spinner).toHaveClass("ui-spinner-wrap");
     expect(spinner).not.toHaveAttribute("style");
     expect(spinner).toHaveAttribute("aria-label", "spinner label");
     expect(spinner).not.toHaveTextContent("Injected child");
@@ -66,7 +66,7 @@ describe("simple fixed-control contracts", () => {
     render(createElement(Skeleton, rawProps as unknown as SkeletonProps));
 
     const skeleton = screen.getByTestId("skeleton");
-    expect(skeleton).toHaveClass("pui-skeleton");
+    expect(skeleton).toHaveClass("ui-skeleton");
     expect(skeleton).toHaveStyle({ width: "100%", maxWidth: "12rem" });
     expect(skeleton).not.toHaveStyle({ color: "red", background: "magenta" });
     expect(skeleton).toHaveAttribute("aria-hidden", "true");
@@ -92,7 +92,7 @@ describe("simple fixed-control contracts", () => {
     render(createElement(Tag, rawProps as unknown as TagProps, "Active"));
 
     const tag = screen.getByTestId("tag");
-    expect(tag).toHaveClass("pui-tag", "pui-tag--success", "is-selected");
+    expect(tag).toHaveClass("ui-tag", "ui-tag--success", "is-selected");
     expect(tag).not.toHaveAttribute("style");
     expect(tag).toHaveAttribute("aria-label", "tag label");
     expectEscapePropsRemoved(tag, "Tag");

@@ -14,6 +14,8 @@
 
 ### Changed
 
+- 正式名称统一为 `ui-builder-xtn`；组件目录、工具、样式、所有权标记和公共类型统一使用中性 `ui`／`UI` 命名。移除旧名称接口，不提供兼容别名；业务项目保持自身品牌。历史 API 基线及已归档证据保留原始身份，API 报告明确记录包名变更。
+
 - 业务项目 starter 改用独立中性模板，停止复制组件 Explorer、演示及测试页面；默认标题和 package 名称不含组件库宣传，移除运行时错误日志中的库名称，禁用 starter 生产 source map。新增浏览器产物检查，拒绝直接 Skill／仓库标识及公开 source map，同时允许必要的许可文件。保留组件来源校验、内部技术标识和法定许可要求；已有项目通过显式升级更新。
 
 - 国家胶囊国旗改为固定 20×20 圆形，居中等比裁切；加载与失败回退复用同一圆形占位，保持标签尺寸稳定。
@@ -34,7 +36,7 @@
 - 按用户批准的变更影响方案新增独立 M8 sampled-impact 验收入口：保留 RC.8 登录与迁移的原始身份，只对五个受影响消费者补 30 格，明确列出 60 格未证明范围；机器核对新候选、安装源码、命令捕获与原始测量，不扩大旧完整验收或 assembler-only 合同。
 - 为受支持的显式公共属性调用提供完整 React Hook Form、受控/非受控和有限 `controlRef` 示例，并分开验证 TypeScript 合同与来源政策。类型正确的 JSX 属性展开仍按政策拒绝，不宣称两种门禁对所有 TypeScript 写法等价。
 - 官方 `DragDrop + FileUpload` 示例共用文件清单、类型拒绝和禁用状态；保留 accept 的 OR 语义，同名文件按稳定 ID 分别移除。`InfiniteScroll + LoadMore` 共用同步请求所有权、数据和游标；失败保留原记录并通过手动入口重试。低层组件的独立键盘能力不因此扩大。
-- 新增 M8 证据连续性 producer/validator（`personal-ui-m8-evidence-continuity` / `assembler-only-v1`）及测试接线：只允许 assembler、其具名测试源码和 CHANGELOG 的维护差异，保留旧消费者与迁移身份；M6/M7 等新增源码不在有限复用范围内。
+- 新增 M8 证据连续性 producer/validator（`ui-m8-evidence-continuity` / `assembler-only-v1`）及测试接线：只允许 assembler、其具名测试源码和 CHANGELOG 的维护差异，保留旧消费者与迁移身份；M6/M7 等新增源码不在有限复用范围内。
 
 ### Changed
 

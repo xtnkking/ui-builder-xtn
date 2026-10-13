@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { createRoot } from "react-dom/client";
-import { Button, DragDrop, Switch } from "../../src/personal-ui";
-import "../../src/personal-ui/styles.css";
+import { Button, DragDrop, Switch } from "../../src/ui";
+import "../../src/ui/styles.css";
 
 function DragDropFixture() {
   const [accepted, setAccepted] = useState<string[]>([]);

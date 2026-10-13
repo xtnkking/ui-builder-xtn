@@ -1,4 +1,4 @@
-import { Button, type ButtonProps } from "../../src/personal-ui";
+import { Button, type ButtonProps } from "../../src/ui";
 import { SupportedUsageExample } from "../fixtures/supported-public-usage";
 
 const supportedExplicitExample = <SupportedUsageExample onSave={() => undefined} />;

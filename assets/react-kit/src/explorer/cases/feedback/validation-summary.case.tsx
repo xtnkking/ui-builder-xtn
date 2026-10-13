@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"validation-summary/overview","exports":["ValidationSummary"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"validation-summary/overview","exports":["ValidationSummary"]}
 import { StatePreview } from "../state-preview";
-import { Field, Input, Stack, ValidationSummary } from "../../../personal-ui";
+import { Field, Input, Stack, ValidationSummary } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 

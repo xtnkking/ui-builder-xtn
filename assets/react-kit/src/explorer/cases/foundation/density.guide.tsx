@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Card, FilterBar, Grid, Inline, SearchInput, Stack, Tag } from "../../../personal-ui";
+import { Button, Card, FilterBar, Grid, Inline, SearchInput, Stack, Tag } from "../../../ui";
 import { StatePreview } from "../state-preview";
 import type { ExplorerCase } from "../types";
 

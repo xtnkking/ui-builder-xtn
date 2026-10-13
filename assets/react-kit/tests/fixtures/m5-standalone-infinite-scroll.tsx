@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { Button, InfiniteScroll, Stack } from "../../src/personal-ui";
-import "../../src/personal-ui/styles.css";
+import { Button, InfiniteScroll, Stack } from "../../src/ui";
+import "../../src/ui/styles.css";
 
 const requests: number[] = [];
 let pending: { resolve: (end: boolean) => void; reject: (error: unknown) => void } | undefined;

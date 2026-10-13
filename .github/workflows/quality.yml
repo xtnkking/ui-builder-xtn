@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 env:
-  PUI_SOURCE_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
+  UI_SOURCE_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
 
 concurrency:
   group: quality-${{ github.workflow }}-${{ github.ref }}
@@ -29,7 +29,7 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
         with:
-          ref: ${{ env.PUI_SOURCE_COMMIT }}
+          ref: ${{ env.UI_SOURCE_COMMIT }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -58,7 +58,7 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
         with:
-          ref: ${{ env.PUI_SOURCE_COMMIT }}
+          ref: ${{ env.UI_SOURCE_COMMIT }}
           fetch-depth: 0
 
       - name: Set up Node.js
@@ -152,7 +152,7 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
         with:
-          ref: ${{ env.PUI_SOURCE_COMMIT }}
+          ref: ${{ env.UI_SOURCE_COMMIT }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -240,7 +240,7 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
         with:
-          ref: ${{ env.PUI_SOURCE_COMMIT }}
+          ref: ${{ env.UI_SOURCE_COMMIT }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -297,7 +297,7 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
         with:
-          ref: ${{ env.PUI_SOURCE_COMMIT }}
+          ref: ${{ env.UI_SOURCE_COMMIT }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -337,7 +337,7 @@ jobs:
       - name: Record actual Playwright browser versions
         if: always()
         working-directory: assets/react-kit
-        run: node tools/personal-ui/report-browser-versions.mjs --output test-results/browser-version-evidence.json
+        run: node tools/ui/report-browser-versions.mjs --output test-results/browser-version-evidence.json
 
       - name: Record hosted browser evidence
         run: >-
@@ -382,7 +382,7 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
         with:
-          ref: ${{ env.PUI_SOURCE_COMMIT }}
+          ref: ${{ env.UI_SOURCE_COMMIT }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -410,7 +410,7 @@ jobs:
         working-directory: assets/react-kit
         shell: bash
         run: |
-          npm run dev -- --host 127.0.0.1 --port 4173 > "$RUNNER_TEMP/pui-vite.log" 2>&1 &
+          npm run dev -- --host 127.0.0.1 --port 4173 > "$RUNNER_TEMP/ui-vite.log" 2>&1 &
           server_pid=$!
           trap 'kill "$server_pid" 2>/dev/null || true' EXIT
           python ../../scripts/run_safari_smoke.py \
@@ -446,7 +446,7 @@ jobs:
           name: safari-diagnostics
           path: |
             assets/react-kit/test-results/real-safari-smoke.json
-            ${{ runner.temp }}/pui-vite.log
+            ${{ runner.temp }}/ui-vite.log
           if-no-files-found: ignore
           retention-days: 7
 
@@ -465,7 +465,7 @@ jobs:
       - name: Check out exact source commit
         uses: actions/checkout@v4
         with:
-          ref: ${{ env.PUI_SOURCE_COMMIT }}
+          ref: ${{ env.UI_SOURCE_COMMIT }}
           fetch-depth: 0
 
       - name: Set up Python
@@ -483,7 +483,7 @@ jobs:
       - name: Build deterministic RC bindings without writing a candidate
         run: |
           RELEASE_TARGET=$(python -c "import json; from pathlib import Path; print(json.loads(Path('assets/react-kit/api-version-policy.json').read_text(encoding='utf-8'))['releaseTarget'])")
-          python scripts/release_personal_ui.py prepare --root . --output "${{ runner.temp }}/unused-release-output" --version "${RELEASE_TARGET}-rc.1" --source-mode commit --source-ref "${PUI_SOURCE_COMMIT}" --dry-run > "${{ runner.temp }}/release-plan.json"
+          python scripts/release_ui.py prepare --root . --output "${{ runner.temp }}/unused-release-output" --version "${RELEASE_TARGET}-rc.1" --source-mode commit --source-ref "${UI_SOURCE_COMMIT}" --dry-run > "${{ runner.temp }}/release-plan.json"
 
       - name: Assemble and validate artifact-backed hosted evidence
         run: |

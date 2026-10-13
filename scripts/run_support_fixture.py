@@ -18,13 +18,13 @@ import urllib.request
 from pathlib import Path
 from typing import Any
 
-import install_personal_ui as installer
-from personal_ui_installation import STATE_RELATIVE, InstallationContext
+import install_ui as installer
+from ui_installation import STATE_RELATIVE, InstallationContext
 
 
 SKILL_ROOT = Path(__file__).resolve().parents[1]
 FIXTURE_CATALOG = SKILL_ROOT / "references" / "support-fixtures.json"
-VERIFIER = SKILL_ROOT / "scripts" / "verify_personal_ui.py"
+VERIFIER = SKILL_ROOT / "scripts" / "verify_ui.py"
 IGNORED_SNAPSHOT_PARTS = {
     ".next",
     ".support-render",
@@ -114,7 +114,7 @@ def package_manifest(fixture: dict[str, Any]) -> dict[str, Any]:
         "start": "vite preview" if framework["name"] == "vite" else "next start",
     }
     return {
-        "name": "@personal-ui/support-fixture",
+        "name": "@ui/support-fixture",
         "private": True,
         "version": "0.0.0",
         "type": "module",
@@ -141,7 +141,7 @@ def scaffold_fixture(root: Path, fixture: dict[str, Any]) -> tuple[Path, Path]:
         write_json(
             root / "package.json",
             {
-                "name": "personal-ui-support-workspace",
+                "name": "ui-support-workspace",
                 "private": True,
                 "packageManager": f"{manager['name']}@{manager['version']}",
                 "workspaces": [package_relative.as_posix()],
@@ -516,11 +516,11 @@ def main() -> int:
             print(json.dumps(report, indent=2, sort_keys=True))
             return 0
         if args.keep:
-            workspace = Path(tempfile.mkdtemp(prefix=f"pui-{args.fixture_id}-"))
+            workspace = Path(tempfile.mkdtemp(prefix=f"ui-{args.fixture_id}-"))
             report = execute_fixture(fixture, workspace)
             report["retainedWorkspace"] = str(workspace)
         else:
-            with tempfile.TemporaryDirectory(prefix=f"pui-{args.fixture_id}-") as temporary:
+            with tempfile.TemporaryDirectory(prefix=f"ui-{args.fixture_id}-") as temporary:
                 report = execute_fixture(fixture, Path(temporary))
         if args.report_output is not None:
             write_json(args.report_output, report)

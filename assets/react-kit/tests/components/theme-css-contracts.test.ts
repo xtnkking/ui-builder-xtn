@@ -1,13 +1,13 @@
-// @personal-ui-coverage {"kind":"unit","runner":"components","exports":["ThemeProvider"]}
+// @ui-coverage {"kind":"unit","runner":"components","exports":["ThemeProvider"]}
 import { readFileSync } from "node:fs";
 import { dirname, relative, resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
-const entryPath = resolve(process.cwd(), "src/personal-ui/styles.css");
+const entryPath = resolve(process.cwd(), "src/ui/styles.css");
 const sourceRoot = resolve(dirname(entryPath), "../..");
 const rawColorPattern = /#[0-9a-f]{3,8}\b|\b(?:rgb|rgba|hsl|hsla)\s*\(/i;
 const localImportPattern = /@import\s+["']([^"']+\.css)["']\s*;/g;
-const themeTokenDeclarationPattern = /^--(?:pui|_pui)-[\w-]+\s*:/;
+const themeTokenDeclarationPattern = /^--(?:ui|_ui)-[\w-]+\s*:/;
 
 function stripCommentsPreservingLines(source: string): string {
   return source.replace(/\/\*[\s\S]*?\*\//g, (comment) => comment.replace(/[^\n]/g, " "));
@@ -26,7 +26,7 @@ function collectStyleSources(path: string, sources = new Map<string, string>()):
 function isThemeDefinitionScope(ruleStack: readonly string[]): boolean {
   return ruleStack.some((rule) => (
     /(^|,)\s*:root(?:\s|,|$)/.test(rule)
-    || /\.pui-(?:theme|portal)\[data-color-scheme=["'](?:light|dark|system)["']\]/.test(rule)
+    || /\.ui-(?:theme|portal)\[data-color-scheme=["'](?:light|dark|system)["']\]/.test(rule)
   ));
 }
 
@@ -73,7 +73,7 @@ describe("theme CSS contracts", () => {
   it("uses the dedicated focus token for CSS outlines", () => {
     const violations = Array.from(collectStyleSources(entryPath)).flatMap(([path, source]) => (
       source.split(/\r?\n/).flatMap((line, index) => (
-        /outline(?:-color)?\s*:[^;]*var\(--pui-primary\)/.test(line)
+        /outline(?:-color)?\s*:[^;]*var\(--ui-primary\)/.test(line)
           ? [`${relative(sourceRoot, path)}:${index + 1}: ${line.trim()}`]
           : []
       ))

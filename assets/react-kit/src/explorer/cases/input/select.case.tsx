@@ -1,7 +1,7 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"select/overview","exports":["Select","SearchableSelect","AsyncSelect"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"select/overview","exports":["Select","SearchableSelect","AsyncSelect"]}
 import { StatePreview } from "../state-preview";
 import { useState } from "react";
-import { AsyncSelect, Field, SearchableSelect, Select } from "../../../personal-ui";
+import { AsyncSelect, Field, SearchableSelect, Select } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 const countries = [

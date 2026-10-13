@@ -28,12 +28,12 @@ from datetime import datetime, timezone
 from pathlib import Path, PurePosixPath
 from typing import Any, Iterable, Mapping, Sequence
 
-import release_personal_ui as release
+import release_ui as release
 
 
 SCHEMA_VERSION = 1
-REPORT_KIND = "personal-ui-m8-migration-report"
-INVENTORY_KIND = "personal-ui-m8-migration-artifact-inventory"
+REPORT_KIND = "ui-m8-migration-report"
+INVENTORY_KIND = "ui-m8-migration-artifact-inventory"
 TEMPLATE_KIND = "personal-ui-m8-migration-template"
 TEMPLATE_RELATIVE = PurePosixPath("evaluation/m8/migration-v0.2.19-consumer")
 ARCHIVE_PREFIX = "consumer"
@@ -183,8 +183,8 @@ def load_verified_candidate(candidate: Path) -> tuple[dict[str, object], dict[st
         raise MigrationError("official migration candidate is blocked: " + ", ".join(sorted(set(blockers))))
     staging = candidate / "staging" / release.ARCHIVE_PREFIX
     for relative in (
-        "scripts/install_personal_ui.py",
-        "scripts/verify_personal_ui.py",
+        "scripts/install_ui.py",
+        "scripts/verify_ui.py",
         "scripts/run_m8_migration_failure_case.py",
         TEMPLATE_RELATIVE.as_posix() + "/template.json",
     ):
@@ -511,7 +511,7 @@ class CommandRecorder:
         record_path = self.root / f"{stem}.json"
         record = {
             "schemaVersion": SCHEMA_VERSION,
-            "kind": "personal-ui-m8-migration-command",
+            "kind": "ui-m8-migration-command",
             "label": label,
             "argv": [scrub_text(str(value), self.replacements) for value in executed_argv],
             "cwd": scrub_text(str(cwd.resolve()), self.replacements),
@@ -696,7 +696,7 @@ def build_execution_plan(
 ) -> dict[str, object]:
     return {
         "schemaVersion": SCHEMA_VERSION,
-        "kind": "personal-ui-m8-migration-plan",
+        "kind": "ui-m8-migration-plan",
         "candidate": dict(candidate),
         "baseline": dict(baseline),
         "template": TEMPLATE_RELATIVE.as_posix(),
@@ -750,7 +750,7 @@ def execute_migration(
         artifacts / "candidate-input-inventory.json",
         {
             "schemaVersion": SCHEMA_VERSION,
-            "kind": "personal-ui-m8-migration-candidate-input",
+            "kind": "ui-m8-migration-candidate-input",
             "candidate": candidate_bindings,
             "fileCount": len(frozen_candidate_files),
             "contentDigest": frozen_candidate_digest,
@@ -838,7 +838,7 @@ def execute_migration(
         artifacts / "baseline-consumer-source.json",
         {
             "schemaVersion": SCHEMA_VERSION,
-            "kind": "personal-ui-m8-consumer-source-inventory",
+            "kind": "ui-m8-consumer-source-inventory",
             "phase": "before-upgrade",
             "fileCount": len(baseline_files),
             "contentDigest": release.digest_file_map(baseline_files),
@@ -855,7 +855,7 @@ def execute_migration(
     materialize_file_map(baseline_files, conflict)
     materialize_file_map(baseline_files, recovery)
 
-    candidate_installer = staging / "scripts/install_personal_ui.py"
+    candidate_installer = staging / "scripts/install_ui.py"
     upgrade_args = [
         sys.executable,
         str(candidate_installer),
@@ -900,7 +900,7 @@ def execute_migration(
         artifacts / "breaking-api-diagnostic.json",
         {
             "schemaVersion": SCHEMA_VERSION,
-            "kind": "personal-ui-m8-migration-diagnostic",
+            "kind": "ui-m8-migration-diagnostic",
             "breaks": [
                 {
                     "export": "Drawer",
@@ -937,7 +937,7 @@ def execute_migration(
         artifacts / "consumer-migration.json",
         {
             "schemaVersion": SCHEMA_VERSION,
-            "kind": "personal-ui-m8-consumer-migration",
+            "kind": "ui-m8-consumer-migration",
             "paths": list(template["migrationPaths"]),
             "changes": [
                 {
@@ -964,11 +964,11 @@ def execute_migration(
     )
     recorder.run(
         "post-upgrade-npm-verifier",
-        ["npm", "run", "verify:personal-ui"],
+        ["npm", "run", "verify:ui"],
         cwd=consumer,
         environment=environment,
     )
-    candidate_verifier = staging / "scripts/verify_personal_ui.py"
+    candidate_verifier = staging / "scripts/verify_ui.py"
     verifier_args = [sys.executable, str(candidate_verifier), "--target", str(consumer)]
     for component in template["requiredExports"]:
         verifier_args.extend(["--require-component", str(component)])
@@ -986,7 +986,7 @@ def execute_migration(
         cwd=consumer,
         environment=behavior_environment(environment, screenshot=final_screenshot),
     )
-    final_registry = read_json_object(consumer / "src/personal-ui/registry.json", label="upgraded registry")
+    final_registry = read_json_object(consumer / "src/ui/registry.json", label="upgraded registry")
     if final_registry.get("version") != candidate_bindings["version"]:
         raise MigrationError("upgraded consumer registry does not match the candidate version")
     preserved_final = required_hashes(consumer, preserve_paths)
@@ -1001,7 +1001,7 @@ def execute_migration(
         artifacts / "preservation.json",
         {
             "schemaVersion": SCHEMA_VERSION,
-            "kind": "personal-ui-m8-migration-preservation",
+            "kind": "ui-m8-migration-preservation",
             "result": "passed",
             "before": preserved_before,
             "afterInstaller": preserved_after_installer,
@@ -1010,7 +1010,7 @@ def execute_migration(
         },
     )
 
-    conflict_index = conflict / "src/personal-ui/index.ts"
+    conflict_index = conflict / "src/ui/index.ts"
     conflict_index.write_bytes(conflict_index.read_bytes() + b"\n// consumer conflict fixture\n")
     conflict_before = project_file_map(conflict)
     conflict_command = recorder.run(
@@ -1032,7 +1032,7 @@ def execute_migration(
     conflicts = conflict_report.get("plan", {}).get("conflicts", []) if isinstance(conflict_report.get("plan"), dict) else []
     if not any(
         isinstance(item, dict)
-        and item.get("path") == "src/personal-ui/index.ts"
+        and item.get("path") == "src/ui/index.ts"
         and item.get("reason") == "modified-owned-file"
         and item.get("forceable") is True
         for item in conflicts
@@ -1078,7 +1078,7 @@ def execute_migration(
         artifacts / "upgraded-consumer-source.json",
         {
             "schemaVersion": SCHEMA_VERSION,
-            "kind": "personal-ui-m8-consumer-source-inventory",
+            "kind": "ui-m8-consumer-source-inventory",
             "phase": "after-upgrade",
             "fileCount": len(final_files),
             "contentDigest": release.digest_file_map(final_files),
@@ -1089,7 +1089,7 @@ def execute_migration(
         artifacts / "versions.json",
         {
             "schemaVersion": SCHEMA_VERSION,
-            "kind": "personal-ui-m8-migration-versions",
+            "kind": "ui-m8-migration-versions",
             "baselineKit": baseline["version"],
             "candidateKit": candidate_bindings["version"],
             "node": node_version.stdout.strip(),

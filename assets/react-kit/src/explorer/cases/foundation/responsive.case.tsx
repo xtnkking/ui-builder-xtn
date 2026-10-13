@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"responsive/overview","exports":["Grid"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"responsive/overview","exports":["Grid"]}
 import { StatePreview } from "../state-preview";
-import { Box, Grid } from "../../../personal-ui";
+import { Box, Grid } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 const explorerCase = {

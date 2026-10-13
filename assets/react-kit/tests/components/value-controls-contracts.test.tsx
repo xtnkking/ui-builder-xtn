@@ -1,4 +1,4 @@
-// @personal-ui-coverage {"kind":"unit","runner":"components","exports":["ColorPicker","DateRangeField","Rating","Slider","TimezoneSelect"]}
+// @ui-coverage {"kind":"unit","runner":"components","exports":["ColorPicker","DateRangeField","Rating","Slider","TimezoneSelect"]}
 import { createElement, createRef, useState } from "react";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -16,7 +16,7 @@ import {
   type SliderProps,
   type TimezoneSelectProps,
   type ValidityControlHandle,
-} from "../../src/personal-ui";
+} from "../../src/ui";
 
 const forcedEscapes = {
   className: "foreign-control",
@@ -25,8 +25,8 @@ const forcedEscapes = {
   sx: "foreign-sx",
   tw: "foreign-tw",
   dangerouslySetInnerHTML: { __html: "<b>unsafe</b>" },
-  "data-pui-owner": "Consumer",
-  "data-pui-slot": "foreign",
+  "data-ui-owner": "Consumer",
+  "data-ui-slot": "foreign",
   children: "Injected child",
 };
 
@@ -36,8 +36,8 @@ function expectClosedRoot(element: HTMLElement, owner: string) {
   expect(element).not.toHaveAttribute("css");
   expect(element).not.toHaveAttribute("sx");
   expect(element).not.toHaveAttribute("tw");
-  expect(element).not.toHaveAttribute("data-pui-slot");
-  expect(element).toHaveAttribute("data-pui-owner", owner);
+  expect(element).not.toHaveAttribute("data-ui-slot");
+  expect(element).toHaveAttribute("data-ui-owner", owner);
   expect(element).toHaveAttribute("data-track", "preserved");
   expect(element).not.toHaveTextContent("Injected child");
 }
@@ -97,7 +97,7 @@ describe("value control public contracts", () => {
       fireEvent.mouseEnter(root);
     });
     expect(onMouseEnter).toHaveBeenCalledTimes(roots.length);
-    expect(document.querySelector("[data-pui-owner='Consumer']")).toBeNull();
+    expect(document.querySelector("[data-ui-owner='Consumer']")).toBeNull();
   });
 
   it("owns uncontrolled Slider, Rating, ColorPicker, and DateRangeField values", async () => {

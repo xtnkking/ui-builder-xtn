@@ -1,4 +1,4 @@
-// @personal-ui-coverage {"kind":"unit","runner":"components","exports":["Alert","AsyncAction","Banner","EmptyState","ErrorState","InlineMessage","NoResults","Progress","ProgressRing","RetryButton","ToastProvider","ValidationSummary"]}
+// @ui-coverage {"kind":"unit","runner":"components","exports":["Alert","AsyncAction","Banner","EmptyState","ErrorState","InlineMessage","NoResults","Progress","ProgressRing","RetryButton","ToastProvider","ValidationSummary"]}
 import { createElement } from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -28,7 +28,7 @@ import {
   type ProgressRingProps,
   type RetryButtonProps,
   type ValidationSummaryProps,
-} from "../../src/personal-ui";
+} from "../../src/ui";
 
 function ToastProviderProbe() {
   const { toast } = useToast();
@@ -50,9 +50,9 @@ function escapedProps(testId: string, onMouseEnter: () => void) {
     sx: "foreign-sx",
     tw: "foreign-tw",
     dangerouslySetInnerHTML: { __html: "<b>unsafe</b>" },
-    "data-pui-owner": "Consumer",
-    "data-pui-slot": "foreign",
-    "data-pui-private": "foreign",
+    "data-ui-owner": "Consumer",
+    "data-ui-slot": "foreign",
+    "data-ui-private": "foreign",
     "data-testid": testId,
     "data-track": "preserved",
     "aria-describedby": `${testId}-help`,
@@ -67,9 +67,9 @@ function expectClosedRoot(element: HTMLElement, owner: string, expectedClass: st
   expect(element).not.toHaveAttribute("css");
   expect(element).not.toHaveAttribute("sx");
   expect(element).not.toHaveAttribute("tw");
-  expect(element).not.toHaveAttribute("data-pui-slot");
-  expect(element).not.toHaveAttribute("data-pui-private");
-  expect(element).toHaveAttribute("data-pui-owner", owner);
+  expect(element).not.toHaveAttribute("data-ui-slot");
+  expect(element).not.toHaveAttribute("data-ui-private");
+  expect(element).toHaveAttribute("data-ui-owner", owner);
   expect(element).toHaveAttribute("data-track", "preserved");
   expect(element).toHaveAttribute("aria-describedby", `${element.dataset.testid}-help`);
   expect(element).not.toHaveTextContent("unsafe");
@@ -127,15 +127,15 @@ describe("feedback public contracts", () => {
     );
 
     const expectations = [
-      ["alert", "Alert", "pui-alert"],
-      ["empty", "EmptyState", "pui-empty"],
-      ["progress", "Progress", "pui-progress-group"],
-      ["inline", "InlineMessage", "pui-inline-message"],
-      ["banner", "Banner", "pui-banner"],
-      ["validation", "ValidationSummary", "pui-validation-summary"],
+      ["alert", "Alert", "ui-alert"],
+      ["empty", "EmptyState", "ui-empty"],
+      ["progress", "Progress", "ui-progress-group"],
+      ["inline", "InlineMessage", "ui-inline-message"],
+      ["banner", "Banner", "ui-banner"],
+      ["validation", "ValidationSummary", "ui-validation-summary"],
       ["error", "ErrorState", ""],
       ["no-results", "NoResults", ""],
-      ["ring", "ProgressRing", "pui-progress-ring"],
+      ["ring", "ProgressRing", "ui-progress-ring"],
     ] as const;
 
     expectations.forEach(([testId, owner, expectedClass], index) => {
@@ -146,16 +146,16 @@ describe("feedback public contracts", () => {
       if (testId !== "ring") expect(element).not.toHaveAttribute("style");
     });
 
-    expect(screen.getByTestId("alert")).toHaveClass("pui-alert--warning");
+    expect(screen.getByTestId("alert")).toHaveClass("ui-alert--warning");
     expect(screen.getByTestId("empty")).not.toHaveTextContent("Injected child");
     expect(screen.getByTestId("progress")).toHaveTextContent("42%");
     expect(screen.getByTestId("inline")).toHaveTextContent("Saved");
-    expect(screen.getByTestId("banner")).toHaveClass("pui-banner--sticky");
+    expect(screen.getByTestId("banner")).toHaveClass("ui-banner--sticky");
     expect(screen.getByTestId("validation")).toHaveTextContent("Email is required");
     expect(screen.getByTestId("error")).toHaveTextContent("Could not load");
     expect(screen.getByTestId("no-results")).toHaveTextContent("No matches");
     expect(screen.getByTestId("ring")).toHaveAttribute("aria-label", "Uploading files");
-    expect(screen.getByTestId("ring").style.getPropertyValue("--pui-progress-value")).toMatch(/^151\.2\d*deg$/);
+    expect(screen.getByTestId("ring").style.getPropertyValue("--ui-progress-value")).toMatch(/^151\.2\d*deg$/);
     expect(screen.getByTestId("ring").getAttribute("style")).not.toContain("color");
   });
 
@@ -182,8 +182,8 @@ describe("feedback public contracts", () => {
 
     const retry = screen.getByTestId("retry");
     const action = screen.getByTestId("async");
-    expectClosedRoot(retry, "RetryButton", "pui-button");
-    expectClosedRoot(action, "AsyncAction", "pui-button");
+    expectClosedRoot(retry, "RetryButton", "ui-button");
+    expectClosedRoot(action, "AsyncAction", "ui-button");
 
     fireEvent.mouseEnter(retry);
     fireEvent.mouseEnter(action);
@@ -207,9 +207,9 @@ describe("feedback public contracts", () => {
         style: { color: "red" },
         ref: forbiddenRef,
         dangerouslySetInnerHTML: { __html: "<b>unsafe provider</b>" },
-        "data-pui-owner": "Consumer",
-        "data-pui-slot": "foreign",
-        "data-pui-private": "foreign",
+        "data-ui-owner": "Consumer",
+        "data-ui-slot": "foreign",
+        "data-ui-private": "foreign",
         defaultPosition: "top-center",
         defaultShape: "pill",
         children: (
@@ -225,9 +225,9 @@ describe("feedback public contracts", () => {
     const child = screen.getByTestId("provider-child");
     expect(child).toHaveTextContent("Content");
     expect(document.querySelector(".foreign-feedback")).toBeNull();
-    expect(document.querySelector("[data-pui-owner='Consumer']")).toBeNull();
-    expect(document.querySelector("[data-pui-slot='foreign']")).toBeNull();
-    expect(document.querySelector("[data-pui-private='foreign']")).toBeNull();
+    expect(document.querySelector("[data-ui-owner='Consumer']")).toBeNull();
+    expect(document.querySelector("[data-ui-slot='foreign']")).toBeNull();
+    expect(document.querySelector("[data-ui-private='foreign']")).toBeNull();
     expect(document.body).not.toHaveTextContent("unsafe provider");
     expect(forbiddenRef).not.toHaveBeenCalled();
 

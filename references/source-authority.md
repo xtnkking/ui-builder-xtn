@@ -5,11 +5,11 @@
 ## 唯一可编辑来源
 
 - 包含本文件的 Git checkout 是唯一可编辑的源码来源。
-- 该 checkout 内，`assets/react-kit/src/personal-ui/` 是组件实现的 canonical 路径。
+- 该 checkout 内，`assets/react-kit/src/ui/` 是组件实现的 canonical 路径。
 - `$CODEX_HOME/skills/ui-builder-xtn` 下的已安装 Skill、工作区中的备份、导出包和其他 mirror 都是生成副本，禁止直接修复或继续开发。
 - 同步只能从 Git checkout 单向流向生成副本。若生成副本出现差异，应丢弃差异并从 Git checkout 重新生成，不能反向覆盖源码。
 - 每次同步必须记录源 Git commit，并验证 managed source、Manifest、registry、版本和文件哈希一致。发布后的生成副本还必须与同一发行计划和校验和绑定；具体流程见 [release-process.md](release-process.md)。
-- `personal-ui-library-preview.html` 仅是历史视觉参考，不属于源码权威，也不能作为同步输入。
+- 历史 HTML 预览仅是视觉参考，不属于源码权威，也不能作为同步输入。
 
 ## 不可变基线
 

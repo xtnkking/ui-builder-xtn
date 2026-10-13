@@ -1,5 +1,5 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"icon-button/overview","exports":["IconButton"]}
-import { IconButton, Inline } from "../../../personal-ui";
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"icon-button/overview","exports":["IconButton"]}
+import { IconButton, Inline } from "../../../ui";
 import { useState } from "react";
 import { MoreHorizontal, RefreshCw, Trash2 } from "lucide-react";
 import { StatePreview } from "../state-preview";

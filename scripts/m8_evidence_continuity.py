@@ -13,14 +13,14 @@ from pathlib import Path
 from typing import Mapping, Sequence
 
 if __package__:
-    from . import release_personal_ui as release
+    from . import release_ui as release
     from . import validate_m8_evidence as m8
 else:
-    import release_personal_ui as release
+    import release_ui as release
     import validate_m8_evidence as m8
 
 
-KIND = "personal-ui-m8-evidence-continuity"
+KIND = "ui-m8-evidence-continuity"
 POLICY = "assembler-only-v1"
 ALLOWED_SOURCE_PATHS = frozenset({
     "scripts/assemble_m8_acceptance.py",
@@ -66,7 +66,7 @@ def _binding(plan: Mapping) -> dict:
 
 def _verified_rc(plan: dict, journal: dict) -> None:
     release.assert_plan_digest(plan)
-    _require(plan.get("schemaVersion") == 1 and plan.get("kind") == "personal-ui-release-plan",
+    _require(plan.get("schemaVersion") == 1 and plan.get("kind") == "ui-release-plan",
              "unsupported candidate plan")
     version = release.SemVer.parse(plan["candidateVersion"])
     _require(version.rc_number is not None and plan.get("promotion") is None,
@@ -87,7 +87,7 @@ def _verified_rc(plan: dict, journal: dict) -> None:
              and all(isinstance(steps.get(key), dict) for key in ("prepare", "verify")),
              "candidate journal prepare/verify records must be objects")
     _require(journal.get("schemaVersion") == 1
-             and journal.get("kind") == "personal-ui-release-journal"
+             and journal.get("kind") == "ui-release-journal"
              and journal.get("planDigest") == plan["planDigest"]
              and journal["steps"]["prepare"].get("status") == "complete",
              "candidate journal is not bound to the prepared plan")
@@ -198,7 +198,7 @@ def validate_continuity(
         _require(tool_revision.get("basedOnCommit") == target["source"]["commit"], "tool revision base mismatch")
         tool_files = tool_revision["files"]
         _require(isinstance(tool_files, list) and [item["sourcePath"] for item in tool_files] == [
-            "scripts/m8_evidence_continuity.py", "scripts/release_personal_ui.py", "scripts/validate_m8_evidence.py"
+            "scripts/m8_evidence_continuity.py", "scripts/release_ui.py", "scripts/validate_m8_evidence.py"
         ], "tool revision inventory is incomplete")
         for item in tool_files:
             _artifact(item["artifact"], root, "toolRevision." + item["sourcePath"])

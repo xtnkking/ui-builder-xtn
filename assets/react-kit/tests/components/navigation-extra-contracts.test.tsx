@@ -1,4 +1,4 @@
-// @personal-ui-coverage {"kind":"unit","runner":"components","exports":["AnchorNavigation","AppNavigation","BottomNavigation","CommandPalette","InfiniteScroll","LoadMore","Menu","SideNavigation","Stepper","TopNavigation"]}
+// @ui-coverage {"kind":"unit","runner":"components","exports":["AnchorNavigation","AppNavigation","BottomNavigation","CommandPalette","InfiniteScroll","LoadMore","Menu","SideNavigation","Stepper","TopNavigation"]}
 import { createElement, useState, type ReactElement } from "react";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -22,7 +22,7 @@ import {
   type MenuProps,
   type NavigationVariantProps,
   type StepperProps,
-} from "../../src/personal-ui";
+} from "../../src/ui";
 
 const navigationItems = [{ id: "home", label: "Home", onSelect: () => undefined }];
 const steps = [{ id: "details", label: "Details" }];
@@ -40,23 +40,23 @@ function forcedEscapes(testId: string) {
     sx: "foreign-sx",
     tw: "foreign-tw",
     dangerouslySetInnerHTML: { __html: "<b>unsafe navigation</b>" },
-    "data-pui-owner": "Consumer",
-    "data-pui-slot": "foreign",
-    "data-pui-private": "foreign",
+    "data-ui-owner": "Consumer",
+    "data-ui-slot": "foreign",
+    "data-ui-private": "foreign",
     "data-testid": testId,
     "data-track": "preserved",
   };
 }
 
 function expectEscapesRemoved(element: HTMLElement, owner: string) {
-  expect(element).toHaveAttribute("data-pui-owner", owner);
+  expect(element).toHaveAttribute("data-ui-owner", owner);
   expect(element).not.toHaveClass("foreign-navigation");
   expect(element).not.toHaveAttribute("style");
   expect(element).not.toHaveAttribute("css");
   expect(element).not.toHaveAttribute("sx");
   expect(element).not.toHaveAttribute("tw");
-  expect(element).not.toHaveAttribute("data-pui-slot");
-  expect(element).not.toHaveAttribute("data-pui-private");
+  expect(element).not.toHaveAttribute("data-ui-slot");
+  expect(element).not.toHaveAttribute("data-ui-private");
   expect(element).not.toHaveTextContent("unsafe navigation");
 }
 
@@ -203,10 +203,10 @@ describe("extra navigation public contracts", () => {
     };
     const originalCommandProps = { ...commandProps };
     render(createElement(CommandPalette, commandProps as unknown as CommandPaletteProps));
-    const commandOwner = document.querySelector<HTMLElement>("[data-pui-owner='CommandPalette']")!;
+    const commandOwner = document.querySelector<HTMLElement>("[data-ui-owner='CommandPalette']")!;
     expectEscapesRemoved(commandOwner, "CommandPalette");
     expect(commandProps).toEqual(originalCommandProps);
-    expect(document.querySelector("[data-pui-owner='Consumer']")).toBeNull();
+    expect(document.querySelector("[data-ui-owner='Consumer']")).toBeNull();
   });
 
   it("owns uncontrolled open and query state while reporting changes", async () => {

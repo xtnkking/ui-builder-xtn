@@ -1,7 +1,7 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"create-edit/overview","exports":["CreateEditPage"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"create-edit/overview","exports":["CreateEditPage"]}
 import { StatePreview } from "../state-preview";
 import { useState } from "react";
-import { CreateEditPage, Field, Input, Select, Stack } from "../../../personal-ui";
+import { CreateEditPage, Field, Input, Select, Stack } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 function CreateEditExample() {
@@ -40,7 +40,7 @@ const explorerCase: ExplorerCase = {
     { state: "locale", exports: ["CreateEditPage"], content: <StatePreview state="locale">{<CreateEditExample />}</StatePreview> },
   ],
   content: <CreateEditExample />,
-  code: `import { CreateEditPage } from "./personal-ui";
+  code: `import { CreateEditPage } from "./ui";
 
 <CreateEditPage title="编辑项目" onSubmit={save} onCancel={cancel}>{fields}</CreateEditPage>`,
 };

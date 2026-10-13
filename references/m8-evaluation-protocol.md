@@ -90,7 +90,7 @@ python scripts/run_m8_scenario_quality.py \
   --output quality
 ```
 
-The plan has `schemaVersion: 1`, kind `personal-ui-m8-scenario-quality-plan`, a workspace-relative `projectRoot`, direct argv arrays for `typecheck`, `build`, and `verifier`, and this browser object:
+The plan has `schemaVersion: 1`, kind `ui-m8-scenario-quality-plan`, a workspace-relative `projectRoot`, direct argv arrays for `typecheck`, `build`, and `verifier`, and this browser object:
 
 ```json
 {
@@ -146,7 +146,7 @@ The validator rejects a missing section, a non-passed check, a candidate-changin
 
 ## Assembler-Only Evidence Continuity
 
-`scripts/m8_evidence_continuity.py` produces and validates a separate `personal-ui-m8-evidence-continuity` record under policy `assembler-only-v1`. It records a narrow reuse decision between two already verified, publishable RC candidates. It does not convert the origin bundle into a target `m8-acceptance` bundle, execute a new consumer or browser run, or declare M8 or publication complete.
+`scripts/m8_evidence_continuity.py` produces and validates a separate `ui-m8-evidence-continuity` record under policy `assembler-only-v1`. It records a narrow reuse decision between two already verified, publishable RC candidates. It does not convert the origin bundle into a target `m8-acceptance` bundle, execute a new consumer or browser run, or declare M8 or publication complete.
 
 The origin must be a complete, passed M8 acceptance bundle that validates against the origin RC, including its six consumers, migration, quality matrix, retained review, and actual system-Safari evidence. A continuity record cannot be used as another continuity record's origin. Both RC plans, source identities, journals, inventories, and archive bytes are revalidated; a version string or previously recorded summary alone is insufficient.
 

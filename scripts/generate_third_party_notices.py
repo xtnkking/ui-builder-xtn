@@ -7,7 +7,7 @@ import argparse
 import json
 from pathlib import Path
 
-import release_personal_ui as release
+import release_ui as release
 
 
 SKILL_ROOT = Path(__file__).resolve().parent.parent
@@ -39,7 +39,7 @@ def notice_bytes() -> bytes:
 
     notice = {
         "schemaVersion": release.SCHEMA_VERSION,
-        "kind": "personal-ui-third-party-notices",
+        "kind": "ui-third-party-notices",
         "generatedFrom": release.VERSION_PATHS["lock"],
         "dependencyCount": len(items),
         "items": items,

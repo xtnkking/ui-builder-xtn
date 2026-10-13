@@ -1,10 +1,10 @@
-// @personal-ui-coverage {"kind":"unit","runner":"components","exports":["Form","Input","MultiSelect"]}
+// @ui-coverage {"kind":"unit","runner":"components","exports":["Form","Input","MultiSelect"]}
 import { useState } from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Controller, useForm } from "react-hook-form";
 import { describe, expect, it, vi } from "vitest";
-import { Button, Field, Form, Input, MultiSelect } from "../../src/personal-ui";
+import { Button, Field, Form, Input, MultiSelect } from "../../src/ui";
 
 interface ProfileValues {
   email: string;

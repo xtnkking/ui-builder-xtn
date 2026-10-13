@@ -1,4 +1,4 @@
-// @personal-ui-coverage {"kind":"unit","runner":"components","exports":["AsyncAction","Button","DropdownMenu","IconButton","Lightbox","RetryButton","SplitButton","ToggleButton"]}
+// @ui-coverage {"kind":"unit","runner":"components","exports":["AsyncAction","Button","DropdownMenu","IconButton","Lightbox","RetryButton","SplitButton","ToggleButton"]}
 import { createElement, createRef } from "react";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -15,7 +15,7 @@ import {
   type ButtonProps,
   type ControlHandle,
   type IconButtonProps,
-} from "../../src/personal-ui";
+} from "../../src/ui";
 
 function escapedButtonProps(testId: string) {
   return {
@@ -25,8 +25,8 @@ function escapedButtonProps(testId: string) {
     sx: "foreign-sx",
     tw: "foreign-tw",
     dangerouslySetInnerHTML: { __html: "<b>unsafe</b>" },
-    "data-pui-owner": "Consumer",
-    "data-pui-slot": "foreign",
+    "data-ui-owner": "Consumer",
+    "data-ui-slot": "foreign",
     "data-testid": testId,
     "data-track": "preserved",
     "data-pending": "queued",
@@ -39,8 +39,8 @@ function expectButtonEscapesRemoved(button: HTMLButtonElement, owner: string) {
   expect(button).not.toHaveAttribute("css");
   expect(button).not.toHaveAttribute("sx");
   expect(button).not.toHaveAttribute("tw");
-  expect(button).not.toHaveAttribute("data-pui-slot");
-  expect(button).toHaveAttribute("data-pui-owner", owner);
+  expect(button).not.toHaveAttribute("data-ui-slot");
+  expect(button).toHaveAttribute("data-ui-owner", owner);
   expect(button).toHaveAttribute("data-track", "preserved");
   expect(button).toHaveAttribute("data-pending", "queued");
 }
@@ -62,7 +62,7 @@ describe("button public and private composition contracts", () => {
     render(createElement(Button, rawProps as unknown as ButtonProps, "Save"));
 
     const button = screen.getByTestId("save-button") as HTMLButtonElement;
-    expect(button).toHaveClass("pui-button", "pui-button--secondary", "pui-button--medium");
+    expect(button).toHaveClass("ui-button", "ui-button--secondary", "ui-button--medium");
     expect(button).toHaveAttribute("form", "profile-form");
     expect(button).toHaveAttribute("name", "intent");
     expect(button).toHaveValue("save");
@@ -91,7 +91,7 @@ describe("button public and private composition contracts", () => {
     render(createElement(IconButton, rawProps as unknown as IconButtonProps));
 
     const button = screen.getByTestId("refresh-button") as HTMLButtonElement;
-    expect(button).toHaveClass("pui-icon-button", "pui-icon-button--ghost");
+    expect(button).toHaveClass("ui-icon-button", "ui-icon-button--ghost");
     expect(button).toHaveAttribute("aria-busy", "true");
     expect(button).toHaveAttribute("aria-disabled", "true");
     expectButtonEscapesRemoved(button, "IconButton");
@@ -126,12 +126,12 @@ describe("button public and private composition contracts", () => {
       </>,
     );
 
-    expect(screen.getByRole("button", { name: "Run report" })).toHaveClass("pui-split-button__primary");
-    expect(screen.getByRole("button", { name: "Run report" })).toHaveAttribute("data-pui-owner", "Button");
-    expect(screen.getByRole("button", { name: "Pin item" })).toHaveClass("pui-toggle-button");
-    expect(screen.getByRole("button", { name: "Pin item" })).toHaveAttribute("data-pui-owner", "ToggleButton");
-    expect(screen.getByRole("button", { name: "重试" })).toHaveAttribute("data-pui-owner", "RetryButton");
-    expect(screen.getByRole("button", { name: "Save async" })).toHaveAttribute("data-pui-owner", "AsyncAction");
+    expect(screen.getByRole("button", { name: "Run report" })).toHaveClass("ui-split-button__primary");
+    expect(screen.getByRole("button", { name: "Run report" })).toHaveAttribute("data-ui-owner", "Button");
+    expect(screen.getByRole("button", { name: "Pin item" })).toHaveClass("ui-toggle-button");
+    expect(screen.getByRole("button", { name: "Pin item" })).toHaveAttribute("data-ui-owner", "ToggleButton");
+    expect(screen.getByRole("button", { name: "重试" })).toHaveAttribute("data-ui-owner", "RetryButton");
+    expect(screen.getByRole("button", { name: "Save async" })).toHaveAttribute("data-ui-owner", "AsyncAction");
   });
 
   it("keeps DropdownMenu's private element ref for keyboard opening and focus restoration", async () => {
@@ -170,8 +170,8 @@ describe("button public and private composition contracts", () => {
       />,
     );
 
-    expect(screen.getByRole("button", { name: "关闭预览" })).toHaveClass("pui-lightbox__close");
-    expect(screen.getByRole("button", { name: "上一张" })).toHaveClass("pui-lightbox__previous");
-    expect(screen.getByRole("button", { name: "下一张" })).toHaveClass("pui-lightbox__next");
+    expect(screen.getByRole("button", { name: "关闭预览" })).toHaveClass("ui-lightbox__close");
+    expect(screen.getByRole("button", { name: "上一张" })).toHaveClass("ui-lightbox__previous");
+    expect(screen.getByRole("button", { name: "下一张" })).toHaveClass("ui-lightbox__next");
   });
 });

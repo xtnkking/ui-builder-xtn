@@ -1,6 +1,6 @@
 # 组件响应式与长内容修复记录（2026-10-10）
 
-本轮承接用户的十张截图、十一项反馈，修复 canonical 组件源码及相关 Explorer 案例。源码入口为 `assets/react-kit/src/personal-ui/`，案例从公共 barrel 复用组件。没有修改已安装 Skill 副本、版本号、发行 tag 或 Release。
+本轮承接用户的十张截图、十一项反馈，修复 canonical 组件源码及相关 Explorer 案例。源码入口为 `assets/react-kit/src/ui/`，案例从公共 barrel 复用组件。没有修改已安装 Skill 副本、版本号、发行 tag 或 Release。
 
 ## 反馈与处理
 

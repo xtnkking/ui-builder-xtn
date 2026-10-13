@@ -1,8 +1,8 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"drag/overview","exports":["DragDrop"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"drag/overview","exports":["DragDrop"]}
 import { StatePreview } from "../state-preview";
 import { useRef, useState } from "react";
-import { DragDrop, FileUpload, InlineMessage, Stack, Switch } from "../../../personal-ui";
-import type { FileUploadItem } from "../../../personal-ui";
+import { DragDrop, FileUpload, InlineMessage, Stack, Switch } from "../../../ui";
+import type { FileUploadItem } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 /** The Explorer and D2 fixture consume this exact business composition. No upload transport is provided. */

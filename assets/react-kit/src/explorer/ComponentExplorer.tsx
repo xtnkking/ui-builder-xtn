@@ -17,7 +17,7 @@ import {
   Tag,
   Tabs,
   type NavigationItem,
-} from "../personal-ui";
+} from "../ui";
 import {
   defaultExplorerFamilyId,
   explorerCategories,
@@ -188,9 +188,9 @@ export function ComponentExplorer({ cases: additionalCases = {} }: { cases?: Exp
   }, []);
 
   return (
-    <div className="demo-shell demo-explorer-shell pui-root">
+    <div className="demo-shell demo-explorer-shell ui-root">
       <header className="demo-topbar">
-        <div className="demo-brand"><span><Grid2X2 className="demo-brand__icon" aria-hidden="true" /></span><strong>Personal UI</strong></div>
+        <div className="demo-brand"><span><Grid2X2 className="demo-brand__icon" aria-hidden="true" /></span><strong>ui-builder-xtn</strong></div>
         <span>{explorerFamilies.length} 个组件家族</span>
       </header>
       <div className="demo-explorer-layout">

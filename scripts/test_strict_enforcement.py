@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Exercise the Personal UI provenance gate against known bypass patterns."""
+"""Exercise the UI provenance gate against known bypass patterns."""
 
 from __future__ import annotations
 
@@ -19,19 +19,19 @@ SCANNER = (
     / "assets"
     / "react-kit"
     / "tools"
-    / "personal-ui"
+    / "ui"
     / "verify-provenance.mjs"
 )
 MANIFEST = SKILL_ROOT / "assets" / "react-kit" / "component-manifest.json"
 REGISTRY = SKILL_ROOT / "assets" / "react-kit" / "registry.json"
-MANAGED_SOURCE = SKILL_ROOT / "assets" / "react-kit" / "src" / "personal-ui"
+MANAGED_SOURCE = SKILL_ROOT / "assets" / "react-kit" / "src" / "ui"
 MANAGED_STYLES = MANAGED_SOURCE / "styles.css"
-MANAGED_FORM_SOURCE = "src/personal-ui/input/forms.tsx"
-INSTALLER = SKILL_ROOT / "scripts" / "install_personal_ui.py"
-FULL_VERIFIER = SKILL_ROOT / "scripts" / "verify_personal_ui.py"
+MANAGED_FORM_SOURCE = "src/ui/input/forms.tsx"
+INSTALLER = SKILL_ROOT / "scripts" / "install_ui.py"
+FULL_VERIFIER = SKILL_ROOT / "scripts" / "verify_ui.py"
 VERIFY_SCRIPT = (
-    "node tools/personal-ui/verify-provenance.mjs --target . "
-    "--manifest tools/personal-ui/component-manifest.json"
+    "node tools/ui/verify-provenance.mjs --target . "
+    "--manifest tools/ui/component-manifest.json"
 )
 
 
@@ -44,15 +44,15 @@ def run_scan(
     node = shutil.which("node")
     if node is None:
         raise RuntimeError("Node.js is required for strict enforcement tests")
-    with tempfile.TemporaryDirectory(prefix="personal-ui-enforcement-") as temporary:
+    with tempfile.TemporaryDirectory(prefix="ui-enforcement-") as temporary:
         target = Path(temporary)
-        shutil.copytree(MANAGED_SOURCE, target / "src" / "personal-ui")
+        shutil.copytree(MANAGED_SOURCE, target / "src" / "ui")
         installed_registry = (
             registry
             if registry is not None
             else json.loads(REGISTRY.read_text(encoding="utf-8"))
         )
-        (target / "src" / "personal-ui" / "registry.json").write_text(
+        (target / "src" / "ui" / "registry.json").write_text(
             json.dumps(installed_registry, indent=2) + "\n",
             encoding="utf-8",
         )
@@ -69,7 +69,7 @@ def run_scan(
                 "--target",
                 str(target),
                 "--source-root",
-                "src/personal-ui",
+                "src/ui",
                 "--manifest",
                 str(MANIFEST),
             ],
@@ -133,11 +133,11 @@ def test_registry_driven_component_protection() -> None:
         "fixed-control classification protects Collapse",
         {
             "src/App.tsx": (
-                "import {Collapse} from './personal-ui'; "
+                "import {Collapse} from './ui'; "
                 "export const App=()=> <Collapse className='foreign-collapse' />;"
             )
         },
-        {"PUI_COMPONENT_STYLE_OVERRIDE"},
+        {"UI_COMPONENT_STYLE_OVERRIDE"},
     )
 
     layout_exports = (
@@ -157,7 +157,7 @@ def test_registry_driven_component_protection() -> None:
             "src/App.tsx": (
                 "import {"
                 + ",".join(layout_exports)
-                + "} from './personal-ui'; "
+                + "} from './ui'; "
                 + f"export const App=()=> <>{layout_markup}</>;"
             )
         },
@@ -174,18 +174,18 @@ def test_registry_driven_component_protection() -> None:
         "registry reclassification protects a former layout export",
         {
             "src/App.tsx": (
-                "import {Box} from './personal-ui'; "
+                "import {Box} from './ui'; "
                 "export const App=()=> <Box className='foreign-box' />;"
             )
         },
-        {"PUI_COMPONENT_STYLE_OVERRIDE"},
+        {"UI_COMPONENT_STYLE_OVERRIDE"},
         registry=registry,
     )
     expect_valid(
         "registry reclassification exempts a former fixed control",
         {
             "src/App.tsx": (
-                "import {Collapse} from './personal-ui'; "
+                "import {Collapse} from './ui'; "
                 "export const App=()=> <Collapse className='page-collapse' />;"
             )
         },
@@ -202,9 +202,9 @@ def python_jsx_boundary_findings(files: dict[str, str]) -> tuple[list[str], set[
     aliases = {name: name for name in public}
     errors: list[str] = []
     used: set[str] = set()
-    with tempfile.TemporaryDirectory(prefix="pui-python-boundary-") as temporary:
+    with tempfile.TemporaryDirectory(prefix="ui-python-boundary-") as temporary:
         target = Path(temporary)
-        shutil.copytree(MANAGED_SOURCE, target / "src/personal-ui")
+        shutil.copytree(MANAGED_SOURCE, target / "src/ui")
         for relative, source in files.items():
             destination = target / relative
             destination.parent.mkdir(parents=True, exist_ok=True)
@@ -228,9 +228,9 @@ def expect_valid_jsx_boundaries(name: str, files: dict[str, str], used: set[str]
 
 
 def expect_issue_jsx_boundaries(name: str, files: dict[str, str], reason: str) -> None:
-    expect_issue(name, files, {"PUI_COMPONENT_STYLE_OVERRIDE"})
+    expect_issue(name, files, {"UI_COMPONENT_STYLE_OVERRIDE"})
     errors, _used = python_jsx_boundary_findings(files)
-    if not any("[PUI_COMPONENT_STYLE_OVERRIDE]" in error and reason in error for error in errors):
+    if not any("[UI_COMPONENT_STYLE_OVERRIDE]" in error and reason in error for error in errors):
         raise AssertionError(f"{name}: Python verifier missed {reason!r}: {errors}")
 
 
@@ -239,7 +239,7 @@ def test_jsx_attribute_business_expressions() -> None:
         "callback object spread is business state, not JSX spread props",
         {
             "src/App.tsx": """
-                import {SearchInput} from './personal-ui';
+                import {SearchInput} from './ui';
                 const draft = {search: ''};
                 const setDraft = (value: typeof draft) => value;
                 export const App = () => <SearchInput
@@ -254,7 +254,7 @@ def test_jsx_attribute_business_expressions() -> None:
         "option array and object spreads stay inside the options value",
         {
             "src/App.tsx": """
-                import {Select} from './personal-ui';
+                import {Select} from './ui';
                 const roleOptions = [{value: 'member', label: 'Member'}];
                 const all = {value: 'all'};
                 export const App = () => <Select
@@ -272,7 +272,7 @@ def test_jsx_attribute_layout_slots() -> None:
         "mobile row layout class belongs to the nested div",
         {
             "src/App.tsx": """
-                import {DataTable, Badge} from './personal-ui';
+                import {DataTable, Badge} from './ui';
                 const rows = [{id: 'member-1', name: 'Ada'}];
                 export const App = () => <DataTable
                   rows={rows}
@@ -290,7 +290,7 @@ def test_jsx_attribute_layout_slots() -> None:
         "Drawer footer layout props belong to its surrounding layout",
         {
             "src/App.tsx": """
-                import {Drawer, Button, Stack} from './personal-ui';
+                import {Drawer, Button, Stack} from './ui';
                 export const App = () => <Drawer open={true} onOpenChange={() => {}}
                   footer={<div className='form-actions'>
                     <Stack className='footer-layout' style={{minHeight: 0}}>
@@ -309,8 +309,8 @@ def test_jsx_attribute_direct_protected_overrides() -> None:
         "a safe typed props object is accepted on a public control",
         {
             "src/App.tsx": """
-                import {Input} from './personal-ui';
-                import type {InputProps} from './personal-ui';
+                import {Input} from './ui';
+                import type {InputProps} from './ui';
                 const props: InputProps = {defaultValue: 'Ada'};
                 const draft = {search: ''};
                 const setDraft = (value: typeof draft) => value;
@@ -324,12 +324,12 @@ def test_jsx_attribute_direct_protected_overrides() -> None:
     )
     files = {
         "src/App.tsx": """
-            import {Drawer, Button} from './personal-ui';
+            import {Drawer, Button} from './ui';
             export const App = () => <Drawer open={true} onOpenChange={() => {}}
               footer={<div className='form-actions'><Button>Save</Button></div>}
               className='foreign-drawer' style={{opacity: 0.5}}
               css={{padding: 0}} sx={{padding: 0}} tw='flat' ref={() => {}}
-              dangerouslySetInnerHTML={{__html: 'unsafe'}} data-pui-owner='Consumer'
+              dangerouslySetInnerHTML={{__html: 'unsafe'}} data-ui-owner='Consumer'
             />;
         """,
     }
@@ -337,16 +337,16 @@ def test_jsx_attribute_direct_protected_overrides() -> None:
     messages = {
         issue["message"]
         for issue in report.get("issues", [])
-        if issue.get("code") == "PUI_COMPONENT_STYLE_OVERRIDE"
+        if issue.get("code") == "UI_COMPONENT_STYLE_OVERRIDE"
     }
     expected = (
         "className", "style", "css", "sx", "tw", "ref",
-        "dangerouslySetInnerHTML", "data-pui-owner",
+        "dangerouslySetInnerHTML", "data-ui-owner",
     )
     if result.returncode == 0 or report.get("valid") is not False or len(messages) != len(expected):
         raise AssertionError(f"direct protected props after a slot were not all rejected: {report}")
     for name in expected:
-        if not any(f"{name} on Personal UI component Drawer is forbidden" in message for message in messages):
+        if not any(f"{name} on UI component Drawer is forbidden" in message for message in messages):
             raise AssertionError(f"direct {name} after a slot was not rejected: {report}")
     errors, _used = python_jsx_boundary_findings(files)
     if len(errors) != 1 or "JSX for Drawer" not in errors[0]:
@@ -361,7 +361,7 @@ def test_jsx_attribute_nested_protected_overrides() -> None:
         (
             "footer JSX remains independently inspected",
             """
-                import {Drawer, Input, Button} from './personal-ui';
+                import {Drawer, Input, Button} from './ui';
                 const props = {children: 'Save', style: {color: 'red'}};
                 export const App = () => <Drawer open={true} onOpenChange={() => {}}
                   title='Details' children={<p>Details</p>}
@@ -373,27 +373,27 @@ def test_jsx_attribute_nested_protected_overrides() -> None:
                 />;
             """,
             (
-                "className on Personal UI component Input is forbidden",
-                "style on Personal UI component Button is forbidden",
-                "spread props on Personal UI component Button",
+                "className on UI component Input is forbidden",
+                "style on UI component Button is forbidden",
+                "spread props on UI component Button",
             ),
         ),
         (
             "render callback JSX retains ref and reserved-prop enforcement",
             """
-                import {DataTable, Input} from './personal-ui';
+                import {DataTable, Input} from './ui';
                 const capture = () => {};
             export const App = () => <DataTable<{id: string}> rows={[]} columns={[]}
                   rowKey={(row) => row.id} ariaLabel='Members'
                   mobileRow={(row) => <div className='member-card'>
                     <Input ref={capture} />
-                    <Input data-pui-owner='Consumer' />
+                    <Input data-ui-owner='Consumer' />
                   </div>}
                 />;
             """,
             (
-                "ref on Personal UI component Input is forbidden",
-                "data-pui-owner on Personal UI component Input is forbidden",
+                "ref on UI component Input is forbidden",
+                "data-ui-owner on UI component Input is forbidden",
             ),
         ),
     )
@@ -402,7 +402,7 @@ def test_jsx_attribute_nested_protected_overrides() -> None:
         messages = {
             issue["message"]
             for issue in report.get("issues", [])
-            if issue.get("code") == "PUI_COMPONENT_STYLE_OVERRIDE"
+            if issue.get("code") == "UI_COMPONENT_STYLE_OVERRIDE"
         }
         if result.returncode == 0 or report.get("valid") is not False or len(messages) != len(expected):
             raise AssertionError(f"{name}: nested controls were not independently rejected: {report}")
@@ -413,7 +413,7 @@ def test_jsx_attribute_nested_protected_overrides() -> None:
         if len(errors) != len(expected) or any("JSX for Drawer" in error or "JSX for DataTable" in error for error in errors):
             raise AssertionError(f"{name}: Python nested override ownership was not preserved: {errors}")
         for fragment in expected:
-            match = re.search(r"(className|style|ref|data-pui-owner|spread props).*component (\w+)", fragment)
+            match = re.search(r"(className|style|ref|data-ui-owner|spread props).*component (\w+)", fragment)
             reason, exported = match.groups()
             if not any(f"JSX for {exported}" in error and reason in error for error in errors):
                 raise AssertionError(f"{name}: Python missed {fragment!r}: {errors}")
@@ -424,7 +424,7 @@ def test_jsx_generic_public_component_boundaries() -> None:
         "generic public JSX keeps explicit props and nested layout ownership",
         {
             "src/App.tsx": """
-                import {DataTable, Badge} from './personal-ui';
+                import {DataTable, Badge} from './ui';
                 type Row = {id: string; name: string};
                 export const App = () => <DataTable<Row>
                   rows={[]} columns={[]} rowKey={(row) => row.id} ariaLabel='Members'
@@ -438,7 +438,7 @@ def test_jsx_generic_public_component_boundaries() -> None:
         "nested generic type arguments end before direct JSX props",
         {
             "src/App.tsx": """
-                import {DataTable} from './personal-ui';
+                import {DataTable} from './ui';
                 export const App = () => <DataTable<{id: string; values: Array<{label: string}>}>
                   rows={[]} columns={[]} rowKey={(row) => row.id} ariaLabel='Members'
                 />;
@@ -450,8 +450,8 @@ def test_jsx_generic_public_component_boundaries() -> None:
         "generic public JSX accepts safe typed props",
         {
             "src/App.tsx": """
-                import {DataTable} from './personal-ui';
-                import type {DataTableProps} from './personal-ui';
+                import {DataTable} from './ui';
+                import type {DataTableProps} from './ui';
                 type Row = {id: string};
                 const props: DataTableProps<Row> = {
                   rows: [], columns: [], rowKey: (row) => row.id, ariaLabel: 'Members'
@@ -465,7 +465,7 @@ def test_jsx_generic_public_component_boundaries() -> None:
         "generic public JSX cannot bypass direct className enforcement",
         {
             "src/App.tsx": """
-                import {DataTable} from './personal-ui';
+                import {DataTable} from './ui';
                 type Row = {id: string};
                 export const App = () => <DataTable<Row>
                   rows={[]} columns={[]} rowKey={(row) => row.id} ariaLabel='Members'
@@ -482,7 +482,7 @@ def test_tsx_generic_arrow_is_not_jsx() -> None:
         "a generic business-state callback is not a JSX opening",
         {
             "src/App.tsx": """
-                import {SearchInput} from './personal-ui';
+                import {SearchInput} from './ui';
                 type Draft = {search: string};
                 const draft: Draft = {search: ''};
                 const setDraft = (value: Draft) => value;
@@ -499,7 +499,7 @@ def test_tsx_generic_arrow_is_not_jsx() -> None:
         "a generic arrow still exposes real protected JSX in its body",
         {
             "src/App.tsx": """
-                import {Input} from './personal-ui';
+                import {Input} from './ui';
                 type Draft = {search: string};
                 export const renderField = <T extends keyof Draft>(field: T, value: Draft[T]) =>
                   <Input defaultValue={value} className='foreign-input' />;
@@ -523,7 +523,7 @@ def test_jsx_regex_expression_boundaries() -> None:
     )
     for expression in expressions:
         prefix = (
-            "import {Input} from './personal-ui'; const label = '{}'; "
+            "import {Input} from './ui'; const label = '{}'; "
             "export const App = () => <Input title={String("
             + expression + ")} "
         )
@@ -544,7 +544,7 @@ def test_jsx_regex_nested_component_protection() -> None:
         "generic type comments and quote-containing regex keep nested layout ownership",
         {
             "src/App.tsx": r"""
-                import {DataTable, Badge} from './personal-ui';
+                import {DataTable, Badge} from './ui';
                 type Row = {id: string; name: string};
                 export const App = () => <DataTable<Row /* > } { */>
                   rows={[]} columns={[]} rowKey={(row) => row.id} ariaLabel='Members'
@@ -557,7 +557,7 @@ def test_jsx_regex_nested_component_protection() -> None:
         {"DataTable", "Badge"},
     )
     source = r"""
-        import {Drawer, Input, Button} from './personal-ui';
+        import {Drawer, Input, Button} from './ui';
         const label = '{}';
         const props = {children: 'Save', style: {color: 'red'}};
         export const App = () => <Drawer open={true} onOpenChange={() => {}}
@@ -572,11 +572,11 @@ def test_jsx_regex_nested_component_protection() -> None:
     messages = {
         issue["message"]
         for issue in report.get("issues", [])
-        if issue.get("code") == "PUI_COMPONENT_STYLE_OVERRIDE"
+        if issue.get("code") == "UI_COMPONENT_STYLE_OVERRIDE"
     }
     expected = (
-        "className on Personal UI component Input is forbidden",
-        "spread props on Personal UI component Button",
+        "className on UI component Input is forbidden",
+        "spread props on UI component Button",
     )
     if result.returncode == 0 or len(messages) != len(expected):
         raise AssertionError(f"regex-containing slot lost nested control ownership: {report}")
@@ -590,7 +590,7 @@ def test_jsx_regex_nested_component_protection() -> None:
         "generic comment delimiters cannot hide a direct className after a slot",
         {
             "src/App.tsx": r"""
-                import {DataTable} from './personal-ui';
+                import {DataTable} from './ui';
                 type Row = {id: string};
                 export const App = () => <DataTable<Row /* > } { */>
                   rows={[]} columns={[]} rowKey={(row) => row.id} ariaLabel='Members'
@@ -605,7 +605,7 @@ def test_jsx_regex_nested_component_protection() -> None:
 
 def test_test_directory_exclusions() -> None:
     safe_application = (
-        "import {Button} from './personal-ui'; "
+        "import {Button} from './ui'; "
         "export const App=()=> <Button>Run</Button>;"
     )
     intentionally_invalid_fixture = "export const Fixture=()=> <button>Bypass</button>;"
@@ -623,13 +623,13 @@ def test_test_directory_exclusions() -> None:
     expect_issue(
         "application source remains scanned when test directories are excluded",
         {"src/App.tsx": intentionally_invalid_fixture},
-        {"PUI_RAW_CONTROL"},
+        {"UI_RAW_CONTROL"},
     )
 
     verifier = runpy.run_path(str(FULL_VERIFIER))
     inspect_application_usage = verifier["inspect_application_usage"]
     with tempfile.TemporaryDirectory(
-        prefix="personal-ui-python-test-exclusions-"
+        prefix="ui-python-test-exclusions-"
     ) as temporary:
         target = Path(temporary)
         (target / "src").mkdir(parents=True)
@@ -646,8 +646,8 @@ def test_test_directory_exclusions() -> None:
         ignored_errors: list[str] = []
         inspect_application_usage(
             target,
-            target / "src" / "personal-ui",
-            "src/personal-ui/styles.css",
+            target / "src" / "ui",
+            "src/ui/styles.css",
             set(),
             set(),
             ignored_errors,
@@ -664,14 +664,14 @@ def test_test_directory_exclusions() -> None:
         application_errors: list[str] = []
         inspect_application_usage(
             target,
-            target / "src" / "personal-ui",
-            "src/personal-ui/styles.css",
+            target / "src" / "ui",
+            "src/ui/styles.css",
             set(),
             set(),
             application_errors,
         )
         if not any(
-            "src/app.css" in error and "[PUI_GENERIC_STYLE_OVERRIDE]" in error
+            "src/app.css" in error and "[UI_GENERIC_STYLE_OVERRIDE]" in error
             for error in application_errors
         ):
             raise AssertionError(
@@ -682,31 +682,31 @@ def test_test_directory_exclusions() -> None:
 def test_autofill_contract() -> None:
     styles = MANAGED_STYLES.read_text(encoding="utf-8")
     for selector in (
-        ".pui-input:-webkit-autofill",
-        ".pui-input:-webkit-autofill:hover",
-        ".pui-input:-webkit-autofill:focus",
-        ".pui-input:autofill",
-        ".pui-input:autofill:hover",
-        ".pui-input:autofill:focus",
+        ".ui-input:-webkit-autofill",
+        ".ui-input:-webkit-autofill:hover",
+        ".ui-input:-webkit-autofill:focus",
+        ".ui-input:autofill",
+        ".ui-input:autofill:hover",
+        ".ui-input:autofill:focus",
     ):
         if selector not in styles:
             raise AssertionError(f"autofill contract is missing {selector}")
     for declaration in (
-        "-webkit-text-fill-color: var(--_pui-input-autofill-text)",
-        "caret-color: var(--_pui-input-autofill-text)",
-        "inset 0 0 0 100vmax var(--_pui-input-autofill-background)",
+        "-webkit-text-fill-color: var(--_ui-input-autofill-text)",
+        "caret-color: var(--_ui-input-autofill-text)",
+        "inset 0 0 0 100vmax var(--_ui-input-autofill-background)",
     ):
         if declaration not in styles:
             raise AssertionError(f"autofill contract is missing {declaration}")
-    embedded = re.search(r"\.pui-input--embedded\s*\{([^}]+)\}", styles)
+    embedded = re.search(r"\.ui-input--embedded\s*\{([^}]+)\}", styles)
     if embedded is None or not re.search(r"\bborder-radius\s*:\s*0\s*;", embedded.group(1)):
         raise AssertionError("embedded input must not paint an independent rounded rectangle")
 
 
 def test_js_static_import_boundaries() -> None:
-    styles = "import './personal-ui/styles.css';\nimport './app.css';\n"
+    styles = "import './ui/styles.css';\nimport './app.css';\n"
     local_app = (
-        "import { Button } from './personal-ui';\n"
+        "import { Button } from './ui';\n"
         "export const App = () => <Button>Run</Button>;\n"
         "export default App;\n"
     )
@@ -714,7 +714,7 @@ def test_js_static_import_boundaries() -> None:
         (
             "entrypoint CSS side effects preserve the following default App",
             "import React from 'react';\n"
-            "import { LocaleProvider } from './personal-ui';\n"
+            "import { LocaleProvider } from './ui';\n"
             + styles
             + "import App from './App';\n"
             "export const Root = () => <LocaleProvider locale='zh-CN'><App /></LocaleProvider>;\n",
@@ -730,20 +730,20 @@ def test_js_static_import_boundaries() -> None:
         (
             "CSS side effects preserve public aliases and inline type members",
             styles
-            + "import { type ButtonProps, Button as Action } from './personal-ui';\n"
+            + "import { type ButtonProps, Button as Action } from './ui';\n"
             "export const Root = () => <Action>Run</Action>;\n",
             {"Button"},
         ),
         (
             "CSS side effects preserve a public namespace",
             styles
-            + "import * as UI from './personal-ui';\n"
+            + "import * as UI from './ui';\n"
             "export const Root = () => <UI.Button>Run</UI.Button>;\n",
             {"Button"},
         ),
         (
             "semicolon-free multiline mixed imports retain all bindings",
-            "import './personal-ui/styles.css'\nimport './app.css'\n"
+            "import './ui/styles.css'\nimport './app.css'\n"
             "import React, {\n  StrictMode as Mode\n} from\n 'react'\n"
             "import App, {\n  App as NamedView\n} from\n './App'\n"
             "import typeFoo from './App'\n"
@@ -752,10 +752,10 @@ def test_js_static_import_boundaries() -> None:
         ),
         (
             "comment trivia and multiline type-only imports keep runtime ownership",
-            "import  type { ButtonProps } from './personal-ui';\n"
-            "import /* from 'ignored.css'; */ type { InputProps } from './personal-ui';\n"
-            "import\n type { ButtonProps as OtherProps } from './personal-ui'\n"
-            "import /* from 'ignored.css'; */ './personal-ui/styles.css'\n"
+            "import  type { ButtonProps } from './ui';\n"
+            "import /* from 'ignored.css'; */ type { InputProps } from './ui';\n"
+            "import\n type { ButtonProps as OtherProps } from './ui'\n"
+            "import /* from 'ignored.css'; */ './ui/styles.css'\n"
             "import './app.css'\n"
             "import /* from 'ignored.css'; */\n App from\n './App'\n"
             "export const Root = () => <App />;\n",
@@ -771,65 +771,65 @@ def test_js_static_import_boundaries() -> None:
 
 
 def test_js_static_import_ownership_rejections() -> None:
-    styles = "import './personal-ui/styles.css';\nimport './app.css';\n"
+    styles = "import './ui/styles.css';\nimport './app.css';\n"
     cases = (
         (
             "CSS side effects do not hide an external default component",
             "import Foreign from '@mui/material';\nexport const Root = () => <Foreign />;\n",
-            {"PUI_EXTERNAL_JSX"},
+            {"UI_EXTERNAL_JSX"},
         ),
         (
             "CSS side effects do not hide an external named component",
             "import { Button as Foreign } from '@mui/material';\n"
             "export const Root = () => <Foreign />;\n",
-            {"PUI_EXTERNAL_JSX"},
+            {"UI_EXTERNAL_JSX"},
         ),
         (
             "CSS side effects do not permit private public-barrel exports",
-            "import { InternalInput } from './personal-ui';\n"
+            "import { InternalInput } from './ui';\n"
             "export const Root = () => <InternalInput />;\n",
-            {"PUI_PRIVATE_EXPORT"},
+            {"UI_PRIVATE_EXPORT"},
         ),
         (
             "CSS side effects do not permit deep imports",
-            "import { Input } from './personal-ui/input/forms';\n"
+            "import { Input } from './ui/input/forms';\n"
             "export const Root = () => <Input />;\n",
-            {"PUI_DEEP_IMPORT"},
+            {"UI_DEEP_IMPORT"},
         ),
         (
             "CSS side effects preserve public className protection",
-            "import { Input as FieldInput } from './personal-ui';\n"
+            "import { Input as FieldInput } from './ui';\n"
             "export const Root = () => <FieldInput className='foreign-input' />;\n",
-            {"PUI_COMPONENT_STYLE_OVERRIDE"},
+            {"UI_COMPONENT_STYLE_OVERRIDE"},
         ),
         (
             "CSS side effects preserve public spread protection",
-            "import { Input } from './personal-ui';\n"
+            "import { Input } from './ui';\n"
             "export const Root = (props: any) => <Input {...props} />;\n",
-            {"PUI_COMPONENT_STYLE_OVERRIDE"},
+            {"UI_COMPONENT_STYLE_OVERRIDE"},
         ),
         (
             "CSS side effects preserve an aliased React factory raw-control rejection",
             "import R from 'react';\nexport const Root = () => R.createElement('button');\n",
-            {"PUI_RAW_CONTROL"},
+            {"UI_RAW_CONTROL"},
         ),
         (
             "CSS side effects do not permit a later external stylesheet",
             "import 'foreign-theme/style.css';\n"
-            "import { Button } from './personal-ui';\nexport const Root = () => <Button>Run</Button>;\n",
-            {"PUI_EXTERNAL_STYLE"},
+            "import { Button } from './ui';\nexport const Root = () => <Button>Run</Button>;\n",
+            {"UI_EXTERNAL_STYLE"},
         ),
         (
             "template import text does not establish local component ownership",
             "const copy = `\nimport Ghost from './Local';\n`;\n"
             "export const Root = () => <Ghost />;\n",
-            {"PUI_UNINSPECTABLE_ELEMENT"},
+            {"UI_UNINSPECTABLE_ELEMENT"},
         ),
         (
             "regex import text does not establish local component ownership",
             "const copy = /;import Ghost from '.\\/Local'/;\n"
             "export const Root = () => <Ghost />;\n",
-            {"PUI_UNINSPECTABLE_ELEMENT"},
+            {"UI_UNINSPECTABLE_ELEMENT"},
         ),
     )
     for name, source, codes in cases:
@@ -843,48 +843,48 @@ def test_python_static_import_boundaries() -> None:
     static_import = verifier["STATIC_IMPORT"]
     bound_import = verifier["STATIC_IMPORT_FROM"]
     inspect_usage = verifier["inspect_application_usage"]
-    style = "./personal-ui/styles.css"
+    style = "./ui/styles.css"
     app = "./App"
     cases = (
         (
             "side-effect first followed by a bound import",
-            "import './personal-ui/styles.css';\nimport { App } from './App';\n",
+            "import './ui/styles.css';\nimport { App } from './App';\n",
             [style, app],
             [app],
         ),
         (
             "side-effects between bound imports",
             "import React from 'react';\n"
-            "import './personal-ui/styles.css';\nimport './app.css';\n"
+            "import './ui/styles.css';\nimport './app.css';\n"
             "import { App } from './App';\n",
             ["react", style, "./app.css", app],
             ["react", app],
         ),
         (
             "side-effect last",
-            "import { App } from './App';\nimport './personal-ui/styles.css';\n",
+            "import { App } from './App';\nimport './ui/styles.css';\n",
             [app, style],
             [app],
         ),
         (
             "semicolon-free multiline default and named imports",
             "import React, {\n  StrictMode as Mode\n} from\n 'react'\n"
-            "import './personal-ui/styles.css'\n"
+            "import './ui/styles.css'\n"
             "import {\n  App\n} from\n './App'\n",
             ["react", style, app],
             ["react", app],
         ),
         (
             "multiple side-effects before a namespace import",
-            "import './personal-ui/styles.css'\nimport './app.css'\n"
-            "import './layout.css'\nimport * as UI from './personal-ui'\n"
+            "import './ui/styles.css'\nimport './app.css'\n"
+            "import './layout.css'\nimport * as UI from './ui'\n"
             "import { App } from './App'\n",
-            [style, "./app.css", "./layout.css", "./personal-ui", app],
-            ["./personal-ui", app],
+            [style, "./app.css", "./layout.css", "./ui", app],
+            ["./ui", app],
         ),
         (
             "comment trivia does not supply declaration boundaries",
-            "import /* from 'ignored.css'; */ './personal-ui/styles.css'\n"
+            "import /* from 'ignored.css'; */ './ui/styles.css'\n"
             "import {\n /* from 'ignored.css'; */ App\n} from './App'\n",
             [style, app],
             [app],
@@ -893,23 +893,23 @@ def test_python_static_import_boundaries() -> None:
             "masked imports and type-only declarations are excluded",
             "/*\nimport 'comment-only.css';\n*/\n"
             "const copy = `\nimport 'string-only.css';\n`;\n"
-            "import type { ButtonProps } from './personal-ui'\n"
-            "import\n type { ButtonProps as OtherProps } from './personal-ui'\n"
-            "import /* trivia */ type { ButtonProps as ThirdProps } from './personal-ui'\n"
-            "import './personal-ui/styles.css'\nimport { App } from './App'\n",
+            "import type { ButtonProps } from './ui'\n"
+            "import\n type { ButtonProps as OtherProps } from './ui'\n"
+            "import /* trivia */ type { ButtonProps as ThirdProps } from './ui'\n"
+            "import './ui/styles.css'\nimport { App } from './App'\n",
             [style, app],
             [app],
         ),
     )
-    with tempfile.TemporaryDirectory(prefix="personal-ui-static-imports-") as temporary:
+    with tempfile.TemporaryDirectory(prefix="ui-static-imports-") as temporary:
         target = Path(temporary)
-        source_root = target / "src" / "personal-ui"
+        source_root = target / "src" / "ui"
         source_root.mkdir(parents=True)
         (source_root / "styles.css").write_text("", encoding="utf-8")
         (target / "src" / "app.css").write_text("", encoding="utf-8")
         (target / "src" / "layout.css").write_text("", encoding="utf-8")
         (target / "src" / "App.tsx").write_text(
-            "import { Button } from './personal-ui';\n"
+            "import { Button } from './ui';\n"
             "export const App = () => <Button>Run</Button>;\n",
             encoding="utf-8",
         )
@@ -931,7 +931,7 @@ def test_python_static_import_boundaries() -> None:
             )
             errors: list[str] = []
             used, count, components = inspect_usage(
-                target, source_root, "src/personal-ui/styles.css",
+                target, source_root, "src/ui/styles.css",
                 {"Button"}, {"Button"}, errors,
             )
             if not used or count != 1 or components != ["Button"] or errors:
@@ -941,7 +941,7 @@ def test_python_static_import_boundaries() -> None:
                 )
 
         external_source = (
-            "import './personal-ui/styles.css'\n"
+            "import './ui/styles.css'\n"
             "import 'foreign-theme/style.css'\nimport { App } from './App'\n"
             "export const Root = () => <App />;\n"
         )
@@ -953,10 +953,10 @@ def test_python_static_import_boundaries() -> None:
         main_path.write_text(external_source, encoding="utf-8")
         errors = []
         used, count, components = inspect_usage(
-            target, source_root, "src/personal-ui/styles.css",
+            target, source_root, "src/ui/styles.css",
             {"Button"}, {"Button"}, errors,
         )
-        if count != 1 or not any("[PUI_EXTERNAL_STYLE]" in error for error in errors):
+        if count != 1 or not any("[UI_EXTERNAL_STYLE]" in error for error in errors):
             raise AssertionError(f"external stylesheet lost its ownership rejection: {errors}")
 
 
@@ -992,22 +992,22 @@ def test_python_style_gate_contract() -> None:
             ".login-form input { background: #e8f0fe; border-radius: 999px; }"
         )
     }
-    if "PUI_GENERIC_STYLE_OVERRIDE" not in unsafe_codes:
+    if "UI_GENERIC_STYLE_OVERRIDE" not in unsafe_codes:
         raise AssertionError("Python verifier accepted generic input skin overrides")
 
     reserved_codes = {
         code
         for code, _line, _message in style_findings(
-            ".pui-input { color: red; } [data-pui-owner='Input'] { padding: 0; }"
+            ".ui-input { color: red; } [data-ui-owner='Input'] { padding: 0; }"
         )
     }
-    if not {"PUI_PRIVATE_CLASS", "PUI_RESERVED_MARKER"} <= reserved_codes:
-        raise AssertionError("Python verifier accepted reserved Personal UI selectors")
+    if not {"UI_PRIVATE_CLASS", "UI_RESERVED_MARKER"} <= reserved_codes:
+        raise AssertionError("Python verifier accepted reserved UI selectors")
 
     safe_findings = style_findings(
         "*, *::before, *::after { box-sizing: border-box; } "
         "input, button, select { font: inherit; box-sizing: border-box; } "
-        ".page-shell { display: grid; gap: 16px; --pui-primary: #2563eb; } "
+        ".page-shell { display: grid; gap: 16px; --ui-primary: #2563eb; } "
         ".page-shell:has(input) { grid-template-columns: 1fr; }"
     )
     if safe_findings:
@@ -1023,7 +1023,7 @@ def test_python_style_gate_contract() -> None:
             code
             for code, _line, _message in style_findings(source, suffix)
         }
-        if "PUI_GENERIC_STYLE_OVERRIDE" not in codes:
+        if "UI_GENERIC_STYLE_OVERRIDE" not in codes:
             raise AssertionError(
                 f"Python verifier accepted protected preprocessor injection for {suffix}"
             )
@@ -1040,7 +1040,7 @@ def test_python_style_gate_contract() -> None:
     inspect_overrides = verifier["inspect_component_style_overrides"]
     code_mask = verifier["code_position_mask"]
     masked_code = verifier["masked_code"]
-    with tempfile.TemporaryDirectory(prefix="personal-ui-python-style-gate-") as temporary:
+    with tempfile.TemporaryDirectory(prefix="ui-python-style-gate-") as temporary:
         target = Path(temporary)
         path = target / "src" / "App.tsx"
         for label, source in (
@@ -1051,10 +1051,10 @@ def test_python_style_gate_contract() -> None:
             ("tw", "export const App=()=> <Input tw='rounded-none' />;"),
             ("ref", "export const App=()=> <Input ref={(node:any)=>node?.style.setProperty('border-radius','0')} />;"),
             ("dangerouslySetInnerHTML", "export const App=()=> <Input dangerouslySetInnerHTML={{__html:'unsafe'}} />;"),
-            ("data-pui-owner", "export const App=()=> <Input data-pui-owner='Consumer' />;"),
-            ("data-pui-slot", "export const App=()=> <Input data-pui-slot='field' />;"),
-            ("createElement data-pui marker", "React.createElement(Input,{'data-pui-owner':'Consumer'});"),
-            ("createElement custom data-pui marker", "React.createElement(Input,{'data-pui-consumer-state':true});"),
+            ("data-ui-owner", "export const App=()=> <Input data-ui-owner='Consumer' />;"),
+            ("data-ui-slot", "export const App=()=> <Input data-ui-slot='field' />;"),
+            ("createElement data-ui marker", "React.createElement(Input,{'data-ui-owner':'Consumer'});"),
+            ("createElement custom data-ui marker", "React.createElement(Input,{'data-ui-consumer-state':true});"),
             ("createElement dangerouslySetInnerHTML", "React.createElement(Input,{dangerouslySetInnerHTML:{__html:'unsafe'}});"),
             ("spread", "export const App=(props:any)=> <Input {...props} />;"),
             (
@@ -1062,16 +1062,16 @@ def test_python_style_gate_contract() -> None:
                 "export const App=({register}:any)=> <Input {...register('email')} />;",
             ),
             (
-                "dynamic data-pui marker",
-                "export const App=({owner}:any)=> <Input data-pui-owner={owner} />;",
+                "dynamic data-ui marker",
+                "export const App=({owner}:any)=> <Input data-ui-owner={owner} />;",
             ),
             (
-                "nonzero void data-pui marker",
-                "export const App=()=> <Input data-pui-owner={void 1} />;",
+                "nonzero void data-ui marker",
+                "export const App=()=> <Input data-ui-owner={void 1} />;",
             ),
             (
-                "duplicate dynamic data-pui marker",
-                "export const App=({owner}:any)=> <Input data-pui-owner={undefined} data-pui-owner={owner} />;",
+                "duplicate dynamic data-ui marker",
+                "export const App=({owner}:any)=> <Input data-ui-owner={undefined} data-ui-owner={owner} />;",
             ),
         ):
             errors: list[str] = []
@@ -1085,21 +1085,21 @@ def test_python_style_gate_contract() -> None:
                 {"Input"},
                 errors,
             )
-            if not any("[PUI_COMPONENT_STYLE_OVERRIDE]" in error for error in errors):
+            if not any("[UI_COMPONENT_STYLE_OVERRIDE]" in error for error in errors):
                 raise AssertionError(f"Python verifier accepted component {label} override")
 
         for label, source in (
             (
-                "custom data-pui markers on fixed-control JSX",
-                "export const App=()=> <><Input data-pui-consumer-state /><Input data-pui-consumer-state='draft' /></>;",
+                "custom data-ui markers on fixed-control JSX",
+                "export const App=()=> <><Input data-ui-consumer-state /><Input data-ui-consumer-state='draft' /></>;",
             ),
             (
-                "JSX static undefined data-pui markers",
-                "export const App=()=> <Input data-pui-owner={undefined} data-pui-slot={void 0} />;",
+                "JSX static undefined data-ui markers",
+                "export const App=()=> <Input data-ui-owner={undefined} data-ui-slot={void 0} />;",
             ),
             (
-                "factory static undefined data-pui markers",
-                "React.createElement(Input,{'data-pui-owner':undefined,'data-pui-slot':void 0});",
+                "factory static undefined data-ui markers",
+                "React.createElement(Input,{'data-ui-owner':undefined,'data-ui-slot':void 0});",
             ),
         ):
             errors = []
@@ -1148,7 +1148,7 @@ def test_python_style_gate_contract() -> None:
             {"Input"},
             styled_errors,
         )
-        if not any("[PUI_EXTERNAL_STYLE]" in error for error in styled_errors):
+        if not any("[UI_EXTERNAL_STYLE]" in error for error in styled_errors):
             raise AssertionError("Python verifier accepted a styled-components wrapper")
 
     clone_findings = verifier["react_clone_element_findings"]
@@ -1159,7 +1159,7 @@ def test_python_style_gate_contract() -> None:
     ):
         code = masked_code(source, code_mask(source))
         codes = {code_name for code_name, _line, _message in clone_findings(source, code)}
-        if "PUI_UNINSPECTABLE_PROPS" not in codes:
+        if "UI_UNINSPECTABLE_PROPS" not in codes:
             raise AssertionError("Python verifier accepted React.cloneElement")
 
     dynamic_findings = verifier["dynamic_style_findings"]
@@ -1174,7 +1174,7 @@ def test_python_style_gate_contract() -> None:
     ):
         code = masked_code(source, code_mask(source))
         codes = {code_name for code_name, _line, _message in dynamic_findings(source, code)}
-        if "PUI_DYNAMIC_STYLE" not in codes:
+        if "UI_DYNAMIC_STYLE" not in codes:
             raise AssertionError(f"Python verifier accepted dynamic style mutation: {source}")
 
     business_source = (
@@ -1220,7 +1220,7 @@ def assert_gate(
     scripts = package.get("scripts")
     if not isinstance(scripts, dict):
         raise AssertionError("installed package.json has no scripts object")
-    if scripts.get("verify:personal-ui") != VERIFY_SCRIPT:
+    if scripts.get("verify:ui") != VERIFY_SCRIPT:
         raise AssertionError("installer did not install the canonical provenance command")
     if scripts.get("build") != expected_build:
         raise AssertionError(
@@ -1237,7 +1237,7 @@ def test_installer_build_gate() -> None:
     npm = shutil.which("npm")
     if node is None or npm is None:
         raise RuntimeError("Node.js and npm are required for installer gate tests")
-    with tempfile.TemporaryDirectory(prefix="personal-ui-installer-") as temporary:
+    with tempfile.TemporaryDirectory(prefix="ui-installer-") as temporary:
         root = Path(temporary)
         integrated = root / "integrated"
         (integrated / "src").mkdir(parents=True)
@@ -1259,8 +1259,8 @@ def test_installer_build_gate() -> None:
         )
         main_path = integrated / "src" / "main.tsx"
         valid_main = """
-            import { Button } from './personal-ui';
-            import './personal-ui/styles.css';
+            import { Button } from './ui';
+            import './ui/styles.css';
             export const App = () => <Button>Run</Button>;
         """
         main_path.write_text(valid_main, encoding="utf-8")
@@ -1282,7 +1282,7 @@ def test_installer_build_gate() -> None:
             expected_prebuild="node existing.mjs",
         )
         installed_scanner = (
-            integrated / "tools" / "personal-ui" / "verify-provenance.mjs"
+            integrated / "tools" / "ui" / "verify-provenance.mjs"
         )
         if installed_scanner.read_bytes() != SCANNER.read_bytes():
             raise AssertionError(
@@ -1296,11 +1296,11 @@ def test_installer_build_gate() -> None:
 
         dead_path = integrated / "src" / "Dead.tsx"
         dead_path.write_text(
-            "import {Button} from './personal-ui'; export const Dead=()=> <Button>Dead</Button>;",
+            "import {Button} from './ui'; export const Dead=()=> <Button>Dead</Button>;",
             encoding="utf-8",
         )
         main_path.write_text(
-            "import './personal-ui/styles.css'; export const App=()=> <div>Composition only</div>;",
+            "import './ui/styles.css'; export const App=()=> <div>Composition only</div>;",
             encoding="utf-8",
         )
         dead_result = subprocess.run(
@@ -1312,18 +1312,18 @@ def test_installer_build_gate() -> None:
         )
         if (
             dead_result.returncode == 0
-            or "no application source renders or calls a Personal UI runtime export"
+            or "no application source renders or calls a UI runtime export"
             not in dead_result.stdout
         ):
-            raise AssertionError("full verifier counted unreachable Personal UI dead code")
+            raise AssertionError("full verifier counted unreachable UI dead code")
         dead_path.unlink()
         main_path.write_text(valid_main, encoding="utf-8")
 
-        managed_file = integrated / "src" / "personal-ui" / "index.ts"
+        managed_file = integrated / "src" / "ui" / "index.ts"
         managed_bytes = managed_file.read_bytes()
         managed_file.write_bytes(managed_bytes + b"\n")
         drift_rejected = subprocess.run(
-            [npm, "run", "verify:personal-ui"],
+            [npm, "run", "verify:ui"],
             cwd=integrated,
             capture_output=True,
             text=True,
@@ -1332,21 +1332,21 @@ def test_installer_build_gate() -> None:
         )
         if (
             drift_rejected.returncode == 0
-            or "PUI_MANAGED_CHANGED" not in drift_rejected.stdout
+            or "UI_MANAGED_CHANGED" not in drift_rejected.stdout
         ):
             raise AssertionError("installed npm gate accepted changed managed source")
         managed_file.write_bytes(managed_bytes)
 
         main_path.write_text("export const App=()=> <button>Bypass</button>;", encoding="utf-8")
         rejected = subprocess.run(
-            [npm, "run", "verify:personal-ui"],
+            [npm, "run", "verify:ui"],
             cwd=integrated,
             capture_output=True,
             text=True,
             encoding="utf-8",
             check=False,
         )
-        if rejected.returncode == 0 or "PUI_RAW_CONTROL" not in rejected.stdout:
+        if rejected.returncode == 0 or "UI_RAW_CONTROL" not in rejected.stdout:
             raise AssertionError("installed npm provenance gate accepted a raw button")
 
         starter = root / "starter"
@@ -1366,7 +1366,7 @@ def test_installer_build_gate() -> None:
             expected_prebuild=None,
         )
         starter_gate = subprocess.run(
-            [npm, "run", "verify:personal-ui"],
+            [npm, "run", "verify:ui"],
             cwd=starter,
             capture_output=True,
             text=True,
@@ -1384,7 +1384,7 @@ def main() -> int:
         "public barrel and approved icon",
         {
             "src/App.tsx": """
-                import { Button, SearchInput, useToast } from './personal-ui';
+                import { Button, SearchInput, useToast } from './ui';
                 import { Search } from 'lucide-react';
                 export function App() {
                   const toast = useToast();
@@ -1399,7 +1399,7 @@ def main() -> int:
         {
             "src/App.tsx": """
                 import React from 'react';
-                import { Button } from './personal-ui';
+                import { Button } from './ui';
                 const Local = () => <Button>Run</Button>;
                 export const App = () => React.createElement(Local);
             """,
@@ -1410,7 +1410,7 @@ def main() -> int:
         "static relative local component",
         {
             "src/App.tsx": "import {WorkspaceView} from './WorkspaceView'; export const App=()=> <WorkspaceView />;",
-            "src/WorkspaceView.tsx": "import {Button} from './personal-ui'; export const WorkspaceView=()=> <Button>Run</Button>;",
+            "src/WorkspaceView.tsx": "import {Button} from './ui'; export const WorkspaceView=()=> <Button>Run</Button>;",
         },
         {"Button"},
     )
@@ -1418,12 +1418,12 @@ def main() -> int:
         "safe application layout and reset styles",
         {
             "src/App.tsx": """
-                import { Box } from './personal-ui';
+                import { Box } from './ui';
                 import './app.css';
                 export const App=()=> <Box className='page-shell'>Content</Box>;
             """,
             "src/app.css": """
-                :root { --pui-primary: #2563eb; }
+                :root { --ui-primary: #2563eb; }
                 *, *::before, *::after { box-sizing: border-box; }
                 input, button, select { font: inherit; box-sizing: border-box; }
                 .page-shell { display: grid; gap: 16px; min-width: 0; }
@@ -1435,7 +1435,7 @@ def main() -> int:
         "product artwork styles and layout props",
         {
             "src/App.tsx": """
-                import { Stack } from './personal-ui';
+                import { Stack } from './ui';
                 import './artwork.scss';
                 export const App=()=> <Stack style={{minHeight: 0}}><div className='product-artwork' /></Stack>;
             """,
@@ -1462,13 +1462,13 @@ def main() -> int:
         set(),
     )
     expect_valid(
-        "custom data-pui markers on fixed-control JSX",
+        "custom data-ui markers on fixed-control JSX",
         {
             "src/App.tsx": """
-                import {Input} from './personal-ui';
+                import {Input} from './ui';
                 export const App=()=> <>
-                  <Input data-pui-consumer-state />
-                  <Input data-pui-consumer-state="draft" />
+                  <Input data-ui-consumer-state />
+                  <Input data-ui-consumer-state="draft" />
                 </>;
             """,
         },
@@ -1480,11 +1480,11 @@ def main() -> int:
             "src/App.tsx": """
                 import React from 'react';
                 import {jsx as _jsx} from 'react/jsx-runtime';
-                import {Input} from './personal-ui';
+                import {Input} from './ui';
                 export const App=()=> <>
-                  <Input data-pui-owner={undefined} data-pui-slot={void 0} />
-                  {React.createElement(Input, {'data-pui-owner': undefined})}
-                  {_jsx(Input, {'data-pui-slot': void 0})}
+                  <Input data-ui-owner={undefined} data-ui-slot={void 0} />
+                  {React.createElement(Input, {'data-ui-owner': undefined})}
+                  {_jsx(Input, {'data-ui-slot': void 0})}
                 </>;
             """,
         },
@@ -1495,548 +1495,548 @@ def main() -> int:
         (
             "raw controls and extended intrinsics",
             {"src/App.tsx": "export const App=()=> <><button>Run</button><label>Name</label><progress /><svg /></>;"},
-            {"PUI_RAW_CONTROL"},
+            {"UI_RAW_CONTROL"},
         ),
         (
             "raw role and event",
             {"src/App.tsx": "export const App=()=> <><div role='button'>Run</div><a onClick={()=>{}}>Link</a></>;"},
-            {"PUI_INTERACTIVE_ROLE", "PUI_RAW_CONTROL"},
+            {"UI_INTERACTIVE_ROLE", "UI_RAW_CONTROL"},
         ),
         (
             "raw spread props",
             {"src/App.tsx": "export const App=(props:any)=> <div {...props}>Run</div>;"},
-            {"PUI_UNINSPECTABLE_PROPS"},
+            {"UI_UNINSPECTABLE_PROPS"},
         ),
         (
             "deep import",
-            {"src/App.tsx": "import {Button} from './personal-ui/primitives'; export const App=()=> <Button />;"},
-            {"PUI_DEEP_IMPORT"},
+            {"src/App.tsx": "import {Button} from './ui/primitives'; export const App=()=> <Button />;"},
+            {"UI_DEEP_IMPORT"},
         ),
         (
             "external JSX alias",
             {"src/App.tsx": "import {Button as MuiButton} from '@mui/material'; const X=MuiButton; export const App=()=> <X />;"},
-            {"PUI_EXTERNAL_JSX"},
+            {"UI_EXTERNAL_JSX"},
         ),
         (
             "external createElement",
             {"src/App.tsx": "import React from 'react'; import {Button as MuiButton} from '@mui/material'; export const App=()=> React.createElement(MuiButton);"},
-            {"PUI_EXTERNAL_JSX"},
+            {"UI_EXTERNAL_JSX"},
         ),
         (
             "external re-export",
             {"src/ui.ts": "export {Button as Action} from '@mui/material';"},
-            {"PUI_EXTERNAL_REEXPORT"},
+            {"UI_EXTERNAL_REEXPORT"},
         ),
         (
             "dynamic external component",
             {"src/App.tsx": "const Mui = await import('@mui/material'); const X=Mui.Button; export const App=()=> <X />;"},
-            {"PUI_EXTERNAL_JSX"},
+            {"UI_EXTERNAL_JSX"},
         ),
         (
             "require external component",
             {"src/App.tsx": "const {Button: X}=require('@mui/material'); export const App=()=> <X />;"},
-            {"PUI_EXTERNAL_JSX"},
+            {"UI_EXTERNAL_JSX"},
         ),
         (
             "string tag JSX alias",
             {"srcTape/App.tsx": "const Raw='button'; const Alias=Raw; export const App=()=> <Alias />;"},
-            {"PUI_RAW_CONTROL"},
+            {"UI_RAW_CONTROL"},
         ),
         (
             "string tag factory alias",
             {"packages/web/App.tsx": "import React from 'react'; const Raw='input'; export const App=()=> React.createElement(Raw);"},
-            {"PUI_RAW_CONTROL"},
+            {"UI_RAW_CONTROL"},
         ),
         (
             "computed string tag",
             {"src/App.tsx": "const Raw=Math.random()?'button':'input'; export const App=()=> <Raw />;"},
-            {"PUI_RAW_CONTROL"},
+            {"UI_RAW_CONTROL"},
         ),
         (
             "concatenated string factory tag",
-            {"src/App.tsx": "import React from 'react'; import {Button} from './personal-ui'; const Raw='but'+'ton'; export const App=()=> <><Button>Good</Button>{React.createElement(Raw)}</>;"},
-            {"PUI_UNINSPECTABLE_ELEMENT"},
+            {"src/App.tsx": "import React from 'react'; import {Button} from './ui'; const Raw='but'+'ton'; export const App=()=> <><Button>Good</Button>{React.createElement(Raw)}</>;"},
+            {"UI_UNINSPECTABLE_ELEMENT"},
         ),
         (
             "concatenated string JSX tag",
-            {"src/App.tsx": "import {Button} from './personal-ui'; const Raw='but'+'ton'; export const App=()=> <><Button>Good</Button><Raw /></>;"},
-            {"PUI_UNINSPECTABLE_ELEMENT"},
+            {"src/App.tsx": "import {Button} from './ui'; const Raw='but'+'ton'; export const App=()=> <><Button>Good</Button><Raw /></>;"},
+            {"UI_UNINSPECTABLE_ELEMENT"},
         ),
         (
             "object member string tag",
             {"src/App.tsx": "const Raw={Button:'button'}; export const App=()=> <Raw.Button />;"},
-            {"PUI_RAW_CONTROL"},
+            {"UI_RAW_CONTROL"},
         ),
         (
             "aliased createElement",
             {"src/App.tsx": "import React from 'react'; const h=React.createElement; export const App=()=> h('button',null,'Run');"},
-            {"PUI_RAW_CONTROL"},
+            {"UI_RAW_CONTROL"},
         ),
         (
             "bracket createElement",
             {"src/App.tsx": "import React from 'react'; export const App=()=> React['createElement']('input');"},
-            {"PUI_RAW_CONTROL"},
+            {"UI_RAW_CONTROL"},
         ),
         (
             "jsx runtime raw tag",
             {"packages/web/App.js": "import {jsx as _jsx} from 'react/jsx-runtime'; export const App=()=>_jsx('button',{children:'Run'});"},
-            {"PUI_RAW_CONTROL"},
+            {"UI_RAW_CONTROL"},
         ),
         (
             "required jsx runtime",
             {"packages/web/App.js": "const {jsx:h}=require('react/jsx-runtime'); export const App=()=>h('button',{children:'Run'});"},
-            {"PUI_RAW_CONTROL"},
+            {"UI_RAW_CONTROL"},
         ),
         (
             "jsx runtime external component",
             {"src/App.js": "import {jsx as _jsx} from 'react/jsx-runtime'; import {Button as MuiButton} from '@mui/material'; export const App=()=>_jsx(MuiButton,{});"},
-            {"PUI_EXTERNAL_JSX"},
+            {"UI_EXTERNAL_JSX"},
         ),
         (
             "reserved ownership and class",
-            {"src/App.tsx": "export const App=()=> <div data-pui-owner='Button' className='pui-button' />;"},
-            {"PUI_RESERVED_MARKER", "PUI_PRIVATE_CLASS"},
+            {"src/App.tsx": "export const App=()=> <div data-ui-owner='Button' className='ui-button' />;"},
+            {"UI_RESERVED_MARKER", "UI_PRIVATE_CLASS"},
         ),
         (
             "React lazy external component",
             {"src/App.tsx": "import React from 'react'; const Lazy=React.lazy(()=>import('@mui/material')); export const App=()=> <Lazy />;"},
-            {"PUI_EXTERNAL_JSX"},
+            {"UI_EXTERNAL_JSX"},
         ),
         (
             "CommonJS external shim",
             {"src/ui.cjs": "module.exports=require('@mui/material');"},
-            {"PUI_EXTERNAL_REEXPORT"},
+            {"UI_EXTERNAL_REEXPORT"},
         ),
         (
             "external component object propagation",
             {"src/App.tsx": "import {Button as MuiButton} from '@mui/material'; const UI={Button:MuiButton}; export const App=()=> <UI.Button />;"},
-            {"PUI_EXTERNAL_JSX"},
+            {"UI_EXTERNAL_JSX"},
         ),
         (
             "external component prop injection",
             {"src/App.tsx": "import {Button as MuiButton} from '@mui/material'; const Slot=({Control}:any)=><Control/>; export const App=()=> <Slot Control={MuiButton}/>;"},
-            {"PUI_EXTERNAL_JSX", "PUI_UNINSPECTABLE_ELEMENT"},
+            {"UI_EXTERNAL_JSX", "UI_UNINSPECTABLE_ELEMENT"},
         ),
         (
             "unknown dynamic component prop",
-            {"src/App.tsx": "import {Button} from './personal-ui'; export const App=({Control}:any)=> <Button component={Control}>Run</Button>;"},
-            {"PUI_UNINSPECTABLE_ELEMENT"},
+            {"src/App.tsx": "import {Button} from './ui'; export const App=({Control}:any)=> <Button component={Control}>Run</Button>;"},
+            {"UI_UNINSPECTABLE_ELEMENT"},
         ),
         (
             "local registered-family shadow",
             {"src/App.tsx": "const UserBadge=()=> <span>Admin</span>; export const App=()=> <UserBadge/>;"},
-            {"PUI_COMPONENT_SHADOW"},
+            {"UI_COMPONENT_SHADOW"},
         ),
         (
             "external component array propagation",
             {"src/App.tsx": "import {Button as MuiButton} from '@mui/material'; const items=[MuiButton]; const [Action]=items; export const App=()=> <Action />;"},
-            {"PUI_EXTERNAL_JSX"},
+            {"UI_EXTERNAL_JSX"},
         ),
         (
             "external render function",
             {"src/App.tsx": "import {renderButton} from '@mui/material'; export const App=()=>renderButton();"},
-            {"PUI_EXTERNAL_JSX"},
+            {"UI_EXTERNAL_JSX"},
         ),
         (
             "MDX raw control",
             {"content/page.mdx": "# Account\n\n<button>Run</button>"},
-            {"PUI_RAW_CONTROL"},
+            {"UI_RAW_CONTROL"},
         ),
         (
             "relative require deep import",
-            {"src/App.tsx": "const P=require('./personal-ui/forms'); export const App=()=> <P.Input />;"},
-            {"PUI_DEEP_IMPORT"},
+            {"src/App.tsx": "const P=require('./ui/forms'); export const App=()=> <P.Input />;"},
+            {"UI_DEEP_IMPORT"},
         ),
         (
             "relative dynamic deep import",
-            {"src/App.tsx": "const P=await import('./personal-ui/forms'); export const App=()=> <P.Input />;"},
-            {"PUI_DEEP_IMPORT"},
+            {"src/App.tsx": "const P=await import('./ui/forms'); export const App=()=> <P.Input />;"},
+            {"UI_DEEP_IMPORT"},
         ),
         (
             "computed module import",
-            {"src/App.ts": "const root='./personal-ui'; export const load=()=>import(root+'/forms');"},
-            {"PUI_UNINSPECTABLE_IMPORT"},
+            {"src/App.ts": "const root='./ui'; export const load=()=>import(root+'/forms');"},
+            {"UI_UNINSPECTABLE_IMPORT"},
         ),
         (
             "HTML role and interaction",
             {"public/embed.html": "<div role=button onclick='run()'>Run</div>"},
-            {"PUI_INTERACTIVE_ROLE", "PUI_RAW_INTERACTION"},
+            {"UI_INTERACTIVE_ROLE", "UI_RAW_INTERACTION"},
         ),
         (
             "test-named production module",
             {"src/Imported.test.tsx": "export const Bad=()=> <input />;", "src/App.tsx": "import {Bad} from './Imported.test'; export const App=Bad;"},
-            {"PUI_RAW_CONTROL"},
+            {"UI_RAW_CONTROL"},
         ),
         (
             "uninspectable DOM markup",
             {"src/App.ts": "export function mount(el:HTMLElement, html:string){ el['innerHTML']=html; el.insertAdjacentHTML('beforeend',html); }"},
-            {"PUI_UNINSPECTABLE_MARKUP"},
+            {"UI_UNINSPECTABLE_MARKUP"},
         ),
         (
             "raw DOM listener",
             {"src/App.ts": "export function wire(el:HTMLElement){ el.addEventListener('click',()=>{}); }"},
-            {"PUI_RAW_INTERACTION"},
+            {"UI_RAW_INTERACTION"},
         ),
         (
             "DOM property and role mutation",
             {"src/App.tsx": "export function wire(ref:any){ ref.current.onclick=()=>{}; ref.current.setAttribute('role','button'); return <div ref={ref}>Run</div>; }"},
-            {"PUI_RAW_INTERACTION", "PUI_INTERACTIVE_ROLE"},
+            {"UI_RAW_INTERACTION", "UI_INTERACTIVE_ROLE"},
         ),
         (
             "dynamic code construction",
             {"src/App.ts": "export const build=(source:string)=>eval(source); export const compile=(source:string)=>new Function(source);"},
-            {"PUI_UNINSPECTABLE_CODE"},
+            {"UI_UNINSPECTABLE_CODE"},
         ),
         (
             "computed DOM markup method",
             {"src/App.ts": "export function inject(el:any,html:string){ const method='insertAdjacent'+'HTML'; el[method]('beforeend',html); }"},
-            {"PUI_UNINSPECTABLE_MARKUP"},
+            {"UI_UNINSPECTABLE_MARKUP"},
         ),
         (
             "generic input CSS override",
             {"src/app.css": ".login-form input { background: #e8f0fe; border-radius: 999px; }"},
-            {"PUI_GENERIC_STYLE_OVERRIDE"},
+            {"UI_GENERIC_STYLE_OVERRIDE"},
         ),
         (
             "password attribute CSS override",
             {"src/app.css": "[type='password'] { padding-right: 0; }"},
-            {"PUI_GENERIC_STYLE_OVERRIDE"},
+            {"UI_GENERIC_STYLE_OVERRIDE"},
         ),
         (
             "autofill CSS override",
             {"src/app.css": "input:-webkit-autofill { box-shadow: inset 0 0 0 100px pink; }"},
-            {"PUI_GENERIC_STYLE_OVERRIDE"},
+            {"UI_GENERIC_STYLE_OVERRIDE"},
         ),
         (
             "universal CSS skin override",
             {"src/app.css": "* { border-radius: 0 !important; }"},
-            {"PUI_GENERIC_STYLE_OVERRIDE"},
+            {"UI_GENERIC_STYLE_OVERRIDE"},
         ),
         (
             "descendant universal CSS skin override",
             {"src/app.css": ".login-form > * { border-radius: 0; }"},
-            {"PUI_GENERIC_STYLE_OVERRIDE"},
+            {"UI_GENERIC_STYLE_OVERRIDE"},
         ),
         (
             "functional universal CSS skin override",
             {"src/app.css": ".login-form :where(*) { min-width: 0; }"},
-            {"PUI_GENERIC_STYLE_OVERRIDE"},
+            {"UI_GENERIC_STYLE_OVERRIDE"},
         ),
         (
             "table descendant CSS override",
             {"src/app.css": ".table-wrap td { padding: 0; }"},
-            {"PUI_GENERIC_STYLE_OVERRIDE"},
+            {"UI_GENERIC_STYLE_OVERRIDE"},
         ),
         (
             "generic descendant SVG override",
             {"src/app.css": ".login-form svg { transform: translateY(3px); }"},
-            {"PUI_GENERIC_STYLE_OVERRIDE"},
+            {"UI_GENERIC_STYLE_OVERRIDE"},
         ),
         (
             "private class CSS selector",
-            {"src/app.css": ".pui-input { background: red; }"},
-            {"PUI_PRIVATE_CLASS"},
+            {"src/app.css": ".ui-input { background: red; }"},
+            {"UI_PRIVATE_CLASS"},
         ),
         (
             "reserved ownership CSS selector",
-            {"src/app.css": "[data-pui-owner='Input'] { padding: 0; }"},
-            {"PUI_RESERVED_MARKER"},
+            {"src/app.css": "[data-ui-owner='Input'] { padding: 0; }"},
+            {"UI_RESERVED_MARKER"},
         ),
         (
             "nested SCSS control override",
             {"src/app.scss": ".login-form { input { background: red; } }"},
-            {"PUI_GENERIC_STYLE_OVERRIDE"},
+            {"UI_GENERIC_STYLE_OVERRIDE"},
         ),
         (
             "indented Sass control override",
             {"src/app.sass": ".login-form\n  input\n    background: red\n"},
-            {"PUI_GENERIC_STYLE_OVERRIDE"},
+            {"UI_GENERIC_STYLE_OVERRIDE"},
         ),
         (
             "HTML style control override",
             {"public/embed.html": "<style>.login-form input { background: red; }</style><div></div>"},
-            {"PUI_GENERIC_STYLE_OVERRIDE"},
+            {"UI_GENERIC_STYLE_OVERRIDE"},
         ),
         (
             "component className override",
-            {"src/App.tsx": "import {Input} from './personal-ui'; export const App=()=> <Input className='foreign-input' />;"},
-            {"PUI_COMPONENT_STYLE_OVERRIDE"},
+            {"src/App.tsx": "import {Input} from './ui'; export const App=()=> <Input className='foreign-input' />;"},
+            {"UI_COMPONENT_STYLE_OVERRIDE"},
         ),
         (
             "component inline style override",
-            {"src/App.tsx": "import {Input} from './personal-ui'; export const App=()=> <Input style={{background:'red'}} />;"},
-            {"PUI_COMPONENT_STYLE_OVERRIDE"},
+            {"src/App.tsx": "import {Input} from './ui'; export const App=()=> <Input style={{background:'red'}} />;"},
+            {"UI_COMPONENT_STYLE_OVERRIDE"},
         ),
         (
             "component spread style bypass",
-            {"src/App.tsx": "import {Input} from './personal-ui'; export const App=(props:any)=> <Input {...props} />;"},
-            {"PUI_COMPONENT_STYLE_OVERRIDE"},
+            {"src/App.tsx": "import {Input} from './ui'; export const App=(props:any)=> <Input {...props} />;"},
+            {"UI_COMPONENT_STYLE_OVERRIDE"},
         ),
         (
             "form library register spread bypass",
-            {"src/App.tsx": "import {Input} from './personal-ui'; export const App=({register}:any)=> <Input {...register('email')} />;"},
-            {"PUI_COMPONENT_STYLE_OVERRIDE"},
+            {"src/App.tsx": "import {Input} from './ui'; export const App=({register}:any)=> <Input {...register('email')} />;"},
+            {"UI_COMPONENT_STYLE_OVERRIDE"},
         ),
         (
             "component transformed style props",
-            {"src/App.tsx": "import {Input} from './personal-ui'; export const App=()=> <><Input css={{borderRadius:0}} /><Input sx={{background:'red'}} /><Input tw='rounded-none' /></>;"},
-            {"PUI_COMPONENT_STYLE_OVERRIDE"},
+            {"src/App.tsx": "import {Input} from './ui'; export const App=()=> <><Input css={{borderRadius:0}} /><Input sx={{background:'red'}} /><Input tw='rounded-none' /></>;"},
+            {"UI_COMPONENT_STYLE_OVERRIDE"},
         ),
         (
             "component imperative ref escape hatch",
-            {"src/App.tsx": "import {Input} from './personal-ui'; export const App=()=> <Input ref={(node:any)=>node?.style.setProperty('border-radius','0')} />;"},
-            {"PUI_COMPONENT_STYLE_OVERRIDE"},
+            {"src/App.tsx": "import {Input} from './ui'; export const App=()=> <Input ref={(node:any)=>node?.style.setProperty('border-radius','0')} />;"},
+            {"UI_COMPONENT_STYLE_OVERRIDE"},
         ),
         (
             "component dangerouslySetInnerHTML escape hatch",
-            {"src/App.tsx": "import {Input} from './personal-ui'; export const App=()=> <Input dangerouslySetInnerHTML={{__html:'unsafe'}} />;"},
-            {"PUI_COMPONENT_STYLE_OVERRIDE", "PUI_UNINSPECTABLE_MARKUP"},
+            {"src/App.tsx": "import {Input} from './ui'; export const App=()=> <Input dangerouslySetInnerHTML={{__html:'unsafe'}} />;"},
+            {"UI_COMPONENT_STYLE_OVERRIDE", "UI_UNINSPECTABLE_MARKUP"},
         ),
         (
-            "component reserved data-pui-owner attribute",
-            {"src/App.tsx": "import {Input} from './personal-ui'; export const App=()=> <Input data-pui-owner='Consumer' />;"},
-            {"PUI_COMPONENT_STYLE_OVERRIDE", "PUI_RESERVED_MARKER"},
+            "component reserved data-ui-owner attribute",
+            {"src/App.tsx": "import {Input} from './ui'; export const App=()=> <Input data-ui-owner='Consumer' />;"},
+            {"UI_COMPONENT_STYLE_OVERRIDE", "UI_RESERVED_MARKER"},
         ),
         (
-            "component reserved data-pui-slot attribute",
-            {"src/App.tsx": "import {Input} from './personal-ui'; export const App=()=> <Input data-pui-slot='field' />;"},
-            {"PUI_COMPONENT_STYLE_OVERRIDE", "PUI_RESERVED_MARKER"},
+            "component reserved data-ui-slot attribute",
+            {"src/App.tsx": "import {Input} from './ui'; export const App=()=> <Input data-ui-slot='field' />;"},
+            {"UI_COMPONENT_STYLE_OVERRIDE", "UI_RESERVED_MARKER"},
         ),
         (
-            "custom data-pui marker on raw DOM",
-            {"src/App.tsx": "export const App=()=> <div data-pui-consumer-state />;"},
-            {"PUI_RESERVED_MARKER"},
+            "custom data-ui marker on raw DOM",
+            {"src/App.tsx": "export const App=()=> <div data-ui-consumer-state />;"},
+            {"UI_RESERVED_MARKER"},
         ),
         (
-            "component dynamic reserved data-pui attribute",
-            {"src/App.tsx": "import {Input} from './personal-ui'; export const App=({owner}:any)=> <Input data-pui-owner={owner} />;"},
-            {"PUI_COMPONENT_STYLE_OVERRIDE", "PUI_RESERVED_MARKER"},
+            "component dynamic reserved data-ui attribute",
+            {"src/App.tsx": "import {Input} from './ui'; export const App=({owner}:any)=> <Input data-ui-owner={owner} />;"},
+            {"UI_COMPONENT_STYLE_OVERRIDE", "UI_RESERVED_MARKER"},
         ),
         (
-            "component duplicate dynamic reserved data-pui attribute",
-            {"src/App.tsx": "import {Input} from './personal-ui'; export const App=({owner}:any)=> <Input data-pui-owner={undefined} data-pui-owner={owner} />;"},
-            {"PUI_COMPONENT_STYLE_OVERRIDE", "PUI_RESERVED_MARKER"},
+            "component duplicate dynamic reserved data-ui attribute",
+            {"src/App.tsx": "import {Input} from './ui'; export const App=({owner}:any)=> <Input data-ui-owner={undefined} data-ui-owner={owner} />;"},
+            {"UI_COMPONENT_STYLE_OVERRIDE", "UI_RESERVED_MARKER"},
         ),
         (
-            "component nonzero void reserved data-pui attribute",
-            {"src/App.tsx": "import {Input} from './personal-ui'; export const App=()=> <Input data-pui-owner={void 1} />;"},
-            {"PUI_COMPONENT_STYLE_OVERRIDE", "PUI_RESERVED_MARKER"},
+            "component nonzero void reserved data-ui attribute",
+            {"src/App.tsx": "import {Input} from './ui'; export const App=()=> <Input data-ui-owner={void 1} />;"},
+            {"UI_COMPONENT_STYLE_OVERRIDE", "UI_RESERVED_MARKER"},
         ),
         (
             "static undefined marker on a non-fixed element",
-            {"src/App.tsx": "export const App=()=> <div data-pui-owner={undefined} />;"},
-            {"PUI_RESERVED_MARKER"},
+            {"src/App.tsx": "export const App=()=> <div data-ui-owner={undefined} />;"},
+            {"UI_RESERVED_MARKER"},
         ),
         (
             "aliased component style override",
-            {"src/App.tsx": "import {Input} from './personal-ui'; const LoginInput=Input; export const App=()=> <LoginInput className='foreign-input' />;"},
-            {"PUI_COMPONENT_STYLE_OVERRIDE"},
+            {"src/App.tsx": "import {Input} from './ui'; const LoginInput=Input; export const App=()=> <LoginInput className='foreign-input' />;"},
+            {"UI_COMPONENT_STYLE_OVERRIDE"},
         ),
         (
             "namespace component style override",
-            {"src/App.tsx": "import * as UI from './personal-ui'; export const App=()=> <UI.Input style={{background:'red'}} />;"},
-            {"PUI_COMPONENT_STYLE_OVERRIDE"},
+            {"src/App.tsx": "import * as UI from './ui'; export const App=()=> <UI.Input style={{background:'red'}} />;"},
+            {"UI_COMPONENT_STYLE_OVERRIDE"},
         ),
         (
             "dynamic JSX style element",
             {"src/App.tsx": "export const App=()=> <style>{`input { min-height: 96px; }`}</style>;"},
-            {"PUI_UNINSPECTABLE_STYLE"},
+            {"UI_UNINSPECTABLE_STYLE"},
         ),
         (
             "createElement component style override",
-            {"src/App.tsx": "import React from 'react'; import {Input} from './personal-ui'; export const App=()=> React.createElement(Input,{style:{background:'red'}});"},
-            {"PUI_COMPONENT_STYLE_OVERRIDE"},
+            {"src/App.tsx": "import React from 'react'; import {Input} from './ui'; export const App=()=> React.createElement(Input,{style:{background:'red'}});"},
+            {"UI_COMPONENT_STYLE_OVERRIDE"},
         ),
         (
             "createElement transformed style prop",
-            {"src/App.tsx": "import React from 'react'; import {Input} from './personal-ui'; export const App=()=> React.createElement(Input,{css:{borderRadius:0}});"},
-            {"PUI_COMPONENT_STYLE_OVERRIDE"},
+            {"src/App.tsx": "import React from 'react'; import {Input} from './ui'; export const App=()=> React.createElement(Input,{css:{borderRadius:0}});"},
+            {"UI_COMPONENT_STYLE_OVERRIDE"},
         ),
         (
-            "createElement reserved data-pui prop",
-            {"src/App.tsx": "import React from 'react'; import {Input} from './personal-ui'; export const App=()=> React.createElement(Input,{'data-pui-owner':'Consumer'});"},
-            {"PUI_COMPONENT_STYLE_OVERRIDE", "PUI_RESERVED_MARKER"},
+            "createElement reserved data-ui prop",
+            {"src/App.tsx": "import React from 'react'; import {Input} from './ui'; export const App=()=> React.createElement(Input,{'data-ui-owner':'Consumer'});"},
+            {"UI_COMPONENT_STYLE_OVERRIDE", "UI_RESERVED_MARKER"},
         ),
         (
-            "createElement custom data-pui prop",
-            {"src/App.tsx": "import React from 'react'; import {Input} from './personal-ui'; export const App=()=> React.createElement(Input,{'data-pui-consumer-state':true});"},
-            {"PUI_COMPONENT_STYLE_OVERRIDE", "PUI_RESERVED_MARKER"},
+            "createElement custom data-ui prop",
+            {"src/App.tsx": "import React from 'react'; import {Input} from './ui'; export const App=()=> React.createElement(Input,{'data-ui-consumer-state':true});"},
+            {"UI_COMPONENT_STYLE_OVERRIDE", "UI_RESERVED_MARKER"},
         ),
         (
             "createElement dangerouslySetInnerHTML prop",
-            {"src/App.tsx": "import React from 'react'; import {Input} from './personal-ui'; export const App=()=> React.createElement(Input,{dangerouslySetInnerHTML:{__html:'unsafe'}});"},
-            {"PUI_COMPONENT_STYLE_OVERRIDE", "PUI_UNINSPECTABLE_MARKUP"},
+            {"src/App.tsx": "import React from 'react'; import {Input} from './ui'; export const App=()=> React.createElement(Input,{dangerouslySetInnerHTML:{__html:'unsafe'}});"},
+            {"UI_COMPONENT_STYLE_OVERRIDE", "UI_UNINSPECTABLE_MARKUP"},
         ),
         (
             "aliased createElement component class override",
-            {"src/App.tsx": "import React from 'react'; import {Input} from './personal-ui'; const h=React.createElement; export const App=()=> h(Input,{className:'foreign-input'});"},
-            {"PUI_COMPONENT_STYLE_OVERRIDE"},
+            {"src/App.tsx": "import React from 'react'; import {Input} from './ui'; const h=React.createElement; export const App=()=> h(Input,{className:'foreign-input'});"},
+            {"UI_COMPONENT_STYLE_OVERRIDE"},
         ),
         (
             "jsx runtime component style override",
-            {"src/App.js": "import {jsx as _jsx} from 'react/jsx-runtime'; import {Input} from './personal-ui'; export const App=()=>_jsx(Input,{style:{background:'red'}});"},
-            {"PUI_COMPONENT_STYLE_OVERRIDE"},
+            {"src/App.js": "import {jsx as _jsx} from 'react/jsx-runtime'; import {Input} from './ui'; export const App=()=>_jsx(Input,{style:{background:'red'}});"},
+            {"UI_COMPONENT_STYLE_OVERRIDE"},
         ),
         (
             "jsx runtime transformed style prop",
-            {"src/App.js": "import {jsx as _jsx} from 'react/jsx-runtime'; import {Input} from './personal-ui'; export const App=()=>_jsx(Input,{sx:{borderRadius:0}});"},
-            {"PUI_COMPONENT_STYLE_OVERRIDE"},
+            {"src/App.js": "import {jsx as _jsx} from 'react/jsx-runtime'; import {Input} from './ui'; export const App=()=>_jsx(Input,{sx:{borderRadius:0}});"},
+            {"UI_COMPONENT_STYLE_OVERRIDE"},
         ),
         (
             "direct component call style override",
-            {"src/App.tsx": "import {Input} from './personal-ui'; export const App=()=> Input({className:'foreign-input'});"},
-            {"PUI_COMPONENT_STYLE_OVERRIDE"},
+            {"src/App.tsx": "import {Input} from './ui'; export const App=()=> Input({className:'foreign-input'});"},
+            {"UI_COMPONENT_STYLE_OVERRIDE"},
         ),
         (
             "direct component call transformed style prop",
-            {"src/App.tsx": "import {Input} from './personal-ui'; export const App=()=> Input({tw:'rounded-none'});"},
-            {"PUI_COMPONENT_STYLE_OVERRIDE"},
+            {"src/App.tsx": "import {Input} from './ui'; export const App=()=> Input({tw:'rounded-none'});"},
+            {"UI_COMPONENT_STYLE_OVERRIDE"},
         ),
         (
             "memo component style override",
-            {"src/App.tsx": "import React from 'react'; import {Input} from './personal-ui'; const MemoInput=React.memo(Input); export const App=()=> <MemoInput className='foreign-input' />;"},
-            {"PUI_COMPONENT_STYLE_OVERRIDE"},
+            {"src/App.tsx": "import React from 'react'; import {Input} from './ui'; const MemoInput=React.memo(Input); export const App=()=> <MemoInput className='foreign-input' />;"},
+            {"UI_COMPONENT_STYLE_OVERRIDE"},
         ),
         (
             "React cloneElement escape hatch",
-            {"src/App.tsx": "import React from 'react'; import {Input} from './personal-ui'; export const App=()=> React.cloneElement(<Input />, {className:'foreign-input',style:{background:'red'}});"},
-            {"PUI_UNINSPECTABLE_PROPS"},
+            {"src/App.tsx": "import React from 'react'; import {Input} from './ui'; export const App=()=> React.cloneElement(<Input />, {className:'foreign-input',style:{background:'red'}});"},
+            {"UI_UNINSPECTABLE_PROPS"},
         ),
         (
             "aliased cloneElement escape hatch",
-            {"src/App.tsx": "import {cloneElement as copy} from 'react'; import {Input} from './personal-ui'; export const App=()=> copy(<Input />, {css:{background:'red'}});"},
-            {"PUI_UNINSPECTABLE_PROPS"},
+            {"src/App.tsx": "import {cloneElement as copy} from 'react'; import {Input} from './ui'; export const App=()=> copy(<Input />, {css:{background:'red'}});"},
+            {"UI_UNINSPECTABLE_PROPS"},
         ),
         (
             "required cloneElement escape hatch",
-            {"src/App.tsx": "const {cloneElement:copy}=require('react'); import {Input} from './personal-ui'; export const App=()=> copy(<Input />, {style:{background:'red'}});"},
-            {"PUI_UNINSPECTABLE_PROPS"},
+            {"src/App.tsx": "const {cloneElement:copy}=require('react'); import {Input} from './ui'; export const App=()=> copy(<Input />, {style:{background:'red'}});"},
+            {"UI_UNINSPECTABLE_PROPS"},
         ),
         (
             "styled-components protected wrapper",
             {
-                "src/Styled.tsx": "import styled from 'styled-components'; import {Input} from './personal-ui'; export const StyledInput=styled(Input)`border-radius:0;background:red;`;",
+                "src/Styled.tsx": "import styled from 'styled-components'; import {Input} from './ui'; export const StyledInput=styled(Input)`border-radius:0;background:red;`;",
                 "src/App.tsx": "import {StyledInput} from './Styled'; export const App=()=> <StyledInput />;",
             },
-            {"PUI_EXTERNAL_STYLE"},
+            {"UI_EXTERNAL_STYLE"},
         ),
         (
             "Emotion protected wrapper",
             {
-                "src/Styled.tsx": "import styled from '@emotion/styled'; import {Input} from './personal-ui'; export const StyledInput=styled(Input)({borderRadius:0,background:'red'});",
+                "src/Styled.tsx": "import styled from '@emotion/styled'; import {Input} from './ui'; export const StyledInput=styled(Input)({borderRadius:0,background:'red'});",
                 "src/App.tsx": "import {StyledInput} from './Styled'; export const App=()=> <StyledInput />;",
             },
-            {"PUI_EXTERNAL_STYLE"},
+            {"UI_EXTERNAL_STYLE"},
         ),
         (
             "CSSOM rule injection",
             {"src/App.tsx": "const sheet=new CSSStyleSheet(); sheet.insertRule('input{border-radius:0}'); sheet.deleteRule(0); sheet.replaceSync('input{background:red}'); sheet.replace('input{height:90px}'); document.styleSheets[0].insertRule('button{border-radius:0}'); document.adoptedStyleSheets=[sheet]; export const App=()=> null;"},
-            {"PUI_DYNAMIC_STYLE"},
+            {"UI_DYNAMIC_STYLE"},
         ),
         (
             "CSSStyleSheet insertRule in isolation",
             {"src/App.tsx": "export const inject=(sheet:CSSStyleSheet)=>sheet.insertRule('input{border-radius:0}');"},
-            {"PUI_DYNAMIC_STYLE"},
+            {"UI_DYNAMIC_STYLE"},
         ),
         (
             "CSSStyleSheet deleteRule in isolation",
             {"src/App.tsx": "export const remove=(sheet:CSSStyleSheet)=>sheet.deleteRule(0);"},
-            {"PUI_DYNAMIC_STYLE"},
+            {"UI_DYNAMIC_STYLE"},
         ),
         (
             "CSSStyleSheet replaceSync in isolation",
             {"src/App.tsx": "export const rewrite=(sheet:CSSStyleSheet)=>sheet.replaceSync('input{border-radius:0}');"},
-            {"PUI_DYNAMIC_STYLE"},
+            {"UI_DYNAMIC_STYLE"},
         ),
         (
             "CSSStyleSheet async replace in isolation",
             {"src/App.tsx": "export const rewrite=(sheet:CSSStyleSheet)=>sheet.replace('input{border-radius:0}');"},
-            {"PUI_DYNAMIC_STYLE"},
+            {"UI_DYNAMIC_STYLE"},
         ),
         (
             "adoptedStyleSheets assignment in isolation",
             {"src/App.tsx": "export const install=(sheet:CSSStyleSheet)=>{document.adoptedStyleSheets=[sheet]};"},
-            {"PUI_DYNAMIC_STYLE"},
+            {"UI_DYNAMIC_STYLE"},
         ),
         (
             "CSSStyleSheet construction in isolation",
             {"src/App.tsx": "export const makeSheet=()=>new CSSStyleSheet();"},
-            {"PUI_DYNAMIC_STYLE"},
+            {"UI_DYNAMIC_STYLE"},
         ),
         (
             "DOM style and class mutation",
-            {"src/App.tsx": "const node=document.querySelector('input'); node?.style.setProperty('border-radius','0'); if(node){node.style.background='red';node.className='foreign-input';node.classList.add('foreign-input');node.classList.remove('pui-input');node.classList.toggle('flat');node.classList.replace('old','new')} export const App=()=> null;"},
-            {"PUI_DYNAMIC_STYLE"},
+            {"src/App.tsx": "const node=document.querySelector('input'); node?.style.setProperty('border-radius','0'); if(node){node.style.background='red';node.className='foreign-input';node.classList.add('foreign-input');node.classList.remove('ui-input');node.classList.toggle('flat');node.classList.replace('old','new')} export const App=()=> null;"},
+            {"UI_DYNAMIC_STYLE"},
         ),
         (
             "DOM style attribute mutation",
             {"src/App.tsx": "const node=document.querySelector('input'); node?.setAttribute('style','border-radius:0'); node?.setAttribute('class','foreign-input'); export const App=()=> null;"},
-            {"PUI_DYNAMIC_STYLE"},
+            {"UI_DYNAMIC_STYLE"},
         ),
         (
             "dynamic style element creation",
             {"src/App.tsx": "const style=document.createElement('style'); style.textContent='input{border-radius:0}'; document.head.append(style); export const App=()=> null;"},
-            {"PUI_DYNAMIC_STYLE"},
+            {"UI_DYNAMIC_STYLE"},
         ),
         (
             "external package stylesheet import",
             {"src/App.tsx": "import 'redteam-global/style.css'; export const App=()=> null;"},
-            {"PUI_EXTERNAL_STYLE"},
+            {"UI_EXTERNAL_STYLE"},
         ),
         (
             "remote CSS import",
             {"src/app.css": "@import url('https://example.com/foreign.css'); .page { display: grid; }"},
-            {"PUI_EXTERNAL_STYLE"},
+            {"UI_EXTERNAL_STYLE"},
         ),
         (
             "bare CSS package import",
             {"src/app.scss": "@use 'foreign-theme'; .page { display: grid; }"},
-            {"PUI_EXTERNAL_STYLE"},
+            {"UI_EXTERNAL_STYLE"},
         ),
         (
             "remote HTML stylesheet",
             {"public/embed.html": "<link rel='stylesheet' href='https://example.com/foreign.css'><div></div>"},
-            {"PUI_EXTERNAL_STYLE"},
+            {"UI_EXTERNAL_STYLE"},
         ),
         (
             "autofill state pseudo-class override",
             {"src/app.css": ".login-form :autofill { background: pink; }"},
-            {"PUI_GENERIC_STYLE_OVERRIDE"},
+            {"UI_GENERIC_STYLE_OVERRIDE"},
         ),
         (
             "link state pseudo-class override",
             {"src/app.css": ".navigation :any-link { border-radius: 0; }"},
-            {"PUI_GENERIC_STYLE_OVERRIDE"},
+            {"UI_GENERIC_STYLE_OVERRIDE"},
         ),
         (
             "escaped input selector override",
             {"src/app.css": "\\69nput { min-height: 96px; }"},
-            {"PUI_GENERIC_STYLE_OVERRIDE"},
+            {"UI_GENERIC_STYLE_OVERRIDE"},
         ),
         (
             "escaped private class selector",
             {"src/app.css": ".\\70 ui-input { background: red; }"},
-            {"PUI_PRIVATE_CLASS"},
+            {"UI_PRIVATE_CLASS"},
         ),
         (
             "SCSS mixin inside protected selector",
             {"src/app.scss": "@mixin foreign-skin { background: red; } input { @include foreign-skin; }"},
-            {"PUI_GENERIC_STYLE_OVERRIDE"},
+            {"UI_GENERIC_STYLE_OVERRIDE"},
         ),
         (
             "indented Sass mixin inside protected selector",
             {"src/app.sass": "@mixin foreign-skin\n  background: red\ninput\n  @include foreign-skin\n"},
-            {"PUI_GENERIC_STYLE_OVERRIDE"},
+            {"UI_GENERIC_STYLE_OVERRIDE"},
         ),
         (
             "Less mixin inside protected selector",
             {"src/app.less": ".foreign-skin(){background:red;} input { .foreign-skin(); }"},
-            {"PUI_GENERIC_STYLE_OVERRIDE"},
+            {"UI_GENERIC_STYLE_OVERRIDE"},
         ),
         (
             "PostCSS apply inside protected selector",
             {"src/app.pcss": "input { @apply rounded-none bg-red-500; }"},
-            {"PUI_GENERIC_STYLE_OVERRIDE"},
+            {"UI_GENERIC_STYLE_OVERRIDE"},
         ),
     ]
     for name, files, codes in cases:
@@ -2045,17 +2045,17 @@ def main() -> int:
     expect_issue(
         "changed managed source",
         {MANAGED_FORM_SOURCE: "export const tampered = true;"},
-        {"PUI_MANAGED_CHANGED"},
+        {"UI_MANAGED_CHANGED"},
     )
     expect_issue(
         "extra managed source",
-        {"src/personal-ui/local-extension.tsx": "export const Local=()=>null;"},
-        {"PUI_MANAGED_EXTRA"},
+        {"src/ui/local-extension.tsx": "export const Local=()=>null;"},
+        {"UI_MANAGED_EXTRA"},
     )
     expect_issue(
         "missing managed source",
         {},
-        {"PUI_MANAGED_MISSING"},
+        {"UI_MANAGED_MISSING"},
         remove=(MANAGED_FORM_SOURCE,),
     )
 

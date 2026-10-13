@@ -11,8 +11,8 @@ from pathlib import Path
 from unittest import mock
 
 import m8_evidence_continuity as continuity
-import release_personal_ui as release
-import test_release_personal_ui as release_fixture
+import release_ui as release
+import test_release_ui as release_fixture
 import test_validate_m8_evidence as m8_fixture
 
 
@@ -27,7 +27,7 @@ class ContinuityContracts(unittest.TestCase):
     """Use genuine temporary plans and archives; never run fixture commands."""
 
     def setUp(self) -> None:
-        self.temporary = tempfile.TemporaryDirectory(prefix="pui-m8-continuity-")
+        self.temporary = tempfile.TemporaryDirectory(prefix="ui-m8-continuity-")
         self.addCleanup(self.temporary.cleanup)
         self.root = Path(self.temporary.name)
         self.repository = self.root / "repository"
@@ -195,7 +195,7 @@ class ContinuityContracts(unittest.TestCase):
             continuity.validate_continuity_file(path, expected_plan=self.target_plan).accepted
         )
         self.assertEqual(self.origin_acceptance.read_bytes(), original_bytes)
-        self.assertEqual(record["kind"], "personal-ui-m8-evidence-continuity")
+        self.assertEqual(record["kind"], "ui-m8-evidence-continuity")
         self.assertEqual(record["schemaVersion"], 1)
         self.assertEqual(record["policy"], "assembler-only-v1")
         self.assertEqual(record["consumerRunsSourceCommit"], self.origin_commit)
@@ -215,8 +215,8 @@ class ContinuityContracts(unittest.TestCase):
 
     def test_product_and_file_set_changes_rejected(self) -> None:
         for changed_path in (
-            "assets/react-kit/src/personal-ui/index.ts",
-            "scripts/release_personal_ui.py",
+            "assets/react-kit/src/ui/index.ts",
+            "scripts/release_ui.py",
             "evaluation/m8/acceptance-rules.json",
         ):
             with self.subTest(path=changed_path):

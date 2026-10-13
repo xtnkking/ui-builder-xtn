@@ -269,7 +269,7 @@ class ComponentCoverageContractTests(unittest.TestCase):
             )
 
     def test_api_report_inventory_is_parsed_as_a_bounded_section(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="personal-ui-api-coverage-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-api-coverage-") as temporary:
             report = Path(temporary) / "api.md"
             report.write_text(
                 "# API\n\n## Runtime export inventory\n\n`Button`, `Input`\n\n"
@@ -281,9 +281,9 @@ class ComponentCoverageContractTests(unittest.TestCase):
         self.assertEqual(exports, ["Button", "Input"])
 
     def test_missing_runtime_export_in_api_report_fails_matrix_generation(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="personal-ui-api-coverage-") as temporary:
-            report = Path(temporary) / "personal-ui.api.md"
-            canonical = (DEFAULT_KIT_ROOT / "etc" / "personal-ui.api.md").read_text(
+        with tempfile.TemporaryDirectory(prefix="ui-api-coverage-") as temporary:
+            report = Path(temporary) / "ui.api.md"
+            canonical = (DEFAULT_KIT_ROOT / "etc" / "ui.api.md").read_text(
                 encoding="utf-8"
             )
             report.write_text(canonical.replace("`Accordion`, ", "", 1), encoding="utf-8")
@@ -300,7 +300,7 @@ class ComponentCoverageContractTests(unittest.TestCase):
         self.assertEqual(validate_runner_configuration(DEFAULT_KIT_ROOT), [])
 
     def test_runner_command_drift_invalidates_static_collection_rules(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="personal-ui-runner-coverage-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-runner-coverage-") as temporary:
             kit_root = Path(temporary)
             package = json.loads(
                 (DEFAULT_KIT_ROOT / "package.json").read_text(encoding="utf-8")
@@ -321,7 +321,7 @@ class ComponentCoverageContractTests(unittest.TestCase):
         self.assertTrue(any("test:browser" in error for error in errors))
 
     def test_test_evidence_requires_explicit_metadata(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="personal-ui-coverage-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-coverage-") as temporary:
             root = Path(temporary)
             test_file = (
                 root
@@ -333,7 +333,7 @@ class ComponentCoverageContractTests(unittest.TestCase):
             )
             test_file.parent.mkdir(parents=True)
             test_file.write_text(
-                '// @personal-ui-coverage {"kind":"unit","runner":"components",'
+                '// @ui-coverage {"kind":"unit","runner":"components",'
                 '"exports":["Button"]}\n'
                 "// Input is an incidental name and must not become evidence.\n",
                 encoding="utf-8",
@@ -351,7 +351,7 @@ class ComponentCoverageContractTests(unittest.TestCase):
         self.assertEqual(evidence["unit"]["Input"], [])
 
     def test_metadata_outside_the_declared_runner_is_rejected(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="personal-ui-coverage-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-coverage-") as temporary:
             root = Path(temporary)
             test_file = (
                 root
@@ -363,7 +363,7 @@ class ComponentCoverageContractTests(unittest.TestCase):
             )
             test_file.parent.mkdir(parents=True)
             test_file.write_text(
-                '// @personal-ui-coverage {"kind":"unit","runner":"components",'
+                '// @ui-coverage {"kind":"unit","runner":"components",'
                 '"exports":["Button"]}\n',
                 encoding="utf-8",
             )
@@ -374,7 +374,7 @@ class ComponentCoverageContractTests(unittest.TestCase):
         self.assertTrue(any("is not collected by runner" in error for error in errors))
 
     def test_unknown_metadata_export_is_rejected(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="personal-ui-coverage-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-coverage-") as temporary:
             root = Path(temporary)
             test_file = (
                 root
@@ -386,7 +386,7 @@ class ComponentCoverageContractTests(unittest.TestCase):
             )
             test_file.parent.mkdir(parents=True)
             test_file.write_text(
-                '// @personal-ui-coverage {"kind":"browser","runner":"browser",'
+                '// @ui-coverage {"kind":"browser","runner":"browser",'
                 '"exports":["UnknownControl"]}\n',
                 encoding="utf-8",
             )
@@ -397,7 +397,7 @@ class ComponentCoverageContractTests(unittest.TestCase):
         self.assertTrue(any("unknown export(s)" in error for error in errors))
 
     def test_example_evidence_requires_an_explorer_directive(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="personal-ui-example-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-example-") as temporary:
             root = Path(temporary)
             case_file = (
                 root
@@ -419,7 +419,7 @@ class ComponentCoverageContractTests(unittest.TestCase):
             self.assertEqual(errors, [])
             self.assertEqual(evidence["example"]["Button"], [])
             case_file.write_text(
-                '// @personal-ui-coverage {"kind":"example","runner":"explorer",'
+                '// @ui-coverage {"kind":"example","runner":"explorer",'
                 '"caseId":"button/default","exports":["Button"]}\n',
                 encoding="utf-8",
             )
@@ -433,10 +433,10 @@ class ComponentCoverageContractTests(unittest.TestCase):
         )
 
     def test_explorer_ast_failure_never_falls_back_to_directive_ownership(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="personal-ui-example-ast-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-example-ast-") as temporary:
             root = Path(temporary)
             kit_root = root / "assets" / "react-kit"
-            validator = kit_root / "tools" / "personal-ui" / "validate-explorer-cases.mjs"
+            validator = kit_root / "tools" / "ui" / "validate-explorer-cases.mjs"
             validator.parent.mkdir(parents=True)
             validator.write_text("// fixture", encoding="utf-8")
             case_file = (
@@ -449,7 +449,7 @@ class ComponentCoverageContractTests(unittest.TestCase):
             )
             case_file.parent.mkdir(parents=True)
             case_file.write_text(
-                '// @personal-ui-coverage {"kind":"example","runner":"explorer",'
+                '// @ui-coverage {"kind":"example","runner":"explorer",'
                 '"caseId":"button/overview","exports":["Button"]}\n',
                 encoding="utf-8",
             )
@@ -491,10 +491,10 @@ class ComponentCoverageContractTests(unittest.TestCase):
                                      "verificationKind": "structural-source-fixtures",
                                      "behavioralVerification": False,
                                      "evidence": {"Button": [fixture, keyboard_fixture]}}}
-        with tempfile.TemporaryDirectory(prefix="personal-ui-state-evidence-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-state-evidence-") as temporary:
             root = Path(temporary)
             kit_root = root / "assets" / "react-kit"
-            validator = kit_root / "tools" / "personal-ui" / "validate-explorer-cases.mjs"
+            validator = kit_root / "tools" / "ui" / "validate-explorer-cases.mjs"
             validator.parent.mkdir(parents=True)
             validator.write_text("// fixture", encoding="utf-8")
             case_file = root / case_ref
@@ -531,10 +531,10 @@ class ComponentCoverageContractTests(unittest.TestCase):
                         self.assertEqual(states, {})
 
     def test_test_evidence_validator_returns_per_export_runner_refs(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="personal-ui-test-evidence-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-test-evidence-") as temporary:
             root = Path(temporary)
             kit_root = root / "assets" / "react-kit"
-            validator = kit_root / "tools" / "personal-ui" / "validate-test-evidence.mjs"
+            validator = kit_root / "tools" / "ui" / "validate-test-evidence.mjs"
             validator.parent.mkdir(parents=True)
             validator.write_text("// fixture", encoding="utf-8")
             keyboard_ref = "assets/react-kit/tests/browser/button.spec.ts"
@@ -570,10 +570,10 @@ class ComponentCoverageContractTests(unittest.TestCase):
         self.assertEqual(evidence["a11y"]["Button"], [aria_ref])
 
     def test_test_evidence_failure_never_falls_back_to_directives(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="personal-ui-test-evidence-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-test-evidence-") as temporary:
             root = Path(temporary)
             kit_root = root / "assets" / "react-kit"
-            validator = kit_root / "tools" / "personal-ui" / "validate-test-evidence.mjs"
+            validator = kit_root / "tools" / "ui" / "validate-test-evidence.mjs"
             validator.parent.mkdir(parents=True)
             validator.write_text("// fixture", encoding="utf-8")
             with patch("generate_component_coverage.subprocess.run") as run:
@@ -600,7 +600,7 @@ class ComponentCoverageContractTests(unittest.TestCase):
         self.assertEqual(errors, ["Button has directive-only keyboard ownership"])
 
     def test_keyboard_evidence_requires_the_browser_runner(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="personal-ui-keyboard-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-keyboard-") as temporary:
             root = Path(temporary)
             test_file = (
                 root
@@ -612,7 +612,7 @@ class ComponentCoverageContractTests(unittest.TestCase):
             )
             test_file.parent.mkdir(parents=True)
             test_file.write_text(
-                '// @personal-ui-coverage {"kind":"keyboard","runner":"components",'
+                '// @ui-coverage {"kind":"keyboard","runner":"components",'
                 '"exports":["Button"]}\n',
                 encoding="utf-8",
             )

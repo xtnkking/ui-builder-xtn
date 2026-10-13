@@ -41,7 +41,7 @@
 
 ## 代码与检查
 
-修复发生在 canonical `src/personal-ui/`，Explorer 继续从公开 barrel 复用组件。没有在案例外写 `.pui-*` 补丁，没有混入另一套组件。
+修复发生在 canonical `src/ui/`，Explorer 继续从公开 barrel 复用组件。没有在案例外写 `.ui-*` 补丁，没有混入另一套组件。
 
 - 回归：`assets/react-kit/tests/browser/detail-responsive-audit.spec.ts`（7 项）和 `detail-floating.spec.ts`（2 项）。9 项 Chromium，加上仅针对改动行为的 3 项 WebKit，共 12 个唯一检查，最终都有通过结果。
 - 首轮 10/12；一项测试混用 innerText/textContent，一项发现 WebKit Select 焦点缺陷。只复验相关路径；随后纠正一次误把 Select 焦点断言套到 Popover 的测试错误。保留失败记录和一次明确的重试预算例外，没有重跑全部组件。

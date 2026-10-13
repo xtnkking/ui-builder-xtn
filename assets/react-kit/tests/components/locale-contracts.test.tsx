@@ -1,4 +1,4 @@
-// @personal-ui-coverage {"kind":"unit","runner":"components","exports":["LocaleProvider","usePersonalUILocale","Dialog","Drawer","ToastProvider","useToast","FamilyLoginPage","MemberManagementPage"]}
+// @ui-coverage {"kind":"unit","runner":"components","exports":["LocaleProvider","useUILocale","Dialog","Drawer","ToastProvider","useToast","FamilyLoginPage","MemberManagementPage"]}
 import { useState, type ReactNode } from "react";
 import { hydrateRoot } from "react-dom/client";
 import { renderToString } from "react-dom/server";
@@ -18,13 +18,13 @@ import {
   Scheduler,
   Select,
   ToastProvider,
-  usePersonalUILocale,
+  useUILocale,
   useToast,
-  type PersonalUILocale,
-} from "../../src/personal-ui";
+  type UILocale,
+} from "../../src/ui";
 
 function LocaleProbe({ id, count = 2 }: { id: string; count?: number }) {
-  const { formatDate, formatNumber, locale, message, plural, timeZone } = usePersonalUILocale();
+  const { formatDate, formatNumber, locale, message, plural, timeZone } = useUILocale();
   return (
     <output
       data-testid={id}
@@ -41,7 +41,7 @@ function LocaleProbe({ id, count = 2 }: { id: string; count?: number }) {
 describe("LocaleProvider contracts", () => {
   it("rejects unsupported runtime locales and invalid explicit time zones", () => {
     expect(() => renderToString(
-      <LocaleProvider locale={"fr-FR" as PersonalUILocale}><span /></LocaleProvider>,
+      <LocaleProvider locale={"fr-FR" as UILocale}><span /></LocaleProvider>,
     )).toThrowError('LocaleProvider locale must be "zh-CN" or "en-US".');
 
     for (const timeZone of ["", "Mars/Olympus", null] as const) {
@@ -109,7 +109,7 @@ describe("LocaleProvider contracts", () => {
   });
 
   it("changes component and ARIA text without changing submitted machine values", () => {
-    const renderSurface = (locale: PersonalUILocale) => (
+    const renderSurface = (locale: UILocale) => (
       <LocaleProvider locale={locale}>
         <form data-testid="machine-values">
           <DateField
@@ -230,7 +230,7 @@ describe("LocaleProvider contracts", () => {
       headline: "Docs",
       visual: <span />,
     }];
-    const login = (locale: PersonalUILocale) => (
+    const login = (locale: UILocale) => (
       <LocaleProvider locale={locale}>
         <FamilyLoginPage companyName="Northstar" products={products} onSubmit={onSubmit} />
       </LocaleProvider>

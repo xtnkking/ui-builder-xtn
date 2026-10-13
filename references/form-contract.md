@@ -1,6 +1,6 @@
 # Form Contract
 
-Read this reference when composing a form, integrating a form library, or maintaining a form-associated Personal UI component. Native controls and composite controls must expose the same observable form behavior even though their internal implementations differ.
+Read this reference when composing a form, integrating a form library, or maintaining a form-associated ui-builder-xtn component. Native controls and composite controls must expose the same observable form behavior even though their internal implementations differ.
 
 ## Public Usage
 
@@ -14,7 +14,7 @@ import {
   Input,
   MultiSelect,
   type ValidityControlHandle,
-} from "./personal-ui";
+} from "./ui";
 ```
 
 Native inputs such as `Input`, `Textarea`, and `DateField` use browser form behavior directly. Composite controls such as `Select`, `MultiSelect`, `TagInput`, `TreeSelect`, `Rating`, and `Slider` use the kit's internal form-association protocol. Consumers must not add hidden inputs or duplicate serialization.

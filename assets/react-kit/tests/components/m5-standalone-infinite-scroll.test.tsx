@@ -1,7 +1,7 @@
-// @personal-ui-coverage {"kind":"unit","runner":"components","exports":["InfiniteScroll"]}
+// @ui-coverage {"kind":"unit","runner":"components","exports":["InfiniteScroll"]}
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { InfiniteScroll } from "../../src/personal-ui";
+import { InfiniteScroll } from "../../src/ui";
 
 function deferred() {
   let resolve!: () => void;

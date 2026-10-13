@@ -1,4 +1,4 @@
-import { Button, Grid, Inline, Input, Stack, Tag } from "../../../personal-ui";
+import { Button, Grid, Inline, Input, Stack, Tag } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 function RadiusExample() {

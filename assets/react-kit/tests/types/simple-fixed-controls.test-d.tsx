@@ -6,7 +6,7 @@ import {
   type SkeletonProps,
   type SpinnerProps,
   type TagProps,
-} from "../../src/personal-ui";
+} from "../../src/ui";
 
 const skeletonProps: SkeletonProps = {
   width: "12rem",
@@ -52,24 +52,24 @@ const skeletonRef = <Skeleton ref={createRef<HTMLSpanElement>()} />;
 // @ts-expect-error fixed controls do not expose raw HTML injection
 const skeletonHtml = <Skeleton dangerouslySetInnerHTML={{ __html: "unsafe" }} />;
 // @ts-expect-error reserved ownership attributes are never public
-const skeletonOwner = <Skeleton data-pui-owner="Consumer" />;
-// @ts-expect-error every reserved data-pui attribute is never public
-const skeletonSlot = <Skeleton data-pui-slot="foreign" />;
+const skeletonOwner = <Skeleton data-ui-owner="Consumer" />;
+// @ts-expect-error every reserved data-ui attribute is never public
+const skeletonSlot = <Skeleton data-ui-slot="foreign" />;
 // @ts-expect-error the wildcard contract rejects unregistered reserved keys in Props objects
-const skeletonPrivateData: SkeletonProps = { "data-pui-private": "foreign" };
+const skeletonPrivateData: SkeletonProps = { "data-ui-private": "foreign" };
 // @ts-expect-error Skeleton is a decorative empty placeholder
 const skeletonChildren = <Skeleton children="Hidden content" />;
 
 // @ts-expect-error Spinner also uses the protected public-control contract
 const spinnerClassName = <Spinner className="foreign" />;
 // @ts-expect-error Spinner cannot accept known reserved internal markers in JSX
-const spinnerOwner = <Spinner data-pui-floating-root="foreign" />;
+const spinnerOwner = <Spinner data-ui-floating-root="foreign" />;
 // @ts-expect-error Spinner owns its status content
 const spinnerChildren = <Spinner children="Hidden content" />;
 // @ts-expect-error Tag also uses the protected public-control contract
 const tagStyle = <Tag style={{ color: "red" }}>Active</Tag>;
 // @ts-expect-error Tag cannot accept reserved ownership attributes
-const tagOwner = <Tag data-pui-owner="Consumer">Active</Tag>;
+const tagOwner = <Tag data-ui-owner="Consumer">Active</Tag>;
 
 void skeletonClassName;
 void skeletonStyle;

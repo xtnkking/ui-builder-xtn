@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"list/overview","exports":["List","VirtualList"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"list/overview","exports":["List","VirtualList"]}
 import { StatePreview } from "../state-preview";
-import { Box, List, Stack, VirtualList } from "../../../personal-ui";
+import { Box, List, Stack, VirtualList } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 const records = Array.from({ length: 40 }, (_, index) => ({ id: `record-${index + 1}`, name: `审计记录 ${index + 1}` }));

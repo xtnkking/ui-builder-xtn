@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"infinite-scroll/overview","exports":["InfiniteScroll"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"infinite-scroll/overview","exports":["InfiniteScroll"]}
 import { useCallback, useRef, useState } from "react";
-import { Alert, InfiniteScroll, LoadMore, Stack } from "../../../personal-ui";
+import { Alert, InfiniteScroll, LoadMore, Stack } from "../../../ui";
 import { StatePreview } from "../state-preview";
 import type { ExplorerCase } from "../types";
 
@@ -86,7 +86,7 @@ const explorerCase = {
     { state: "locale", exports: ["InfiniteScroll"], content: <StatePreview state="locale"><InfiniteScrollExample /></StatePreview> },
   ],
   code: `import { useState } from "react";
-import { InfiniteScroll } from "./personal-ui";
+import { InfiniteScroll } from "./ui";
 
 type RecordItem = { id: string; label: string };
 type Page = { records: RecordItem[]; cursor: number; hasMore: boolean };

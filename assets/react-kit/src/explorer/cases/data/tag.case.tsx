@@ -1,8 +1,8 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"tag/overview","exports":["Tag"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"tag/overview","exports":["Tag"]}
 import { StatePreview } from "../state-preview";
 import { useState } from "react";
 import { Clock3, Flag } from "lucide-react";
-import { Button, Inline, Tag } from "../../../personal-ui";
+import { Button, Inline, Tag } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 function CountryTagExample({ english = false }: { english?: boolean }) {

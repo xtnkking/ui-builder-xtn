@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"keyboard/overview","exports":["KeyboardShortcut"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"keyboard/overview","exports":["KeyboardShortcut"]}
 import { StatePreview } from "../state-preview";
-import { Inline, KeyboardShortcut } from "../../../personal-ui";
+import { Inline, KeyboardShortcut } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 const explorerCase = {

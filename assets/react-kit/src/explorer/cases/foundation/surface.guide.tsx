@@ -1,4 +1,4 @@
-import { Box, Card, Grid, Stack } from "../../../personal-ui";
+import { Box, Card, Grid, Stack } from "../../../ui";
 import { StatePreview } from "../state-preview";
 import type { ExplorerCase } from "../types";
 

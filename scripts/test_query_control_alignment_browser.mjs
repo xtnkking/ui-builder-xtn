@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { isPersonalUiRegressionMain, runPersonalUiRegression } from "./browser-test-harness.mjs";
+import { isUIRegressionMain, runUIRegression } from "./browser-test-harness.mjs";
 
 export async function runQueryControlAlignmentRegression({ page, baseURL }) {
   assert.ok(baseURL, "A baseURL is required");
@@ -19,7 +19,7 @@ export async function runQueryControlAlignmentRegression({ page, baseURL }) {
       const compact = page.getByRole("button", { name: "紧凑操作" });
       await filterBar.waitFor();
       const geometry = await page.evaluate(() => {
-        const bar = document.querySelector(".pui-filter-bar");
+        const bar = document.querySelector(".ui-filter-bar");
         const barStyle = getComputedStyle(bar);
         return {
           bar: {
@@ -33,8 +33,8 @@ export async function runQueryControlAlignmentRegression({ page, baseURL }) {
         };
       });
       const shellRect = async (locator) => locator.evaluate((element) => {
-        const shell = element.closest(".pui-input-shell");
-        if (!(shell instanceof HTMLElement)) throw new Error("search input has no Personal UI shell");
+        const shell = element.closest(".ui-input-shell");
+        if (!(shell instanceof HTMLElement)) throw new Error("search input has no UI shell");
         const rect = shell.getBoundingClientRect();
         return { top: rect.top, bottom: rect.bottom, width: rect.width, height: rect.height };
       });
@@ -61,8 +61,8 @@ export async function runQueryControlAlignmentRegression({ page, baseURL }) {
       assert.ok(Math.abs(standaloneQueryRect.height - 44) <= 0.5, `explicit field-sized button outside FilterBar is not 44px at ${width}px`);
       assert.ok(Math.abs(ordinaryRect.height - 38) <= 0.5, `ordinary button was globally enlarged at ${width}px`);
       assert.ok(Math.abs(compactRect.height - 32) <= 0.5, `small button height changed at ${width}px`);
-      assert.equal(await inlineQuery.evaluate((element) => element.classList.contains("pui-button--medium")), true, "FilterBar compatibility case is no longer medium");
-      assert.equal(await standaloneQuery.evaluate((element) => element.classList.contains("pui-button--field")), true, "explicit field size class is missing");
+      assert.equal(await inlineQuery.evaluate((element) => element.classList.contains("ui-button--medium")), true, "FilterBar compatibility case is no longer medium");
+      assert.equal(await standaloneQuery.evaluate((element) => element.classList.contains("ui-button--field")), true, "explicit field size class is missing");
       assert.equal(geometry.bar.backgroundColor, "rgba(0, 0, 0, 0)", `filter bar has a background at ${width}px`);
       assert.deepEqual(geometry.bar.borders, ["0px", "0px", "0px", "0px"], `filter bar has a border at ${width}px`);
       assert.deepEqual(geometry.bar.radii, ["0px", "0px", "0px", "0px"], `filter bar retains container rounding at ${width}px`);
@@ -86,6 +86,6 @@ export async function runQueryControlAlignmentRegression({ page, baseURL }) {
   console.log("Field-sized, FilterBar Inline, loading, and ordinary button geometry passed at 1440px, 736px, and 320px.");
 }
 
-if (isPersonalUiRegressionMain(import.meta.url)) {
-  await runPersonalUiRegression(runQueryControlAlignmentRegression);
+if (isUIRegressionMain(import.meta.url)) {
+  await runUIRegression(runQueryControlAlignmentRegression);
 }

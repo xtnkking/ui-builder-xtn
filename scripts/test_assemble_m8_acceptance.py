@@ -13,11 +13,11 @@ from unittest import mock
 
 import assemble_m8_acceptance as assembler
 import m8_evidence as evidence_records
-import release_personal_ui as release
+import release_ui as release
 import run_m8_migration as migration_runner
 import run_m8_quality as quality_runner
 import run_m8_scenario_quality as scenario_producer
-import test_release_personal_ui as release_fixture
+import test_release_ui as release_fixture
 import test_run_m8_quality as quality_fixture
 import test_run_m8_scenario_quality as producer_fixture
 import test_validate_m8_evidence as evidence_fixture
@@ -36,7 +36,7 @@ class M8AcceptanceAssemblerContracts(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        cls.candidate_temporary = tempfile.TemporaryDirectory(prefix="pui-m8-assemble-candidate-")
+        cls.candidate_temporary = tempfile.TemporaryDirectory(prefix="ui-m8-assemble-candidate-")
         temporary = Path(cls.candidate_temporary.name)
         cls.candidate_root = temporary / "candidate"
         fixture_files = release_fixture.fixture_files(licensed=True)
@@ -51,8 +51,8 @@ class M8AcceptanceAssemblerContracts(unittest.TestCase):
             coverage
         )
         for relative in (
-            "scripts/install_personal_ui.py",
-            "scripts/verify_personal_ui.py",
+            "scripts/install_ui.py",
+            "scripts/verify_ui.py",
             "scripts/run_m8_migration_failure_case.py",
             "evaluation/m8/migration-v0.2.19-consumer/template.json",
         ):
@@ -117,7 +117,7 @@ class M8AcceptanceAssemblerContracts(unittest.TestCase):
                     f"{prefix}/evidence/{stage}/source-inventory.json",
                     {
                         "schemaVersion": 1,
-                        "kind": "personal-ui-m8-source-inventory",
+                        "kind": "ui-m8-source-inventory",
                         "contentDigest": release.digest_file_map(source_files),
                         "files": release.file_inventory(source_files),
                     },
@@ -169,7 +169,7 @@ class M8AcceptanceAssemblerContracts(unittest.TestCase):
                 release.pretty_json_bytes(
                     {
                         "schemaVersion": 1,
-                        "kind": "personal-ui-m8-consumer-source-inventory",
+                        "kind": "ui-m8-consumer-source-inventory",
                         "phase": phase,
                         "fileCount": len(source_files),
                         "contentDigest": release.digest_file_map(source_files),
@@ -182,7 +182,7 @@ class M8AcceptanceAssemblerContracts(unittest.TestCase):
             release.pretty_json_bytes(
                 {
                     "schemaVersion": 1,
-                    "kind": "personal-ui-m8-migration-candidate-input",
+                    "kind": "ui-m8-migration-candidate-input",
                     "candidate": migration_candidate,
                     "fileCount": len(self.candidate_files),
                     "contentDigest": release.digest_file_map(self.candidate_files),
@@ -221,7 +221,7 @@ class M8AcceptanceAssemblerContracts(unittest.TestCase):
                 release.pretty_json_bytes(
                     {
                         "schemaVersion": 1,
-                        "kind": "personal-ui-m8-migration-command",
+                        "kind": "ui-m8-migration-command",
                         "label": label,
                         "argv": ["fixture", label],
                         "cwd": "$M8_MIGRATION_ROOT/workspaces/consumer",
@@ -313,7 +313,7 @@ class M8AcceptanceAssemblerContracts(unittest.TestCase):
 
             command_record = {
                 "schemaVersion": 1,
-                "kind": "personal-ui-m8-command",
+                "kind": "ui-m8-command",
                 "runId": run_id,
                 "sequence": 1,
                 "argv": ["npm", "run", "typecheck"],
@@ -337,7 +337,7 @@ class M8AcceptanceAssemblerContracts(unittest.TestCase):
                 release.pretty_json_bytes(
                     {
                         "schemaVersion": 1,
-                        "kind": "personal-ui-m8-command-index",
+                        "kind": "ui-m8-command-index",
                         "runId": run_id,
                         "commands": [command_descriptor],
                     }
@@ -350,7 +350,7 @@ class M8AcceptanceAssemblerContracts(unittest.TestCase):
                 release.pretty_json_bytes(
                     {
                         "schemaVersion": 1,
-                        "kind": "personal-ui-m8-quality-verification",
+                        "kind": "ui-m8-quality-verification",
                         "runId": run_id,
                         "candidate": visible["candidate"],
                         "result": "passed",
@@ -485,7 +485,7 @@ class M8AcceptanceAssemblerContracts(unittest.TestCase):
         return output, source_evidence
 
     def test_complete_bundle_is_accepted_and_candidate_materials_are_exact(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-assemble-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-assemble-") as temporary:
             root = Path(temporary)
             output, _ = self.assemble(root)
             result = validator.validate_m8_evidence_file(
@@ -550,7 +550,7 @@ class M8AcceptanceAssemblerContracts(unittest.TestCase):
             self.assertIn("npm run dev", preview)
 
     def test_producer_quality_bundle_is_accepted_by_assembler(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-producer-assembly-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-producer-assembly-") as temporary:
             root = Path(temporary)
             pairs: list[tuple[Path, Path]] = []
             producer_report: Path | None = None
@@ -607,7 +607,7 @@ class M8AcceptanceAssemblerContracts(unittest.TestCase):
                         "evidence/final/source-inventory.json",
                         {
                             "schemaVersion": 1,
-                            "kind": "personal-ui-m8-source-inventory",
+                            "kind": "ui-m8-source-inventory",
                             "contentDigest": release.digest_file_map(source_files),
                             "files": release.file_inventory(source_files),
                         },
@@ -665,7 +665,7 @@ class M8AcceptanceAssemblerContracts(unittest.TestCase):
                 assembler._load_candidate(self.candidate_root)
 
     def test_explicit_scenario_root_never_searches_parent_directories(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-root-boundary-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-root-boundary-") as temporary:
             parent = Path(temporary)
             explicit = parent / "workspace"
             explicit.mkdir()
@@ -685,7 +685,7 @@ class M8AcceptanceAssemblerContracts(unittest.TestCase):
                 )
 
     def test_scenario_source_zip_must_match_its_inventory(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-source-freeze-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-source-freeze-") as temporary:
             root = Path(temporary)
             archive = evidence_fixture.artifact(
                 root,
@@ -699,7 +699,7 @@ class M8AcceptanceAssemblerContracts(unittest.TestCase):
                 "evidence/final/source-inventory.json",
                 {
                     "schemaVersion": 1,
-                    "kind": "personal-ui-m8-source-inventory",
+                    "kind": "ui-m8-source-inventory",
                     "contentDigest": release.digest_file_map({"src/App.tsx": b"different\n"}),
                     "files": release.file_inventory({"src/App.tsx": b"different\n"}),
                 },
@@ -715,7 +715,7 @@ class M8AcceptanceAssemblerContracts(unittest.TestCase):
                 )
 
     def test_migration_command_cannot_fall_back_to_synthetic_verification(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-command-fallback-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-command-fallback-") as temporary:
             root = Path(temporary)
             fallback = root / "artifacts/baseline-verification.json"
             fallback.parent.mkdir(parents=True)
@@ -735,7 +735,7 @@ class M8AcceptanceAssemblerContracts(unittest.TestCase):
             (lambda value: value.update(result="failed"), "not passed"),
         ):
             with self.subTest(message=message), tempfile.TemporaryDirectory(
-                prefix="pui-m8-assemble-scenario-"
+                prefix="ui-m8-assemble-scenario-"
             ) as temporary:
                 root = Path(temporary)
                 fragments, migration, quality, _ = self.make_inputs(root)
@@ -775,13 +775,13 @@ class M8AcceptanceAssemblerContracts(unittest.TestCase):
                     assembler._reject_placeholders(value, label="unfinished review")
 
     def test_source_inventory_paths_are_not_workspace_descriptors(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-inventory-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-inventory-") as temporary:
             root = Path(temporary)
             source = root / "source"
             source.mkdir()
             (source / "m8-quality-plan.json").write_text("{}", encoding="utf-8")
             inventory = {
-                "kind": "personal-ui-m8-source-inventory",
+                "kind": "ui-m8-source-inventory",
                 "files": [
                     {
                         "path": "m8-quality-plan.json",
@@ -797,7 +797,7 @@ class M8AcceptanceAssemblerContracts(unittest.TestCase):
             self.assertEqual((root / "bundle/scenario/source-inventory.json").read_bytes(), original_bytes)
 
     def test_quality_binding_mismatch_is_rejected_atomically(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-assemble-quality-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-assemble-quality-") as temporary:
             root = Path(temporary)
             fragments, migration, quality, _ = self.make_inputs(root)
             value = json.loads(quality.read_text("utf-8"))
@@ -816,7 +816,7 @@ class M8AcceptanceAssemblerContracts(unittest.TestCase):
             self.assertFalse(output.exists())
 
     def test_uninventoried_raw_quality_artifact_is_rejected(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-assemble-raw-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-assemble-raw-") as temporary:
             root = Path(temporary)
             fragments, migration, quality, _ = self.make_inputs(root)
             extra = root / "inputs/quality/raw/uninventoried.log"
@@ -832,7 +832,7 @@ class M8AcceptanceAssemblerContracts(unittest.TestCase):
                 )
 
     def test_tampered_migration_is_rejected(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-assemble-migration-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-assemble-migration-") as temporary:
             root = Path(temporary)
             fragments, migration, quality, _ = self.make_inputs(root)
             (migration / "artifacts/migration-diff.patch").write_text(
@@ -849,7 +849,7 @@ class M8AcceptanceAssemblerContracts(unittest.TestCase):
                 )
 
     def test_linked_fragment_is_rejected(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-assemble-link-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-assemble-link-") as temporary:
             root = Path(temporary)
             fragments, migration, quality, _ = self.make_inputs(root)
             linked = root / "linked-fragment.json"
@@ -875,7 +875,7 @@ class M8AcceptanceAssemblerContracts(unittest.TestCase):
 
 class NextReleaseAssemblerContracts(unittest.TestCase):
     def setUp(self) -> None:
-        self.temporary = tempfile.TemporaryDirectory(prefix="pui-next-m8-assembler-")
+        self.temporary = tempfile.TemporaryDirectory(prefix="ui-next-m8-assembler-")
         self.addCleanup(self.temporary.cleanup)
         self.root = Path(self.temporary.name)
         self.candidate = self.root / "candidate"
@@ -883,8 +883,8 @@ class NextReleaseAssemblerContracts(unittest.TestCase):
         repository.mkdir()
         files = release_fixture.fixture_files(licensed=True, release_target="0.3.1")
         for relative in (
-            "scripts/install_personal_ui.py",
-            "scripts/verify_personal_ui.py",
+            "scripts/install_ui.py",
+            "scripts/verify_ui.py",
             "scripts/run_m8_migration_failure_case.py",
             "evaluation/m8/migration-v0.2.19-consumer/template.json",
         ):

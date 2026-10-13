@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"avatar/overview","exports":["Avatar","AvatarGroup"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"avatar/overview","exports":["Avatar","AvatarGroup"]}
 import { StatePreview } from "../state-preview";
-import { Avatar, AvatarGroup } from "../../../personal-ui";
+import { Avatar, AvatarGroup } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 const explorerCase = {

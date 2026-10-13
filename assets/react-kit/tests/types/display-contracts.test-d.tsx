@@ -14,7 +14,7 @@ import {
   Statistic,
   StatusIndicator,
   Timeline,
-} from "../../src/personal-ui";
+} from "../../src/ui";
 
 const allowedUsage = (
   <>
@@ -73,7 +73,7 @@ const meterClassName = <Meter label="Storage" ariaLabel="Storage used" value={42
 // @ts-expect-error Timeline keeps styling internal
 const timelineClassName = <Timeline items={[]} className="foreign" />;
 // @ts-expect-error fixed controls never expose ownership attributes
-const cardOwner = <Card data-pui-owner="Consumer" />;
+const cardOwner = <Card data-ui-owner="Consumer" />;
 
 void listClassName;
 void descriptionClassName;

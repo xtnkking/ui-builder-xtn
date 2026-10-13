@@ -1,4 +1,4 @@
-// @personal-ui-coverage {"kind":"a11y","runner":"a11y","exports":["Accordion","Alert","AnchorNavigation","AppNavigation","AsyncAction","AsyncSelect","Attachment","AuthenticationPage","Autocomplete","Avatar","AvatarGroup","Badge","Banner","BarChart","BottomNavigation","Breadcrumbs","Button","ButtonGroup","Calendar","Carousel","Cascader","Checkbox","ClipboardButton","CodeBlock","CodeEditor","Collapse","ColorPicker","Combobox","CommandPalette","ConfirmDialog","ContextMenu","CreateEditPage","DataTable","DateField","DateRangeField","DescriptionList","DetailPage","Dialog","DragDrop","Drawer","DropdownMenu","EmptyState","ErrorState","ExpandableText","FamilyLoginPage","Field","FileUpload","FilterBar","FocusTrap","Form","Gallery","GuidedTour","HoverCard","IconButton","ImportExportPage","InfiniteScroll","InlineEdit","InlineMessage","Input","Lightbox","Link","ListManagementPage","LoadMore","MarkdownEditor","MasterDetail","Media","MemberManagementPage","Menu","Meter","MultiSelect","NoResults","NumberInput","OtpInput","OverflowText","PageHeading","Pagination","PasswordInput","Popconfirm","Popover","Progress","ProgressRing","Radio","Rating","ResizablePanels","RetryButton","RichTextEditor","Scheduler","SearchableSelect","SearchFilterPage","SearchInput","SegmentedControl","Select","SettingsPage","SideNavigation","Slider","SortableList","Spinner","SplitButton","Statistic","StatusIndicator","StatusPage","Stepper","Switch","Tabs","Tag","TagInput","Textarea","Timeline","TimezoneSelect","ToastProvider","ToggleButton","Toolbar","Tooltip","TopNavigation","Transfer","Tree","TreeSelect","TreeTable","ValidationSummary","WizardFlow"]}
+// @ui-coverage {"kind":"a11y","runner":"a11y","exports":["Accordion","Alert","AnchorNavigation","AppNavigation","AsyncAction","AsyncSelect","Attachment","AuthenticationPage","Autocomplete","Avatar","AvatarGroup","Badge","Banner","BarChart","BottomNavigation","Breadcrumbs","Button","ButtonGroup","Calendar","Carousel","Cascader","Checkbox","ClipboardButton","CodeBlock","CodeEditor","Collapse","ColorPicker","Combobox","CommandPalette","ConfirmDialog","ContextMenu","CreateEditPage","DataTable","DateField","DateRangeField","DescriptionList","DetailPage","Dialog","DragDrop","Drawer","DropdownMenu","EmptyState","ErrorState","ExpandableText","FamilyLoginPage","Field","FileUpload","FilterBar","FocusTrap","Form","Gallery","GuidedTour","HoverCard","IconButton","ImportExportPage","InfiniteScroll","InlineEdit","InlineMessage","Input","Lightbox","Link","ListManagementPage","LoadMore","MarkdownEditor","MasterDetail","Media","MemberManagementPage","Menu","Meter","MultiSelect","NoResults","NumberInput","OtpInput","OverflowText","PageHeading","Pagination","PasswordInput","Popconfirm","Popover","Progress","ProgressRing","Radio","Rating","ResizablePanels","RetryButton","RichTextEditor","Scheduler","SearchableSelect","SearchFilterPage","SearchInput","SegmentedControl","Select","SettingsPage","SideNavigation","Slider","SortableList","Spinner","SplitButton","Statistic","StatusIndicator","StatusPage","Stepper","Switch","Tabs","Tag","TagInput","Textarea","Timeline","TimezoneSelect","ToastProvider","ToggleButton","Toolbar","Tooltip","TopNavigation","Transfer","Tree","TreeSelect","TreeTable","ValidationSummary","WizardFlow"]}
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 import { registerAriaEvidence, type AriaEvidenceCase } from "../support/m6-evidence";
@@ -130,7 +130,7 @@ registerAriaEvidence(ariaEvidenceCases);
 
 test("CodeBlock scroll region has a valid name and no blocking axe incomplete result", async ({ page }) => {
   await page.goto("/#/components/code-block");
-  const owner = page.locator('.demo-explorer-preview [data-pui-owner="CodeBlock"]').first();
+  const owner = page.locator('.demo-explorer-preview [data-ui-owner="CodeBlock"]').first();
   const region = owner.getByRole("region");
   await expect(region).toHaveAccessibleName(/.+/);
   await region.focus();
@@ -138,7 +138,7 @@ test("CodeBlock scroll region has a valid name and no blocking axe incomplete re
   await page.keyboard.press("Shift+Tab");
   await expect(owner.getByRole("button").first()).toBeFocused();
   const result = await new AxeBuilder({ page })
-    .include('.demo-explorer-preview [data-pui-owner="CodeBlock"]')
+    .include('.demo-explorer-preview [data-ui-owner="CodeBlock"]')
     .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
     .analyze();
   const blocking = [...result.violations, ...result.incomplete]
@@ -150,7 +150,7 @@ test("FamilyLoginPage product copy has determinate contrast at the stacked break
   await page.setViewportSize({ width: 736, height: 900 });
   await page.goto("/#/patterns/authentication");
   await page.getByRole("tab", { name: "品牌家族登录预览" }).click();
-  const copy = page.locator(".demo-explorer-preview .pui-auth__product-copy").last();
+  const copy = page.locator(".demo-explorer-preview .ui-auth__product-copy").last();
   await expect(copy.getByText("Workspace Docs")).toBeVisible();
   const backgrounds = await copy.evaluate((element) => ({
     copy: getComputedStyle(element).backgroundColor,
@@ -163,6 +163,6 @@ test("FamilyLoginPage product copy has determinate contrast at the stacked break
   const blockingCopyNodes = [...result.violations, ...result.incomplete]
     .filter((rule) => rule.impact === "critical" || rule.impact === "serious")
     .flatMap((rule) => rule.nodes)
-    .filter((node) => node.target.some((target) => target.includes("pui-auth__product-copy")));
+    .filter((node) => node.target.some((target) => target.includes("ui-auth__product-copy")));
   expect(blockingCopyNodes).toEqual([]);
 });

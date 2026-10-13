@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"segmented/overview","exports":["SegmentedControl"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"segmented/overview","exports":["SegmentedControl"]}
 import { useState } from "react";
-import { Field, SegmentedControl } from "../../../personal-ui";
+import { Field, SegmentedControl } from "../../../ui";
 import type { ExplorerCase } from "../types";
 import { StatePreview } from "../state-preview";
 

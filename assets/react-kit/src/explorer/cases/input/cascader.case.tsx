@@ -1,7 +1,7 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"cascader/overview","exports":["Cascader"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"cascader/overview","exports":["Cascader"]}
 import { StatePreview } from "../state-preview";
 import { useState } from "react";
-import { Cascader, Field } from "../../../personal-ui";
+import { Cascader, Field } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 const regions = [

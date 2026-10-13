@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"tour/overview","exports":["GuidedTour"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"tour/overview","exports":["GuidedTour"]}
 import { useState } from "react";
-import { Button, GuidedTour, Inline } from "../../../personal-ui";
+import { Button, GuidedTour, Inline } from "../../../ui";
 import { StatePreview } from "../state-preview";
 import type { ExplorerCase } from "../types";
 
@@ -55,7 +55,7 @@ const explorerCase: ExplorerCase = {
     { state: "dark", exports: ["GuidedTour"], content: <StatePreview state="dark"><GuidedTourExample /></StatePreview> },
     { state: "locale", exports: ["GuidedTour"], content: <StatePreview state="locale"><EnglishGuidedTourExample /></StatePreview> },
   ],
-  code: `import { GuidedTour } from "./personal-ui";
+  code: `import { GuidedTour } from "./ui";
 
 <GuidedTour open={open} onOpenChange={setOpen} currentId={step} onCurrentChange={setStep} steps={steps} />`,
 };

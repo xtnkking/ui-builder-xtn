@@ -18,7 +18,7 @@ from datetime import datetime, timezone
 from pathlib import Path, PurePosixPath
 from typing import Any, Mapping, Sequence
 
-import release_personal_ui as release
+import release_ui as release
 import run_m8_migration as migration_runner
 import validate_m8_evidence as validator
 
@@ -26,8 +26,8 @@ import validate_m8_evidence as validator
 SCHEMA_VERSION = 1
 FRAGMENT_NAME = "quality-fragment.json"
 ACCEPTANCE_NAME = "m8-acceptance.json"
-QUALITY_RAW_INVENTORY_KIND = "personal-ui-m8-quality-raw-artifact-inventory"
-REVIEW_INPUTS_KIND = "personal-ui-m8-review-inputs"
+QUALITY_RAW_INVENTORY_KIND = "ui-m8-quality-raw-artifact-inventory"
+REVIEW_INPUTS_KIND = "ui-m8-review-inputs"
 EVALUATOR_COMMAND_ROLES = frozenset(
     {
         "evaluator-command-index",
@@ -374,7 +374,7 @@ def _validate_scenario_source_freeze(
     inventory = _read_json(inventory_path, label=f"{label} source inventory")
     if (
         inventory.get("schemaVersion") != SCHEMA_VERSION
-        or inventory.get("kind") != "personal-ui-m8-source-inventory"
+        or inventory.get("kind") != "ui-m8-source-inventory"
         or inventory.get("contentDigest") != release.digest_file_map(files)
         or inventory.get("files") != release.file_inventory(files)
     ):
@@ -414,7 +414,7 @@ class _ScenarioRebaser:
             document = json.loads(content.decode("utf-8")) if relative.suffix.lower() == ".json" else None
         except (UnicodeDecodeError, json.JSONDecodeError) as error:
             raise AssemblyError(f"scenario JSON artifact is invalid: {key}: {error}") from error
-        if isinstance(document, dict) and document.get("kind") == "personal-ui-m8-source-inventory":
+        if isinstance(document, dict) and document.get("kind") == "ui-m8-source-inventory":
             # Entries address ZIP members, not workspace files. Source ZIPs and
             # their inventories are validated together before rebasing.
             pass
@@ -556,7 +556,7 @@ def _migration_command_artifact(
     }.get(expected_label)
     if (
         command.get("schemaVersion") != SCHEMA_VERSION
-        or command.get("kind") != "personal-ui-m8-migration-command"
+        or command.get("kind") != "ui-m8-migration-command"
         or command.get("label") != expected_label
         or not isinstance(command.get("argv"), list)
         or not command["argv"]
@@ -603,7 +603,7 @@ def _validate_migration_source_freeze(
     )
     if (
         inventory.get("schemaVersion") != SCHEMA_VERSION
-        or inventory.get("kind") != "personal-ui-m8-consumer-source-inventory"
+        or inventory.get("kind") != "ui-m8-consumer-source-inventory"
         or inventory.get("phase") != phase
         or inventory.get("fileCount") != len(files)
         or inventory.get("contentDigest") != release.digest_file_map(files)
@@ -652,7 +652,7 @@ def _assemble_migration(
     )
     if (
         candidate_input.get("schemaVersion") != SCHEMA_VERSION
-        or candidate_input.get("kind") != "personal-ui-m8-migration-candidate-input"
+        or candidate_input.get("kind") != "ui-m8-migration-candidate-input"
         or candidate_input.get("candidate") != candidate_summary
         or candidate_input.get("fileCount") != len(candidate_files)
         or candidate_input.get("contentDigest") != release.digest_file_map(candidate_files)
@@ -802,7 +802,7 @@ def _validate_evaluator_command_provenance(
     descriptors = index.get("commands")
     if (
         index.get("schemaVersion") != SCHEMA_VERSION
-        or index.get("kind") != "personal-ui-m8-command-index"
+        or index.get("kind") != "ui-m8-command-index"
         or index.get("runId") != run_id
         or not isinstance(descriptors, list)
         or not descriptors
@@ -863,7 +863,7 @@ def _validate_evaluator_command_provenance(
         )
         if (
             record.get("schemaVersion") != SCHEMA_VERSION
-            or record.get("kind") != "personal-ui-m8-command"
+            or record.get("kind") != "ui-m8-command"
             or record.get("runId") != run_id
             or record.get("sequence") != sequence
         ):
@@ -988,7 +988,7 @@ def _validate_quality_raw_provenance(
         visible_scenario = visible.get("scenario")
         if (
             visible.get("schemaVersion") != SCHEMA_VERSION
-            or visible.get("kind") != "personal-ui-m8-evaluator-inputs"
+            or visible.get("kind") != "ui-m8-evaluator-inputs"
             or visible.get("official") is not True
             or not isinstance(visible_candidate, dict)
             or _candidate_summary(visible_candidate) != candidate_summary
@@ -1014,7 +1014,7 @@ def _validate_quality_raw_provenance(
         if (
             final_verification.get("schemaVersion") != SCHEMA_VERSION
             or final_verification.get("kind")
-            != "personal-ui-m8-quality-verification"
+            != "ui-m8-quality-verification"
             or final_verification.get("runId") != run_id
             or final_verification.get("candidate") != visible_candidate
             or final_verification.get("result") != "passed"
@@ -1388,7 +1388,7 @@ def _review_materials(
         )
     independent_report = {
         "schemaVersion": SCHEMA_VERSION,
-        "kind": "personal-ui-m8-independent-consumer-report",
+        "kind": "ui-m8-independent-consumer-report",
         "result": "passed",
         "generatedAt": generated_at,
         "candidate": summary,
@@ -1472,7 +1472,7 @@ def _review_materials(
 
     checklist = {
         "schemaVersion": SCHEMA_VERSION,
-        "kind": "personal-ui-m8-release-checklist",
+        "kind": "ui-m8-release-checklist",
         "result": "passed",
         "generatedAt": generated_at,
         "candidate": summary,
@@ -1619,7 +1619,7 @@ def assemble(
         temporary.replace(output)
         return {
             "schemaVersion": SCHEMA_VERSION,
-            "kind": "personal-ui-m8-acceptance-assembly",
+            "kind": "ui-m8-acceptance-assembly",
             "result": "passed",
             "bundle": str(output),
             "evidence": str(output / ACCEPTANCE_NAME),

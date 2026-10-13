@@ -1,4 +1,4 @@
-// @personal-ui-coverage {"kind":"unit","runner":"components","exports":["Breadcrumbs","Pagination","Tabs"]}
+// @ui-coverage {"kind":"unit","runner":"components","exports":["Breadcrumbs","Pagination","Tabs"]}
 import { createElement } from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -10,7 +10,7 @@ import {
   type BreadcrumbsProps,
   type PaginationProps,
   type TabsProps,
-} from "../../src/personal-ui";
+} from "../../src/ui";
 
 const tabItems = [
   { id: "overview", label: "Overview", content: "Overview content" },
@@ -25,8 +25,8 @@ function escapedProps(testId: string) {
     sx: "foreign-sx",
     tw: "foreign-tw",
     dangerouslySetInnerHTML: { __html: "<b>unsafe</b>" },
-    "data-pui-owner": "Consumer",
-    "data-pui-slot": "foreign",
+    "data-ui-owner": "Consumer",
+    "data-ui-slot": "foreign",
     "data-testid": testId,
     "data-track": "preserved",
   };
@@ -38,8 +38,8 @@ function expectClosedRoot(element: HTMLElement, owner: string) {
   expect(element).not.toHaveAttribute("css");
   expect(element).not.toHaveAttribute("sx");
   expect(element).not.toHaveAttribute("tw");
-  expect(element).not.toHaveAttribute("data-pui-slot");
-  expect(element).toHaveAttribute("data-pui-owner", owner);
+  expect(element).not.toHaveAttribute("data-ui-slot");
+  expect(element).toHaveAttribute("data-ui-owner", owner);
   expect(element).toHaveAttribute("data-track", "preserved");
 }
 

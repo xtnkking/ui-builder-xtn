@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"status/overview","exports":["StatusIndicator"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"status/overview","exports":["StatusIndicator"]}
 import { StatePreview } from "../state-preview";
-import { Inline, StatusIndicator } from "../../../personal-ui";
+import { Inline, StatusIndicator } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 const explorerCase = {

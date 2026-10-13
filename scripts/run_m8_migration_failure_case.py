@@ -8,7 +8,7 @@ import json
 from pathlib import Path
 from typing import Sequence
 
-import install_personal_ui as installer
+import install_ui as installer
 
 
 EXPECTED_FAILURE_EXIT_CODE = 8
@@ -51,7 +51,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 json.dumps(
                     {
                         "schemaVersion": 1,
-                        "kind": "personal-ui-m8-migration-rollback",
+                        "kind": "ui-m8-migration-rollback",
                         "result": "unexpected-failure",
                         "failurePoint": args.failure_point,
                         "error": str(error),
@@ -65,7 +65,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             json.dumps(
                 {
                     "schemaVersion": 1,
-                    "kind": "personal-ui-m8-migration-rollback",
+                    "kind": "ui-m8-migration-rollback",
                     "result": "expected-failure",
                     "failurePoint": args.failure_point,
                     "error": str(error),
@@ -80,7 +80,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             json.dumps(
                 {
                     "schemaVersion": 1,
-                    "kind": "personal-ui-m8-migration-rollback",
+                    "kind": "ui-m8-migration-rollback",
                     "result": "setup-failure",
                     "failurePoint": args.failure_point,
                     "error": str(error),
@@ -94,7 +94,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         json.dumps(
             {
                 "schemaVersion": 1,
-                "kind": "personal-ui-m8-migration-rollback",
+                "kind": "ui-m8-migration-rollback",
                 "result": "failure-not-injected",
                 "failurePoint": args.failure_point,
             },

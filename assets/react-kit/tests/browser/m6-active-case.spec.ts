@@ -8,9 +8,9 @@ test("mounts only the active command case and state, and cleans up shortcut list
   const overview = preview.getByRole("tabpanel", { name: "总览", exact: true });
   const opener = overview.getByRole("button", { name: "打开命令面板", exact: true });
   const stateTabs = preview.getByRole("tablist", { name: "命令面板与快捷键状态案例", exact: true });
-  const palettes = page.locator('[data-pui-owner="CommandPalette"]');
+  const palettes = page.locator('[data-ui-owner="CommandPalette"]');
   const dialogs = page.locator('[role="dialog"]');
-  const overlays = page.locator(".pui-overlay");
+  const overlays = page.locator(".ui-overlay");
 
   const expectLayerCount = async (count: 0 | 1) => {
     // Count every mounted layer, including inert lower layers hidden from the accessibility tree.

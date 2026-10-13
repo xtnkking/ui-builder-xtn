@@ -1,5 +1,5 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"tooltip/overview","exports":["Tooltip"]}
-import { Button, Inline, Tooltip } from "../../../personal-ui";
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"tooltip/overview","exports":["Tooltip"]}
+import { Button, Inline, Tooltip } from "../../../ui";
 import { StatePreview } from "../state-preview";
 import type { ExplorerCase } from "../types";
 
@@ -31,7 +31,7 @@ const explorerCase: ExplorerCase = {
     { state: "dark", exports: ["Tooltip"], content: <StatePreview state="dark"><TooltipExample /></StatePreview> },
     { state: "locale", exports: ["Tooltip"], content: <StatePreview state="locale"><Tooltip content="Save the current configuration without leaving this page."><Button>Save preferences</Button></Tooltip></StatePreview> },
   ],
-  code: `import { Button, Tooltip } from "./personal-ui";
+  code: `import { Button, Tooltip } from "./ui";
 
 <Tooltip content="用于解释当前操作，不替代可见标签。">
   <Button>悬停或聚焦</Button>

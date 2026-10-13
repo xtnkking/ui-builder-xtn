@@ -205,7 +205,7 @@ def fake_browser_worker(
 
 class M8ScenarioQualityProducerContracts(unittest.TestCase):
     def test_producer_report_is_accepted_unchanged_by_quality_validator(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-scenario-producer-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-scenario-producer-") as temporary:
             root = Path(temporary)
             workspace, plan_path, binding = make_producer_workspace(root)
             with mock.patch.object(
@@ -266,7 +266,7 @@ class M8ScenarioQualityProducerContracts(unittest.TestCase):
             self.assertEqual(len(accepted.measurements), 18)
 
     def test_nonzero_static_command_writes_failure_without_passed_report(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-m8-scenario-command-fail-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-m8-scenario-command-fail-") as temporary:
             workspace, plan_path, _binding = make_producer_workspace(
                 Path(temporary), typecheck_exit=7
             )
@@ -291,7 +291,7 @@ class M8ScenarioQualityProducerContracts(unittest.TestCase):
         for index, (omit, placeholder, message) in enumerate(cases):
             with self.subTest(omit=omit, placeholder=placeholder):
                 with tempfile.TemporaryDirectory(
-                    prefix=f"pui-m8-scenario-browser-invalid-{index}-"
+                    prefix=f"ui-m8-scenario-browser-invalid-{index}-"
                 ) as temporary:
                     workspace, plan_path, _binding = make_producer_workspace(Path(temporary))
                     with (
@@ -320,7 +320,7 @@ class M8ScenarioQualityProducerContracts(unittest.TestCase):
             ("outside.mjs", True, "inside projectRoot"),
         ):
             with self.subTest(behavior_module=behavior_module):
-                with tempfile.TemporaryDirectory(prefix="pui-m8-scenario-module-") as temporary:
+                with tempfile.TemporaryDirectory(prefix="ui-m8-scenario-module-") as temporary:
                     root = Path(temporary)
                     workspace, plan_path, _binding = make_producer_workspace(root)
                     existing = workspace / "consumer/tests/m8-quality.mjs"

@@ -1,7 +1,7 @@
-// @personal-ui-coverage {"kind":"unit","runner":"components","exports":["AsyncSelect"]}
+// @ui-coverage {"kind":"unit","runner":"components","exports":["AsyncSelect"]}
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { AsyncSelect, Field, type AsyncSelectOption } from "../../src/personal-ui";
+import { AsyncSelect, Field, type AsyncSelectOption } from "../../src/ui";
 
 const unitedStates: AsyncSelectOption = { value: "us", label: "United States" };
 const unitedKingdom: AsyncSelectOption = { value: "gb", label: "United Kingdom" };

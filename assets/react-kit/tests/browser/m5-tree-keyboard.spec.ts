@@ -1,4 +1,4 @@
-// @personal-ui-coverage {"kind":"browser","runner":"browser","exports":["Tree","TreeSelect"]}
+// @ui-coverage {"kind":"browser","runner":"browser","exports":["Tree","TreeSelect"]}
 import { expect, test } from "@playwright/test";
 
 test("Tree has one roving Tab stop and visible enabled navigation", async ({ page }) => {

@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"scroll/overview","exports":["ScrollArea"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"scroll/overview","exports":["ScrollArea"]}
 import { StatePreview } from "../state-preview";
-import { ScrollArea, Stack, Tag } from "../../../personal-ui";
+import { ScrollArea, Stack, Tag } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 const explorerCase = {

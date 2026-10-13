@@ -1,5 +1,5 @@
 import { useId, useState } from "react";
-import { Button, Checkbox, Field, Inline, Input, Select, Stack } from "../../../personal-ui";
+import { Button, Checkbox, Field, Inline, Input, Select, Stack } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 function FocusExample({ invalid = false }: { invalid?: boolean }) {

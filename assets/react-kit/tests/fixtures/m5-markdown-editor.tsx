@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { createRoot } from "react-dom/client";
-import { Form, MarkdownEditor, RichTextEditor } from "../../src/personal-ui";
-import "../../src/personal-ui/styles.css";
+import { Form, MarkdownEditor, RichTextEditor } from "../../src/ui";
+import "../../src/ui/styles.css";
 
 function Fixture() {
   const [source, setSource] = useState("Hello world");
@@ -9,7 +9,7 @@ function Fixture() {
   const [disabled, setDisabled] = useState(false);
 
   return (
-    <main className="pui-theme pui-root" style={{ maxWidth: 680, padding: 24 }} data-ready="true">
+    <main className="ui-theme ui-root" style={{ maxWidth: 680, padding: 24 }} data-ready="true">
       <Form aria-label="Notes" onSubmit={(event) => event.preventDefault()}>
         <MarkdownEditor value={source} onValueChange={setSource} name="markdown" aria-label="Markdown source" toolbarLabel="Markdown formatting" rows={4} disabled={disabled} />
         <RichTextEditor value={legacy} onValueChange={setLegacy} name="legacy" aria-label="Legacy source" rows={3} />

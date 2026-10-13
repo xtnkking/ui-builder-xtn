@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"spinner/overview","exports":["Spinner"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"spinner/overview","exports":["Spinner"]}
 import { StatePreview } from "../state-preview";
-import { Spinner } from "../../../personal-ui";
+import { Spinner } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 

@@ -12,7 +12,7 @@
 | Surface 等目录仍显示旧的 “M6-03 待补齐” | 9 项基础规范只有目录身份，没有对应的可视指南；它们没有 runtime export，不能把它们伪装成组件导出覆盖。 | 补齐 Typography、Spacing、Radius、Surface、Icons、Motion、Z-index、Density、Focus 九项 `.guide.tsx`，注册到基础目录，使用真实公共组件和非交互规范示意，保留 `exports: []`，不修改验收器放行伪证据。 |
 | Divider 深色预览周围是方角 | 深色状态的预览宿主未统一处理背景与边界；组件分割线本身不是方角卡片的来源。 | 统一深色状态预览宿主的 8px 圆角及背景裁切，避免宿主背景穿出预览边界；不通过业务 CSS 修改 Divider。 |
 
-基础指南明确区分公共能力与内部规范：圆角、动效和层级不因此变成任意覆盖接口；密度由组件已有的 `size`、`padding` 和布局 `gap` 表达。Card 的 large 留白标明桌面 24px、窄屏自动收为 16px。示例中的控件仍从 Personal UI 公共 barrel 导入。
+基础指南明确区分公共能力与内部规范：圆角、动效和层级不因此变成任意覆盖接口；密度由组件已有的 `size`、`padding` 和布局 `gap` 表达。Card 的 large 留白标明桌面 24px、窄屏自动收为 16px。示例中的控件仍从 ui-builder-xtn 公共 barrel 导入。
 
 ## 原始证据身份
 

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createRoot } from "react-dom/client";
-import { Button, ConfirmDialog, ContextMenu, Dialog } from "../../src/personal-ui";
+import { Button, ConfirmDialog, ContextMenu, Dialog } from "../../src/ui";
 import "./m5-context-menu.css";
 
 function Fixture() {

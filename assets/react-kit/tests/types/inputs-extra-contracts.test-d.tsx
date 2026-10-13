@@ -18,7 +18,7 @@ import {
   type FormControlHandle,
   type TextControlHandle,
   type ValidityControlHandle,
-} from "../../src/personal-ui";
+} from "../../src/ui";
 
 const formControlRef = createRef<FormControlHandle>();
 const textControlRef = createRef<TextControlHandle>();
@@ -65,7 +65,7 @@ const formRef = <Form ref={createRef<HTMLFormElement>()} />;
 // @ts-expect-error form controlRef accepts only the limited form handle
 const formDomControlRef = <Form controlRef={createRef<HTMLFormElement>()} />;
 // @ts-expect-error number inputs do not expose internal ownership markers
-const numberOwner = <NumberInput value={1} onValueChange={() => undefined} data-pui-owner="Consumer" />;
+const numberOwner = <NumberInput value={1} onValueChange={() => undefined} data-ui-owner="Consumer" />;
 // @ts-expect-error number inputs do not expose raw DOM refs
 const numberRef = <NumberInput value={1} onValueChange={() => undefined} ref={createRef<HTMLInputElement>()} />;
 // @ts-expect-error rich text editors do not expose consumer styles
@@ -149,13 +149,13 @@ const uploadStyle = <FileUpload items={[]} onFiles={() => undefined} style={{ co
 // @ts-expect-error autocomplete does not expose raw DOM refs
 const autocompleteRef = <Autocomplete options={options} query="" onQueryChange={() => undefined} onValueChange={() => undefined} ariaLabel="Country" ref={createRef<HTMLDivElement>()} />;
 // @ts-expect-error searchable select does not expose internal ownership markers
-const searchableOwner = <SearchableSelect options={options} onValueChange={() => undefined} ariaLabel="Country" data-pui-owner="Consumer" />;
+const searchableOwner = <SearchableSelect options={options} onValueChange={() => undefined} ariaLabel="Country" data-ui-owner="Consumer" />;
 // @ts-expect-error tag input owns its fixed visual class
 const tagClassName = <TagInput value={[]} inputValue="" onInputValueChange={() => undefined} onValueChange={() => undefined} className="foreign" />;
 // @ts-expect-error cascader does not expose consumer styles
 const cascaderStyle = <Cascader options={options} value={[]} onValueChange={() => undefined} ariaLabel="Region" style={{ color: "red" }} />;
 // @ts-expect-error tree select does not expose internal ownership markers
-const treeOwner = <TreeSelect options={options} onValueChange={() => undefined} ariaLabel="Region" data-pui-slot="foreign" />;
+const treeOwner = <TreeSelect options={options} onValueChange={() => undefined} ariaLabel="Region" data-ui-slot="foreign" />;
 // @ts-expect-error transfer owns its fixed visual class
 const transferClassName = <Transfer options={options} value={[]} onValueChange={() => undefined} className="foreign" />;
 

@@ -1,4 +1,4 @@
-// @personal-ui-coverage {"kind":"browser","runner":"browser","exports":["AsyncSelect","Autocomplete","ConfirmDialog","ContextMenu","DataTable","DescriptionList","Dialog","Drawer","DropdownMenu","Field","FilterBar","Inline","Input","List","MultiSelect","NumberInput","PasswordInput","TagInput","TreeSelect"]}
+// @ui-coverage {"kind":"browser","runner":"browser","exports":["AsyncSelect","Autocomplete","ConfirmDialog","ContextMenu","DataTable","DescriptionList","Dialog","Drawer","DropdownMenu","Field","FilterBar","Inline","Input","List","MultiSelect","NumberInput","PasswordInput","TagInput","TreeSelect"]}
 import { expect, test, type Page } from "@playwright/test";
 import {
   asyncSelectOverlayWidths,

@@ -20,7 +20,7 @@ import uuid
 from pathlib import Path, PurePosixPath
 from typing import Any, Mapping, Sequence
 
-import release_personal_ui as release
+import release_ui as release
 
 
 SCHEMA_VERSION = 1
@@ -179,14 +179,14 @@ def _validate_candidate_materials(files: Mapping[str, bytes]) -> None:
     fixture_entries = fixtures.get("fixtures")
     if (
         catalog.get("schemaVersion") != SCHEMA_VERSION
-        or catalog.get("kind") != "personal-ui-m8-scenarios"
+        or catalog.get("kind") != "ui-m8-scenarios"
         or not isinstance(scenarios, list)
         or not scenarios
     ):
         raise M8ConsumerError("candidate M8 scenario catalog schema is unsupported")
     if (
         rules.get("schemaVersion") != SCHEMA_VERSION
-        or rules.get("kind") != "personal-ui-m8-acceptance-rules"
+        or rules.get("kind") != "ui-m8-acceptance-rules"
         or rules.get("visibility") != "organizer-only"
         or not isinstance(rule_entries, list)
         or not isinstance(rules.get("attributionEnum"), list)
@@ -606,7 +606,7 @@ def create_evaluator_workspace(
         raise M8ConsumerError("generated M8 run id is invalid")
     manifest: dict[str, object] = {
         "schemaVersion": SCHEMA_VERSION,
-        "kind": "personal-ui-m8-evaluator-inputs",
+        "kind": "ui-m8-evaluator-inputs",
         "official": official,
         "run": {
             "id": run_id,

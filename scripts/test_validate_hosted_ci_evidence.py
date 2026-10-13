@@ -11,8 +11,8 @@ import unittest
 from pathlib import Path
 
 import generate_hosted_ci_evidence as generator
-import release_personal_ui as release
-import test_release_personal_ui as release_fixture
+import release_ui as release
+import test_release_ui as release_fixture
 import validate_hosted_ci_evidence as validator
 
 
@@ -182,13 +182,13 @@ class HostedEvidenceContracts(unittest.TestCase):
         )
 
     def test_complete_artifact_backed_bundle_is_accepted(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-hosted-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-hosted-") as temporary:
             path, _ = create_bundle(Path(temporary))
             result = self.validate(path)
             self.assertTrue(result.accepted, result.errors)
 
     def test_thin_passed_json_is_rejected(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-hosted-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-hosted-") as temporary:
             path = Path(temporary) / "hosted-ci.json"
             path.write_bytes(
                 json_bytes(
@@ -206,7 +206,7 @@ class HostedEvidenceContracts(unittest.TestCase):
             self.assertEqual(self.validate(path).category, "invalid")
 
     def test_tampered_artifact_bytes_are_rejected(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-hosted-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-hosted-") as temporary:
             root = Path(temporary)
             path, evidence = create_bundle(root)
             descriptor = evidence["artifacts"][0]
@@ -214,7 +214,7 @@ class HostedEvidenceContracts(unittest.TestCase):
             self.assertEqual(self.validate(path).category, "artifact-mismatch")
 
     def test_missing_fixture_and_operation_are_rejected(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-hosted-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-hosted-") as temporary:
             root = Path(temporary)
             path, evidence = create_bundle(root)
             descriptor = evidence["artifacts"].pop(0)
@@ -223,7 +223,7 @@ class HostedEvidenceContracts(unittest.TestCase):
             self.assertEqual(result.category, "invalid")
             self.assertTrue(any("missing hosted fixture evidence" in error for error in result.errors))
 
-        with tempfile.TemporaryDirectory(prefix="pui-hosted-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-hosted-") as temporary:
             root = Path(temporary)
             path, evidence = create_bundle(root)
             descriptor = evidence["artifacts"][0]
@@ -240,7 +240,7 @@ class HostedEvidenceContracts(unittest.TestCase):
             self.assertTrue(any("executedOperations" in error for error in result.errors))
 
     def test_fixture_report_hash_is_required(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-hosted-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-hosted-") as temporary:
             root = Path(temporary)
             path, evidence = create_bundle(root)
             descriptor = evidence["artifacts"][0]
@@ -257,7 +257,7 @@ class HostedEvidenceContracts(unittest.TestCase):
             self.assertTrue(any("fixtureReportSha256" in error for error in result.errors))
 
     def test_playwright_webkit_cannot_impersonate_real_safari(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-hosted-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-hosted-") as temporary:
             root = Path(temporary)
             path, evidence = create_bundle(root)
             descriptor = next(item for item in evidence["artifacts"] if item["role"] == "safari")
@@ -281,7 +281,7 @@ class HostedEvidenceContracts(unittest.TestCase):
             self.assertTrue(any("system Safari" in error for error in result.errors))
 
     def test_release_binding_mismatch_is_classified(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-hosted-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-hosted-") as temporary:
             path, _ = create_bundle(Path(temporary))
             result = validator.validate_hosted_ci_evidence_file(
                 path,
@@ -300,7 +300,7 @@ class HostedEvidenceContracts(unittest.TestCase):
             ("runUrl", "https://github.com/xtnkking/ui-builder-xtn/actions/runs/999"),
         ):
             with self.subTest(field=field), tempfile.TemporaryDirectory(
-                prefix="pui-hosted-"
+                prefix="ui-hosted-"
             ) as temporary:
                 root = Path(temporary)
                 path, evidence = create_bundle(root)
@@ -328,7 +328,7 @@ class HostedEvidenceContracts(unittest.TestCase):
             ),
         ):
             with self.subTest(field=field), tempfile.TemporaryDirectory(
-                prefix="pui-hosted-"
+                prefix="ui-hosted-"
             ) as temporary:
                 root = Path(temporary)
                 path, evidence = create_bundle(root)
@@ -339,7 +339,7 @@ class HostedEvidenceContracts(unittest.TestCase):
                 self.assertTrue(any(error_fragment in error for error in result.errors))
 
     def test_assembler_copies_inputs_and_revalidates_bundle(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-hosted-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-hosted-") as temporary:
             root = Path(temporary)
             source_bundle = root / "source"
             _, evidence = create_bundle(source_bundle)
@@ -375,7 +375,7 @@ class HostedEvidenceContracts(unittest.TestCase):
             self.assertTrue(result.accepted, result.errors)
 
     def test_next_patch_plan_is_exact_and_untrusted_plan_is_rejected(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="pui-hosted-next-patch-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="ui-hosted-next-patch-") as temporary:
             root = Path(temporary)
             source_root = root / "source"
             source_path, evidence = create_bundle(source_root)

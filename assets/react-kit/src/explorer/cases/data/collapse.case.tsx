@@ -1,6 +1,6 @@
-// @personal-ui-coverage {"kind":"example","runner":"explorer","caseId":"collapse/overview","exports":["Collapse"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"collapse/overview","exports":["Collapse"]}
 import { StatePreview } from "../state-preview";
-import { Collapse } from "../../../personal-ui";
+import { Collapse } from "../../../ui";
 import { useState } from "react";
 import type { ExplorerCase } from "../types";
 
