@@ -16,6 +16,7 @@ import list from "./list.case";
 import media from "./media.case";
 import meter from "./meter.case";
 import overflow from "./overflow.case";
+import projectMembers from "./project-members.example";
 import scheduler from "./scheduler.case";
 import statistic from "./statistic.case";
 import status from "./status.case";
@@ -34,7 +35,7 @@ export const dataExplorerCases = {
   chart: [chart],
   "code-block": [codeBlock],
   collapse: [collapse],
-  "data-table": [dataTable],
+  "data-table": [dataTable, projectMembers],
   description: [description],
   gallery: [gallery],
   list: [list],

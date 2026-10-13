@@ -37,6 +37,7 @@ If a requested capability has no registered public export, stop that part of pag
 - Search, async options, explicit queries, loading, tables, sorting, pinning, height, and pagination: [data workflow contract](references/data-workflows.md).
 - Keyboard file selection with drag-and-drop, and manual loading with infinite scrolling: [file and loading workflows](references/data-workflows.md#official-file-and-continuous-loading-compositions). DragDrop and InfiniteScroll own their keyboard command by default; disable that command explicitly when the documented companion control owns it.
 - Dialog, Drawer, ConfirmDialog, nested layers, dismissal, focus, Portal, and scroll lock: [overlay contract](references/overlay-contract.md).
+- Toast / Snackbar visibility limits, queueing, deduplication, dismissal, duration, progress and seconds display: [toast contract](references/toast-contract.md).
 - Login, CRUD/list, create/edit, detail, settings, wizard, import/export, and status shells: [page pattern routing](references/page-patterns.md).
 - Built-in text, `zh-CN`/`en-US`, nested providers, Portal inheritance, SSR, dates, numbers, and plurals: [locale contract](references/locale-contract.md).
 - Public API changes and upgrade action: [v0.3.0 migrations](references/v0.3.0-migrations.md).

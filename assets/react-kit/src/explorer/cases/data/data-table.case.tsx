@@ -1,12 +1,16 @@
 // @ui-coverage {"kind":"example","runner":"explorer","caseId":"data-table/overview","exports":["DataTable","TreeTable"]}
-import { useState } from "react";
+import { useId, useRef, useState } from "react";
+import { FolderPlus, Plus, Pencil, Trash2 } from "lucide-react";
 import {
   Checkbox,
   Button,
   DataTable,
+  Dialog,
+  DropdownMenu,
   Field,
   FilterBar,
   Inline,
+  Input,
   SearchInput,
   StatusIndicator,
   TreeTable,
@@ -37,20 +41,139 @@ const allRows: AccountRow[] = [
 
 interface FolderRow { name: string; kind: string; owner: string }
 const treeNodes: TreeTableNode<FolderRow>[] = [
-  { id: "workspace", value: { name: "产品工作区", kind: "目录", owner: "林晓" }, children: [
-    { id: "design", value: { name: "设计资产", kind: "目录", owner: "陈屿" }, children: [
+  { id: "workspace", value: { name: "产品工作区", kind: "目录", owner: "林晓" }, hasChildren: true, children: [
+    { id: "design", value: { name: "设计资产", kind: "目录", owner: "陈屿" }, hasChildren: true, children: [
       { id: "tokens", value: { name: "主题令牌.json", kind: "文件", owner: "陈屿" } },
     ] },
     { id: "release", value: { name: "发布记录.md", kind: "文件", owner: "王宁" } },
   ] },
-  { id: "archive", value: { name: "历史归档", kind: "目录", owner: "赵舒" } },
+  { id: "archive", value: { name: "历史归档", kind: "目录", owner: "赵舒" }, hasChildren: true, children: [] },
 ];
+
+function visitFolders(nodes: readonly TreeTableNode<FolderRow>[]): TreeTableNode<FolderRow>[] {
+  return nodes.flatMap((node) => [node, ...visitFolders(node.children ?? [])]);
+}
+
+function updateFolder(nodes: readonly TreeTableNode<FolderRow>[], id: string, update: (node: TreeTableNode<FolderRow>) => TreeTableNode<FolderRow>): TreeTableNode<FolderRow>[] {
+  return nodes.map((node) => node.id === id ? update(node) : node.children ? { ...node, children: updateFolder(node.children, id, update) } : node);
+}
+
+function removeFolder(nodes: readonly TreeTableNode<FolderRow>[], id: string): TreeTableNode<FolderRow>[] {
+  return nodes.filter((node) => node.id !== id).map((node) => node.children ? { ...node, children: removeFolder(node.children, id) } : node);
+}
+
+function TreeTableActionsExample() {
+  const [nodes, setNodes] = useState<TreeTableNode<FolderRow>[]>(treeNodes);
+  const [expandedIds, setExpandedIds] = useState<string[]>(["workspace", "design"]);
+  const [pendingIds, setPendingIds] = useState<string[]>([]);
+  const pending = useRef(new Set<string>());
+  const nextId = useRef(1);
+  const [editing, setEditing] = useState<{ id: string; name: string } | null>(null);
+  const [notice, setNotice] = useState("");
+  const nameInputId = useId();
+  const entries = visitFolders(nodes);
+  const folders = entries.filter((node) => node.value.kind === "目录");
+
+  const addRoot = () => {
+    const number = nextId.current++;
+    const name = `新建目录 ${number}`;
+    setNodes((current) => [...current, { id: `created-${number}`, value: { name, kind: "目录", owner: "我" }, hasChildren: true, children: [] }]);
+    setNotice(`已新增根目录：${name}`);
+  };
+  const addChild = async (node: TreeTableNode<FolderRow>) => {
+    // The synchronous latch blocks repeated activation before React renders loading.
+    if (pending.current.has(node.id)) return;
+    pending.current.add(node.id);
+    setPendingIds((current) => [...current, node.id]);
+    const number = nextId.current++;
+    const name = `新建文件 ${number}.md`;
+    try {
+      await new Promise<void>((resolve) => window.setTimeout(resolve, 800));
+      setNodes((current) => updateFolder(current, node.id, (parent) => ({
+        ...parent,
+        children: [...(parent.children ?? []), { id: `created-${number}`, value: { name, kind: "文件", owner: "我" } }],
+      })));
+      setNotice(`已在 ${node.value.name} 下新增：${name}`);
+    } finally {
+      pending.current.delete(node.id);
+      setPendingIds((current) => current.filter((id) => id !== node.id));
+    }
+  };
+  const deleteNode = (node: TreeTableNode<FolderRow>) => {
+    if (pending.current.size) return;
+    const removedIds = new Set(visitFolders([node]).map((entry) => entry.id));
+    setNodes((current) => removeFolder(current, node.id));
+    setExpandedIds((current) => current.filter((id) => !removedIds.has(id)));
+    setNotice(`已删除：${node.value.name}`);
+  };
+  const saveName = () => {
+    if (!editing?.name.trim()) return;
+    const name = editing.name.trim();
+    setNodes((current) => updateFolder(current, editing.id, (node) => ({ ...node, value: { ...node.value, name } })));
+    setNotice(`已更新名称：${name}`);
+    setEditing(null);
+  };
+  const columns: TreeTableColumn<FolderRow>[] = [
+    { id: "name", header: "名称", cell: (row) => row.name, width: "52%" },
+    { id: "kind", header: "类型", cell: (row) => row.kind, width: 80 },
+    { id: "owner", header: "负责人", cell: (row) => row.owner, width: 100 },
+    { id: "actions", header: "操作", width: 112, cell: (row, { node }) => <DropdownMenu
+      label="操作"
+      ariaLabel={`操作 ${row.name}`}
+      items={[
+        { id: "edit", label: "编辑名称", icon: <Pencil />, onSelect: () => setEditing({ id: node.id, name: row.name }) },
+        { id: "delete", label: node.value.kind === "目录" ? "删除目录及子项" : "删除文件", icon: <Trash2 />, danger: true, disabled: pendingIds.length > 0, onSelect: () => deleteNode(node) },
+      ]}
+    /> },
+  ];
+  return <>
+    <TreeTable
+      ariaLabel="文件目录"
+      nodes={nodes}
+      columns={columns}
+      treeColumnId="name"
+      expandedIds={expandedIds}
+      onExpandedChange={setExpandedIds}
+      getRowLabel={(node) => node.value.name}
+      toolbar={<Inline role="group" aria-label="目录工具栏" gap="small">
+        <Button size="small" variant="primary" icon={<FolderPlus />} onClick={addRoot}>新增根目录</Button>
+        <Button size="small" onClick={() => setExpandedIds(folders.map((node) => node.id))}>全部展开</Button>
+        <Button size="small" onClick={() => setExpandedIds([])}>全部收起</Button>
+      </Inline>}
+      renderBranchFooter={({ node }) => <Button
+        size="small"
+        variant="ghost"
+        icon={<Plus />}
+        aria-label={`在 ${node.value.name} 下新增子项`}
+        loading={pendingIds.includes(node.id)}
+        loadingLabel="新增子项"
+        onClick={() => void addChild(node)}
+      >新增子项</Button>}
+      footer={<Inline justify="between" gap="small">
+        <span role="status" aria-live="polite">共 {folders.length} 个目录 · {entries.length - folders.length} 个文件</span>
+        {notice ? <span>{notice}</span> : null}
+      </Inline>}
+    />
+    <Dialog
+      open={editing !== null}
+      onOpenChange={(open) => { if (!open) setEditing(null); }}
+      title="编辑名称"
+      footer={<><Button onClick={() => setEditing(null)}>取消</Button><Button variant="primary" disabled={!editing?.name.trim()} onClick={saveName}>保存</Button></>}
+    >
+      <Field label="名称" htmlFor={nameInputId}>
+        <Input id={nameInputId} value={editing?.name ?? ""} onChange={(event) => {
+          const name = event.currentTarget.value;
+          setEditing((current) => current ? { ...current, name } : current);
+        }} />
+      </Field>
+    </Dialog>
+  </>;
+}
 
 function DataTableExample() {
   const [selected, setSelected] = useState<string[]>(["acc-01"]);
   const [sort, setSort] = useState<DataSort>({ columnId: "name", direction: "ascending" });
   const [page, setPage] = useState(1);
-  const [expandedIds, setExpandedIds] = useState<string[]>(["workspace"]);
   const [query, setQuery] = useState("");
   const [appliedQuery, setAppliedQuery] = useState("");
   const filteredRows = allRows.filter((row) => `${row.name} ${row.owner} ${row.status}`.includes(appliedQuery));
@@ -79,11 +202,6 @@ function DataTableExample() {
     { id: "owner", header: "负责人", cell: (row) => row.owner, width: 120, sortable: true },
     { id: "status", header: "状态", cell: (row) => <StatusIndicator tone={row.status === "运行中" ? "success" : "warning"} label={row.status} />, width: 140 },
   ];
-  const treeColumns: TreeTableColumn<FolderRow>[] = [
-    { id: "name", header: "名称", cell: (row) => row.name, width: "55%" },
-    { id: "kind", header: "类型", cell: (row) => row.kind, width: "20%" },
-    { id: "owner", header: "负责人", cell: (row) => row.owner, width: "25%" },
-  ];
   return (
     <div style={{ display: "grid", gap: 28 }}>
       <FilterBar ariaLabel="账户筛选" onSubmit={(event) => { event.preventDefault(); setAppliedQuery(query.trim()); setPage(1); }} actions={<Button size="field" type="submit">搜索</Button>}>
@@ -101,15 +219,7 @@ function DataTableExample() {
         mobileRow={(row) => <Inline gap="small"><strong>{row.name}</strong><span>{row.owner}</span></Inline>}
         pagination={{ page, pageCount, total: sortedRows.length, pageSize: 3, onPageChange: (nextPage) => setPage(nextPage) }}
       />
-      <TreeTable
-        ariaLabel="文件目录"
-        nodes={treeNodes}
-        columns={treeColumns}
-        treeColumnId="name"
-        expandedIds={expandedIds}
-        onExpandedChange={setExpandedIds}
-        getRowLabel={(node) => node.value.name}
-      />
+      <TreeTableActionsExample />
     </div>
   );
 }
@@ -169,8 +279,8 @@ function LongTables() {
 const explorerCase = {
   id: "data-table/overview",
   label: "表格与树表格",
-  summary: "显式搜索实际筛选数据，排序更新行顺序；另演示表格加载、空、错误重试与树分支加载。表格不拥有独立禁用、只读或字段校验状态。",
-  states: ["default", "controlled", "uncontrolled", "loading", "empty", "error", "longContent", "keyboard", "mobile", "overlay", "dark", "locale"],
+  summary: "显式搜索与排序更新表格数据；树表演示顶部工具栏、每行操作、展开分支末尾新增子项与底部统计，另含加载、空、错误重试与长内容。表格不拥有独立禁用、只读或字段校验状态。",
+  states: ["default", "controlled", "uncontrolled", "loading", "empty", "error", "longContent", "keyboard", "mobile", "overlay", "dark", "locale", "usage"],
   content: <DataTableExample />,
   stateExamples: [
     { state: "default", exports: ["DataTable", "TreeTable"], content: <DataTableExample /> },
@@ -185,8 +295,9 @@ const explorerCase = {
     { state: "overlay", exports: ["DataTable", "TreeTable"], content: <StatePreview state="overlay">{<DataTableExample />}</StatePreview> },
     { state: "dark", exports: ["DataTable", "TreeTable"], content: <StatePreview state="dark">{<DataTableExample />}</StatePreview> },
     { state: "locale", exports: ["DataTable", "TreeTable"], content: <StatePreview state="locale">{<DataTableExample />}</StatePreview> },
+    { state: "usage", exports: ["TreeTable"], content: <TreeTableActionsExample />, instructions: "顶部新增根目录或展开/收起全部分支；每行操作菜单可编辑和删除。展开目录后，在其整个子树末尾新增子项，按钮显示 800ms 加载并阻止重复提交；空目录也可展开添加。底部统计随数据变化。" },
   ],
-  code: `<DataTable columns={columns} rows={rows} rowKey={(row) => row.id} sort={sort} onSort={setSort} viewportRows={5} pagination={pagination} ariaLabel="账户列表" />\n<TreeTable nodes={nodes} columns={treeColumns} treeColumnId="name" expandedIds={expanded} onExpandedChange={setExpanded} ariaLabel="文件目录" />`,
+  code: `const treeColumns = [\n  { id: "name", header: "名称", cell: (value) => value.name },\n  { id: "actions", header: "操作", cell: (value, { node }) =>\n    <Button onClick={() => editNode(node.id)}>编辑</Button> },\n];\n\n<TreeTable nodes={nodes} columns={treeColumns} treeColumnId="name"\n  expandedIds={expanded} onExpandedChange={setExpanded}\n  toolbar={<Button onClick={addRoot}>新增根目录</Button>}\n  renderBranchFooter={({ node }) => <Button loading={pendingId === node.id}\n    loadingLabel="新增子项" onClick={() => addChild(node.id)}>新增子项</Button>}\n  footer={<span>共 {total} 项</span>} ariaLabel="文件目录" />\n\n// 目录尚无子项时，使用 { hasChildren: true, children: [] } 保留展开入口。\n// toolbar/footer 独立于表格滚动；renderBranchFooter 仅在展开分支末尾显示。\n<DataTable columns={columns} rows={rows} rowKey={(row) => row.id}\n  sort={sort} onSort={setSort} viewportRows={5}\n  pagination={pagination} ariaLabel="账户列表" />`,
 } satisfies ExplorerCase;
 
 export default explorerCase;

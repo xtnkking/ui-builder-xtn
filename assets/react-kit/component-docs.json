@@ -399,7 +399,7 @@
     "Transfer": {"profile":"interactive-controlled","overrides":{"applicableStates":["default","disabled","controlled","uncontrolled","validation","longContent","keyboard","overlay","dark","locale"],"stateMode":"controlled-uncontrolled"}},
     "Tree": {"profile":"interactive-controlled","overrides":{"applicableStates":["default","disabled","controlled","uncontrolled","empty","longContent","keyboard","overlay","dark","locale"],"stateMode":"controlled-uncontrolled"}},
     "TreeSelect": {"profile":"interactive-dual","overrides":{"applicableStates":["default","disabled","controlled","uncontrolled","validation","longContent","keyboard","overlay","dark","locale"],"stateMode":"controlled-uncontrolled"}},
-    "TreeTable": {"profile": "interactive-dual", "overrides": {"applicableStates": ["default", "controlled", "uncontrolled", "loading", "empty", "error", "longContent", "keyboard", "mobile", "overlay", "dark", "locale"]}},
+    "TreeTable": {"profile": "interactive-dual", "overrides": {"applicableStates": ["default", "controlled", "uncontrolled", "loading", "empty", "error", "longContent", "keyboard", "mobile", "overlay", "dark", "locale", "usage"]}},
     "useCommandPaletteShortcut": {"profile": "keyboard-hook"},
     "useUILocale": {"profile": "locale-hook"},
     "useToast": {"profile": "hook"},

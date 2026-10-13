@@ -4,7 +4,7 @@
 This is the generated consumer API for UI 0.3.1. It is built from the TypeScript public barrel, Manifest ownership, per-export applicability metadata, structurally checked runnable Explorer state fixtures, runtime default initializers, registered CSS token sources, and machine-associated migration records. Applicable states and source-demonstrated states are recorded separately; source evidence does not certify browser behavior or accessibility. The generator does not read `component-coverage.json`.
 
 - Runtime exports: 142
-- Type-only exports: 229
+- Type-only exports: 230
 - Manifest families: 119
 - Public entry point: `src/ui/index.ts`
 
@@ -1045,7 +1045,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `non-visual` / `stable` |
 | State mode | `provider` |
 | Parameter type | `LocaleProviderProps` |
-| Implementation | [assets/react-kit/src/ui/foundation/locale.tsx:642](../assets/react-kit/src/ui/foundation/locale.tsx#L642) |
+| Implementation | [assets/react-kit/src/ui/foundation/locale.tsx:646](../assets/react-kit/src/ui/foundation/locale.tsx#L646) |
 | Explorer / example | [#/components/locale](../assets/react-kit/index.html#/components/locale); [compiled family example](#family-locale-compiled-example) (case `locale/overview`, source [assets/react-kit/src/explorer/cases/foundation/locale.case.tsx](../assets/react-kit/src/explorer/cases/foundation/locale.case.tsx)) |
 | Keyboard | none: This context provider has no independent keyboard interaction. |
 | ARIA | none: This context provider adds no DOM node or ARIA semantics. |
@@ -1110,7 +1110,7 @@ LocaleProvider is new in v0.3.0; existing consumers keep the default zh-CN local
 | Kind / stability | `non-visual` / `stable` |
 | State mode | `hook` |
 | Parameter type | No public parameter |
-| Implementation | [assets/react-kit/src/ui/foundation/locale.tsx:657](../assets/react-kit/src/ui/foundation/locale.tsx#L657) |
+| Implementation | [assets/react-kit/src/ui/foundation/locale.tsx:661](../assets/react-kit/src/ui/foundation/locale.tsx#L661) |
 | Explorer / example | [#/components/locale](../assets/react-kit/index.html#/components/locale); [compiled family example](#family-locale-compiled-example) (case `locale/overview`, source [assets/react-kit/src/explorer/cases/foundation/locale.case.tsx](../assets/react-kit/src/explorer/cases/foundation/locale.case.tsx)) |
 | Keyboard | none: This formatting hook has no independent keyboard interaction. |
 | ARIA | none: This formatting hook renders no ARIA semantics. |
@@ -1188,6 +1188,8 @@ declare const ZH_CN_MESSAGES: {
     readonly "table.mobile": "{label}移动版";
     readonly "toast.closeTitle": "关闭通知：{title}";
     readonly "toast.close": "关闭通知";
+    readonly "toast.details": "通知详情，可滚动阅读";
+    readonly "toast.seconds": "{seconds}秒";
     readonly "validation.summary": "请检查以下内容";
     readonly "error.permission": "没有访问权限";
     readonly "error.offline": "当前处于离线状态";
@@ -1683,7 +1685,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `layout` / `stable` |
 | State mode | `uncontrolled` |
 | Parameter type | `ResizablePanelsProps` |
-| Implementation | [assets/react-kit/src/ui/data/data-extra.tsx:1040](../assets/react-kit/src/ui/data/data-extra.tsx#L1040) |
+| Implementation | [assets/react-kit/src/ui/data/data-extra.tsx:1081](../assets/react-kit/src/ui/data/data-extra.tsx#L1081) |
 | Explorer / example | [#/components/resizable](../assets/react-kit/index.html#/components/resizable); [compiled family example](#family-resizable-compiled-example) (case `resizable/overview`, source [assets/react-kit/src/explorer/cases/foundation/resizable.case.tsx](../assets/react-kit/src/explorer/cases/foundation/resizable.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -1714,10 +1716,10 @@ export type ResizablePanelsProps = PublicControlProps<Omit<HTMLAttributes<HTMLDi
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `defaultSize` | `50` | [assets/react-kit/src/ui/data/data-extra.tsx:1047](../assets/react-kit/src/ui/data/data-extra.tsx#L1047) |
-| `maxSize` | `80` | [assets/react-kit/src/ui/data/data-extra.tsx:1049](../assets/react-kit/src/ui/data/data-extra.tsx#L1049) |
-| `minSize` | `20` | [assets/react-kit/src/ui/data/data-extra.tsx:1048](../assets/react-kit/src/ui/data/data-extra.tsx#L1048) |
-| `orientation` | `"horizontal"` | [assets/react-kit/src/ui/data/data-extra.tsx:1046](../assets/react-kit/src/ui/data/data-extra.tsx#L1046) |
+| `defaultSize` | `50` | [assets/react-kit/src/ui/data/data-extra.tsx:1088](../assets/react-kit/src/ui/data/data-extra.tsx#L1088) |
+| `maxSize` | `80` | [assets/react-kit/src/ui/data/data-extra.tsx:1090](../assets/react-kit/src/ui/data/data-extra.tsx#L1090) |
+| `minSize` | `20` | [assets/react-kit/src/ui/data/data-extra.tsx:1089](../assets/react-kit/src/ui/data/data-extra.tsx#L1089) |
+| `orientation` | `"horizontal"` | [assets/react-kit/src/ui/data/data-extra.tsx:1087](../assets/react-kit/src/ui/data/data-extra.tsx#L1087) |
 
 #### Semantic Tokens
 
@@ -3225,7 +3227,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `DragDropProps` |
-| Implementation | [assets/react-kit/src/ui/data/data-extra.tsx:1129](../assets/react-kit/src/ui/data/data-extra.tsx#L1129) |
+| Implementation | [assets/react-kit/src/ui/data/data-extra.tsx:1170](../assets/react-kit/src/ui/data/data-extra.tsx#L1170) |
 | Explorer / example | [#/components/drag](../assets/react-kit/index.html#/components/drag); [compiled family example](#family-drag-compiled-example) (case `drag/overview`, source [assets/react-kit/src/explorer/cases/actions/drag.case.tsx](../assets/react-kit/src/explorer/cases/actions/drag.case.tsx)) |
 | Keyboard | native: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -3258,10 +3260,10 @@ export type DragDropProps = PublicControlProps<Omit<HTMLAttributes<HTMLDivElemen
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `ariaLabel` | `message("dragDrop.label")` | [assets/react-kit/src/ui/data/data-extra.tsx:1141](../assets/react-kit/src/ui/data/data-extra.tsx#L1141) |
-| `browseLabel` | `message("upload.browse")` | [assets/react-kit/src/ui/data/data-extra.tsx:1140](../assets/react-kit/src/ui/data/data-extra.tsx#L1140) |
-| `multiple` | `true` | [assets/react-kit/src/ui/data/data-extra.tsx:1138](../assets/react-kit/src/ui/data/data-extra.tsx#L1138) |
-| `showBrowseButton` | `true` | [assets/react-kit/src/ui/data/data-extra.tsx:1139](../assets/react-kit/src/ui/data/data-extra.tsx#L1139) |
+| `ariaLabel` | `message("dragDrop.label")` | [assets/react-kit/src/ui/data/data-extra.tsx:1182](../assets/react-kit/src/ui/data/data-extra.tsx#L1182) |
+| `browseLabel` | `message("upload.browse")` | [assets/react-kit/src/ui/data/data-extra.tsx:1181](../assets/react-kit/src/ui/data/data-extra.tsx#L1181) |
+| `multiple` | `true` | [assets/react-kit/src/ui/data/data-extra.tsx:1179](../assets/react-kit/src/ui/data/data-extra.tsx#L1179) |
+| `showBrowseButton` | `true` | [assets/react-kit/src/ui/data/data-extra.tsx:1180](../assets/react-kit/src/ui/data/data-extra.tsx#L1180) |
 
 #### Semantic Tokens
 
@@ -3852,7 +3854,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled` |
 | Parameter type | `SortableListProps<T>` |
-| Implementation | [assets/react-kit/src/ui/data/data-extra.tsx:1217](../assets/react-kit/src/ui/data/data-extra.tsx#L1217) |
+| Implementation | [assets/react-kit/src/ui/data/data-extra.tsx:1258](../assets/react-kit/src/ui/data/data-extra.tsx#L1258) |
 | Explorer / example | [#/components/sortable](../assets/react-kit/index.html#/components/sortable); [compiled family example](#family-sortable-compiled-example) (case `sortable/overview`, source [assets/react-kit/src/explorer/cases/actions/sortable.case.tsx](../assets/react-kit/src/explorer/cases/actions/sortable.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -3885,7 +3887,7 @@ export type SortableListProps<T> = PublicControlProps<Omit<HTMLAttributes<HTMLOL
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `getItemLabel` | `(item) => item.id` | [assets/react-kit/src/ui/data/data-extra.tsx:1220](../assets/react-kit/src/ui/data/data-extra.tsx#L1220) |
+| `getItemLabel` | `(item) => item.id` | [assets/react-kit/src/ui/data/data-extra.tsx:1261](../assets/react-kit/src/ui/data/data-extra.tsx#L1261) |
 
 #### Semantic Tokens
 
@@ -12762,7 +12764,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled-uncontrolled` |
 | Parameter type | `CalendarProps` |
-| Implementation | [assets/react-kit/src/ui/data/data-extra.tsx:584](../assets/react-kit/src/ui/data/data-extra.tsx#L584) |
+| Implementation | [assets/react-kit/src/ui/data/data-extra.tsx:625](../assets/react-kit/src/ui/data/data-extra.tsx#L625) |
 | Explorer / example | [#/components/calendar](../assets/react-kit/index.html#/components/calendar); [compiled family example](#family-calendar-compiled-example) (case `calendar/overview`, source [assets/react-kit/src/explorer/cases/data/calendar.case.tsx](../assets/react-kit/src/explorer/cases/data/calendar.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -12793,7 +12795,7 @@ export type CalendarProps = CalendarBaseProps & ControllableValueProps<Date>;
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `ariaLabel` | `message("calendar.label")` | [assets/react-kit/src/ui/data/data-extra.tsx:600](../assets/react-kit/src/ui/data/data-extra.tsx#L600) |
+| `ariaLabel` | `message("calendar.label")` | [assets/react-kit/src/ui/data/data-extra.tsx:641](../assets/react-kit/src/ui/data/data-extra.tsx#L641) |
 
 #### Semantic Tokens
 
@@ -13063,7 +13065,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled-uncontrolled` |
 | Parameter type | `CarouselProps` |
-| Implementation | [assets/react-kit/src/ui/data/data-extra.tsx:907](../assets/react-kit/src/ui/data/data-extra.tsx#L907) |
+| Implementation | [assets/react-kit/src/ui/data/data-extra.tsx:948](../assets/react-kit/src/ui/data/data-extra.tsx#L948) |
 | Explorer / example | [#/components/carousel](../assets/react-kit/index.html#/components/carousel); [compiled family example](#family-carousel-compiled-example) (case `carousel/overview`, source [assets/react-kit/src/explorer/cases/data/carousel.case.tsx](../assets/react-kit/src/explorer/cases/data/carousel.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -13097,9 +13099,9 @@ export type CarouselProps = CarouselBaseProps & ControllableValueProps<string>;
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `autoplay` | `false` | [assets/react-kit/src/ui/data/data-extra.tsx:919](../assets/react-kit/src/ui/data/data-extra.tsx#L919) |
-| `interval` | `5000` | [assets/react-kit/src/ui/data/data-extra.tsx:920](../assets/react-kit/src/ui/data/data-extra.tsx#L920) |
-| `loop` | `false` | [assets/react-kit/src/ui/data/data-extra.tsx:918](../assets/react-kit/src/ui/data/data-extra.tsx#L918) |
+| `autoplay` | `false` | [assets/react-kit/src/ui/data/data-extra.tsx:960](../assets/react-kit/src/ui/data/data-extra.tsx#L960) |
+| `interval` | `5000` | [assets/react-kit/src/ui/data/data-extra.tsx:961](../assets/react-kit/src/ui/data/data-extra.tsx#L961) |
+| `loop` | `false` | [assets/react-kit/src/ui/data/data-extra.tsx:959](../assets/react-kit/src/ui/data/data-extra.tsx#L959) |
 
 #### Semantic Tokens
 
@@ -13247,7 +13249,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `BarChartProps` |
-| Implementation | [assets/react-kit/src/ui/data/data-extra.tsx:867](../assets/react-kit/src/ui/data/data-extra.tsx#L867) |
+| Implementation | [assets/react-kit/src/ui/data/data-extra.tsx:908](../assets/react-kit/src/ui/data/data-extra.tsx#L908) |
 | Explorer / example | [#/components/chart](../assets/react-kit/index.html#/components/chart); [compiled family example](#family-chart-compiled-example) (case `chart/overview`, source [assets/react-kit/src/explorer/cases/data/chart.case.tsx](../assets/react-kit/src/explorer/cases/data/chart.case.tsx)) |
 | Keyboard | none: This export has no independent keyboard interaction. |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -13280,7 +13282,7 @@ export type BarChartProps = PublicControlProps<Omit<HTMLAttributes<HTMLElement>,
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `formatValue` | `String` | [assets/react-kit/src/ui/data/data-extra.tsx:869](../assets/react-kit/src/ui/data/data-extra.tsx#L869) |
+| `formatValue` | `String` | [assets/react-kit/src/ui/data/data-extra.tsx:910](../assets/react-kit/src/ui/data/data-extra.tsx#L910) |
 
 #### Semantic Tokens
 
@@ -13682,15 +13684,20 @@ export function StatePreview({ state, children }: {
   </>;
 }
 
-import { useState } from "react";
+import { useId, useRef, useState } from "react";
+
+import { FolderPlus, Plus, Pencil, Trash2 } from "lucide-react";
 
 import {
   Checkbox,
   Button,
   DataTable,
+  Dialog,
+  DropdownMenu,
   Field,
   FilterBar,
   Inline,
+  Input,
   SearchInput,
   StatusIndicator,
   TreeTable,
@@ -13720,20 +13727,139 @@ const allRows: AccountRow[] = [
 interface FolderRow { name: string; kind: string; owner: string }
 
 const treeNodes: TreeTableNode<FolderRow>[] = [
-  { id: "workspace", value: { name: "产品工作区", kind: "目录", owner: "林晓" }, children: [
-    { id: "design", value: { name: "设计资产", kind: "目录", owner: "陈屿" }, children: [
+  { id: "workspace", value: { name: "产品工作区", kind: "目录", owner: "林晓" }, hasChildren: true, children: [
+    { id: "design", value: { name: "设计资产", kind: "目录", owner: "陈屿" }, hasChildren: true, children: [
       { id: "tokens", value: { name: "主题令牌.json", kind: "文件", owner: "陈屿" } },
     ] },
     { id: "release", value: { name: "发布记录.md", kind: "文件", owner: "王宁" } },
   ] },
-  { id: "archive", value: { name: "历史归档", kind: "目录", owner: "赵舒" } },
+  { id: "archive", value: { name: "历史归档", kind: "目录", owner: "赵舒" }, hasChildren: true, children: [] },
 ];
+
+function visitFolders(nodes: readonly TreeTableNode<FolderRow>[]): TreeTableNode<FolderRow>[] {
+  return nodes.flatMap((node) => [node, ...visitFolders(node.children ?? [])]);
+}
+
+function updateFolder(nodes: readonly TreeTableNode<FolderRow>[], id: string, update: (node: TreeTableNode<FolderRow>) => TreeTableNode<FolderRow>): TreeTableNode<FolderRow>[] {
+  return nodes.map((node) => node.id === id ? update(node) : node.children ? { ...node, children: updateFolder(node.children, id, update) } : node);
+}
+
+function removeFolder(nodes: readonly TreeTableNode<FolderRow>[], id: string): TreeTableNode<FolderRow>[] {
+  return nodes.filter((node) => node.id !== id).map((node) => node.children ? { ...node, children: removeFolder(node.children, id) } : node);
+}
+
+function TreeTableActionsExample() {
+  const [nodes, setNodes] = useState<TreeTableNode<FolderRow>[]>(treeNodes);
+  const [expandedIds, setExpandedIds] = useState<string[]>(["workspace", "design"]);
+  const [pendingIds, setPendingIds] = useState<string[]>([]);
+  const pending = useRef(new Set<string>());
+  const nextId = useRef(1);
+  const [editing, setEditing] = useState<{ id: string; name: string } | null>(null);
+  const [notice, setNotice] = useState("");
+  const nameInputId = useId();
+  const entries = visitFolders(nodes);
+  const folders = entries.filter((node) => node.value.kind === "目录");
+
+  const addRoot = () => {
+    const number = nextId.current++;
+    const name = `新建目录 ${number}`;
+    setNodes((current) => [...current, { id: `created-${number}`, value: { name, kind: "目录", owner: "我" }, hasChildren: true, children: [] }]);
+    setNotice(`已新增根目录：${name}`);
+  };
+  const addChild = async (node: TreeTableNode<FolderRow>) => {
+    // The synchronous latch blocks repeated activation before React renders loading.
+    if (pending.current.has(node.id)) return;
+    pending.current.add(node.id);
+    setPendingIds((current) => [...current, node.id]);
+    const number = nextId.current++;
+    const name = `新建文件 ${number}.md`;
+    try {
+      await new Promise<void>((resolve) => window.setTimeout(resolve, 800));
+      setNodes((current) => updateFolder(current, node.id, (parent) => ({
+        ...parent,
+        children: [...(parent.children ?? []), { id: `created-${number}`, value: { name, kind: "文件", owner: "我" } }],
+      })));
+      setNotice(`已在 ${node.value.name} 下新增：${name}`);
+    } finally {
+      pending.current.delete(node.id);
+      setPendingIds((current) => current.filter((id) => id !== node.id));
+    }
+  };
+  const deleteNode = (node: TreeTableNode<FolderRow>) => {
+    if (pending.current.size) return;
+    const removedIds = new Set(visitFolders([node]).map((entry) => entry.id));
+    setNodes((current) => removeFolder(current, node.id));
+    setExpandedIds((current) => current.filter((id) => !removedIds.has(id)));
+    setNotice(`已删除：${node.value.name}`);
+  };
+  const saveName = () => {
+    if (!editing?.name.trim()) return;
+    const name = editing.name.trim();
+    setNodes((current) => updateFolder(current, editing.id, (node) => ({ ...node, value: { ...node.value, name } })));
+    setNotice(`已更新名称：${name}`);
+    setEditing(null);
+  };
+  const columns: TreeTableColumn<FolderRow>[] = [
+    { id: "name", header: "名称", cell: (row) => row.name, width: "52%" },
+    { id: "kind", header: "类型", cell: (row) => row.kind, width: 80 },
+    { id: "owner", header: "负责人", cell: (row) => row.owner, width: 100 },
+    { id: "actions", header: "操作", width: 112, cell: (row, { node }) => <DropdownMenu
+      label="操作"
+      ariaLabel={`操作 ${row.name}`}
+      items={[
+        { id: "edit", label: "编辑名称", icon: <Pencil />, onSelect: () => setEditing({ id: node.id, name: row.name }) },
+        { id: "delete", label: node.value.kind === "目录" ? "删除目录及子项" : "删除文件", icon: <Trash2 />, danger: true, disabled: pendingIds.length > 0, onSelect: () => deleteNode(node) },
+      ]}
+    /> },
+  ];
+  return <>
+    <TreeTable
+      ariaLabel="文件目录"
+      nodes={nodes}
+      columns={columns}
+      treeColumnId="name"
+      expandedIds={expandedIds}
+      onExpandedChange={setExpandedIds}
+      getRowLabel={(node) => node.value.name}
+      toolbar={<Inline role="group" aria-label="目录工具栏" gap="small">
+        <Button size="small" variant="primary" icon={<FolderPlus />} onClick={addRoot}>新增根目录</Button>
+        <Button size="small" onClick={() => setExpandedIds(folders.map((node) => node.id))}>全部展开</Button>
+        <Button size="small" onClick={() => setExpandedIds([])}>全部收起</Button>
+      </Inline>}
+      renderBranchFooter={({ node }) => <Button
+        size="small"
+        variant="ghost"
+        icon={<Plus />}
+        aria-label={`在 ${node.value.name} 下新增子项`}
+        loading={pendingIds.includes(node.id)}
+        loadingLabel="新增子项"
+        onClick={() => void addChild(node)}
+      >新增子项</Button>}
+      footer={<Inline justify="between" gap="small">
+        <span role="status" aria-live="polite">共 {folders.length} 个目录 · {entries.length - folders.length} 个文件</span>
+        {notice ? <span>{notice}</span> : null}
+      </Inline>}
+    />
+    <Dialog
+      open={editing !== null}
+      onOpenChange={(open) => { if (!open) setEditing(null); }}
+      title="编辑名称"
+      footer={<><Button onClick={() => setEditing(null)}>取消</Button><Button variant="primary" disabled={!editing?.name.trim()} onClick={saveName}>保存</Button></>}
+    >
+      <Field label="名称" htmlFor={nameInputId}>
+        <Input id={nameInputId} value={editing?.name ?? ""} onChange={(event) => {
+          const name = event.currentTarget.value;
+          setEditing((current) => current ? { ...current, name } : current);
+        }} />
+      </Field>
+    </Dialog>
+  </>;
+}
 
 function DataTableExample() {
   const [selected, setSelected] = useState<string[]>(["acc-01"]);
   const [sort, setSort] = useState<DataSort>({ columnId: "name", direction: "ascending" });
   const [page, setPage] = useState(1);
-  const [expandedIds, setExpandedIds] = useState<string[]>(["workspace"]);
   const [query, setQuery] = useState("");
   const [appliedQuery, setAppliedQuery] = useState("");
   const filteredRows = allRows.filter((row) => `${row.name} ${row.owner} ${row.status}`.includes(appliedQuery));
@@ -13762,11 +13888,6 @@ function DataTableExample() {
     { id: "owner", header: "负责人", cell: (row) => row.owner, width: 120, sortable: true },
     { id: "status", header: "状态", cell: (row) => <StatusIndicator tone={row.status === "运行中" ? "success" : "warning"} label={row.status} />, width: 140 },
   ];
-  const treeColumns: TreeTableColumn<FolderRow>[] = [
-    { id: "name", header: "名称", cell: (row) => row.name, width: "55%" },
-    { id: "kind", header: "类型", cell: (row) => row.kind, width: "20%" },
-    { id: "owner", header: "负责人", cell: (row) => row.owner, width: "25%" },
-  ];
   return (
     <div style={{ display: "grid", gap: 28 }}>
       <FilterBar ariaLabel="账户筛选" onSubmit={(event) => { event.preventDefault(); setAppliedQuery(query.trim()); setPage(1); }} actions={<Button size="field" type="submit">搜索</Button>}>
@@ -13784,15 +13905,7 @@ function DataTableExample() {
         mobileRow={(row) => <Inline gap="small"><strong>{row.name}</strong><span>{row.owner}</span></Inline>}
         pagination={{ page, pageCount, total: sortedRows.length, pageSize: 3, onPageChange: (nextPage) => setPage(nextPage) }}
       />
-      <TreeTable
-        ariaLabel="文件目录"
-        nodes={treeNodes}
-        columns={treeColumns}
-        treeColumnId="name"
-        expandedIds={expandedIds}
-        onExpandedChange={setExpandedIds}
-        getRowLabel={(node) => node.value.name}
-      />
+      <TreeTableActionsExample />
     </div>
   );
 }
@@ -13854,7 +13967,7 @@ function LongTables() {
   </div>;
 }
 
-export type UIExampleState = "default" | "controlled" | "uncontrolled" | "loading" | "empty" | "error" | "longContent" | "keyboard" | "mobile" | "overlay" | "dark" | "locale";
+export type UIExampleState = "default" | "controlled" | "uncontrolled" | "loading" | "empty" | "error" | "longContent" | "keyboard" | "mobile" | "overlay" | "dark" | "locale" | "usage";
 export type UIExampleComponent = "DataTable" | "TreeTable";
 export interface UIStateFixture {
   state: UIExampleState;
@@ -13875,6 +13988,7 @@ export const UIStateExamples: readonly UIStateFixture[] = [
     { state: "overlay", exports: ["DataTable", "TreeTable"], content: <StatePreview state="overlay">{<DataTableExample />}</StatePreview> },
     { state: "dark", exports: ["DataTable", "TreeTable"], content: <StatePreview state="dark">{<DataTableExample />}</StatePreview> },
     { state: "locale", exports: ["DataTable", "TreeTable"], content: <StatePreview state="locale">{<DataTableExample />}</StatePreview> },
+    { state: "usage", exports: ["TreeTable"], content: <TreeTableActionsExample />, instructions: "顶部新增根目录或展开/收起全部分支；每行操作菜单可编辑和删除。展开目录后，在其整个子树末尾新增子项，按钮显示 800ms 加载并阻止重复提交；空目录也可展开添加。底部统计随数据变化。" },
   ];
 
 export function UIExample({ state, component }: {
@@ -13984,8 +14098,24 @@ Derived from registered family CSS ([src/ui/styles.css](../assets/react-kit/src/
 #### Usage Excerpt
 
 ```tsx
-<DataTable columns={columns} rows={rows} rowKey={(row) => row.id} sort={sort} onSort={setSort} viewportRows={5} pagination={pagination} ariaLabel="账户列表" />
-<TreeTable nodes={nodes} columns={treeColumns} treeColumnId="name" expandedIds={expanded} onExpandedChange={setExpanded} ariaLabel="文件目录" />
+const treeColumns = [
+  { id: "name", header: "名称", cell: (value) => value.name },
+  { id: "actions", header: "操作", cell: (value, { node }) =>
+    <Button onClick={() => editNode(node.id)}>编辑</Button> },
+];
+
+<TreeTable nodes={nodes} columns={treeColumns} treeColumnId="name"
+  expandedIds={expanded} onExpandedChange={setExpanded}
+  toolbar={<Button onClick={addRoot}>新增根目录</Button>}
+  renderBranchFooter={({ node }) => <Button loading={pendingId === node.id}
+    loadingLabel="新增子项" onClick={() => addChild(node.id)}>新增子项</Button>}
+  footer={<span>共 {total} 项</span>} ariaLabel="文件目录" />
+
+// 目录尚无子项时，使用 { hasChildren: true, children: [] } 保留展开入口。
+// toolbar/footer 独立于表格滚动；renderBranchFooter 仅在展开分支末尾显示。
+<DataTable columns={columns} rows={rows} rowKey={(row) => row.id}
+  sort={sort} onSort={setSort} viewportRows={5}
+  pagination={pagination} ariaLabel="账户列表" />
 ```
 
 #### Migration
@@ -14003,14 +14133,14 @@ No migration is required for the current public export.
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled-uncontrolled` |
 | Parameter type | `TreeTableProps<T>` |
-| Implementation | [assets/react-kit/src/ui/data/data-extra.tsx:405](../assets/react-kit/src/ui/data/data-extra.tsx#L405) |
+| Implementation | [assets/react-kit/src/ui/data/data-extra.tsx:423](../assets/react-kit/src/ui/data/data-extra.tsx#L423) |
 | Explorer / example | [#/components/data-table](../assets/react-kit/index.html#/components/data-table); [compiled family example](#family-data-table-compiled-example) (case `data-table/overview`, source [assets/react-kit/src/explorer/cases/data/data-table.case.tsx](../assets/react-kit/src/explorer/cases/data/data-table.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
 
-Applicable states: `default`, `controlled`, `uncontrolled`, `loading`, `empty`, `error`, `longContent`, `keyboard`, `mobile`, `overlay`, `dark`, `locale`.
+Applicable states: `default`, `controlled`, `uncontrolled`, `loading`, `empty`, `error`, `longContent`, `keyboard`, `mobile`, `overlay`, `dark`, `locale`, `usage`.
 
-Source-demonstrated states: `default`, `controlled`, `uncontrolled`, `loading`, `empty`, `error`, `longContent`, `keyboard`, `mobile`, `overlay`, `dark`, `locale`. These are runnable, export-specific source fixtures. They do not certify browser behavior or accessibility; the keyboard fixture provides manual instructions, while the Keyboard/ARIA rows above identify their separate test contracts. The mobile fixture uses a 320px container; viewport media-query behavior requires a real browser viewport.
+Source-demonstrated states: `default`, `controlled`, `uncontrolled`, `loading`, `empty`, `error`, `longContent`, `keyboard`, `mobile`, `overlay`, `dark`, `locale`, `usage`. These are runnable, export-specific source fixtures. They do not certify browser behavior or accessibility; the keyboard fixture provides manual instructions, while the Keyboard/ARIA rows above identify their separate test contracts. The mobile fixture uses a 320px container; viewport media-query behavior requires a real browser viewport.
 
 Select one fixture from the complete family module with `<UIExample state="default" component="TreeTable" />`. Omit `state` for the overview. `UIStateExamples` retains the exact fixture code and interaction instructions.
 
@@ -14021,7 +14151,7 @@ export declare function TreeTable<T>(rawProps: TreeTableProps<T>): import("react
 export interface TreeTableColumn<T> {
     id: string;
     header: ReactNode;
-    cell: (value: T) => ReactNode;
+    cell: (value: T, context: TreeTableRowContext<T>) => ReactNode;
     width?: number | string;
 }
 export interface TreeTableNode<T> {
@@ -14030,6 +14160,11 @@ export interface TreeTableNode<T> {
     children?: readonly TreeTableNode<T>[];
     hasChildren?: boolean;
     loading?: boolean;
+}
+export interface TreeTableRowContext<T> {
+    node: TreeTableNode<T>;
+    /** One-based data-row depth; branch footer content aligns with the next level. */
+    level: number;
 }
 type ControllableExpandedIdsProps = {
     expandedIds: readonly string[];
@@ -14048,6 +14183,10 @@ type TreeTableBaseProps<T> = PublicControlProps<Omit<HTMLAttributes<HTMLDivEleme
     getRowLabel?: (node: TreeTableNode<T>) => string;
     onRequestChildren?: (node: TreeTableNode<T>) => void | Promise<void>;
     empty?: ReactNode;
+    toolbar?: ReactNode;
+    footer?: ReactNode;
+    /** Render after an expanded branch's entire visible subtree, outside its data rows. */
+    renderBranchFooter?: (context: TreeTableRowContext<T>) => ReactNode;
 };
 export type TreeTableProps<T> = TreeTableBaseProps<T> & ControllableExpandedIdsProps;
 ```
@@ -14056,8 +14195,8 @@ export type TreeTableProps<T> = TreeTableBaseProps<T> & ControllableExpandedIdsP
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `empty` | `message("tree.empty")` | [assets/react-kit/src/ui/data/data-extra.tsx:420](../assets/react-kit/src/ui/data/data-extra.tsx#L420) |
-| `getRowLabel` | `(node) => node.id` | [assets/react-kit/src/ui/data/data-extra.tsx:415](../assets/react-kit/src/ui/data/data-extra.tsx#L415) |
+| `empty` | `message("tree.empty")` | [assets/react-kit/src/ui/data/data-extra.tsx:438](../assets/react-kit/src/ui/data/data-extra.tsx#L438) |
+| `getRowLabel` | `(node) => node.id` | [assets/react-kit/src/ui/data/data-extra.tsx:433](../assets/react-kit/src/ui/data/data-extra.tsx#L433) |
 
 #### Semantic Tokens
 
@@ -14073,8 +14212,24 @@ Derived from registered family CSS ([src/ui/styles.css](../assets/react-kit/src/
 #### Usage Excerpt
 
 ```tsx
-<DataTable columns={columns} rows={rows} rowKey={(row) => row.id} sort={sort} onSort={setSort} viewportRows={5} pagination={pagination} ariaLabel="账户列表" />
-<TreeTable nodes={nodes} columns={treeColumns} treeColumnId="name" expandedIds={expanded} onExpandedChange={setExpanded} ariaLabel="文件目录" />
+const treeColumns = [
+  { id: "name", header: "名称", cell: (value) => value.name },
+  { id: "actions", header: "操作", cell: (value, { node }) =>
+    <Button onClick={() => editNode(node.id)}>编辑</Button> },
+];
+
+<TreeTable nodes={nodes} columns={treeColumns} treeColumnId="name"
+  expandedIds={expanded} onExpandedChange={setExpanded}
+  toolbar={<Button onClick={addRoot}>新增根目录</Button>}
+  renderBranchFooter={({ node }) => <Button loading={pendingId === node.id}
+    loadingLabel="新增子项" onClick={() => addChild(node.id)}>新增子项</Button>}
+  footer={<span>共 {total} 项</span>} ariaLabel="文件目录" />
+
+// 目录尚无子项时，使用 { hasChildren: true, children: [] } 保留展开入口。
+// toolbar/footer 独立于表格滚动；renderBranchFooter 仅在展开分支末尾显示。
+<DataTable columns={columns} rows={rows} rowKey={(row) => row.id}
+  sort={sort} onSort={setSort} viewportRows={5}
+  pagination={pagination} ariaLabel="账户列表" />
 ```
 
 #### Migration
@@ -15213,7 +15368,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `ExpandableTextProps` |
-| Implementation | [assets/react-kit/src/ui/data/data-extra.tsx:1269](../assets/react-kit/src/ui/data/data-extra.tsx#L1269) |
+| Implementation | [assets/react-kit/src/ui/data/data-extra.tsx:1310](../assets/react-kit/src/ui/data/data-extra.tsx#L1310) |
 | Explorer / example | [#/components/overflow](../assets/react-kit/index.html#/components/overflow); [compiled family example](#family-overflow-compiled-example) (case `overflow/overview`, source [assets/react-kit/src/explorer/cases/data/overflow.case.tsx](../assets/react-kit/src/explorer/cases/data/overflow.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -15240,9 +15395,9 @@ export type ExpandableTextProps = PublicControlProps<Omit<HTMLAttributes<HTMLDiv
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `collapseLabel` | `message("expandable.collapse")` | [assets/react-kit/src/ui/data/data-extra.tsx:1276](../assets/react-kit/src/ui/data/data-extra.tsx#L1276) |
-| `collapsedLines` | `2` | [assets/react-kit/src/ui/data/data-extra.tsx:1274](../assets/react-kit/src/ui/data/data-extra.tsx#L1274) |
-| `expandLabel` | `message("expandable.expand")` | [assets/react-kit/src/ui/data/data-extra.tsx:1275](../assets/react-kit/src/ui/data/data-extra.tsx#L1275) |
+| `collapseLabel` | `message("expandable.collapse")` | [assets/react-kit/src/ui/data/data-extra.tsx:1317](../assets/react-kit/src/ui/data/data-extra.tsx#L1317) |
+| `collapsedLines` | `2` | [assets/react-kit/src/ui/data/data-extra.tsx:1315](../assets/react-kit/src/ui/data/data-extra.tsx#L1315) |
+| `expandLabel` | `message("expandable.expand")` | [assets/react-kit/src/ui/data/data-extra.tsx:1316](../assets/react-kit/src/ui/data/data-extra.tsx#L1316) |
 
 #### Semantic Tokens
 
@@ -15444,7 +15599,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled` |
 | Parameter type | `SchedulerProps` |
-| Implementation | [assets/react-kit/src/ui/data/data-extra.tsx:804](../assets/react-kit/src/ui/data/data-extra.tsx#L804) |
+| Implementation | [assets/react-kit/src/ui/data/data-extra.tsx:845](../assets/react-kit/src/ui/data/data-extra.tsx#L845) |
 | Explorer / example | [#/components/scheduler](../assets/react-kit/index.html#/components/scheduler); [compiled family example](#family-scheduler-compiled-example) (case `scheduler/overview`, source [assets/react-kit/src/explorer/cases/data/scheduler.case.tsx](../assets/react-kit/src/explorer/cases/data/scheduler.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -17330,7 +17485,7 @@ No migration is required for the current public export.
 | Kind / stability | `component` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `RetryButtonProps` |
-| Implementation | [assets/react-kit/src/ui/feedback/feedback.tsx:535](../assets/react-kit/src/ui/feedback/feedback.tsx#L535) |
+| Implementation | [assets/react-kit/src/ui/feedback/feedback.tsx:635](../assets/react-kit/src/ui/feedback/feedback.tsx#L635) |
 | Explorer / example | [#/components/result](../assets/react-kit/index.html#/components/result); [compiled family example](#family-result-compiled-example) (case `result/overview`, source [assets/react-kit/src/explorer/cases/feedback/result.case.tsx](../assets/react-kit/src/explorer/cases/feedback/result.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -17355,7 +17510,7 @@ export type RetryButtonProps = PublicControlProps<Omit<ButtonProps, "children" |
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `label` | `message("common.retry")` | [assets/react-kit/src/ui/feedback/feedback.tsx:538](../assets/react-kit/src/ui/feedback/feedback.tsx#L538) |
+| `label` | `message("common.retry")` | [assets/react-kit/src/ui/feedback/feedback.tsx:638](../assets/react-kit/src/ui/feedback/feedback.tsx#L638) |
 
 #### Semantic Tokens
 
@@ -17668,29 +17823,133 @@ export function StatePreview({ state, children }: {
   </>;
 }
 
-import { useState } from "react";
+import { useId, useState } from "react";
 
-import { Button, Inline, ToastProvider, useToast } from "./ui";
+import { Button, Field, Grid, Inline, NumberInput, Select, Stack, Switch, ToastProvider, useToast, type ToastOptions, type ToastPosition, type ToastShape } from "./ui";
 
-function ToastCommands() {
-  const { toast, dismiss } = useToast();
+interface ToastCommandsProps {
+  maxVisible: number | "";
+  maxQueue: number | "";
+  onMaxVisibleChange: (value: number | "") => void;
+  onMaxQueueChange: (value: number | "") => void;
+}
+
+function ToastCommands({ maxVisible, maxQueue, onMaxVisibleChange, onMaxQueueChange }: ToastCommandsProps) {
+  const { toast, dismiss, dismissAll } = useToast();
+  const durationId = useId();
   const [lastId, setLastId] = useState<string | null>(null);
-  return <Inline gap="small" wrap>
+  const [autoClose, setAutoClose] = useState(true);
+  const [durationSeconds, setDurationSeconds] = useState<number | "">(5);
+  const [countdown, setCountdown] = useState(false);
+  const [showSeconds, setShowSeconds] = useState(false);
+  const [closable, setClosable] = useState(true);
+  const [position, setPosition] = useState<ToastPosition>("top-right");
+  const [shape, setShape] = useState<ToastShape>("rounded");
+  const [tone, setTone] = useState<NonNullable<ToastOptions["tone"]>>("info");
+
+  function sendConfiguredToast() {
+    setLastId(toast({
+      description: "设置已保存，相关成员将在下次登录时看到更新。",
+      position, shape, tone, closable, countdown, showSeconds,
+      duration: autoClose ? (durationSeconds || 5) * 1000 : null,
+    }));
+  }
+
+  function sendBurst() {
+    let newestId = "";
+    for (let index = 1; index <= 10; index += 1) {
+      newestId = toast({
+        title: `排队提示 ${index}/10`,
+        description: "默认同时显示 3 条，其余依次等待；显示后才开始计时。",
+        duration: 4000, showSeconds: true, closable: true,
+      });
+    }
+    setLastId(newestId);
+  }
+
+  return <Stack gap="large">
+    <Stack gap="small">
+      <h3>自定义提示</h3>
+      <Grid minItemWidth={180} gap="medium">
+        <Field label="弹出位置" group><Select ariaLabel="弹出位置" value={position} onValueChange={(value) => setPosition(value as ToastPosition)} options={[
+          { value: "top-center", label: "顶部居中" }, { value: "top-right", label: "右上角" }, { value: "bottom-right", label: "右下角" },
+        ]} /></Field>
+        <Field label="提示形状" group><Select ariaLabel="提示形状" value={shape} onValueChange={(value) => setShape(value as ToastShape)} options={[
+          { value: "rounded", label: "圆角" }, { value: "pill", label: "胶囊" },
+        ]} /></Field>
+        <Field label="消息类型" group><Select ariaLabel="消息类型" value={tone} onValueChange={(value) => setTone(value as NonNullable<ToastOptions["tone"]>)} options={[
+          { value: "info", label: "信息" }, { value: "success", label: "成功" }, { value: "warning", label: "警告" }, { value: "danger", label: "错误" },
+        ]} /></Field>
+        <Field label="持续时间（秒）" htmlFor={durationId}><NumberInput id={durationId} ariaLabel="持续时间（秒）" value={durationSeconds} onValueChange={setDurationSeconds} min={1} max={60} disabled={!autoClose} /></Field>
+      </Grid>
+      <Inline gap="medium" wrap>
+        <Switch label="自动关闭" checked={autoClose} onChange={(event) => setAutoClose(event.currentTarget.checked)} />
+        <Switch label="显示进度条" checked={countdown} onChange={(event) => setCountdown(event.currentTarget.checked)} disabled={!autoClose} />
+        <Switch label="显示读秒" checked={showSeconds} onChange={(event) => setShowSeconds(event.currentTarget.checked)} disabled={!autoClose} />
+        <Switch label="显示关闭按钮" checked={closable} onChange={(event) => setClosable(event.currentTarget.checked)} />
+      </Inline>
+      <p>进度条、读秒和关闭按钮可分别设置。悬停、聚焦或页面切到后台时暂停计时；持续显示且没有操作入口的提示会保留关闭按钮。</p>
+      <Inline><Button variant="primary" onClick={sendConfiguredToast}>发送自定义提示</Button></Inline>
+    </Stack>
+    <Stack gap="small">
+      <h3>常见组合</h3>
+      <Inline gap="small" wrap>
     <Button onClick={() => setLastId(toast({ description: "成员权限已保存。", tone: "success", position: "top-center", shape: "rounded", duration: 4000, countdown: false, closable: true }))}>居中成功提示</Button>
     <Button onClick={() => setLastId(toast({ title: "连接中断", description: "请检查网络后重试。", tone: "danger", position: "bottom-right", shape: "pill", duration: null, closable: true }))}>右下错误胶囊</Button>
-    <Button onClick={() => setLastId(toast({ description: "组织全部成员的权限同步已经结束，请确认这些变更是否与本次申请一致。如果发现权限范围有误，可以立即撤销本次调整，然后查看完整的审计记录和成员活动日志。", position: "top-right", duration: null, closable: true }))}>长内容提示</Button>
+    <Button onClick={() => setLastId(toast({ title: "长内容通知", description: Array.from({ length: 8 }, (_, index) => `${index + 1}. 组织全部成员的权限同步已经结束，请确认这些变更是否与本次申请一致。如果发现权限范围有误，可以立即撤销本次调整，然后查看完整的审计记录和成员活动日志。`).join("\n"), position: "top-right", duration: null, closable: true }))}>长内容提示</Button>
     <Button onClick={() => setLastId(toast({
       title: "文件已移至回收站",
       description: "点击撤销观察异步操作的加载状态。",
       shape: "rounded", countdown: false, duration: null, closable: true,
       action: { label: "撤销", loadingLabel: "正在撤销", onClick: async () => { await new Promise<void>((resolve) => setTimeout(resolve, 1200)); } },
     }))}>异步操作提示</Button>
+    <Button onClick={() => setLastId(toast({
+      title: "撤销操作失败案例",
+      description: "点击撤销模拟失败；原提示保留，可重试或手动关闭。",
+      duration: null,
+      action: {
+        label: "撤销", loadingLabel: "正在撤销",
+        onClick: async () => { await new Promise<void>((resolve) => setTimeout(resolve, 1200)); throw new Error("模拟撤销失败"); },
+        onError: () => { toast({ description: "撤销失败，请检查网络后重试。", tone: "danger", dedupeKey: "explorer-undo-failure" }); },
+      },
+    }))}>操作失败提示</Button>
     <Button onClick={() => setLastId(toast({ description: "此提示自动关闭，悬停或聚焦可暂停倒计时。", shape: "pill", position: "top-right", countdown: true, duration: 6000, closable: false }))}>胶囊倒计时</Button>
+    <Button onClick={() => setLastId(toast({ description: "仅显示剩余秒数，不显示进度条。", duration: 6000, showSeconds: true, countdown: false, closable: true }))}>仅读秒（6 秒）</Button>
+    <Button onClick={() => setLastId(toast({ description: "进度条与读秒同步暂停，也可以提前关闭。", duration: 8000, showSeconds: true, countdown: true, closable: true }))}>进度与读秒（8 秒）</Button>
+    <Button onClick={() => setLastId(toast({ description: "此提示持续显示，点击关闭按钮后结束。", duration: null, closable: true }))}>手动关闭提示</Button>
+    <Button onClick={() => {
+      dismissAll();
+      toast({ description: "成员权限已保存。", tone: "success", position: "top-center", duration: null });
+      toast({ title: "右上消息", description: "三个位置共用数量上限，但独立排列。宽屏各自贴边；窄屏保留间距，关闭其他位置的提示不会改变这条消息的位置。", position: "top-right", duration: null });
+      setLastId(toast({ title: "连接中断", description: "请检查网络后重试。", tone: "danger", position: "bottom-right", shape: "pill", duration: null }));
+    }}>多位置同时显示</Button>
+      </Inline>
+      <p>多位置演示会先清空已有提示，再同时显示顶部居中、右上和右下各一条。</p>
+    </Stack>
+    <Stack gap="small">
+      <h3>连续触发与数量管理</h3>
+      <Grid minItemWidth={180} gap="medium">
+        <Field label="最多显示" group><NumberInput ariaLabel="最多显示" value={maxVisible} onValueChange={onMaxVisibleChange} min={1} max={8} /></Field>
+        <Field label="最多排队" group><NumberInput ariaLabel="最多排队" value={maxQueue} onValueChange={onMaxQueueChange} min={0} max={100} /></Field>
+      </Grid>
+      <p>当前页面共用一个 ToastProvider：默认最多显示 3 条、等待 20 条。调低显示上限不会强行移除已有提示，后续补位遵守新上限。等待队列满后忽略新提示，保留正在阅读或操作的提示；同一去重键只保留一条，重复触发不会重置计时。</p>
+      <Inline gap="small" wrap>
+    <Button onClick={sendBurst}>连续触发 10 条</Button>
+    <Button onClick={() => setLastId(toast({ description: "同一操作重复点击只显示这条提示。", dedupeKey: "explorer-repeated-operation", duration: null, closable: true }))}>重复触发同一提示</Button>
     <Button variant="ghost" disabled={!lastId} onClick={() => { if (lastId) dismiss(lastId); setLastId(null); }}>关闭最近提示</Button>
-  </Inline>;
+    <Button variant="ghost" onClick={() => { dismissAll(); setLastId(null); }}>清空全部提示</Button>
+      </Inline>
+    </Stack>
+  </Stack>;
 }
 
-function ToastExample() { return <ToastProvider><ToastCommands /></ToastProvider>; }
+function ToastExample() {
+  const [maxVisible, setMaxVisible] = useState<number | "">(3);
+  const [maxQueue, setMaxQueue] = useState<number | "">(20);
+  return <ToastProvider maxVisible={maxVisible === "" ? 3 : maxVisible} maxQueue={maxQueue === "" ? 20 : maxQueue}>
+    <ToastCommands maxVisible={maxVisible} maxQueue={maxQueue} onMaxVisibleChange={setMaxVisible} onMaxQueueChange={setMaxQueue} />
+  </ToastProvider>;
+}
 
 export type UIExampleState = "default" | "loading" | "error" | "longContent" | "keyboard" | "overlay" | "dark" | "locale" | "usage";
 export type UIExampleComponent = "ToastProvider" | "useToast";
@@ -17703,8 +17962,8 @@ export interface UIStateFixture {
 export const UIStateExamples: readonly UIStateFixture[] = [
     { state: "default", exports: ["ToastProvider"], content: <ToastExample /> },
     { state: "loading", exports: ["ToastProvider"], content: <ToastExample />, instructions: "点击异步操作提示，再点击提示内的撤销，观察1200ms加载状态。" },
-    { state: "error", exports: ["ToastProvider"], content: <ToastExample />, instructions: "点击右下错误胶囊，查看实际danger消息。" },
-    { state: "longContent", exports: ["ToastProvider"], content: <ToastExample />, instructions: "点击长内容提示，查看换行、宽度与关闭按钮。" },
+    { state: "error", exports: ["ToastProvider"], content: <ToastExample />, instructions: "点击右下错误胶囊查看错误消息；或点击操作失败提示，再点击撤销，观察加载、失败保留及重试入口。" },
+    { state: "longContent", exports: ["ToastProvider"], content: <ToastExample />, instructions: "点击长内容提示，检查长正文的可读范围、局部滚动与关闭按钮；连续触发 10 条检查提示不会被挤压变形。" },
     { state: "keyboard", exports: ["ToastProvider"], content: <ToastExample />, instructions: "用Tab和Enter发送提示，聚焦关闭或撤销按钮操作；此项为人工操作入口，不是浏览器自动验收。" },
     { state: "overlay", exports: ["ToastProvider"], content: <StatePreview state="overlay"><ToastExample /></StatePreview> },
     { state: "dark", exports: ["ToastProvider"], content: <StatePreview state="dark"><ToastExample /></StatePreview> },
@@ -17736,7 +17995,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `provider` |
 | Parameter type | `ToastProviderProps` |
-| Implementation | [assets/react-kit/src/ui/feedback/feedback.tsx:215](../assets/react-kit/src/ui/feedback/feedback.tsx#L215) |
+| Implementation | [assets/react-kit/src/ui/feedback/feedback.tsx:230](../assets/react-kit/src/ui/feedback/feedback.tsx#L230) |
 | Explorer / example | [#/components/toast](../assets/react-kit/index.html#/components/toast); [compiled family example](#family-toast-compiled-example) (case `toast/overview`, source [assets/react-kit/src/explorer/cases/feedback/toast.case.tsx](../assets/react-kit/src/explorer/cases/feedback/toast.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -17756,6 +18015,10 @@ export type ToastProviderProps = PublicControlProps<{
     children: ReactNode;
     defaultPosition?: ToastPosition;
     defaultShape?: ToastShape;
+    /** Global visible limit across all positions. Default3; integer1..8. Lowering never evicts mounted cards. */
+    maxVisible?: number;
+    /** FIFO waiting capacity. Default20; integer0..100. Full queues ignore new messages. */
+    maxQueue?: number;
 }>;
 export type ToastShape = "rounded" | "pill";
 ```
@@ -17764,8 +18027,8 @@ export type ToastShape = "rounded" | "pill";
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `defaultPosition` | `"top-right"` | [assets/react-kit/src/ui/feedback/feedback.tsx:218](../assets/react-kit/src/ui/feedback/feedback.tsx#L218) |
-| `defaultShape` | `"rounded"` | [assets/react-kit/src/ui/feedback/feedback.tsx:218](../assets/react-kit/src/ui/feedback/feedback.tsx#L218) |
+| `defaultPosition` | `"top-right"` | [assets/react-kit/src/ui/feedback/feedback.tsx:233](../assets/react-kit/src/ui/feedback/feedback.tsx#L233) |
+| `defaultShape` | `"rounded"` | [assets/react-kit/src/ui/feedback/feedback.tsx:233](../assets/react-kit/src/ui/feedback/feedback.tsx#L233) |
 
 #### Semantic Tokens
 
@@ -17780,9 +18043,17 @@ Derived from registered family CSS ([src/ui/styles.css](../assets/react-kit/src/
 #### Usage Excerpt
 
 ```tsx
-const { toast, dismiss } = useToast();
-const id = toast({ description: "已保存", position: "top-center", countdown: false });
+<ToastProvider maxVisible={3} maxQueue={20}><Page /></ToastProvider>
+
+const { toast, dismiss, dismissAll } = useToast();
+const id = toast({
+  description: "已保存", position: "top-center", shape: "rounded",
+  duration: 5000, countdown: false, showSeconds: true, closable: true,
+  dedupeKey: "save-settings",
+});
 dismiss(id);
+// 清空可见提示和等待队列
+dismissAll();
 ```
 
 #### Migration
@@ -17800,7 +18071,7 @@ No migration is required for the current public export.
 | Kind / stability | `non-visual` / `stable` |
 | State mode | `hook` |
 | Parameter type | No public parameter |
-| Implementation | [assets/react-kit/src/ui/feedback/feedback.tsx:520](../assets/react-kit/src/ui/feedback/feedback.tsx#L520) |
+| Implementation | [assets/react-kit/src/ui/feedback/feedback.tsx:619](../assets/react-kit/src/ui/feedback/feedback.tsx#L619) |
 | Explorer / example | [#/components/toast](../assets/react-kit/index.html#/components/toast); [compiled family example](#family-toast-compiled-example) (case `toast/overview`, source [assets/react-kit/src/explorer/cases/feedback/toast.case.tsx](../assets/react-kit/src/explorer/cases/feedback/toast.case.tsx)) |
 | Keyboard | none: This non-visual hook has no independent keyboard contract. |
 | ARIA | none: This non-visual hook renders no ARIA semantics. |
@@ -17825,6 +18096,7 @@ export interface ToastAction {
 export interface ToastApi {
     toast: (options: ToastOptions) => string;
     dismiss: (id: string) => void;
+    dismissAll: () => void;
 }
 export interface ToastOptions {
     title?: ReactNode;
@@ -17833,7 +18105,12 @@ export interface ToastOptions {
     position?: ToastPosition;
     shape?: ToastShape;
     duration?: number | null;
+    /** Decorative progress bar, independent of numeric seconds. Hidden for persistent messages. */
     countdown?: boolean;
+    /** Remaining seconds use the same pause-aware clock as automatic dismissal. */
+    showSeconds?: boolean;
+    /** Reuse an active or queued message with this key without resetting its content or timer. */
+    dedupeKey?: string;
     closable?: boolean;
     closeLabel?: string;
     action?: ToastAction;
@@ -17858,9 +18135,17 @@ This export does not render a styled surface.
 #### Usage Excerpt
 
 ```tsx
-const { toast, dismiss } = useToast();
-const id = toast({ description: "已保存", position: "top-center", countdown: false });
+<ToastProvider maxVisible={3} maxQueue={20}><Page /></ToastProvider>
+
+const { toast, dismiss, dismissAll } = useToast();
+const id = toast({
+  description: "已保存", position: "top-center", shape: "rounded",
+  duration: 5000, countdown: false, showSeconds: true, closable: true,
+  dedupeKey: "save-settings",
+});
 dismiss(id);
+// 清空可见提示和等待队列
+dismissAll();
 ```
 
 #### Migration

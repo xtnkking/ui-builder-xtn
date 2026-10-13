@@ -152,13 +152,21 @@
 .ui-tree__row > button:not(.ui-icon-button) > span:last-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ui-tree__spacer { flex: 0 0 36px; width: 36px; }
 
-.ui-tree-table { width: 100%; min-width: 0; overflow: auto; border: 1px solid var(--ui-border); border-radius: var(--ui-radius-surface); }
-.ui-tree-table table { width: 100%; min-width: 640px; border-collapse: collapse; }
-.ui-tree-table th, .ui-tree-table td { min-width: 0; padding: 10px 12px; border-bottom: 1px solid var(--ui-border); text-align: start; }
+.ui-tree-table { width: 100%; min-width: 0; overflow: hidden; border: 1px solid var(--ui-border); border-radius: var(--ui-radius-surface); background: var(--ui-surface); }
+.ui-tree-table__viewport { min-width: 0; overflow: auto; }
+.ui-tree-table__viewport:focus-visible { outline: 2px solid var(--ui-focus-ring); outline-offset: -2px; }
+.ui-tree-table__toolbar, .ui-tree-table__footer { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; min-width: 0; padding: 12px 16px; overflow-wrap: anywhere; }
+.ui-tree-table__toolbar > *, .ui-tree-table__footer > * { min-width: 0; max-width: 100%; }
+.ui-tree-table__toolbar { border-bottom: 1px solid var(--ui-border); }
+.ui-tree-table__footer { border-top: 1px solid var(--ui-border); color: var(--ui-muted); font-size: 12px; }
+.ui-tree-table table { width: 100%; min-width: 640px; table-layout: fixed; border-collapse: collapse; }
+.ui-tree-table th, .ui-tree-table td { min-width: 0; padding: 10px 12px; border-bottom: 1px solid var(--ui-border); text-align: start; overflow-wrap: anywhere; }
 .ui-tree-table th { position: sticky; z-index: 2; top: 0; background: var(--ui-surface-subtle); color: var(--ui-muted); font-size: 12px; }
 .ui-tree-table tbody tr:last-child td { border-bottom: 0; }
 .ui-tree-table__tree-cell { display: flex; align-items: center; gap: 6px; min-width: 0; }
-.ui-tree-table__tree-cell > span:last-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ui-tree-table__label { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ui-tree-table__branch-footer td { padding-block: 8px; background: var(--ui-surface-subtle); }
+.ui-tree-table__branch-footer td > div { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 0; }
 .ui-tree-table__empty { height: 100px; color: var(--ui-muted); text-align: center !important; }
 
 .ui-calendar { box-sizing: border-box; width: min(100%, 360px); padding: 12px; border: 1px solid var(--ui-border); border-radius: var(--ui-radius-surface); background: var(--ui-surface); }

@@ -11,6 +11,7 @@ import {
   ProgressRing,
   RetryButton,
   ToastProvider,
+  useToast,
   ValidationSummary,
   type AlertProps,
   type AsyncActionProps,
@@ -23,6 +24,8 @@ import {
   type ProgressRingProps,
   type RetryButtonProps,
   type ToastProviderProps,
+  type ToastApi,
+  type ToastOptions,
   type ValidationSummaryProps,
 } from "../../src/ui";
 
@@ -80,7 +83,7 @@ const feedbackContractAssertions: FeedbackContractAssertions = [
 void feedbackContractAssertions;
 
 const allowedUsage = (
-  <ToastProvider defaultPosition="bottom-right" defaultShape="pill">
+  <ToastProvider defaultPosition="bottom-right" defaultShape="pill" maxVisible={3} maxQueue={20}>
     <Alert aria-live="polite" data-track="alert" onMouseEnter={() => undefined}>Notice</Alert>
     <EmptyState title="Nothing here" aria-describedby="empty-help" data-track="empty" />
     <Progress value={42} label="Uploading" aria-describedby="progress-help" data-track="progress" />
@@ -95,6 +98,44 @@ const allowedUsage = (
   </ToastProvider>
 );
 void allowedUsage;
+
+const timedToastOptions = {
+  description: "已保存",
+  duration: 5000,
+  countdown: true,
+  showSeconds: true,
+  closable: false,
+  dedupeKey: "save-settings",
+} satisfies ToastOptions;
+const persistentToastOptions = {
+  description: "请处理该通知",
+  duration: null,
+  countdown: false,
+  showSeconds: false,
+  closable: true,
+} satisfies ToastOptions;
+function ToastApiUsage() {
+  const api: ToastApi = useToast();
+  const id: string = api.toast(timedToastOptions);
+  api.toast(persistentToastOptions);
+  api.dismiss(id);
+  api.dismissAll();
+  return null;
+}
+void ToastApiUsage;
+
+// @ts-expect-error ToastProvider capacity is numeric
+const providerCapacity = <ToastProvider maxVisible="3"><span /></ToastProvider>;
+// @ts-expect-error waiting queue capacity is numeric
+const providerQueue = <ToastProvider maxQueue="20"><span /></ToastProvider>;
+// @ts-expect-error seconds display is an independent boolean option
+const invalidToastSeconds: ToastOptions = { description: "Notice", showSeconds: "yes" };
+// @ts-expect-error deduplication identity must be a string
+const invalidToastKey: ToastOptions = { description: "Notice", dedupeKey: 42 };
+void providerCapacity;
+void providerQueue;
+void invalidToastSeconds;
+void invalidToastKey;
 
 // @ts-expect-error Alert styling is owned by ui-builder-xtn
 const alertClassName = <Alert className="foreign">Notice</Alert>;

@@ -154,6 +154,11 @@
     "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts",
     "assets/react-kit/tests/browser/modal-layer-kernel.spec.ts",
     "assets/react-kit/tests/browser/theme-contracts.spec.ts",
+    "assets/react-kit/tests/browser/toast-capacity.spec.ts",
+    "assets/react-kit/tests/browser/toast-positions.spec.ts",
+    "assets/react-kit/tests/browser/toast-shadow.spec.ts",
+    "assets/react-kit/tests/browser/tree-table-actions.spec.ts",
+    "assets/react-kit/tests/browser/tree-table-project-members.spec.ts",
     "assets/react-kit/tests/components/actions-contracts.test.tsx",
     "assets/react-kit/tests/components/button-contracts.test.tsx",
     "assets/react-kit/tests/components/calendar-date-contracts.test.tsx",
@@ -194,6 +199,8 @@
     "assets/react-kit/tests/components/simple-fixed-controls.test.tsx",
     "assets/react-kit/tests/components/theme-css-contracts.test.ts",
     "assets/react-kit/tests/components/theme-provider-contracts.test.tsx",
+    "assets/react-kit/tests/components/toast-capacity.test.tsx",
+    "assets/react-kit/tests/components/tree-table-actions.test.tsx",
     "assets/react-kit/tests/components/value-controls-contracts.test.tsx",
     "assets/react-kit/tests/visual/drawer-edge.visual.spec.ts"
   ],
@@ -217,7 +224,7 @@
       "source": 142,
       "example": 142,
       "unit": 117,
-      "browser": 60,
+      "browser": 62,
       "keyboard": 100,
       "a11y": 120
     },
@@ -23535,9 +23542,14 @@
       "unit": [
         "assets/react-kit/tests/components/feedback-contracts.test.tsx",
         "assets/react-kit/tests/components/layer-kernel-contracts.test.tsx",
-        "assets/react-kit/tests/components/locale-contracts.test.tsx"
+        "assets/react-kit/tests/components/locale-contracts.test.tsx",
+        "assets/react-kit/tests/components/toast-capacity.test.tsx"
       ],
-      "browser": [],
+      "browser": [
+        "assets/react-kit/tests/browser/toast-capacity.spec.ts",
+        "assets/react-kit/tests/browser/toast-positions.spec.ts",
+        "assets/react-kit/tests/browser/toast-shadow.spec.ts"
+      ],
       "keyboard": [
         "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
       ],
@@ -24930,7 +24942,8 @@
           "mobile",
           "overlay",
           "dark",
-          "locale"
+          "locale",
+          "usage"
         ],
         "example": {
           "status": "documented",
@@ -25019,7 +25032,8 @@
           "mobile",
           "overlay",
           "dark",
-          "locale"
+          "locale",
+          "usage"
         ],
         "sourceDemonstratedStates": [
           "default",
@@ -25033,7 +25047,8 @@
           "mobile",
           "overlay",
           "dark",
-          "locale"
+          "locale",
+          "usage"
         ],
         "fixtures": [
           {
@@ -25107,6 +25122,12 @@
             "file": "assets/react-kit/src/explorer/cases/data/data-table.case.tsx",
             "exampleIndex": 11,
             "verification": "runnable-source-fixture"
+          },
+          {
+            "state": "usage",
+            "file": "assets/react-kit/src/explorer/cases/data/data-table.case.tsx",
+            "exampleIndex": 12,
+            "verification": "runnable-source-fixture"
           }
         ],
         "verificationKind": "structural-source-fixtures",
@@ -25117,10 +25138,13 @@
       ],
       "unit": [
         "assets/react-kit/tests/components/data-extra-contracts.test.tsx",
-        "assets/react-kit/tests/components/m5-tree-table-contracts.test.tsx"
+        "assets/react-kit/tests/components/m5-tree-table-contracts.test.tsx",
+        "assets/react-kit/tests/components/tree-table-actions.test.tsx"
       ],
       "browser": [
-        "assets/react-kit/tests/browser/m5-tree-table.spec.ts"
+        "assets/react-kit/tests/browser/m5-tree-table.spec.ts",
+        "assets/react-kit/tests/browser/tree-table-actions.spec.ts",
+        "assets/react-kit/tests/browser/tree-table-project-members.spec.ts"
       ],
       "keyboard": [
         "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
@@ -25422,9 +25446,14 @@
       ],
       "unit": [
         "assets/react-kit/tests/components/layer-kernel-contracts.test.tsx",
-        "assets/react-kit/tests/components/locale-contracts.test.tsx"
+        "assets/react-kit/tests/components/locale-contracts.test.tsx",
+        "assets/react-kit/tests/components/toast-capacity.test.tsx"
       ],
-      "browser": [],
+      "browser": [
+        "assets/react-kit/tests/browser/toast-capacity.spec.ts",
+        "assets/react-kit/tests/browser/toast-positions.spec.ts",
+        "assets/react-kit/tests/browser/toast-shadow.spec.ts"
+      ],
       "keyboard": [],
       "a11y": []
     },

@@ -152,7 +152,12 @@ export interface ToastOptions {
   position?: ToastPosition;
   shape?: ToastShape;
   duration?: number | null;
+  /** Decorative progress bar, independent of numeric seconds. Hidden for persistent messages. */
   countdown?: boolean;
+  /** Remaining seconds use the same pause-aware clock as automatic dismissal. */
+  showSeconds?: boolean;
+  /** Reuse an active or queued message with this key without resetting its content or timer. */
+  dedupeKey?: string;
   closable?: boolean;
   closeLabel?: string;
   action?: ToastAction;
@@ -197,11 +202,13 @@ function normalizeToastDuration(duration: ToastOptions["duration"], hasAction: b
 interface ToastProviderContextValue {
   toast: (options: ToastOptions, localeContext: UILocaleContext) => string;
   dismiss: (id: string) => void;
+  dismissAll: () => void;
 }
 
 export interface ToastApi {
   toast: (options: ToastOptions) => string;
   dismiss: (id: string) => void;
+  dismissAll: () => void;
 }
 
 const ToastContext = createContext<ToastProviderContextValue | null>(null);
@@ -210,19 +217,41 @@ export type ToastProviderProps = PublicControlProps<{
   children: ReactNode;
   defaultPosition?: ToastPosition;
   defaultShape?: ToastShape;
+  /** Global visible limit across all positions. Default3; integer1..8. Lowering never evicts mounted cards. */
+  maxVisible?: number;
+  /** FIFO waiting capacity. Default20; integer0..100. Full queues ignore new messages. */
+  maxQueue?: number;
 }>;
+
+function normalizeToastLimit(value: number | undefined, fallback: number, min: number, max: number): number {
+  return value === undefined || !Number.isFinite(value) ? fallback : Math.min(max, Math.max(min, Math.floor(value)));
+}
 
 export function ToastProvider(rawProps: ToastProviderProps) {
   const providerLocale = useUILocale();
   const safeProps = sanitizeFixedControlProps(rawProps);
-  const { children, defaultPosition = "top-right", defaultShape = "rounded" } = safeProps;
+  const { children, defaultPosition = "top-right", defaultShape = "rounded", maxVisible, maxQueue } = safeProps;
   const [toasts, setToasts] = useState<ToastRecord[]>([]);
+  // Synchronous admission also covers bursts within one React batch.
+  const records = useRef<{ visible: ToastRecord[]; queued: ToastRecord[] }>({ visible: [], queued: [] });
+  const limits = useRef({ visible: 3, queued: 20 });
+  limits.current = { visible: normalizeToastLimit(maxVisible, 3, 1, 8), queued: normalizeToastLimit(maxQueue, 20, 0, 100) };
   const portalReady = usePortalReady() && typeof document !== "undefined";
   const sourceRef = useRef<HTMLSpanElement>(null);
   const portalRef = useRef<HTMLDivElement>(null);
+  const centerViewportRef = useRef<HTMLDivElement>(null);
+  const [centerHeight, setCenterHeight] = useState(0);
   const timers = useRef(new Map<string, ToastTimer>());
   const sequence = useRef(0);
   useUIPortalTokens(portalReady && toasts.length > 0, sourceRef, portalRef);
+
+  const publish = useCallback(() => setToasts([...records.current.visible]), []);
+  const promote = useCallback(() => {
+    const current = records.current;
+    while (current.queued.length && current.visible.length < limits.current.visible) {
+      current.visible.push(current.queued.shift()!);
+    }
+  }, []);
 
   const dismiss = useCallback((id: string) => {
     const timer = timers.current.get(id);
@@ -230,8 +259,26 @@ export function ToastProvider(rawProps: ToastProviderProps) {
       window.clearTimeout(timer.timeoutId);
     }
     timers.current.delete(id);
-    setToasts((current) => current.filter((toast) => toast.id !== id));
-  }, []);
+    records.current.visible = records.current.visible.filter((item) => item.id !== id);
+    records.current.queued = records.current.queued.filter((item) => item.id !== id);
+    promote();
+    publish();
+  }, [promote, publish]);
+
+  const dismissAll = useCallback(() => {
+    timers.current.forEach((timer) => {
+      if (timer.timeoutId !== undefined) window.clearTimeout(timer.timeoutId);
+    });
+    timers.current.clear();
+    records.current = { visible: [], queued: [] };
+    publish();
+  }, [publish]);
+
+  useEffect(() => {
+    // Lowering a limit never remounts or evicts an actionable notification.
+    promote();
+    publish();
+  }, [maxVisible, promote, publish]);
 
   const startTimer = useCallback((id: string, timer: ToastTimer) => {
     if (typeof window === "undefined" || timer.timeoutId !== undefined || timer.pauseReasons.size) return;
@@ -259,19 +306,25 @@ export function ToastProvider(rawProps: ToastProviderProps) {
       timer.timeoutId = undefined;
       timer.startedAt = undefined;
     }
-    setToasts((current) => current.map((toast) => (
-      toast.id === id && !toast.paused ? { ...toast, paused: true } : toast
-    )));
-  }, []);
+    const record = [...records.current.visible, ...records.current.queued].find((item) => item.id === id);
+    if (record) record.paused = true;
+    publish();
+  }, [publish]);
 
   const resumeTimer = useCallback((id: string, reason: ToastPauseReason) => {
     const timer = timers.current.get(id);
     if (!timer || !timer.pauseReasons.delete(reason) || timer.pauseReasons.size) return;
-    setToasts((current) => current.map((toast) => (
-      toast.id === id && toast.paused ? { ...toast, paused: false } : toast
-    )));
+    const record = [...records.current.visible, ...records.current.queued].find((item) => item.id === id);
+    if (record) record.paused = false;
+    publish();
     startTimer(id, timer);
-  }, [startTimer]);
+  }, [startTimer, publish]);
+
+  const remainingTime = useCallback((id: string) => {
+    const timer = timers.current.get(id);
+    if (!timer) return 0;
+    return Math.max(0, timer.remaining - (timer.startedAt === undefined ? 0 : timerNow() - timer.startedAt));
+  }, []);
 
   const mountTimer = useCallback((id: string) => {
     const timer = timers.current.get(id);
@@ -281,8 +334,15 @@ export function ToastProvider(rawProps: ToastProviderProps) {
   }, [startTimer]);
 
   const toast = useCallback((options: ToastOptions, localeContext: UILocaleContext = providerLocale) => {
+    if (options.dedupeKey) {
+      const existing = [...records.current.visible, ...records.current.queued].find((item) => item.dedupeKey === options.dedupeKey);
+      if (existing) return existing.id;
+    }
     sequence.current += 1;
     const id = `ui-toast-${Date.now()}-${sequence.current}`;
+    const current = records.current;
+    const canShow = current.visible.length < limits.current.visible && !current.queued.length;
+    if (!canShow && current.queued.length >= limits.current.queued) return id;
     const duration = normalizeToastDuration(options.duration, Boolean(options.action));
     const requestedClosable = options.closable ?? true;
     const actionDismisses = Boolean(options.action && options.action.dismiss !== false);
@@ -299,7 +359,8 @@ export function ToastProvider(rawProps: ToastProviderProps) {
       paused,
       localeContext,
     };
-    setToasts((current) => [record, ...current]);
+    if (canShow) current.visible.push(record);
+    else current.queued.push(record);
     if (record.duration !== null && typeof window !== "undefined") {
       const timer: ToastTimer = {
         remaining: record.duration,
@@ -308,8 +369,9 @@ export function ToastProvider(rawProps: ToastProviderProps) {
       };
       timers.current.set(id, timer);
     }
+    publish();
     return id;
-  }, [defaultPosition, defaultShape, providerLocale]);
+  }, [defaultPosition, defaultShape, providerLocale, publish]);
 
   useEffect(() => {
     const handleVisibilityChange = () => {
@@ -330,22 +392,34 @@ export function ToastProvider(rawProps: ToastProviderProps) {
     timers.current.clear();
   }, []);
 
-  const context = useMemo(() => ({ toast, dismiss }), [toast, dismiss]);
-  const viewportGroups = [
-    { id: "top", items: toasts.filter((item) => item.position !== "bottom-right") },
-    { id: "bottom-right", items: toasts.filter((item) => item.position === "bottom-right") },
-  ];
+  const context = useMemo(() => ({ toast, dismiss, dismissAll }), [toast, dismiss, dismissAll]);
+  const viewportGroups = (["top-center", "top-right", "bottom-right"] as const).map((id) => ({
+    id, items: toasts.filter((item) => item.position === id),
+  }));
+  const hasCenter = viewportGroups[0].items.length > 0;
+  const hasRight = viewportGroups[1].items.length > 0;
+  const hasBottom = viewportGroups[2].items.length > 0;
+  useClientLayoutEffect(() => {
+    const center = centerViewportRef.current;
+    if (!center) { setCenterHeight(0); return; }
+    const measure = () => setCenterHeight(center.getBoundingClientRect().height);
+    measure();
+    if (typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(measure);
+    observer.observe(center);
+    return () => observer.disconnect();
+  }, [hasCenter, hasBottom, hasRight, portalReady]);
 
   return (
     <ToastContext.Provider value={context}>
       {portalReady ? <span ref={sourceRef} hidden aria-hidden="true" data-ui-portal-source="toast" /> : null}
       {children}
       {portalReady && toasts.length ? createPortal(
-        <div ref={portalRef} className="ui-portal" data-ui-toast-portal-root="true" data-ui-owner="ToastProvider" style={{ display: "contents" }}>
+        <div ref={portalRef} className="ui-portal" data-ui-toast-portal-root="true" data-ui-owner="ToastProvider" style={{ display: "contents", "--_ui-toast-center-height": `${centerHeight}px` } as CSSVariableProperties}>
           {viewportGroups.map(({ id, items }) => {
             if (!items.length) return null;
             return (
-              <div key={id} className={cx("ui-portal", "ui-toast-viewport", `ui-toast-viewport--${id}`)}>
+              <div key={id} ref={id === "top-center" ? centerViewportRef : undefined} className={cx("ui-portal", "ui-toast-viewport", `ui-toast-viewport--${id}`)} data-top-pair={hasCenter && hasRight || undefined} data-bottom-pair={hasBottom && (hasCenter || hasRight) || undefined}>
                 {items.map((item) => (
                   <ToastItem
                     key={item.id}
@@ -354,6 +428,7 @@ export function ToastProvider(rawProps: ToastProviderProps) {
                     onMount={mountTimer}
                     onPause={pauseTimer}
                     onResume={resumeTimer}
+                    remainingTime={remainingTime}
                   />
                 ))}
               </div>
@@ -372,19 +447,42 @@ function ToastItem({
   onMount,
   onPause,
   onResume,
+  remainingTime,
 }: {
   item: ToastRecord;
   onDismiss: (id: string) => void;
   onMount: (id: string) => void;
   onPause: (id: string, reason: ToastPauseReason) => void;
   onResume: (id: string, reason: ToastPauseReason) => void;
+  remainingTime: (id: string) => number;
 }) {
   const { message } = item.localeContext;
   const Icon = toneIcons[item.tone];
   const actionRunning = useRef(false);
   const pressedPointers = useRef(new Set<number>());
   const [actionPending, setActionPending] = useState(false);
+  const bodyRef = useRef<HTMLDivElement>(null);
+  const [bodyScrollable, setBodyScrollable] = useState(false);
+  const [seconds, setSeconds] = useState(() => Math.ceil((item.duration ?? 0) / 1000));
   useClientLayoutEffect(() => onMount(item.id), [item.id, onMount]);
+  useEffect(() => {
+    if (!item.showSeconds || item.duration === null) return;
+    const update = () => setSeconds(Math.ceil(remainingTime(item.id) / 1000));
+    update();
+    if (item.paused) return;
+    const interval = window.setInterval(update, 100);
+    return () => window.clearInterval(interval);
+  }, [item.id, item.showSeconds, item.duration, item.paused, remainingTime]);
+  useClientLayoutEffect(() => {
+    const body = bodyRef.current;
+    if (!body) return;
+    const measure = () => setBodyScrollable(body.scrollHeight > body.clientHeight + 1);
+    measure();
+    if (typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(measure);
+    observer.observe(body);
+    return () => observer.disconnect();
+  }, [item.description]);
   useEffect(() => {
     const releasePointer = (event: PointerEvent) => {
       if (!pressedPointers.current.delete(event.pointerId)) return;
@@ -471,11 +569,12 @@ function ToastItem({
               {item.title}
             </strong>
           ) : null}
-          <div>{item.description}</div>
+          <div ref={bodyRef} className="ui-toast__description" tabIndex={bodyScrollable ? 0 : undefined} role={bodyScrollable ? "region" : undefined} aria-label={bodyScrollable ? message("toast.details") : undefined}>{item.description}</div>
         </div>
       </div>
-      {item.action || item.closable ? (
+      {item.action || item.closable || item.showSeconds && item.duration !== null ? (
         <div className="ui-toast__actions">
+          {item.showSeconds && item.duration !== null ? <span className="ui-toast__seconds" aria-hidden="true" style={{ minWidth: `${String(Math.ceil(item.duration / 1000)).length + 2}ch` }}>{message("toast.seconds", { seconds })}</span> : null}
           {item.action ? (
             <button
               type="button"
@@ -523,6 +622,7 @@ export function useToast(): ToastApi {
   if (!context) throw new Error("useToast must be used inside ToastProvider");
   return useMemo(() => ({
     dismiss: context.dismiss,
+    dismissAll: context.dismissAll,
     toast: (options: ToastOptions) => context.toast(options, localeContext),
   }), [context, localeContext]);
 }

@@ -359,10 +359,16 @@ export function Tree(rawProps: TreeProps) {
   return <div {...rootProps} className="ui-tree" data-ui-owner="Tree">{renderNodes(nodes, 1)}</div>;
 }
 
+export interface TreeTableRowContext<T> {
+  node: TreeTableNode<T>;
+  /** One-based data-row depth; branch footer content aligns with the next level. */
+  level: number;
+}
+
 export interface TreeTableColumn<T> {
   id: string;
   header: ReactNode;
-  cell: (value: T) => ReactNode;
+  cell: (value: T, context: TreeTableRowContext<T>) => ReactNode;
   width?: number | string;
 }
 
@@ -385,17 +391,29 @@ type TreeTableBaseProps<T> = PublicControlProps<Omit<
   getRowLabel?: (node: TreeTableNode<T>) => string;
   onRequestChildren?: (node: TreeTableNode<T>) => void | Promise<void>;
   empty?: ReactNode;
+  toolbar?: ReactNode;
+  footer?: ReactNode;
+  /** Render after an expanded branch's entire visible subtree, outside its data rows. */
+  renderBranchFooter?: (context: TreeTableRowContext<T>) => ReactNode;
 };
 
 export type TreeTableProps<T> = TreeTableBaseProps<T> & ControllableExpandedIdsProps;
 
-interface FlatTreeRow<T> { node: TreeTableNode<T>; level: number }
+interface FlatTreeRow<T> extends TreeTableRowContext<T> { kind: "node" | "branchFooter" }
 
-function flattenTreeRows<T>(nodes: readonly TreeTableNode<T>[], expanded: Set<string>, level = 1): FlatTreeRow<T>[] {
-  return nodes.flatMap((node) => [
-    { node, level },
-    ...(expanded.has(node.id) ? flattenTreeRows(node.children ?? [], expanded, level + 1) : []),
-  ]);
+function isTreeTableBranch<T>(node: TreeTableNode<T>): boolean {
+  return Boolean(node.children?.length || node.hasChildren);
+}
+
+function flattenTreeRows<T>(nodes: readonly TreeTableNode<T>[], expanded: Set<string>, includeBranchFooter: boolean, level = 1): FlatTreeRow<T>[] {
+  return nodes.flatMap((node): FlatTreeRow<T>[] => {
+    const isExpanded = expanded.has(node.id) && isTreeTableBranch(node);
+    return [
+      { kind: "node", node, level },
+      ...(isExpanded ? flattenTreeRows(node.children ?? [], expanded, includeBranchFooter, level + 1) : []),
+      ...(isExpanded && includeBranchFooter ? [{ kind: "branchFooter" as const, node, level }] : []),
+    ];
+  });
 }
 
 function collectTreeTableIds<T>(nodes: readonly TreeTableNode<T>[]): string[] {
@@ -418,11 +436,15 @@ export function TreeTable<T>(rawProps: TreeTableProps<T>) {
     onExpandedChange,
     onRequestChildren,
     empty = message("tree.empty"),
+    toolbar,
+    footer,
+    renderBranchFooter,
     ...rootProps
   } = safeProps;
   assertUniqueIdentities("TreeTable", "node.id", collectTreeTableIds(nodes));
   assertUniqueIdentities("TreeTable", "column.id", columns.map((column) => column.id));
-  if (!columns.some((column) => column.id === treeColumnId)) throw new RangeError(`TreeTable cannot find treeColumnId ${JSON.stringify(treeColumnId)}.`);
+  const treeColumnIndex = columns.findIndex((column) => column.id === treeColumnId);
+  if (treeColumnIndex < 0) throw new RangeError(`TreeTable cannot find treeColumnId ${JSON.stringify(treeColumnId)}.`);
   const [expandedState, setExpandedState] = useControllableState<readonly string[]>({
     componentName: "TreeTable",
     controlled: expandedControlled,
@@ -437,12 +459,12 @@ export function TreeTable<T>(rawProps: TreeTableProps<T>) {
     changePropName: "onExpandedChange",
   });
   const expanded = new Set(expandedState);
-  const rows = flattenTreeRows(nodes, expanded);
+  const rows = flattenTreeRows(nodes, expanded, Boolean(renderBranchFooter));
   const [pendingIds, setPendingIds] = useState<readonly string[]>([]);
   const [requestErrors, setRequestErrors] = useState<Readonly<Record<string, true>>>({});
   const toggle = async (node: TreeTableNode<T>) => {
     if (node.loading || pendingIds.includes(node.id)) return;
-    if (!expanded.has(node.id) && !node.children?.length && onRequestChildren) {
+    if (!expanded.has(node.id) && node.children === undefined && onRequestChildren) {
       setPendingIds((current) => [...current, node.id]);
       setRequestErrors((current) => { const next = { ...current }; delete next[node.id]; return next; });
       try {
@@ -463,33 +485,52 @@ export function TreeTable<T>(rawProps: TreeTableProps<T>) {
   };
   return (
     <div {...rootProps} className="ui-tree-table" data-ui-owner="TreeTable">
-      <table aria-label={ariaLabel}>
-        <thead><tr>{columns.map((column) => <th key={column.id} scope="col" style={{ width: column.width }}>{column.header}</th>)}</tr></thead>
-        <tbody>
-          {!rows.length ? <tr><td colSpan={columns.length} className="ui-tree-table__empty">{empty}</td></tr> : null}
-          {rows.map(({ node, level }) => {
-            const hasChildren = Boolean(node.children?.length || (node.hasChildren && onRequestChildren));
-            const isExpanded = expanded.has(node.id);
-            return (
-              <tr key={node.id}>
-                {columns.map((column) => (
-                  <td key={column.id}>
-                    {column.id === treeColumnId ? (
-                      <div className="ui-tree-table__tree-cell" style={{ paddingInlineStart: `${(level - 1) * 22}px` }}>
-                        {hasChildren ? <IconButton aria-label={requestErrors[node.id]
-                          ? message("tree.retryLoad", { label: getRowLabel(node) })
-                          : message(isExpanded ? "tree.collapse" : "tree.expand", { label: getRowLabel(node) })} aria-expanded={isExpanded} loading={node.loading || pendingIds.includes(node.id)} icon={isExpanded ? <ChevronDown /> : <ChevronRight />} onClick={() => void toggle(node)} /> : <span className="ui-tree__spacer" />}
-                        <span>{column.cell(node.value)}</span>
-                        {requestErrors[node.id] ? <span role="alert">{message("tree.loadFailed")}</span> : null}
-                      </div>
-                    ) : column.cell(node.value)}
-                  </td>
-                ))}
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+      {toolbar != null && toolbar !== false ? <div className="ui-tree-table__toolbar">{toolbar}</div> : null}
+      <div className="ui-tree-table__viewport" role="region" aria-label={ariaLabel} tabIndex={0}>
+        <table aria-label={ariaLabel}>
+          <thead><tr>{columns.map((column) => <th key={column.id} scope="col" style={{ width: column.width }}>{column.header}</th>)}</tr></thead>
+          <tbody>
+            {!rows.length ? <tr><td colSpan={columns.length} className="ui-tree-table__empty">{empty}</td></tr> : null}
+            {rows.map(({ kind, node, level }) => {
+              const context = { node, level };
+              if (kind === "branchFooter") {
+                const content = renderBranchFooter?.(context);
+                return content != null && content !== false ? (
+                  <tr key={`branch-footer:${node.id}`} className="ui-tree-table__branch-footer">
+                    {treeColumnIndex > 0 ? <td colSpan={treeColumnIndex} /> : null}
+                    <td colSpan={columns.length - treeColumnIndex}>
+                      <div style={{ paddingInlineStart: `${level * 22 + 42}px` }}>{content}</div>
+                    </td>
+                  </tr>
+                ) : null;
+              }
+              const hasChildren = isTreeTableBranch(node);
+              const isExpanded = expanded.has(node.id);
+              return (
+                <tr key={`node:${node.id}`}>
+                  {columns.map((column) => {
+                    const content = column.cell(node.value, context);
+                    return (
+                      <td key={column.id} title={typeof content === "string" ? content : undefined}>
+                        {column.id === treeColumnId ? (
+                          <div className="ui-tree-table__tree-cell" style={{ paddingInlineStart: `${(level - 1) * 22}px` }}>
+                            {hasChildren ? <IconButton aria-label={requestErrors[node.id]
+                              ? message("tree.retryLoad", { label: getRowLabel(node) })
+                              : message(isExpanded ? "tree.collapse" : "tree.expand", { label: getRowLabel(node) })} aria-expanded={isExpanded} loading={node.loading || pendingIds.includes(node.id)} icon={isExpanded ? <ChevronDown /> : <ChevronRight />} onClick={() => void toggle(node)} /> : <span className="ui-tree__spacer" />}
+                            <span className="ui-tree-table__label">{content}</span>
+                            {requestErrors[node.id] ? <span role="alert">{message("tree.loadFailed")}</span> : null}
+                          </div>
+                        ) : content}
+                      </td>
+                    );
+                  })}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      {footer != null && footer !== false ? <div className="ui-tree-table__footer">{footer}</div> : null}
     </div>
   );
 }

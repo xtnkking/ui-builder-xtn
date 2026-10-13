@@ -1,10 +1,12 @@
 import { createRef } from "react";
 import {
   BarChart,
+  Button,
   Calendar,
   Carousel,
   DragDrop,
   ExpandableText,
+  Inline,
   ResizablePanels,
   Scheduler,
   SortableList,
@@ -13,7 +15,10 @@ import {
   VirtualList,
   type CarouselProps,
   type TreeProps,
+  type TreeTableColumn,
+  type TreeTableNode,
   type TreeTableProps,
+  type TreeTableRowContext,
   type VirtualListProps,
 } from "../../src/ui";
 
@@ -70,6 +75,36 @@ const uncontrolledTreeTable: TreeTableProps<{ name: string }> = {
   ariaLabel: "Account rows",
   defaultExpandedIds: ["account"],
 };
+const emptyDirectory: TreeTableNode<{ name: string }> = {
+  id: "directory", value: { name: "Empty directory" }, children: [], hasChildren: true,
+};
+const branchContext: TreeTableRowContext<{ name: string }> = { node: emptyDirectory, level: 1 };
+const actionColumns: readonly TreeTableColumn<{ name: string }>[] = [
+  { id: "name", header: "Name", cell: (value) => value.name },
+  {
+    id: "actions", header: "Operations", width: 120,
+    cell: (value, context) => {
+      const nodeId: string = context.node.id;
+      const rowValue: { name: string } = context.node.value;
+      const level: number = context.level;
+      return <Button size="small" variant="ghost" onClick={() => void nodeId} title={`${rowValue.name}: ${level}`}>{value.name}</Button>;
+    },
+  },
+];
+const treeTableActionAreas = (
+  <TreeTable
+    nodes={[emptyDirectory]} columns={actionColumns} treeColumnId="name" ariaLabel="Directories"
+    toolbar={<Inline><Button size="small" onClick={() => undefined}>Add root</Button></Inline>}
+    footer={<span>One root</span>}
+    renderBranchFooter={(context) => {
+      const row: TreeTableRowContext<{ name: string }> = context;
+      return row.node.id === "hidden" ? null : (
+        <Inline><Button size="small" variant="ghost" loading={false} loadingLabel="Add child"
+          onClick={() => void row.node.id}>Add child</Button></Inline>
+      );
+    }}
+  />
+);
 const controlledCarousel: CarouselProps = {
   slides,
   ariaLabel: "Highlights",
@@ -93,6 +128,8 @@ void controlledTree;
 void uncontrolledTree;
 void controlledTreeTable;
 void uncontrolledTreeTable;
+void branchContext;
+void treeTableActionAreas;
 void controlledCarousel;
 void uncontrolledCarousel;
 void virtualListProps;
@@ -129,6 +166,10 @@ const treeContradictoryExpansion = <Tree nodes={treeNodes} ariaLabel="Account tr
 const treeTableMissingExpandedChange = <TreeTable nodes={treeTableNodes} columns={treeTableColumns} treeColumnId="name" ariaLabel="Account rows" expandedIds={["account"]} />;
 // @ts-expect-error TreeTable expansion cannot be controlled and uncontrolled simultaneously
 const treeTableContradictoryExpansion = <TreeTable nodes={treeTableNodes} columns={treeTableColumns} treeColumnId="name" ariaLabel="Account rows" expandedIds={["account"]} defaultExpandedIds={[]} onExpandedChange={() => undefined} />;
+// @ts-expect-error branch renderers receive node context rather than the bare business value
+const treeTableBareBranchValue = <TreeTable nodes={treeTableNodes} columns={treeTableColumns} treeColumnId="name" ariaLabel="Rows" renderBranchFooter={(value: { name: string }) => value.name} />;
+// @ts-expect-error row context is typed to the same business value as the column
+const treeTableWrongCellContext: TreeTableColumn<{ name: string }> = { id: "wrong", header: "Wrong", cell: (_value, context: TreeTableRowContext<{ size: number }>) => context.node.value.size };
 // @ts-expect-error controlled Calendar selection requires onValueChange
 const calendarMissingChange = <Calendar month={month} value={new Date(2026, 8, 15)} />;
 // @ts-expect-error Calendar selection cannot be controlled and uncontrolled simultaneously
@@ -179,6 +220,8 @@ void treeMissingExpandedChange;
 void treeContradictoryExpansion;
 void treeTableMissingExpandedChange;
 void treeTableContradictoryExpansion;
+void treeTableBareBranchValue;
+void treeTableWrongCellContext;
 void calendarMissingChange;
 void calendarContradictory;
 void carouselMissingChange;

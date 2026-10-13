@@ -63,6 +63,7 @@
   --_ui-interactive-hover-bg: rgba(23, 105, 224, 0.12);
   --_ui-progress-track: #e8edf5;
   --_ui-toast-close-hover: #f0f3f8;
+  --_ui-toast-shadow: 0 2px 5px rgba(25, 42, 70, 0.04), 0 6px 16px -6px rgba(25, 42, 70, 0.16);
   --_ui-toast-countdown-track: #e4e9f1;
   --_ui-toast-countdown-fill: #7fa8e8;
   --_ui-backdrop: rgba(0, 0, 0, 0.38);
@@ -142,6 +143,7 @@
   --_ui-interactive-hover-bg: rgba(105, 165, 255, 0.16);
   --_ui-progress-track: #2a3446;
   --_ui-toast-close-hover: #242e40;
+  --_ui-toast-shadow: 0 2px 5px rgba(0, 0, 0, 0.14), 0 6px 16px -6px rgba(0, 0, 0, 0.30);
   --_ui-toast-countdown-track: #303b4e;
   --_ui-toast-countdown-fill: #69a5ff;
   --_ui-backdrop: rgba(0, 0, 0, 0.58);
@@ -216,6 +218,7 @@
     --_ui-interactive-hover-bg: rgba(105, 165, 255, 0.16);
     --_ui-progress-track: #2a3446;
     --_ui-toast-close-hover: #242e40;
+    --_ui-toast-shadow: 0 2px 5px rgba(0, 0, 0, 0.14), 0 6px 16px -6px rgba(0, 0, 0, 0.30);
     --_ui-toast-countdown-track: #303b4e;
     --_ui-toast-countdown-fill: #69a5ff;
     --_ui-backdrop: rgba(0, 0, 0, 0.58);
@@ -1895,36 +1898,63 @@ input[type="password"]::-ms-reveal {
 }
 
 .ui-toast-viewport {
+  --_ui-toast-inset: 18px;
+  --_ui-toast-area-height: 100dvh;
   position: fixed;
   z-index: 120;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  width: min(440px, calc(100vw - 32px));
-  max-height: calc(100vh - 36px);
-  max-height: calc(100dvh - 36px);
+  width: min(456px, 100vw);
+  max-height: 100vh;
+  max-height: var(--_ui-toast-area-height);
+  padding: var(--_ui-toast-inset);
   overflow-y: auto;
   overscroll-behavior: contain;
   pointer-events: none;
 }
 
-.ui-toast-viewport--top {
-  top: 18px;
-  left: 18px;
-  right: 18px;
-  width: auto;
+.ui-toast-viewport[data-bottom-pair="true"] {
+  --_ui-toast-area-height: 50dvh;
+}
+
+.ui-toast-viewport--top-center {
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  align-items: center;
+}
+
+.ui-toast-viewport--top-right {
+  top: 0;
+  right: 0;
 }
 
 .ui-toast-viewport--bottom-right {
-  right: 18px;
-  bottom: 18px;
+  right: 0;
+  bottom: 0;
   align-items: flex-end;
   flex-direction: column-reverse;
+}
+
+/* On compact screens the two top positions share width, but keep stable
+   mounted groups and separate scrolling areas instead of covering each other. */
+@media (max-width: 1320px) {
+  .ui-toast-viewport--top-center[data-top-pair="true"] {
+    max-height: calc(var(--_ui-toast-area-height) / 2);
+  }
+
+  .ui-toast-viewport--top-right[data-top-pair="true"] {
+    --_ui-toast-top-offset: max(0px, calc(var(--_ui-toast-center-height, 0px) - 2 * var(--_ui-toast-inset) + 10px));
+    top: var(--_ui-toast-top-offset);
+    max-height: calc(var(--_ui-toast-area-height) - var(--_ui-toast-top-offset));
+  }
 }
 
 .ui-toast {
   position: relative;
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   width: fit-content;
   min-width: min(300px, calc(100vw - 32px));
@@ -1934,7 +1964,7 @@ input[type="password"]::-ms-reveal {
   border: 1px solid var(--ui-border);
   border-radius: 12px;
   background: var(--ui-surface);
-  box-shadow: var(--ui-shadow-popover);
+  box-shadow: var(--_ui-toast-shadow);
   color: var(--ui-text);
   pointer-events: auto;
 }
@@ -1998,6 +2028,25 @@ input[type="password"]::-ms-reveal {
   max-width: 100%;
   color: var(--ui-muted);
   overflow-wrap: anywhere;
+  max-height: min(96px, 20dvh);
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+
+.ui-toast__description:focus-visible {
+  outline: 1px solid var(--ui-primary);
+  outline-offset: -1px;
+  border-radius: 3px;
+}
+
+.ui-toast__seconds {
+  flex: 0 0 auto;
+  min-width: 3ch;
+  padding-inline: 4px;
+  color: var(--ui-muted);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
 }
 
 .ui-toast__actions {
@@ -3386,19 +3435,20 @@ input[type="password"]::-ms-reveal {
   }
 
   .ui-toast-viewport {
-    right: 12px;
-    left: 12px;
+    --_ui-toast-inset: 12px;
+    right: 0;
+    left: 0;
     width: auto;
     align-items: stretch;
     transform: none;
   }
 
-  .ui-toast-viewport--top {
-    top: 12px;
+  .ui-toast-viewport--top-center {
+    top: 0;
   }
 
   .ui-toast-viewport--bottom-right {
-    bottom: 12px;
+    bottom: 0;
   }
 
   .ui-toast {

@@ -12,6 +12,7 @@ Use this reference for searchable lists, server-backed filters, asynchronous opt
 | Remote or very large options | `AsyncSelect` |
 | Submitted filter row and applied-filter summary | `FilterBar` |
 | Sortable, selectable, responsive result set | `DataTable` |
+| Hierarchical rows with branch commands and row operations | `TreeTable` |
 | Ordinary list page shell | `ListManagementPage` or `SearchFilterPage` |
 | Complete server-list reference | `MemberManagementPage` |
 | File drop with a keyboard selection command | `DragDrop` (built-in browse); optional `FileUpload` for a file queue |
@@ -67,6 +68,67 @@ Pass the typed `pagination` object directly to `DataTable`; this keeps the pager
 Paginated tables use a fixed viewport of five standard rows by default. Keep `pagination` present during loading, empty, and zero-row error states so sparse pages and changing page sizes do not move the pager. Use a numeric `viewportRows` for another fixed capacity, or `viewportRows="auto"` only when following content height is intentional. An unpaginated table follows content unless it receives a numeric `viewportRows`.
 
 A fixed viewport is a named keyboard region even when the current page is sparse, because later pages and custom rows can overflow the same stable surface. An automatic-height viewport becomes a named keyboard region only when it actually scrolls horizontally. A new request, page, page size, or row identity sequence resets vertical position while retaining horizontal column context.
+
+## TreeTable action areas
+
+`TreeTable` exposes three optional action areas; omitted areas and `null`, `undefined` or `false` reserve no space. `toolbar` appears above the scrolling table and `footer` below it, so these areas remain outside the horizontal scroll surface. Compose them with official `Button`, `DropdownMenu`, and `Inline` exports rather than native controls or application overrides.
+
+`renderBranchFooter(context)` renders a branch's actions after all of its currently visible descendants, only while that branch is expanded. The action content aligns with the next level's tree text. A branch has non-empty `children` or `hasChildren: true`; marking an empty directory with `hasChildren: true` allows it to expand and show an “新增子项” command even without a loader. Returning `null`, `undefined` or `false` omits that branch's action area. The footer is auxiliary content, not a synthetic data node: never add fake node IDs or count it as a record.
+
+`TreeTableRowContext<T>` contains `node: TreeTableNode<T>` and a **one-based** `level` (root = 1). Both `renderBranchFooter` and `TreeTableColumn.cell(value, context)` receive it. Use `context.node.id` to address the row or parent; business values need not repeat their node IDs. Existing one-argument cell renderers remain valid. A rightmost operation column is an ordinary column whose cell composes official actions; TreeTable does not automatically pin that column.
+
+```tsx
+import {
+  Button, Inline, TreeTable,
+  type TreeTableColumn, type TreeTableNode,
+} from "./ui";
+
+type Folder = { name: string };
+
+export function FolderTable({ nodes, pendingNodeId, onAddRoot, onAddChild, onEdit }: {
+  nodes: readonly TreeTableNode<Folder>[];
+  pendingNodeId?: string;
+  onAddRoot: () => void;
+  onAddChild: (parentId: string) => void;
+  onEdit: (nodeId: string) => void;
+}) {
+  const columns: readonly TreeTableColumn<Folder>[] = [
+    { id: "name", header: "名称", cell: (value) => value.name },
+    {
+      id: "actions", header: "操作", width: 120,
+      cell: (_value, { node }) => (
+        <Button size="small" variant="ghost" onClick={() => onEdit(node.id)}>编辑</Button>
+      ),
+    },
+  ];
+  return (
+    <TreeTable
+      nodes={nodes} columns={columns} treeColumnId="name" ariaLabel="目录"
+      getRowLabel={(node) => node.value.name}
+      toolbar={<Inline><Button size="small" onClick={onAddRoot}>新增根节点</Button></Inline>}
+      footer={<span>共 {nodes.length} 个根节点</span>}
+      renderBranchFooter={({ node }) => (
+        <Inline>
+          <Button size="small" variant="ghost" loading={pendingNodeId === node.id}
+            loadingLabel="新增子项" onClick={() => onAddChild(node.id)}>新增子项</Button>
+        </Inline>
+      )}
+    />
+  );
+}
+```
+
+The caller owns additions, edits, deletions, permissions, statistics, loading and errors. For a permission-restricted branch, return `null` from `renderBranchFooter`; for an async action, supply the official Button's `loading` and matching `loadingLabel` so repeat activation is blocked and dimensions remain stable. `onRequestChildren` owns initial child loading and retry: it runs on expansion only when `node.children === undefined` and a loader is provided. Set `children: []` after an empty response to mark the branch as loaded; retain `hasChildren: true` when that empty directory must remain expandable. A branch footer may provide a caller-owned “加载更多” Button for subsequent pages. Manage `expandedIds` with `onExpandedChange` for toolbar expand/collapse commands. These slots do not add selection, bulk-operation state, sorting, column pinning or pagination to TreeTable. See [TreeTable API](component-api.md#export-tree-table) and `#/components/data-table` for runnable examples.
+
+### Explicit project / group / member loading
+
+The complete runnable [project, group and member example](../assets/react-kit/src/explorer/cases/data/project-members.example.tsx) is available at `#/components/data-table` → **项目、项目组与成员预览**. It composes the existing public `TreeTable`, `Button`, `Inline`, `InlineMessage`, `StatusIndicator` and `Tag`; no additional runtime API is required. Reuse its business state and replace `requestChildren` with your own API, importing controls through the installed public barrel.
+
+- Level 1 is a project; its operation loads **all groups for that project** in one explicit request. Level 2 is a project group; its operation loads **all members of that group**. Level 3 members are leaves.
+- Omit `onRequestChildren` when only the load buttons may fetch. Initial project/group branches use `hasChildren: true, children: []`; expansion controls only visibility. Keep independent request state so an unloaded branch is distinct from a successful empty response.
+- Use stable hierarchical IDs, a synchronous per-node pending lock and the official Button's `loading`/matching `loadingLabel`. Replace a branch's children with a functional state update, retaining concurrent sibling responses. Successful load buttons are disabled; reopening branches uses cached data.
+- Put direct-child counts and request state in the **parent row** when they describe that parent: the example's `下级数据` column shows `3 个项目组`, `2 位成员`, pending, empty or failure state, and stays visible when collapsed. Avoid repeating loaded summaries after large subtrees; reserve `renderBranchFooter` for commands genuinely performed at the branch end. Existing indentation, bold branch names and official type tags/icons distinguish the three levels. Explicit column widths keep tags/actions readable, and the official viewport owns narrow-screen horizontal scrolling.
+- Errors leave existing branches intact and allow the same button to retry. Empty results get explicit parent-row feedback. A generation counter prevents requests started before reset or unmount from writing into the new tree. The example includes a first-member-request failure variant, empty project and empty group, actual counts, and keyboard/mobile previews. Its 900ms simulated data is not a production backend or a large-tree virtualization claim.
 
 ## Completion checks
 

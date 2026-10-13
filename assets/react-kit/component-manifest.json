@@ -2182,14 +2182,14 @@
   },
   "sourceIntegrity": {
     "action/actions.tsx": "1e57310fca68bb782f2d90b91d3e15d293da7372c49c4c1d86b9312ad936e407",
-    "data/data-extra.tsx": "21b5fc077e218990fefd9661ecd6bcd1b4b69fe95a0600fe0fd494527490c1b6",
+    "data/data-extra.tsx": "5327673f34371ffd1cdd3c0018dfeb32907b70917df464ab92dd8157345b41fa",
     "data/data-table.tsx": "c82f8027eac8ac1957bc3c9c2fab6f1c157f3ef87c3af2b766bd32afb805578f",
     "display/display.tsx": "2ab0b1a8546fca3e4d20d0cf559015cd546d05bcffac81f3f004c7ec7951452c",
     "feedback/feedback-extra.tsx": "640a5c06144fb40786b15c9f7da407cfd1d5629c40e70b8e394bbd817f9ae71e",
-    "feedback/feedback.tsx": "19f823255640ea973b5d9211a4e98038d5d78613ec51574242a778f104e79731",
+    "feedback/feedback.tsx": "cdce4d1bdc719e2e5985d60ca2fdcc405000c0c757410e8e6857a6e1c0c81aa0",
     "foundation/contracts.ts": "80756edff16bc33715d9e93aa3a2cf5619fbdaaf3dc94dd8ebd6a255e3cfe489",
     "foundation/layout.tsx": "7ec40cc127f30cc67830c880e691d3f2ad147c6551979e7c3a974ffb3088c8ce",
-    "foundation/locale.tsx": "bc0094036797d91870c916f7a614b74de4f46c438ad272ac65b1cefb111aa4c3",
+    "foundation/locale.tsx": "817bf7314e9ef769af0bc95337f9feebf24ca876358c8ba7467161da969b76c1",
     "foundation/primitives.tsx": "1aad5847f1c6ca9431161f0b783b6446776e67d6c26a4e3a255f290700b60ab5",
     "index.ts": "653c90a2d9996c5643ba50836eeecdb883c93b43f5358e8fb55593cb0bf75236",
     "input/date-field.tsx": "bbe5295393a454d0b0f020feabd43d61cfc3aa85edcf9fb473f4712e3297c4ea",
@@ -2219,9 +2219,9 @@
     "patterns/family-login-page.tsx": "45f54e9867a45d868d691b9ac558ada9390e9c9d24bec75374fb19819c597f1c",
     "patterns/member-management-page.tsx": "d1d277d28a5b1abcc7c0788b5e97e501e80c083872822c143ff9a9619bfaf3a7",
     "patterns/standard-pages.tsx": "a0f974a60c223bbbede3db0c9d1dc728e01556a0a778741dea7be7511e6f5940",
-    "styles/extended.css": "b6318a0c372677c11d00b2176c11fd91e06cb7a7e517db84a9fe1d2ff983dfe0",
+    "styles/extended.css": "db15d9061bd03e68a8ba490733206e1c31daac2b4c437d0c30d3bb88561bfa5e",
     "styles/inputs-extra.css": "d05ac73697452e49bcc6201cb6a6aba7374524829918df70b1fc582142a81b85",
     "styles/layout-actions-display.css": "9662c9c86f0db57fd42788fd508bfef3371c75673d68d0e6e1a641460a1f1bf2",
-    "styles.css": "9a1e16b714aed5ed60a96049e93e2937785b70af7a906128fa5c03514f27d609"
+    "styles.css": "19581ba9b23b31f96da0c715e40238b7cd73645f9bbc6fdc2923bd2bd04118e4"
   }
 }

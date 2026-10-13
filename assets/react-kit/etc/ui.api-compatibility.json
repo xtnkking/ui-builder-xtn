@@ -15,11 +15,11 @@
   "current": {
     "packageName": "ui",
     "version": "0.3.1",
-    "apiDigest": "01d601f916e50c5163cf08d669517aab702e11bcd747ddb55f6e2c156374f295",
-    "compatibilityDigest": "745bd2166fc48cccc8af225884a48978670bcd57617e63164b9954b43a356a05",
+    "apiDigest": "7b0ea1bbdab7d043df41f7b7ec942bef30271124b329719143230568e351ce70",
+    "compatibilityDigest": "8ba1f9b57ad2476dfcf7c72d420e3a954fc9a78f7dfb05f561a554f72ff474bb",
     "runtimeExports": 142,
-    "typeOnlyExports": 229,
-    "publicSignatures": 371
+    "typeOnlyExports": 230,
+    "publicSignatures": 372
   },
   "classification": "breaking",
   "versionPolicy": {
@@ -66,6 +66,7 @@
         "TextControlHandle",
         "TextareaProps",
         "ToastApi",
+        "TreeTableRowContext",
         "UILocale",
         "UILocaleContext",
         "UncontrolledOpenProps",
@@ -103,6 +104,7 @@
         "TextControlHandle",
         "TextareaProps",
         "ToastApi",
+        "TreeTableRowContext",
         "UILocale",
         "UILocaleContext",
         "UncontrolledOpenProps",
@@ -1513,18 +1515,25 @@
           "currentHash": "95ff3356eb45447a445d449a633264fb57790e6b22a432a551da7f3146bb5bc9"
         },
         {
+          "id": "ToastOptions",
+          "baselineKind": "type",
+          "currentKind": "type",
+          "baselineHash": "ebe67086a2d08f9032b7bd7ead0ae34abcaedcecaec29d9787d9cb316d172d54",
+          "currentHash": "8f30d4fba184a73f6187fcec99839aedd68a1b72c84f2b8cbc9e10eeb0e8ece0"
+        },
+        {
           "id": "ToastProvider",
           "baselineKind": "runtime",
           "currentKind": "runtime",
           "baselineHash": "b79b6cb850e9471df916609e028db2e8022cbb041437fd957964460b2b226e5e",
-          "currentHash": "a919c31f228850357ddbadb58dd7de22d1f36423dac8d1dd246d197e20825676"
+          "currentHash": "819ac4bc8be573e3260f40f5af0bf7a9b50a7ec96455e1c1a6acdc73e10f1431"
         },
         {
           "id": "ToastProviderProps",
           "baselineKind": "type",
           "currentKind": "type",
           "baselineHash": "2f9c07ce357d0ed35fd09f76984ea4742dbd6b7f5940839895af0092991f5c3e",
-          "currentHash": "d2e10d0a71544c8de7069ee1187f09906218d229ea0cf2290c27db6fa78c06fd"
+          "currentHash": "52b49198910c125b46c88a81ad9b6d436bc981f1338cb3a12352cffc13ed4bf0"
         },
         {
           "id": "ToggleButton",
@@ -1636,7 +1645,14 @@
           "baselineKind": "runtime",
           "currentKind": "runtime",
           "baselineHash": "f13cbbc4edb9d45d58e816a3cef0c1e1128e7bc64973da9cc86d5d0200bf77f1",
-          "currentHash": "09fa0d6b87d8518137409b8a55d9613e25a79fb688394de875f876f8583958fb"
+          "currentHash": "a991c4bbfdade199c686a829269cacb9f2e20988f6cff759272a048639d23eed"
+        },
+        {
+          "id": "TreeTableColumn",
+          "baselineKind": "type",
+          "currentKind": "type",
+          "baselineHash": "ddcc98748f29556bbcca194ff2415ae3a1fcf57326b89cc20cc38978227fcd2d",
+          "currentHash": "a80da38dd8fe94c5158a55ddaea85f0835a9f6d09b1f3dbb16fc4d0396a25ebc"
         },
         {
           "id": "TreeTableNode",
@@ -1650,7 +1666,7 @@
           "baselineKind": "type",
           "currentKind": "type",
           "baselineHash": "d4ceb6549d93e83329a4b026f75cce6ec6d443532f9a9d22d067cf5c6402fd6e",
-          "currentHash": "7c0aec18b2b92ff383668dc38b1d929a0431ae29964dd70b9a00c001f521de57"
+          "currentHash": "1f58a18875984b728da4a4c188bbc440b16a6644bcf187f13f60e0295f8d37c7"
         },
         {
           "id": "ValidationSummary",
@@ -1685,7 +1701,7 @@
           "baselineKind": "runtime",
           "currentKind": "runtime",
           "baselineHash": "76a50777ec631816960df85dc071b6c35211b631144cfb51fb8b6490c5937222",
-          "currentHash": "47afddb6e2c070124cd670ebcddab7d1b25f24bf87d074200503b1cacc373956"
+          "currentHash": "752bba29f7c4e17000a474c24795cdda721330824e1a72071ad03de50bfb722f"
         }
       ]
     },

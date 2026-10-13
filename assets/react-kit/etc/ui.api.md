@@ -3,7 +3,7 @@
 
 - Entry point: `src/ui/index.ts`
 - Runtime exports: 142
-- Type-only exports: 229
+- Type-only exports: 230
 - Declaration modules: 20
 
 ## Runtime export inventory
@@ -12,7 +12,7 @@
 
 ## Type-only export inventory
 
-`AccordionItem`, `AccordionProps`, `AlertProps`, `AnchorItem`, `AnchorNavigationProps`, `AppNavigationProps`, `AspectRatioProps`, `AsyncActionProps`, `AsyncSelectOption`, `AsyncSelectProps`, `AsyncSelectSource`, `AttachmentProps`, `AuthenticationPageProps`, `AutocompleteOption`, `AutocompleteProps`, `AvatarGroupProps`, `AvatarProps`, `AvatarSize`, `BadgeProps`, `BadgeTone`, `BannerProps`, `BarChartProps`, `BoxProps`, `BoxSurface`, `BreadcrumbItem`, `BreadcrumbsProps`, `ButtonGroupProps`, `ButtonProps`, `ButtonSize`, `ButtonVariant`, `CalendarProps`, `CardProps`, `CarouselProps`, `CarouselSlide`, `CascaderOption`, `CascaderProps`, `ChartDatum`, `CheckboxProps`, `ClipboardButtonProps`, `CodeBlockProps`, `CodeEditorProps`, `CollapseProps`, `ColorPickerProps`, `ComboboxOption`, `ComboboxProps`, `CommandItem`, `CommandPaletteProps`, `CommandPaletteShortcutOptions`, `ConfirmDialogProps`, `ContextMenuProps`, `ControlHandle`, `ControlRef`, `ControllableOpenProps`, `ControllableValueProps`, `ControlledOpenProps`, `ControlledValueProps`, `ControllerFieldBinding`, `CountryTagData`, `CreateEditPageProps`, `DataColumn`, `DataSort`, `DataTableProps`, `DataTableState`, `DateFieldProps`, `DatePrecision`, `DateRangeFieldProps`, `DateRangeValue`, `DescriptionListItem`, `DescriptionListProps`, `DetailPageProps`, `DetailSection`, `DialogProps`, `DividerProps`, `DragDropProps`, `DrawerProps`, `DropdownMenuProps`, `EmptyStateProps`, `ErrorStateProps`, `ExpandableTextProps`, `FamilyLoginPageProps`, `FeedbackTone`, `FieldProps`, `FileUploadItem`, `FileUploadProps`, `FileUploadRejection`, `FileUploadStatus`, `FilterBarProps`, `FocusTrapProps`, `FormControlHandle`, `FormProps`, `GalleryItem`, `GalleryProps`, `GridProps`, `GuidedTourProps`, `HoverCardProps`, `IconButtonProps`, `ImportExportPageProps`, `InfiniteScrollProps`, `InlineEditProps`, `InlineMessageProps`, `InlineProps`, `InputProps`, `KeyboardShortcutProps`, `LayoutSpace`, `LightboxItem`, `LightboxProps`, `LinkProps`, `ListManagementPageProps`, `ListProps`, `LoadMoreProps`, `LocaleMessageKey`, `LocalePluralKey`, `LocaleProviderProps`, `LoginCredentials`, `LoginProduct`, `MarkdownEditorProps`, `MasterDetailProps`, `MediaProps`, `MemberFilters`, `MemberManagementPageProps`, `MemberQuery`, `MemberRecord`, `MemberResult`, `MenuItem`, `MenuProps`, `MeterProps`, `MeterTone`, `MultiSelectOption`, `MultiSelectProps`, `NavigationItem`, `NavigationVariantProps`, `NoResultsProps`, `NumberInputProps`, `OtpInputProps`, `OverflowTextProps`, `PageHeadingProps`, `PaginationLoadingTarget`, `PaginationPageTrigger`, `PaginationProps`, `PasswordInputProps`, `PopconfirmProps`, `PopoverProps`, `PortalProps`, `ProgressProps`, `ProgressRingProps`, `ProtectedControlProp`, `PublicControlProps`, `RadioProps`, `RatingProps`, `ResizablePanelsProps`, `ResponsiveVisibilityMode`, `ResponsiveVisibilityProps`, `RetryButtonProps`, `RichTextEditorProps`, `SchedulerEvent`, `SchedulerProps`, `ScrollAreaProps`, `SearchFilterPageProps`, `SearchInputProps`, `SearchableSelectProps`, `SegmentedControlProps`, `SegmentedOption`, `SelectOption`, `SelectProps`, `SettingsPageProps`, `SettingsSection`, `SkeletonProps`, `SliderProps`, `SliderValue`, `SortDirection`, `SortableItem`, `SortableListProps`, `SpinnerProps`, `SplitButtonProps`, `StackProps`, `StatisticProps`, `StatisticTrend`, `StatusIndicatorProps`, `StatusPageProps`, `StepStatus`, `StepperItem`, `StepperProps`, `StickyHeaderActionBarProps`, `SwitchProps`, `TabItem`, `TabsProps`, `TagInputProps`, `TagProps`, `TagSuggestion`, `TagTone`, `TextControlHandle`, `TextareaProps`, `ThemeMode`, `ThemeProviderProps`, `ThemeTokens`, `TimelineItem`, `TimelineProps`, `TimezoneOption`, `TimezoneSelectProps`, `ToastAction`, `ToastApi`, `ToastOptions`, `ToastPosition`, `ToastProviderProps`, `ToastShape`, `ToggleButtonProps`, `ToolbarProps`, `TooltipProps`, `TourStep`, `TransferOption`, `TransferProps`, `TreeNode`, `TreeProps`, `TreeSelectOption`, `TreeSelectProps`, `TreeTableColumn`, `TreeTableNode`, `TreeTableProps`, `UILocale`, `UILocaleContext`, `UncontrolledOpenProps`, `UncontrolledValueProps`, `ValidationIssue`, `ValidationSummaryProps`, `ValidityControlHandle`, `VirtualListProps`, `VirtualListRenderMeta`, `VisuallyHiddenProps`, `WizardFlowProps`
+`AccordionItem`, `AccordionProps`, `AlertProps`, `AnchorItem`, `AnchorNavigationProps`, `AppNavigationProps`, `AspectRatioProps`, `AsyncActionProps`, `AsyncSelectOption`, `AsyncSelectProps`, `AsyncSelectSource`, `AttachmentProps`, `AuthenticationPageProps`, `AutocompleteOption`, `AutocompleteProps`, `AvatarGroupProps`, `AvatarProps`, `AvatarSize`, `BadgeProps`, `BadgeTone`, `BannerProps`, `BarChartProps`, `BoxProps`, `BoxSurface`, `BreadcrumbItem`, `BreadcrumbsProps`, `ButtonGroupProps`, `ButtonProps`, `ButtonSize`, `ButtonVariant`, `CalendarProps`, `CardProps`, `CarouselProps`, `CarouselSlide`, `CascaderOption`, `CascaderProps`, `ChartDatum`, `CheckboxProps`, `ClipboardButtonProps`, `CodeBlockProps`, `CodeEditorProps`, `CollapseProps`, `ColorPickerProps`, `ComboboxOption`, `ComboboxProps`, `CommandItem`, `CommandPaletteProps`, `CommandPaletteShortcutOptions`, `ConfirmDialogProps`, `ContextMenuProps`, `ControlHandle`, `ControlRef`, `ControllableOpenProps`, `ControllableValueProps`, `ControlledOpenProps`, `ControlledValueProps`, `ControllerFieldBinding`, `CountryTagData`, `CreateEditPageProps`, `DataColumn`, `DataSort`, `DataTableProps`, `DataTableState`, `DateFieldProps`, `DatePrecision`, `DateRangeFieldProps`, `DateRangeValue`, `DescriptionListItem`, `DescriptionListProps`, `DetailPageProps`, `DetailSection`, `DialogProps`, `DividerProps`, `DragDropProps`, `DrawerProps`, `DropdownMenuProps`, `EmptyStateProps`, `ErrorStateProps`, `ExpandableTextProps`, `FamilyLoginPageProps`, `FeedbackTone`, `FieldProps`, `FileUploadItem`, `FileUploadProps`, `FileUploadRejection`, `FileUploadStatus`, `FilterBarProps`, `FocusTrapProps`, `FormControlHandle`, `FormProps`, `GalleryItem`, `GalleryProps`, `GridProps`, `GuidedTourProps`, `HoverCardProps`, `IconButtonProps`, `ImportExportPageProps`, `InfiniteScrollProps`, `InlineEditProps`, `InlineMessageProps`, `InlineProps`, `InputProps`, `KeyboardShortcutProps`, `LayoutSpace`, `LightboxItem`, `LightboxProps`, `LinkProps`, `ListManagementPageProps`, `ListProps`, `LoadMoreProps`, `LocaleMessageKey`, `LocalePluralKey`, `LocaleProviderProps`, `LoginCredentials`, `LoginProduct`, `MarkdownEditorProps`, `MasterDetailProps`, `MediaProps`, `MemberFilters`, `MemberManagementPageProps`, `MemberQuery`, `MemberRecord`, `MemberResult`, `MenuItem`, `MenuProps`, `MeterProps`, `MeterTone`, `MultiSelectOption`, `MultiSelectProps`, `NavigationItem`, `NavigationVariantProps`, `NoResultsProps`, `NumberInputProps`, `OtpInputProps`, `OverflowTextProps`, `PageHeadingProps`, `PaginationLoadingTarget`, `PaginationPageTrigger`, `PaginationProps`, `PasswordInputProps`, `PopconfirmProps`, `PopoverProps`, `PortalProps`, `ProgressProps`, `ProgressRingProps`, `ProtectedControlProp`, `PublicControlProps`, `RadioProps`, `RatingProps`, `ResizablePanelsProps`, `ResponsiveVisibilityMode`, `ResponsiveVisibilityProps`, `RetryButtonProps`, `RichTextEditorProps`, `SchedulerEvent`, `SchedulerProps`, `ScrollAreaProps`, `SearchFilterPageProps`, `SearchInputProps`, `SearchableSelectProps`, `SegmentedControlProps`, `SegmentedOption`, `SelectOption`, `SelectProps`, `SettingsPageProps`, `SettingsSection`, `SkeletonProps`, `SliderProps`, `SliderValue`, `SortDirection`, `SortableItem`, `SortableListProps`, `SpinnerProps`, `SplitButtonProps`, `StackProps`, `StatisticProps`, `StatisticTrend`, `StatusIndicatorProps`, `StatusPageProps`, `StepStatus`, `StepperItem`, `StepperProps`, `StickyHeaderActionBarProps`, `SwitchProps`, `TabItem`, `TabsProps`, `TagInputProps`, `TagProps`, `TagSuggestion`, `TagTone`, `TextControlHandle`, `TextareaProps`, `ThemeMode`, `ThemeProviderProps`, `ThemeTokens`, `TimelineItem`, `TimelineProps`, `TimezoneOption`, `TimezoneSelectProps`, `ToastAction`, `ToastApi`, `ToastOptions`, `ToastPosition`, `ToastProviderProps`, `ToastShape`, `ToggleButtonProps`, `ToolbarProps`, `TooltipProps`, `TourStep`, `TransferOption`, `TransferProps`, `TreeNode`, `TreeProps`, `TreeSelectOption`, `TreeSelectProps`, `TreeTableColumn`, `TreeTableNode`, `TreeTableProps`, `TreeTableRowContext`, `UILocale`, `UILocaleContext`, `UncontrolledOpenProps`, `UncontrolledValueProps`, `ValidationIssue`, `ValidationSummaryProps`, `ValidityControlHandle`, `VirtualListProps`, `VirtualListRenderMeta`, `VisuallyHiddenProps`, `WizardFlowProps`
 
 ## `./foundation/primitives`
 
@@ -1405,7 +1405,12 @@ export interface ToastOptions {
     position?: ToastPosition;
     shape?: ToastShape;
     duration?: number | null;
+    /** Decorative progress bar, independent of numeric seconds. Hidden for persistent messages. */
     countdown?: boolean;
+    /** Remaining seconds use the same pause-aware clock as automatic dismissal. */
+    showSeconds?: boolean;
+    /** Reuse an active or queued message with this key without resetting its content or timer. */
+    dedupeKey?: string;
     closable?: boolean;
     closeLabel?: string;
     action?: ToastAction;
@@ -1413,11 +1418,16 @@ export interface ToastOptions {
 export interface ToastApi {
     toast: (options: ToastOptions) => string;
     dismiss: (id: string) => void;
+    dismissAll: () => void;
 }
 export type ToastProviderProps = PublicControlProps<{
     children: ReactNode;
     defaultPosition?: ToastPosition;
     defaultShape?: ToastShape;
+    /** Global visible limit across all positions. Default3; integer1..8. Lowering never evicts mounted cards. */
+    maxVisible?: number;
+    /** FIFO waiting capacity. Default20; integer0..100. Full queues ignore new messages. */
+    maxQueue?: number;
 }>;
 export declare function ToastProvider(rawProps: ToastProviderProps): import("react").JSX.Element;
 export declare function useToast(): ToastApi;
@@ -1736,10 +1746,15 @@ type TreeBaseProps = PublicControlProps<Omit<HTMLAttributes<HTMLDivElement>, "ar
 };
 export type TreeProps = TreeBaseProps & ControllableValueProps<string> & ControllableExpandedIdsProps;
 export declare function Tree(rawProps: TreeProps): import("react").JSX.Element;
+export interface TreeTableRowContext<T> {
+    node: TreeTableNode<T>;
+    /** One-based data-row depth; branch footer content aligns with the next level. */
+    level: number;
+}
 export interface TreeTableColumn<T> {
     id: string;
     header: ReactNode;
-    cell: (value: T) => ReactNode;
+    cell: (value: T, context: TreeTableRowContext<T>) => ReactNode;
     width?: number | string;
 }
 export interface TreeTableNode<T> {
@@ -1757,6 +1772,10 @@ type TreeTableBaseProps<T> = PublicControlProps<Omit<HTMLAttributes<HTMLDivEleme
     getRowLabel?: (node: TreeTableNode<T>) => string;
     onRequestChildren?: (node: TreeTableNode<T>) => void | Promise<void>;
     empty?: ReactNode;
+    toolbar?: ReactNode;
+    footer?: ReactNode;
+    /** Render after an expanded branch's entire visible subtree, outside its data rows. */
+    renderBranchFooter?: (context: TreeTableRowContext<T>) => ReactNode;
 };
 export type TreeTableProps<T> = TreeTableBaseProps<T> & ControllableExpandedIdsProps;
 export declare function TreeTable<T>(rawProps: TreeTableProps<T>): import("react").JSX.Element;
