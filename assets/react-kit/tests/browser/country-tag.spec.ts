@@ -64,12 +64,15 @@ test("country flags preserve their slot through pending success error and recove
   const pendingDe = await bounds(de);
   const flagSlot = await bounds(gb.locator(".pui-tag__flag"));
   expect(flagSlot.width).toBe(20);
-  expect(flagSlot.height).toBe(14);
+  expect(flagSlot.height).toBe(20);
+  await expect(gb.locator(".pui-tag__flag")).toHaveCSS("border-radius", "50%");
+  await expect(gb.locator(".pui-tag__flag")).toHaveCSS("overflow", "hidden");
   await capture(preview, "country-flags-pending");
   releaseFlags();
   await expect(gb.locator(".pui-tag__flag")).toHaveAttribute("data-flag-state", "loaded");
   await expect(gb.locator("img")).toHaveAttribute("src", "https://flagcdn.com/w40/gb.png");
-  await expect(gb.locator("img")).toHaveCSS("object-fit", "contain");
+  await expect(gb.locator("img")).toHaveCSS("object-fit", "cover");
+  await expect(gb.locator("img")).toHaveCSS("object-position", "50% 50%");
   expect(await gb.locator("img").evaluate((node) => {
     const image = node as HTMLImageElement;
     return image.naturalWidth / image.naturalHeight;
@@ -77,6 +80,8 @@ test("country flags preserve their slot through pending success error and recove
   sameSize(pendingGb, await bounds(gb));
   await expect(de.locator(".pui-tag__flag")).toHaveAttribute("data-flag-state", "error");
   await expect(de.locator(".pui-tag__flag svg")).toBeVisible();
+  await expect(de.locator(".pui-tag__flag")).toHaveCSS("border-radius", "50%");
+  sameSize(flagSlot, await bounds(de.locator(".pui-tag__flag")));
   await expect(de.locator(".pui-tag__flag img")).toBeHidden();
   sameSize(pendingDe, await bounds(de));
   expect(requests).toContain("https://flagcdn.com/w40/gb.png");
@@ -166,7 +171,8 @@ test("country flag geometry does not resize ordinary icons and persists in dark 
   await expect(gbFlag).toHaveAttribute("data-flag-state", "loaded");
   const flagBounds = await bounds(gbFlag);
   expect(flagBounds.width).toBe(20);
-  expect(flagBounds.height).toBe(14);
+  expect(flagBounds.height).toBe(20);
+  await expect(gbFlag).toHaveCSS("border-radius", "50%");
   await expect(country(preview, "FR").locator(".pui-tag__calling-code")).toHaveCount(0);
   await expect(preview.locator('.pui-tag__flag[data-flag-state="loaded"]')).toHaveCount(4);
   await capture(preview, "country-tags-desktop");

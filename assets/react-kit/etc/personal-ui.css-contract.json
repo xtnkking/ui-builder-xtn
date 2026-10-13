@@ -2505,7 +2505,7 @@
         {
           "file": "src/personal-ui/styles.css",
           "layer": "pui.components",
-          "line": 2568
+          "line": 2569
         }
       ]
     },
@@ -3353,7 +3353,7 @@
         {
           "file": "src/personal-ui/styles.css",
           "layer": "pui.components",
-          "line": 1616
+          "line": 1617
         },
         {
           "file": "src/personal-ui/styles/layout-actions-display.css",

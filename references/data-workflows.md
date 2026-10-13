@@ -32,7 +32,7 @@ import { Tag } from "./personal-ui";
      onRemove={removeTerritory} removeLabel="移除美属萨摩亚" />;
 ```
 
-`country.code` is trimmed and rendered uppercase; the default decorative flag URL is `https://flagcdn.com/w40/{lowercase code}.png`. Pass `country.flagSrc` for local or alternative flag hosting. The fixed 20×14 flag slot preserves the image's proportions and shows a neutral fallback while loading or after failure. No flag request is needed for ordinary tags.
+`country.code` is trimmed and rendered uppercase; the default decorative flag URL is `https://flagcdn.com/w40/{lowercase code}.png`. Pass `country.flagSrc` for local or alternative flag hosting. The fixed 20×20 circular flag slot uses `object-fit: cover` with centered cropping, preserving the image's aspect ratio without stretching. Loading and failure states reuse the same circular slot with a neutral fallback, so flag state changes keep the tag's dimensions stable. No flag request is needed for ordinary tags.
 
 The name and optional calling code belong to the caller; the component does not infer, translate, or validate geographic telephone mappings. GB uses +44; +49 belongs to DE. Supplied flag URL inventories are not calling-code authorities.
 
