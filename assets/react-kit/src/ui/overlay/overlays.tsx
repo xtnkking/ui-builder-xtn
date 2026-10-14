@@ -16,6 +16,7 @@ import { createPortal } from "react-dom";
 import { ChevronDown, X } from "lucide-react";
 import type { ControlledOpenProps, PublicControlProps } from "../foundation/contracts";
 import { useControllableState } from "../internal/controllable-state";
+import { useMotionPresence, useNonModalMotion } from "../internal/motion";
 import { floatingPortalTarget, usePopoverPosition } from "../internal/floating-position";
 import { InternalButtonSlot } from "../internal/button-slots";
 import { sanitizeFixedControlProps } from "../internal/fixed-control-props";
@@ -79,8 +80,9 @@ export function Dialog(rawProps: DialogProps) {
   const panelRef = useRef<HTMLDivElement>(null);
   const portalReady = useLayerPortalReady();
   const portalTarget = useLayerPortalTarget(portalReady, sourceRef);
+  const motion = useMotionPresence(open && portalTarget !== null, portalRef);
   const layer = useLayerKernel({
-    active: open && portalTarget !== null,
+    active: motion.present && portalTarget !== null,
     sourceRef,
     portalRef,
     panelRef,
@@ -90,13 +92,17 @@ export function Dialog(rawProps: DialogProps) {
       escape: closable,
     },
     initialFocus: dialogInitialFocus,
-    onDismiss: () => setOpen(false),
+    onDismiss: () => { if (open) setOpen(false); },
   });
   return (
     <LayerParentProvider id={layer.id}>
       <span ref={sourceRef} hidden aria-hidden="true" data-ui-portal-source="dialog" />
-      {open && portalTarget ? createPortal(
-        <div ref={portalRef} className="ui-overlay ui-portal" role="presentation" onMouseDown={(event) => {
+      {motion.present && portalTarget ? createPortal(
+        <div ref={portalRef} className="ui-overlay ui-portal" data-ui-motion={motion.state} role="presentation"
+          onClickCapture={(event) => { if (!open) { event.preventDefault(); event.stopPropagation(); } }}
+          onSubmitCapture={(event) => { if (!open) { event.preventDefault(); event.stopPropagation(); } }}
+          onKeyDownCapture={(event) => { if (!open && event.key !== "Tab") { event.preventDefault(); event.stopPropagation(); } }}
+          onMouseDown={(event) => {
           if (event.target === event.currentTarget && layer.isTopLayer()) {
             event.preventDefault();
             layer.dismiss("backdrop");
@@ -166,8 +172,9 @@ export function Drawer(rawProps: DrawerProps) {
   const panelRef = useRef<HTMLElement>(null);
   const portalReady = useLayerPortalReady();
   const portalTarget = useLayerPortalTarget(portalReady, sourceRef);
+  const motion = useMotionPresence(open && portalTarget !== null, portalRef, "drawer");
   const layer = useLayerKernel({
-    active: open && portalTarget !== null,
+    active: motion.present && portalTarget !== null,
     sourceRef,
     portalRef,
     panelRef,
@@ -177,13 +184,17 @@ export function Drawer(rawProps: DrawerProps) {
       escape: closable,
     },
     initialFocus: dialogInitialFocus,
-    onDismiss: () => setOpen(false),
+    onDismiss: () => { if (open) setOpen(false); },
   });
   return (
     <LayerParentProvider id={layer.id}>
       <span ref={sourceRef} hidden aria-hidden="true" data-ui-portal-source="drawer" />
-      {open && portalTarget ? createPortal(
-        <div ref={portalRef} className={cx("ui-overlay", "ui-overlay--drawer", `ui-overlay--drawer-${variant}`, "ui-portal")} role="presentation" onMouseDown={(event) => {
+      {motion.present && portalTarget ? createPortal(
+        <div ref={portalRef} className={cx("ui-overlay", "ui-overlay--drawer", `ui-overlay--drawer-${variant}`, "ui-portal")} data-ui-motion={motion.state} data-ui-motion-profile="drawer" role="presentation"
+          onClickCapture={(event) => { if (!open) { event.preventDefault(); event.stopPropagation(); } }}
+          onSubmitCapture={(event) => { if (!open) { event.preventDefault(); event.stopPropagation(); } }}
+          onKeyDownCapture={(event) => { if (!open && event.key !== "Tab") { event.preventDefault(); event.stopPropagation(); } }}
+          onMouseDown={(event) => {
           if (event.target === event.currentTarget && layer.isTopLayer()) {
             event.preventDefault();
             layer.dismiss("backdrop");
@@ -255,7 +266,8 @@ export function DropdownMenu(rawProps: DropdownMenuProps) {
   const slotClassName = internalSlot ? DROPDOWN_MENU_SLOT_CLASS[internalSlot] : undefined;
   const hasItemIcons = items.some((item) => item.icon != null);
   const hasEnabledItems = items.some((item) => !item.disabled);
-  usePopoverPosition(open, "bottom", rootRef, menuRef, align);
+  const motion = useNonModalMotion(open && portalTarget !== null, menuRef, triggerRef);
+  usePopoverPosition(motion.present, "bottom", rootRef, menuRef, align);
 
   useEffect(() => { setPortalTarget(floatingPortalTarget(rootRef.current)); }, []);
 
@@ -385,7 +397,7 @@ export function DropdownMenu(rawProps: DropdownMenuProps) {
             </span>
           </Button>
         </InternalButtonSlot>
-        {open && portalTarget ? createPortal(
+        {motion.present && portalTarget ? createPortal(
           <div
             ref={menuRef}
             id={id}
@@ -393,6 +405,9 @@ export function DropdownMenu(rawProps: DropdownMenuProps) {
             role="menu"
             aria-label={ariaLabel}
             data-ui-floating-root="true"
+            data-ui-motion={motion.state}
+            data-ui-motion-profile="menu"
+            onClickCapture={(event) => { if (!open) { event.preventDefault(); event.stopPropagation(); } }}
           >
             {items.map((item) => (
               <button
@@ -500,7 +515,8 @@ export function Tooltip(rawProps: TooltipProps) {
   const rootRef = useRef<HTMLSpanElement>(null);
   const triggerRef = useRef<HTMLSpanElement>(null);
   const bubbleRef = useRef<HTMLSpanElement>(null);
-  useUIPortalTokens(!disabled && open && portalTarget !== null, rootRef, bubbleRef);
+  const motion = useMotionPresence(!disabled && open && portalTarget !== null, bubbleRef, "menu");
+  useUIPortalTokens(!disabled && motion.present && portalTarget !== null, rootRef, bubbleRef);
   const describedTargetsRef = useRef<Set<HTMLElement>>(new Set());
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const internalSlot = useInternalTooltipSlot();
@@ -539,7 +555,7 @@ export function Tooltip(rawProps: TooltipProps) {
   useClientLayoutEffect(() => {
     const bubble = bubbleRef.current;
     const trigger = triggerRef.current;
-    if (!open || disabled || !bubble || !trigger) return;
+    if (!motion.present || disabled || !bubble || !trigger) return;
     let animationFrame = 0;
     const keepInsideViewport = () => {
       bubble.removeAttribute("data-positioned");
@@ -604,7 +620,7 @@ export function Tooltip(rawProps: TooltipProps) {
       observer?.disconnect();
       bubble.removeAttribute("data-positioned");
     };
-  }, [content, disabled, open, placement, portalTarget]);
+  }, [content, disabled, motion.present, placement, portalTarget]);
   useClientLayoutEffect(() => {
     const trigger = triggerRef.current;
     if (!trigger) return;
@@ -741,6 +757,10 @@ export function Tooltip(rawProps: TooltipProps) {
                   className="ui-tooltip__bubble ui-portal"
                   role="tooltip"
                   data-open={open || undefined}
+                  data-ui-motion={motion.state}
+                  data-ui-motion-profile="menu"
+                  data-present={motion.present || undefined}
+                  aria-hidden={!open || undefined}
                   data-placement={placement}
                   onMouseEnter={cancelScheduledClose}
                   onMouseLeave={scheduleClose}
@@ -756,6 +776,10 @@ export function Tooltip(rawProps: TooltipProps) {
                   className="ui-tooltip__bubble ui-portal"
                   role="tooltip"
                   data-open={open || undefined}
+                  data-ui-motion={motion.state}
+                  data-ui-motion-profile="menu"
+                  data-present={motion.present || undefined}
+                  aria-hidden={!open || undefined}
                   data-placement={placement}
                   onMouseEnter={cancelScheduledClose}
                   onMouseLeave={scheduleClose}

@@ -27,6 +27,7 @@ function isThemeDefinitionScope(ruleStack: readonly string[]): boolean {
   return ruleStack.some((rule) => (
     /(^|,)\s*:root(?:\s|,|$)/.test(rule)
     || /\.ui-(?:theme|portal)\[data-color-scheme=["'](?:light|dark|system)["']\]/.test(rule)
+    || /\.ui-theme\[data-theme-definition=["']true["']\]/.test(rule)
   ));
 }
 

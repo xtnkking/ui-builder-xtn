@@ -16,6 +16,8 @@ import type {
   PublicControlProps,
 } from "../foundation/contracts";
 import { useControllableState } from "../internal/controllable-state";
+import { useContentMotion } from "../internal/content-motion";
+import { useMotionPresence, useNonModalMotion } from "../internal/motion";
 import { Alert } from "../feedback/feedback";
 import { floatingPortalTarget, floatingViewportBounds } from "../internal/floating-position";
 import { InternalIconButtonSlot } from "../internal/button-slots";
@@ -176,6 +178,7 @@ function PopoverRoot(rawProps: PopoverRootProps) {
   const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
   const closeTimerRef = useRef<number | null>(null);
   const isOpen = !disabled && openState;
+  const motion = useNonModalMotion(isOpen && portalTarget !== null, panelRef, triggerRef, "standard");
   const setOpen = (next: boolean, restoreFocus = false) => {
     if (disabled) return;
     setOpenState(next);
@@ -189,8 +192,8 @@ function PopoverRoot(rawProps: PopoverRootProps) {
     cancelClose();
     closeTimerRef.current = window.setTimeout(() => setOpen(false), 120);
   };
-  useFloatingPosition(isOpen && portalTarget !== null, triggerRef, panelRef, placement, align);
-  useUIPortalTokens(isOpen && portalTarget !== null, sourceRef, panelRef);
+  useFloatingPosition(motion.present && portalTarget !== null, triggerRef, panelRef, placement, align);
+  useUIPortalTokens(motion.present && portalTarget !== null, sourceRef, panelRef);
 
   useEffect(() => { setPortalTarget(floatingPortalTarget(sourceRef.current)); }, []);
 
@@ -251,11 +254,13 @@ function PopoverRoot(rawProps: PopoverRootProps) {
         >
           {triggerLabel}
         </button>
-        {isOpen && portalTarget ? createPortal(
+        {motion.present && portalTarget ? createPortal(
           <div
             ref={panelRef}
             id={id}
             className="ui-popover__surface ui-portal"
+            data-ui-motion={motion.state}
+            onClickCapture={(event) => { if (!isOpen) { event.preventDefault(); event.stopPropagation(); } }}
             data-ui-floating-root="true"
             role="dialog"
             aria-label={ariaLabel}
@@ -431,7 +436,10 @@ export function ContextMenu(rawProps: ContextMenuProps) {
   const clickedTriggerRef = useRef<HTMLElement | null>(null);
   const typeaheadRef = useRef({ value: "", at: 0 });
   const enabledItems = items.filter((item) => !item.disabled);
-  useUIPortalTokens(point !== null, rootRef, menuRef);
+  const motion = useNonModalMotion(point !== null, menuRef, rootRef);
+  const lastPoint = useRef({ x: 0, y: 0 });
+  if (point) lastPoint.current = point;
+  useUIPortalTokens(motion.present, rootRef, menuRef);
 
   useClientLayoutEffect(() => {
     const root = rootRef.current;
@@ -520,12 +528,12 @@ export function ContextMenu(rawProps: ContextMenuProps) {
 
   useClientLayoutEffect(() => {
     const menu = menuRef.current;
-    if (!point || !menu) return;
+    if (!motion.present || !menu) return;
     const ownerDocument = menu.ownerDocument;
     const updatePosition = () => {
       const rect = menu.getBoundingClientRect();
-      const left = Math.max(12, Math.min(point.x, ownerDocument.documentElement.clientWidth - rect.width - 12));
-      const top = Math.max(12, Math.min(point.y, ownerDocument.documentElement.clientHeight - rect.height - 12));
+      const left = Math.max(12, Math.min(lastPoint.current.x, ownerDocument.documentElement.clientWidth - rect.width - 12));
+      const top = Math.max(12, Math.min(lastPoint.current.y, ownerDocument.documentElement.clientHeight - rect.height - 12));
       menu.style.left = `${left}px`;
       menu.style.top = `${top}px`;
       menu.dataset.positioned = "true";
@@ -541,7 +549,7 @@ export function ContextMenu(rawProps: ContextMenuProps) {
       ownerWindow?.removeEventListener("scroll", updatePosition, true);
       observer?.disconnect();
     };
-  }, [point]);
+  }, [point, motion.present]);
 
   useClientLayoutEffect(() => {
     if (!point) return;
@@ -561,6 +569,7 @@ export function ContextMenu(rawProps: ContextMenuProps) {
   }, [activeId, items, point]);
 
   const handleMenuKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (!point) return;
     const ids = enabledItems.map((item) => item.id);
     const current = event.target instanceof HTMLElement
       ? event.target.closest<HTMLButtonElement>("[role='menuitem']")?.dataset.itemId ?? activeId
@@ -646,16 +655,19 @@ export function ContextMenu(rawProps: ContextMenuProps) {
       data-ui-owner="ContextMenu"
     >
       {children}
-      {point ? createPortal(
+      {motion.present ? createPortal(
         <div
           ref={menuRef}
           id={id}
           className="ui-context-menu__surface ui-portal"
+          data-ui-motion={motion.state}
+          data-ui-motion-profile="menu"
+          onClickCapture={(event) => { if (!point) { event.preventDefault(); event.stopPropagation(); } }}
           data-ui-floating-root="true"
           role="menu"
           aria-label={ariaLabel}
           tabIndex={-1}
-          style={{ left: point.x, top: point.y }}
+          style={{ left: lastPoint.current.x, top: lastPoint.current.y }}
           onContextMenu={(event) => { event.preventDefault(); event.stopPropagation(); }}
           onKeyDown={handleMenuKeyDown}
         >
@@ -731,23 +743,55 @@ export function Lightbox(rawProps: LightboxProps) {
   const resolvedIndex = currentIndex >= 0 ? currentIndex : 0;
   const current = items[resolvedIndex];
   const [failedImageKey, setFailedImageKey] = useState<string | null>(null);
+  const [readyImageKey, setReadyImageKey] = useState<string | null>(null);
+  const [previousImage, setPreviousImage] = useState<{ key: string; src: string } | null>(null);
+  const imageRef = useRef<HTMLImageElement>(null);
+  const figureRef = useRef<HTMLElement>(null);
   const backdropPressRef = useRef<{ pointerId: number; target: EventTarget; x: number; y: number } | null>(null);
   const currentImageKey = current ? `${current.id}\u0000${current.src}` : null;
+  const imageRequest = useRef({ key: currentImageKey, open });
+  const completeImage = (key: string | null, image: HTMLImageElement) => {
+    if (key === null || imageRequest.current.key !== key || !imageRequest.current.open || !image.isConnected) return;
+    setReadyImageKey(key);
+    setFailedImageKey((failed) => failed === key ? null : failed);
+    setPreviousImage((previous) => previous?.key === key ? previous : { key, src: image.getAttribute("src") ?? "" });
+  };
+  useClientLayoutEffect(() => {
+    imageRequest.current = { key: currentImageKey, open };
+    const image = imageRef.current;
+    // A cached image can finish before React attaches onLoad; do not wait for a second event.
+    if (open && image?.complete && image.naturalWidth > 0) completeImage(currentImageKey, image);
+    else if (open && image?.complete && image.getAttribute("src")?.trim()) {
+      setReadyImageKey((ready) => ready === currentImageKey ? null : ready);
+      setFailedImageKey(currentImageKey);
+    }
+    return () => { imageRequest.current.open = false; };
+  });
   useEffect(() => {
-    setFailedImageKey(null);
+    // Keep a failure that arrived for this request before the passive effect (e.g. cached error).
+    setFailedImageKey((failed) => open && failed === currentImageKey ? failed : null);
+    if (!open) {
+      setReadyImageKey(null);
+      setPreviousImage(null);
+    }
     backdropPressRef.current = null;
   }, [currentImageKey, open]);
+  const motion = useMotionPresence(open && current !== undefined && portalTarget !== null, panelRef);
+  const imageFailed = currentImageKey !== null && failedImageKey === currentImageKey;
+  const imageReady = currentImageKey !== null && readyImageKey === currentImageKey;
+  const retainPreviousImage = !imageReady && !imageFailed && previousImage !== null && previousImage.key !== currentImageKey;
+  useContentMotion(currentImageKey, figureRef, open && motion.present, imageReady || imageFailed);
   const layer = useLayerKernel({
-    active: open && current !== undefined && portalTarget !== null,
+    active: motion.present && current !== undefined && portalTarget !== null,
     sourceRef,
     portalRef,
     panelRef,
     dismissPolicy: { backdrop: true, closeControl: true, escape: true },
     initialFocus: "panel",
-    onDismiss: () => setOpen(false),
+    onDismiss: () => { if (open) setOpen(false); },
   });
   const moveTo = (nextIndex: number) => {
-    if (items.length <= 1) return;
+    if (!open || items.length <= 1) return;
     const next = items[(nextIndex + items.length) % items.length];
     if (next && next.id !== current?.id) setValue(next.id);
   };
@@ -765,11 +809,15 @@ export function Lightbox(rawProps: LightboxProps) {
   return (
     <LayerParentProvider id={layer.id}>
       <span ref={sourceRef} className="ui-portal-source" hidden aria-hidden="true" data-ui-portal-source="lightbox" />
-      {open && current && portalTarget ? createPortal(
+      {motion.present && current && portalTarget ? createPortal(
         <div ref={portalRef} className="ui-portal">
           <div
             ref={panelRef}
             className="ui-lightbox"
+            data-ui-motion={motion.state}
+            onClickCapture={(event) => { if (!open) { event.preventDefault(); event.stopPropagation(); } }}
+            onSubmitCapture={(event) => { if (!open) { event.preventDefault(); event.stopPropagation(); } }}
+            onKeyDownCapture={(event) => { if (!open && event.key !== "Tab") { event.preventDefault(); event.stopPropagation(); } }}
             role="dialog"
             tabIndex={-1}
             aria-modal="true"
@@ -811,15 +859,29 @@ export function Lightbox(rawProps: LightboxProps) {
                 <IconButton aria-label={message("lightbox.previous")} icon={<ChevronLeft />} onClick={() => moveTo(resolvedIndex - 1)} />
               </InternalIconButtonSlot>
             ) : null}
-            <figure>
-              {failedImageKey === currentImageKey ? (
+            <figure ref={figureRef} aria-busy={!imageReady && !imageFailed}>
+              {retainPreviousImage ? (
+                <span className="ui-lightbox__previous-image" aria-hidden="true">
+                  <img src={previousImage.src} alt="" />
+                </span>
+              ) : null}
+              {imageFailed ? (
                 <div className="ui-lightbox__image-error" role="status">{message("lightbox.imageError", { alt: current.alt })}</div>
               ) : (
                 <img
+                  key={currentImageKey}
+                  ref={imageRef}
+                  className="ui-lightbox__image"
+                  data-loading={retainPreviousImage || undefined}
                   src={current.src}
                   alt={current.alt}
-                  onError={() => setFailedImageKey(currentImageKey)}
-                  onLoad={() => setFailedImageKey((failed) => failed === currentImageKey ? null : failed)}
+                  onError={(event) => {
+                    if (imageRequest.current.key === currentImageKey && imageRequest.current.open && event.currentTarget.isConnected) {
+                      setReadyImageKey((ready) => ready === currentImageKey ? null : ready);
+                      setFailedImageKey(currentImageKey);
+                    }
+                  }}
+                  onLoad={(event) => completeImage(currentImageKey, event.currentTarget)}
                 />
               )}
               <figcaption>
@@ -990,14 +1052,15 @@ export function GuidedTour(rawProps: GuidedTourProps) {
   const index = steps.findIndex((step) => step.id === currentId);
   const step = steps[index];
   const [targetLayout, setTargetLayout] = useState<GuidedTourTargetLayout | null>(null);
+  const motion = useMotionPresence(open && step !== undefined && portalTarget !== null, panelRef);
   const layer = useLayerKernel({
-    active: open && step !== undefined && portalTarget !== null,
+    active: motion.present && step !== undefined && portalTarget !== null,
     sourceRef,
     portalRef,
     panelRef,
     dismissPolicy: { backdrop: false, closeControl: false, escape: true },
     initialFocus: "panel",
-    onDismiss: () => setOpen(false),
+    onDismiss: () => { if (open) setOpen(false); },
   });
 
   useClientLayoutEffect(() => {
@@ -1006,7 +1069,7 @@ export function GuidedTour(rawProps: GuidedTourProps) {
     const ownerDocument = sourceRef.current?.ownerDocument;
     const ownerWindow = ownerDocument?.defaultView;
     const selector = step?.target?.trim();
-    if (!open || !portalTarget || !portal || !card || !ownerDocument || !ownerWindow || !selector) {
+    if (!motion.present || !portalTarget || !portal || !card || !ownerDocument || !ownerWindow || !selector) {
       setTargetLayout((current) => current === null ? current : null);
       return;
     }
@@ -1058,16 +1121,20 @@ export function GuidedTour(rawProps: GuidedTourProps) {
       mutationObserver?.disconnect();
       resizeObserver?.disconnect();
     };
-  }, [open, portalTarget, step?.id, step?.target]);
+  }, [motion.present, portalTarget, step?.id, step?.target]);
 
   return (
     <LayerParentProvider id={layer.id}>
       <span ref={sourceRef} className="ui-portal-source" hidden aria-hidden="true" data-ui-portal-source="guided-tour" />
-      {open && step && portalTarget ? createPortal(
+      {motion.present && step && portalTarget ? createPortal(
         <div ref={portalRef} className="ui-portal">
           <div
             ref={panelRef}
             className="ui-tour"
+            data-ui-motion={motion.state}
+            onClickCapture={(event) => { if (!open) { event.preventDefault(); event.stopPropagation(); } }}
+            onSubmitCapture={(event) => { if (!open) { event.preventDefault(); event.stopPropagation(); } }}
+            onKeyDownCapture={(event) => { if (!open && event.key !== "Tab") { event.preventDefault(); event.stopPropagation(); } }}
             role="dialog"
             tabIndex={-1}
             aria-modal="true"

@@ -8,6 +8,71 @@ import {
 } from "../../src/ui";
 
 describe("ThemeProvider contracts", () => {
+  it("defaults to the original solid preset without redefining an inherited palette", () => {
+    render(<ThemeProvider data-testid="theme">Default</ThemeProvider>);
+    const theme = screen.getByTestId("theme");
+    expect(theme).toHaveAttribute("data-theme-preset", "default");
+    expect(theme).toHaveAttribute("data-theme-material", "solid");
+    expect(theme).not.toHaveAttribute("data-theme-definition");
+    expect(theme.style.getPropertyValue("backdrop-filter")).toBe("");
+  });
+
+  it("inherits preset and material independently and updates nested providers with their ancestor", () => {
+    const content = (preset: "apple" | "material", material: "solid" | "glass") => (
+      <ThemeProvider preset={preset} material={material}>
+        <ThemeProvider data-testid="inherited">Inherited</ThemeProvider>
+        <ThemeProvider data-testid="solid" material="solid">Solid override</ThemeProvider>
+        <ThemeProvider data-testid="default" preset="default">Preset override</ThemeProvider>
+      </ThemeProvider>
+    );
+    const { rerender } = render(content("apple", "glass"));
+    expect(screen.getByTestId("inherited")).toHaveAttribute("data-theme-preset", "apple");
+    expect(screen.getByTestId("inherited")).toHaveAttribute("data-theme-material", "glass");
+    expect(screen.getByTestId("inherited")).not.toHaveAttribute("data-theme-definition");
+    expect(screen.getByTestId("solid")).toHaveAttribute("data-theme-preset", "apple");
+    expect(screen.getByTestId("solid")).toHaveAttribute("data-theme-material", "solid");
+    expect(screen.getByTestId("default")).toHaveAttribute("data-theme-preset", "default");
+    expect(screen.getByTestId("default")).toHaveAttribute("data-theme-material", "glass");
+
+    rerender(content("material", "solid"));
+    expect(screen.getByTestId("inherited")).toHaveAttribute("data-theme-preset", "material");
+    expect(screen.getByTestId("inherited")).toHaveAttribute("data-theme-material", "solid");
+    expect(screen.getByTestId("solid")).toHaveAttribute("data-theme-preset", "material");
+    expect(screen.getByTestId("default")).toHaveAttribute("data-theme-preset", "default");
+    expect(screen.getByTestId("default")).toHaveAttribute("data-theme-material", "solid");
+  });
+
+  it("keeps inherited custom colors while selecting the same preset for an explicit mode", () => {
+    render(
+      <ThemeProvider mode="dark" preset="apple" material="glass" tokens={{ "--ui-primary": "#224466" }}>
+        <ThemeProvider data-testid="inherited" tokens={{ "--ui-surface": "#223344" }}>Inherited</ThemeProvider>
+        <ThemeProvider data-testid="light" mode="light">Light Apple</ThemeProvider>
+      </ThemeProvider>,
+    );
+    const inherited = screen.getByTestId("inherited");
+    expect(inherited).not.toHaveAttribute("data-color-scheme");
+    expect(inherited).not.toHaveAttribute("data-theme-definition");
+    expect(inherited.style.getPropertyValue("--ui-primary")).toBe("");
+    expect(inherited.style.getPropertyValue("--ui-surface")).toBe("#223344");
+    expect(screen.getByTestId("light")).toHaveAttribute("data-color-scheme", "light");
+    expect(screen.getByTestId("light")).toHaveAttribute("data-theme-preset", "apple");
+    expect(screen.getByTestId("light")).toHaveAttribute("data-theme-definition", "true");
+  });
+
+  it("rejects unsupported presets and materials at runtime", () => {
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => undefined);
+    expect(() => render(
+      <ThemeProvider preset={"custom" as ThemeProviderProps["preset"]}>Invalid preset</ThemeProvider>,
+    )).toThrow(/unsupported preset "custom"/);
+    expect(() => render(
+      <ThemeProvider material={"transparent" as ThemeProviderProps["material"]}>Invalid material</ThemeProvider>,
+    )).toThrow(/unsupported material "transparent"/);
+    expect(() => render(
+      <ThemeProvider tokens={{ "--_ui-theme-radius-surface": "999px" } as unknown as ThemeTokens}>Private shape</ThemeProvider>,
+    )).toThrow(/unsupported theme token "--_ui-theme-radius-surface"/);
+    consoleError.mockRestore();
+  });
+
   it("represents light, dark, system, and true inherited modes without local mode drift", () => {
     const { rerender } = render(
       <ThemeProvider data-testid="theme" mode="light">Light</ThemeProvider>,

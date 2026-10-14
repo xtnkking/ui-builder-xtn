@@ -184,6 +184,22 @@ function readObject(file, label) {
   return value;
 }
 
+function publicThemeTokenNames(managedRoot) {
+  const source = stripComments(fs.readFileSync(path.join(managedRoot, "internal/theme-contract.ts"), "utf8"));
+  const block = source.match(/\bPUBLIC_THEME_TOKEN_NAMES\s*=\s*\[([\s\S]*?)\]\s*as const\b/);
+  const tokens = new Set([...(block?.[1] ?? "").matchAll(/["'](--ui-[a-z0-9-]+)["']/g)].map((match) => match[1]));
+  if (!block || tokens.size === 0) throw new Error("managed UI source has no public semantic theme-token contract");
+  return tokens;
+}
+
+function isPublicThemeTokenLiteral(source, offset, token, allowedTokens) {
+  const quote = source[offset - 3];
+  return ["\"", "'", "`"].includes(quote)
+    && source.slice(offset - 2, offset) === "--"
+    && source[offset + token.length] === quote
+    && allowedTokens.has(`--${token}`);
+}
+
 function canonicalRelativePosix(value, label) {
   if (
     typeof value !== "string"
@@ -2255,6 +2271,7 @@ function scanScript(file, source, context) {
   for (const match of commentFreeSource.matchAll(/\bui-[\w-]+/g)) {
     const offset = match.index ?? 0;
     if (allowedReservedMarkerOffsets.has(offset - "data-".length)) continue;
+    if (isPublicThemeTokenLiteral(commentFreeSource, offset, match[0], context.publicThemeTokens)) continue;
     // The official project title is plain content, not a component class.
     // CSS selector and protected-prop checks still reserve the whole ui-* range.
     if (match[0] !== "ui-builder-xtn" && !LEGACY_PUBLIC_ROOT_CLASSES.has(match[0])) {
@@ -2304,6 +2321,7 @@ function scanHtml(file, source, context) {
     addIssue("UI_RESERVED_MARKER", `${match[0]} is reserved for bundled UI source`, match.index ?? 0);
   }
   for (const match of markup.matchAll(/\bui-[\w-]+/g)) {
+    if (isPublicThemeTokenLiteral(markup, match.index ?? 0, match[0], context.publicThemeTokens)) continue;
     if (match[0] !== "ui-builder-xtn" && !LEGACY_PUBLIC_ROOT_CLASSES.has(match[0])) {
       addIssue("UI_PRIVATE_CLASS", `UI internal class token is forbidden: ${match[0]}`, match.index ?? 0);
     }
@@ -2384,6 +2402,7 @@ function main() {
     const context = {
       target,
       managedRoot,
+      publicThemeTokens: publicThemeTokenNames(managedRoot),
       publicExports,
       styleProtectedExports,
       reservedComponentNames,

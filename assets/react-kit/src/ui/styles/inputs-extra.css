@@ -139,7 +139,7 @@
   border: 1px dashed var(--ui-border-strong);
   border-radius: var(--ui-radius-surface);
   background: var(--ui-surface-subtle);
-  transition: border-color 150ms ease, background-color 150ms ease;
+  transition: border-color var(--ui-motion-fast-enter) var(--ui-motion-ease-enter), background-color var(--ui-motion-fast-enter) var(--ui-motion-ease-enter);
 }
 
 .ui-file-upload.is-dragging .ui-file-upload__dropzone {
@@ -246,7 +246,7 @@
   height: 100%;
   border-radius: inherit;
   background: var(--ui-primary);
-  transition: width 160ms ease;
+  transition: width var(--ui-motion-standard-enter) var(--ui-motion-ease-enter);
 }
 
 .ui-file-upload__footer {

@@ -17,7 +17,7 @@ M1–M8 的当前交付范围、原目标差异和验收依据见 [目标收口�
 - 业务代码只能从 `src/ui/index.ts` 的公开 barrel 导入运行时组件和页面模式。
 - 目标项目不得临时仿写控件、深层导入实现文件、修改已安装组件、添加本地扩展，或用第三方 JSX 组件绕开 ui-builder-xtn。
 - `component-manifest.json` 将 119 个基础、组件和页面模式家族以及 130 个目录别名绑定到真实源文件，并覆盖 142 个 runtime export。
-- `component-manifest.json` 还保存全部 42 个 managed source 文件的 SHA-256，任何缺失、修改或额外文件都会失败。
+- `component-manifest.json` 还保存全部 managed source 文件的 SHA-256（精确清单见 `sourceIntegrity`），任何缺失、修改或额外文件都会失败。
 - 安装器会把固定的 `verify:ui` 直接前置到现有 `build` 命令，同时保留调用方自己的 `prebuild`；npm、pnpm 或 Yarn 的常规 build 都必须先通过源码完整性和组件来源门禁。
 - 校验器扫描项目中的脚本、JSX/TSX、MDX、HTML、CSS、PostCSS、SCSS、Sass 和 Less，并识别实际使用的公开导出；不需要靠人工列出组件，也没有允许源码漂移的绕过开关。
 - 业务样式可以负责非交互布局和文档允许的主题 token，但不能用通用控件选择器、私有 `.ui-*` / `data-ui-*` 选择器、CSS-in-JS 包装、预处理器注入、动态 `<style>`、外部全局样式、DOM/CSSOM 修改，或受保护组件的 `className`、`style`、`css`、`sx`、`tw`、`ref` / `cloneElement` 改写组件皮肤和几何。类型可解析的安全公共属性展开走同一门禁，不能借展开注入这些覆盖属性；具体见集成指南。
@@ -28,6 +28,8 @@ M1–M8 的当前交付范围、原目标差异和验收依据见 [目标收口�
 
 - React、TypeScript、Vite 与 `lucide-react` 源码组件包
 - 表单、选择、导航、数据展示、反馈、弹层、布局和辅助工具
+- 官方主题预设：默认、苹果风格、Material 风格，可组合实底／磨砂玻璃材质与浅色／深色模式；公开用法见 [主题合同](references/theme-contract.md)，[在线主题预览](https://xtnkking.github.io/ui-builder-xtn/#/themes)。
+- 组件自带轻动效：浮层进入退出、轻提示补位、动态折叠、菜单、标签页与分段指示器，以及轮播和图片切换；支持中断与系统减少动效。用法见 [动效合同](references/motion-contract.md)，[在线动效预览](https://xtnkking.github.io/ui-builder-xtn/#/components/motion)。
 - 品牌家族登录页：共享登录结构，各产品通过图片、名称、文案和强调色表达差异
 - [青屿商城完整项目](references/business-examples.md)：首页、12 件商品与 4 个分类、详情、收藏、购物车、结算、订单、个人中心与登录注册；入口 `#/examples`，共享账户、地址与业务状态，页面底部可查看完整源码
 - 服务端数据列表：草稿筛选、手动查询、排序、分页、加载、空状态、错误和重试

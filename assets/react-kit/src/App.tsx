@@ -35,6 +35,7 @@ import {
 } from "./ui";
 import { ComponentExplorer, type ExplorerCases } from "./explorer/ComponentExplorer";
 import { BusinessExamples } from "./explorer/business/BusinessExamples";
+import { ThemePreview } from "./explorer/theme-preview";
 import { CommerceProvider } from "./explorer/business/commerce-store";
 
 type Scenario = "success" | "empty" | "error";
@@ -637,6 +638,6 @@ export function App() {
     window.addEventListener("hashchange", synchronize);
     return () => window.removeEventListener("hashchange", synchronize);
   }, []);
-  return <ToastProvider><CommerceProvider>{hash === "#/examples" || hash.startsWith("#/examples/")
+  return <ToastProvider><CommerceProvider>{hash === "#/themes" ? <ThemePreview /> : hash === "#/examples" || hash.startsWith("#/examples/")
     ? <BusinessExamples hash={hash} /> : <DemoContent />}</CommerceProvider></ToastProvider>;
 }

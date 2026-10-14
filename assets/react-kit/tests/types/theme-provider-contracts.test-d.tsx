@@ -2,6 +2,8 @@ import { createRef } from "react";
 import {
   ThemeProvider,
   type ThemeProviderProps,
+  type ThemePreset,
+  type ThemeMaterial,
   type ThemeTokens,
 } from "../../src/ui";
 
@@ -32,11 +34,30 @@ const semanticTokens: ThemeTokens = {
 const providerProps: ThemeProviderProps = {
   id: "account-theme",
   mode: "system",
+  preset: "apple",
+  material: "glass",
   tokens: semanticTokens,
   "aria-label": "Account theme",
 };
 const allowedUsage = <ThemeProvider {...providerProps} data-track="theme">Content</ThemeProvider>;
 void allowedUsage;
+
+const presets: readonly ThemePreset[] = ["default", "apple", "material"];
+const materials: readonly ThemeMaterial[] = ["solid", "glass"];
+const independentlyConfigured = <ThemeProvider preset="material" material="solid" mode="dark">Material</ThemeProvider>;
+void presets;
+void materials;
+void independentlyConfigured;
+
+// @ts-expect-error official presets are a closed public contract
+const invalidPreset = <ThemeProvider preset="custom">Content</ThemeProvider>;
+// @ts-expect-error surface material is a closed public contract
+const invalidMaterial = <ThemeProvider material="transparent">Content</ThemeProvider>;
+// @ts-expect-error private preset geometry cannot be overridden through public tokens
+const privateShapeToken: ThemeTokens = { "--_ui-theme-radius-surface": "999px" };
+void invalidPreset;
+void invalidMaterial;
+void privateShapeToken;
 
 // @ts-expect-error geometric tokens are private implementation details
 const geometricToken: ThemeTokens = { "--ui-radius-control": "999px" };

@@ -27,6 +27,7 @@ import { sanitizeFixedControlProps } from "../internal/fixed-control-props";
 import { useUILocale, type UILocaleContext } from "../foundation/locale";
 import { Button, type ButtonProps } from "../foundation/primitives";
 import { useUIPortalTokens } from "../internal/portal-tokens";
+import { useMotionPresence, usePrefersReducedMotion } from "../internal/motion";
 import { cx, type CSSVariableProperties } from "../internal/utils";
 
 const useClientLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
@@ -173,6 +174,7 @@ interface ToastRecord extends ToastOptions {
   closable: boolean;
   paused: boolean;
   localeContext: UILocaleContext;
+  exiting?: boolean;
 }
 
 type ToastPauseReason = "hover" | "press" | "focus" | "document" | "action";
@@ -242,6 +244,7 @@ export function ToastProvider(rawProps: ToastProviderProps) {
   const centerViewportRef = useRef<HTMLDivElement>(null);
   const [centerHeight, setCenterHeight] = useState(0);
   const timers = useRef(new Map<string, ToastTimer>());
+  const mountedIds = useRef(new Set<string>());
   const sequence = useRef(0);
   useUIPortalTokens(portalReady && toasts.length > 0, sourceRef, portalRef);
 
@@ -253,13 +256,22 @@ export function ToastProvider(rawProps: ToastProviderProps) {
     }
   }, []);
 
+  const finishExit = useCallback((id: string) => {
+    mountedIds.current.delete(id);
+    records.current.visible = records.current.visible.filter((item) => item.id !== id);
+    promote();
+    publish();
+  }, [promote, publish]);
+
   const dismiss = useCallback((id: string) => {
     const timer = timers.current.get(id);
     if (timer?.timeoutId !== undefined && typeof window !== "undefined") {
       window.clearTimeout(timer.timeoutId);
     }
     timers.current.delete(id);
-    records.current.visible = records.current.visible.filter((item) => item.id !== id);
+    const visible = records.current.visible.find((item) => item.id === id);
+    if (visible && mountedIds.current.has(id)) visible.exiting = true;
+    else records.current.visible = records.current.visible.filter((item) => item.id !== id);
     records.current.queued = records.current.queued.filter((item) => item.id !== id);
     promote();
     publish();
@@ -270,7 +282,9 @@ export function ToastProvider(rawProps: ToastProviderProps) {
       if (timer.timeoutId !== undefined) window.clearTimeout(timer.timeoutId);
     });
     timers.current.clear();
-    records.current = { visible: [], queued: [] };
+    records.current.queued = [];
+    records.current.visible = records.current.visible.filter((item) => mountedIds.current.has(item.id));
+    records.current.visible.forEach((item) => { item.exiting = true; });
     publish();
   }, [publish]);
 
@@ -327,6 +341,7 @@ export function ToastProvider(rawProps: ToastProviderProps) {
   }, []);
 
   const mountTimer = useCallback((id: string) => {
+    mountedIds.current.add(id);
     const timer = timers.current.get(id);
     if (!timer) return;
     timer.mounted = true;
@@ -419,19 +434,20 @@ export function ToastProvider(rawProps: ToastProviderProps) {
           {viewportGroups.map(({ id, items }) => {
             if (!items.length) return null;
             return (
-              <div key={id} ref={id === "top-center" ? centerViewportRef : undefined} className={cx("ui-portal", "ui-toast-viewport", `ui-toast-viewport--${id}`)} data-top-pair={hasCenter && hasRight || undefined} data-bottom-pair={hasBottom && (hasCenter || hasRight) || undefined}>
+              <ToastViewport key={id} position={id} centerRef={id === "top-center" ? centerViewportRef : undefined} topPair={hasCenter && hasRight} bottomPair={hasBottom && (hasCenter || hasRight)}>
                 {items.map((item) => (
                   <ToastItem
                     key={item.id}
                     item={item}
                     onDismiss={dismiss}
+                    onExited={finishExit}
                     onMount={mountTimer}
                     onPause={pauseTimer}
                     onResume={resumeTimer}
                     remainingTime={remainingTime}
                   />
                 ))}
-              </div>
+              </ToastViewport>
             );
           })}
         </div>,
@@ -441,9 +457,54 @@ export function ToastProvider(rawProps: ToastProviderProps) {
   );
 }
 
+function ToastViewport({ position, centerRef, topPair, bottomPair, children }: {
+  position: ToastPosition;
+  centerRef?: { current: HTMLDivElement | null };
+  topPair: boolean;
+  bottomPair: boolean;
+  children: ReactNode;
+}) {
+  const viewportRef = useRef<HTMLDivElement | null>(null);
+  const previousHeight = useRef(0);
+  const hold = useRef<Animation | null>(null);
+  const reducedMotion = usePrefersReducedMotion(viewportRef);
+  const setViewport = useCallback((node: HTMLDivElement | null) => {
+    viewportRef.current = node;
+    if (centerRef) centerRef.current = node;
+  }, [centerRef]);
+  useClientLayoutEffect(() => {
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+    const oldHeight = viewport.getBoundingClientRect().height;
+    hold.current?.cancel();
+    const naturalHeight = viewport.getBoundingClientRect().height;
+    const slots = Array.from(viewport.children) as HTMLElement[];
+    const animations = slots.flatMap((slot) => slot.getAnimations?.() ?? []).filter((animation) => animation.playState === "running");
+    const style = viewport.ownerDocument.defaultView!.getComputedStyle(viewport);
+    const padding = parseFloat(style.paddingBottom) || 0;
+    const visualHeight = Math.max(0, ...slots.map((slot) => {
+      const transform = viewport.ownerDocument.defaultView!.getComputedStyle(slot).transform;
+      const shift = !transform || transform === "none" ? 0 : new DOMMatrixReadOnly(transform).m42;
+      return slot.offsetTop + slot.offsetHeight + shift + padding;
+    }));
+    const neededHeight = Math.max(oldHeight, previousHeight.current, visualHeight);
+    previousHeight.current = naturalHeight;
+    // The viewport owns this resource: dismissing a moving item must not
+    // cancel the scroll boundary that still protects its surviving siblings.
+    if (!reducedMotion && animations.length && neededHeight > naturalHeight) {
+      const duration = Math.max(0, ...animations.map((animation) => Number(animation.effect?.getTiming().duration) - Number(animation.currentTime ?? 0)));
+      const minHeight = `min(${neededHeight}px, var(--_ui-toast-viewport-limit, var(--_ui-toast-area-height)))`;
+      hold.current = viewport.animate([{ minHeight }, { minHeight }], { duration });
+    }
+  });
+  useEffect(() => () => hold.current?.cancel(), []);
+  return <div ref={setViewport} className={cx("ui-portal", "ui-toast-viewport", `ui-toast-viewport--${position}`)} data-top-pair={topPair || undefined} data-bottom-pair={bottomPair || undefined}>{children}</div>;
+}
+
 function ToastItem({
   item,
   onDismiss,
+  onExited,
   onMount,
   onPause,
   onResume,
@@ -451,6 +512,7 @@ function ToastItem({
 }: {
   item: ToastRecord;
   onDismiss: (id: string) => void;
+  onExited: (id: string) => void;
   onMount: (id: string) => void;
   onPause: (id: string, reason: ToastPauseReason) => void;
   onResume: (id: string, reason: ToastPauseReason) => void;
@@ -462,17 +524,49 @@ function ToastItem({
   const pressedPointers = useRef(new Set<number>());
   const [actionPending, setActionPending] = useState(false);
   const bodyRef = useRef<HTMLDivElement>(null);
+  const toastRef = useRef<HTMLDivElement>(null);
+  const slotRef = useRef<HTMLDivElement>(null);
+  const reducedMotion = usePrefersReducedMotion(toastRef);
+  const motion = useMotionPresence(!item.exiting, toastRef, "standard", () => onExited(item.id));
+  const previousTop = useRef<number | null>(null);
+  const movement = useRef<Animation | null>(null);
+  useClientLayoutEffect(() => {
+    const slot = slotRef.current;
+    const viewport = slot?.parentElement;
+    if (!slot || !viewport) return;
+    // Unscrolled screen coordinates account for the bottom-anchored reverse
+    // stack without treating user scrolling or an active transform as layout.
+    const top = viewport.getBoundingClientRect().top + slot.offsetTop;
+    const delta = previousTop.current === null ? 0 : previousTop.current - top;
+    previousTop.current = top;
+    if (reducedMotion) {
+      movement.current?.cancel();
+    }
+    if (delta && !reducedMotion && slot.animate) {
+      const style = slot.ownerDocument.defaultView!.getComputedStyle(slot);
+      const currentOffset = movement.current?.playState === "running"
+        && style.transform && style.transform !== "none" ? new DOMMatrixReadOnly(style.transform).m42
+        : 0;
+      movement.current?.cancel();
+      const duration = parseFloat(style.getPropertyValue("--ui-motion-standard-enter")) || 0;
+      movement.current = slot.animate([{ transform: `translateY(${delta + currentOffset}px)` }, { transform: "translateY(0)" }], {
+        duration, easing: style.getPropertyValue("--ui-motion-ease-enter").trim() || "ease-out",
+      });
+    }
+  });
+  useEffect(() => () => movement.current?.cancel(), []);
   const [bodyScrollable, setBodyScrollable] = useState(false);
   const [seconds, setSeconds] = useState(() => Math.ceil((item.duration ?? 0) / 1000));
+  const [remaining, setRemaining] = useState(item.duration ?? 0);
   useClientLayoutEffect(() => onMount(item.id), [item.id, onMount]);
   useEffect(() => {
-    if (!item.showSeconds || item.duration === null) return;
-    const update = () => setSeconds(Math.ceil(remainingTime(item.id) / 1000));
+    if (item.exiting || (!item.showSeconds && !(item.countdown && reducedMotion)) || item.duration === null) return;
+    const update = () => { const time = remainingTime(item.id); setSeconds(Math.ceil(time / 1000)); setRemaining(time); };
     update();
     if (item.paused) return;
     const interval = window.setInterval(update, 100);
     return () => window.clearInterval(interval);
-  }, [item.id, item.showSeconds, item.duration, item.paused, remainingTime]);
+  }, [item.id, item.showSeconds, item.countdown, item.duration, item.paused, item.exiting, reducedMotion, remainingTime]);
   useClientLayoutEffect(() => {
     const body = bodyRef.current;
     if (!body) return;
@@ -503,7 +597,7 @@ function ToastItem({
     };
   }, [item.id, onResume]);
   const progressStyle: CSSVariableProperties | undefined = item.duration !== null
-    ? { "--ui-toast-duration": `${item.duration}ms` }
+    ? { "--ui-toast-duration": `${item.duration}ms`, "--_ui-toast-remaining": String(Math.max(0, remaining / item.duration)) }
     : undefined;
   const closeLabel = item.closeLabel ?? (
     typeof item.title === "string" || typeof item.title === "number"
@@ -514,7 +608,7 @@ function ToastItem({
   );
   const runAction = async () => {
     const action = item.action;
-    if (!action || actionRunning.current) return;
+    if (!action || actionRunning.current || item.exiting) return;
     actionRunning.current = true;
     setActionPending(true);
     onPause(item.id, "action");
@@ -524,7 +618,7 @@ function ToastItem({
       succeeded = true;
       if (action.dismiss !== false) onDismiss(item.id);
     } catch (error) {
-      if (action.onError) {
+      if (!item.exiting && action.onError) {
         try {
           await action.onError(error);
         } catch (handlerError) {
@@ -540,8 +634,13 @@ function ToastItem({
     }
   };
   return (
+    <div ref={slotRef} className="ui-toast-slot">
     <div
+      ref={toastRef}
       className={cx("ui-toast", `ui-toast--${item.tone}`, `ui-toast--${item.shape}`)}
+      data-ui-motion={motion.state}
+      data-exiting={item.exiting || undefined}
+      onClickCapture={(event) => { if (item.exiting) { event.preventDefault(); event.stopPropagation(); } }}
       data-countdown={item.countdown && item.duration !== null || undefined}
       data-closable={item.closable || undefined}
       data-paused={item.paused || undefined}
@@ -579,7 +678,7 @@ function ToastItem({
             <button
               type="button"
               className="ui-toast__action"
-              aria-disabled={actionPending || undefined}
+              aria-disabled={actionPending || item.exiting || undefined}
               aria-busy={actionPending || undefined}
               data-loading={actionPending || undefined}
               title={typeof item.action.label === "string" || typeof item.action.label === "number" ? String(item.action.label) : undefined}
@@ -612,6 +711,7 @@ function ToastItem({
           <span style={{ animationPlayState: item.paused ? "paused" : "running" }} />
         </span>
       ) : null}
+    </div>
     </div>
   );
 }

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import unittest
 import json
+import re
 import runpy
 import shutil
 import subprocess
@@ -14,6 +15,63 @@ from test_strict_enforcement import SKILL_ROOT, MANAGED_SOURCE, MANIFEST, SCANNE
 
 
 class SupportedUsageContracts(unittest.TestCase):
+    def test_public_theme_token_literals_preserve_provenance_boundaries(self):
+        contract = (MANAGED_SOURCE / "internal/theme-contract.ts").read_text(encoding="utf-8")
+        block = re.search(r"PUBLIC_THEME_TOKEN_NAMES\s*=\s*\[([\s\S]*?)\]\s*as const", contract)
+        self.assertIsNotNone(block)
+        names = re.findall(r'''["'](--ui-[a-z0-9-]+)["']''', block.group(1))
+        self.assertTrue(names)
+        source = (
+            'import {ThemeProvider, type ThemeTokens} from "./ui";'
+            f'const tokens: ThemeTokens = {json.dumps(dict.fromkeys(names, "#123456"))};'
+            f'const tokenNames = {json.dumps(names)}; void tokenNames;'
+            'export const App=()=> <ThemeProvider tokens={tokens}>Theme palette</ThemeProvider>;'
+        )
+        verifier = runpy.run_path(str(FULL_VERIFIER))
+        with tempfile.TemporaryDirectory(prefix="ui-theme-token-usage-") as temporary:
+            target = Path(temporary)
+            managed = target / "src/ui"
+            shutil.copytree(MANAGED_SOURCE, managed)
+            (managed / "registry.json").write_bytes(REGISTRY.read_bytes())
+            application = target / "src/App.tsx"
+            style = target / "src/app.css"
+            (target / "index.html").write_text(
+                '<!doctype html><title>Theme preview</title><div id="root" data-token="--ui-primary"></div>',
+                encoding="utf-8",
+            )
+            application.write_text(source, encoding="utf-8")
+            direct = subprocess.run(
+                [shutil.which("node") or "node", str(SCANNER), "--target", str(target),
+                 "--source-root", "src/ui", "--manifest", str(MANIFEST)],
+                capture_output=True, text=True, encoding="utf-8", timeout=60,
+            )
+            self.assertEqual(direct.returncode, 0, direct.stdout + direct.stderr)
+            self.assertTrue(json.loads(direct.stdout)["valid"])
+            # ThemeProvider is classified as theme-root; this scanner runs typed
+            # prop checks only for fixed-control exports. Private theme-token
+            # keys are covered by theme-provider-contracts.test-d.tsx and the
+            # project's required TypeScript check.
+            cases = (
+                ("public semantic names", source, "", None),
+                ("private class string", source + 'const reserved = ".ui-primary";', "", "UI_PRIVATE_CLASS"),
+                ("private CSS selector", source, ".ui-primary { color: red; }", "UI_PRIVATE_CLASS"),
+                ("unknown custom property", source + 'const unknown = "--ui-unregistered";', "", "UI_PRIVATE_CLASS"),
+                ("public token style mutation", source + 'document.documentElement.style.setProperty("--ui-primary", "red");', "", "UI_DYNAMIC_STYLE"),
+            )
+            for name, fixture, css, expected_code in cases:
+                with self.subTest(name=name):
+                    application.write_text(fixture, encoding="utf-8")
+                    style.write_text(css, encoding="utf-8")
+                    errors = []
+                    report = verifier["run_provenance_scan"](target, managed, errors)
+                    if expected_code is None:
+                        self.assertTrue(report["valid"], report)
+                        self.assertEqual(errors, [])
+                    else:
+                        self.assertFalse(report["valid"], report)
+                        self.assertIn(expected_code, {issue["code"] for issue in report["issues"]})
+                        self.assertIn(expected_code, "\n".join(errors))
+
     def test_project_title_is_content_while_reserved_classes_stay_protected(self):
         source = 'import {Button} from "./ui"; export const App=()=> <Button>ui-builder-xtn</Button>;'
         expect_valid("official project title", {

@@ -1,4 +1,12 @@
 /* Noninteractive foundation specimens only; canonical controls own their CSS. */
+.demo-motion-preference--reduced { display: none; }
+.demo-motion-preference--standard { display: inline; }
+
+@media (prefers-reduced-motion: reduce) {
+  .demo-motion-preference--reduced { display: inline; }
+  .demo-motion-preference--standard { display: none; }
+}
+
 .demo-foundation-caption {
   color: var(--ui-muted);
   font-size: 12px;

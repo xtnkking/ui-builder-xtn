@@ -1,7 +1,10 @@
 import {
+  createContext,
   createElement,
+  useContext,
   useEffect,
   useId,
+  useMemo,
   useRef,
   useState,
   type CSSProperties,
@@ -15,40 +18,68 @@ import { InternalCollapse } from "../internal/collapse";
 import { sanitizeFixedControlProps } from "../internal/fixed-control-props";
 import {
   assertValidThemeMode,
+  assertValidThemePreset,
+  assertValidThemeMaterial,
   assertValidThemeTokens,
   type UIThemeMode,
+  type UIThemePreset,
+  type UIThemeMaterial,
   type PublicThemeTokens,
 } from "../internal/theme-contract";
 import { useUIPortalTokens } from "../internal/portal-tokens";
 import { cx, getTabStops, isVisibleElement, type CSSVariableProperties } from "../internal/utils";
 
 export type ThemeMode = UIThemeMode;
+export type ThemePreset = UIThemePreset;
+export type ThemeMaterial = UIThemeMaterial;
 export type ThemeTokens = PublicThemeTokens;
+
+const ThemeContext = createContext<{ preset: ThemePreset; material: ThemeMaterial } | null>(null);
 
 export type ThemeProviderProps = PublicControlProps<HTMLAttributes<HTMLDivElement>> & {
   mode?: ThemeMode;
+  preset?: ThemePreset;
+  material?: ThemeMaterial;
   tokens?: ThemeTokens;
 };
 
 export function ThemeProvider(rawProps: ThemeProviderProps) {
   const safeProps = sanitizeFixedControlProps(rawProps);
-  const { mode = "inherit", tokens, children, ...props } = safeProps;
+  const { mode = "inherit", preset, material, tokens, children, ...props } = safeProps;
+  const parentTheme = useContext(ThemeContext);
   assertValidThemeMode(mode);
+  assertValidThemePreset(preset);
+  assertValidThemeMaterial(material);
   assertValidThemeTokens(tokens);
+  const resolvedPreset = preset ?? parentTheme?.preset ?? "default";
+  const resolvedMaterial = material ?? parentTheme?.material ?? "solid";
+  const context = useMemo(
+    () => ({ preset: resolvedPreset, material: resolvedMaterial }),
+    [resolvedPreset, resolvedMaterial],
+  );
+  // An inherited provider must not redeclare palette tokens and erase an
+  // ancestor's color overrides. An explicit mode selects the inherited preset
+  // again so it receives that preset's matching light/dark palette.
+  const definesTheme = preset !== undefined || (mode !== "inherit" && resolvedPreset !== "default");
   const resolvedStyle = {
     ...tokens,
     colorScheme: mode === "inherit" ? "inherit" : undefined,
   } as CSSVariableProperties;
   return (
-    <div
-      {...props}
-      data-ui-owner="ThemeProvider"
-      className="ui-theme ui-root"
-      data-color-scheme={mode === "inherit" ? undefined : mode}
-      style={resolvedStyle}
-    >
-      {children}
-    </div>
+    <ThemeContext.Provider value={context}>
+      <div
+        {...props}
+        data-ui-owner="ThemeProvider"
+        className="ui-theme ui-root"
+        data-color-scheme={mode === "inherit" ? undefined : mode}
+        data-theme-preset={resolvedPreset}
+        data-theme-material={resolvedMaterial}
+        data-theme-definition={definesTheme ? "true" : undefined}
+        style={resolvedStyle}
+      >
+        {children}
+      </div>
+    </ThemeContext.Provider>
   );
 }
 

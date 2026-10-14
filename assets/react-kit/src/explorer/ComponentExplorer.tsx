@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Grid2X2, Menu, SearchX } from "lucide-react";
+import { Grid2X2, Menu, Palette, SearchX } from "lucide-react";
 import {
   bundledExplorerCases,
   mergeExplorerCases,
@@ -12,6 +12,8 @@ import {
   CodeBlock,
   Drawer,
   EmptyState,
+  Inline,
+  Link,
   PageHeading,
   SearchInput,
   Tag,
@@ -179,7 +181,7 @@ export function ComponentExplorer({ cases: additionalCases = {} }: { cases?: Exp
 
   useEffect(() => {
     const synchronizeRoute = () => {
-      if (window.location.hash === "#/examples" || window.location.hash.startsWith("#/examples/")) return;
+      if (window.location.hash === "#/themes" || window.location.hash === "#/examples" || window.location.hash.startsWith("#/examples/")) return;
       const nextFamily = explorerFamilyFromHash(window.location.hash);
       if (nextFamily) {
         setFamily(nextFamily);
@@ -199,7 +201,7 @@ export function ComponentExplorer({ cases: additionalCases = {} }: { cases?: Exp
     <div className="demo-shell demo-explorer-shell ui-root">
       <header className="demo-topbar">
         <div className="demo-brand"><span><Grid2X2 className="demo-brand__icon" aria-hidden="true" /></span><strong>ui-builder-xtn</strong></div>
-        <span>{explorerFamilies.length} 个组件家族</span>
+        <Inline gap="medium"><span>{explorerFamilies.length} 个组件家族</span><Link href="#/themes" icon={<Palette aria-hidden="true" />}>主题预览</Link></Inline>
       </header>
       <div className="demo-explorer-layout">
         <aside className="demo-explorer-sidebar" aria-label="组件目录">

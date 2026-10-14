@@ -3,6 +3,7 @@
 @import "./styles/layout-actions-display.css";
 @import "./styles/inputs-extra.css";
 @import "./styles/extended.css";
+@import "./styles/themes.css";
 
 @layer ui.tokens {
 :root {
@@ -12,8 +13,84 @@
   --ui-radius-surface: 8px;
   --ui-radius-table: 12px;
   --ui-product-accent: #1769d2;
+  --ui-motion-fast-enter: 120ms;
+  --ui-motion-fast-exit: 100ms;
+  --ui-motion-standard-enter: 180ms;
+  --ui-motion-standard-exit: 140ms;
+  --ui-motion-collapse-enter: 220ms;
+  --ui-motion-collapse-exit: 180ms;
+  --ui-motion-ease-enter: cubic-bezier(0.2, 0, 0, 1);
+  --ui-motion-ease-exit: cubic-bezier(0.4, 0, 1, 1);
 }
 
+}
+
+/* Internal motion vocabulary. Consumers compose the official components;
+   positioning nodes use opacity only, never transformed measurements. */
+@layer ui.components {
+  [data-ui-motion] {
+    --ui-motion-enter: var(--ui-motion-standard-enter);
+    --ui-motion-exit: var(--ui-motion-standard-exit);
+  }
+  [data-ui-motion-profile="menu"] {
+    --ui-motion-enter: var(--ui-motion-fast-enter);
+    --ui-motion-exit: var(--ui-motion-fast-exit);
+  }
+  [data-ui-motion-profile="drawer"],
+  [data-ui-motion-profile="collapse"] {
+    --ui-motion-enter: var(--ui-motion-collapse-enter);
+    --ui-motion-exit: var(--ui-motion-collapse-exit);
+  }
+  [data-ui-motion="entering"] {
+    animation: ui-fade-enter var(--ui-motion-enter) var(--ui-motion-ease-enter) both;
+  }
+  [data-ui-motion="exiting"] {
+    animation: ui-fade-exit var(--ui-motion-exit) var(--ui-motion-ease-exit) both;
+  }
+  .ui-overlay > .ui-dialog { --_ui-motion-closed-transform: scale(0.98); }
+  .ui-overlay > .ui-drawer { --_ui-motion-closed-transform: translateX(100%); }
+  .ui-overlay[data-ui-motion="entering"] > .ui-dialog {
+    animation: ui-dialog-enter var(--ui-motion-enter) var(--ui-motion-ease-enter) both;
+  }
+  .ui-overlay[data-ui-motion="exiting"] > .ui-dialog {
+    animation: ui-dialog-exit var(--ui-motion-exit) var(--ui-motion-ease-exit) both;
+  }
+  .ui-overlay[data-ui-motion="entering"] > .ui-drawer {
+    animation: ui-drawer-enter var(--ui-motion-enter) var(--ui-motion-ease-enter) both;
+  }
+  .ui-overlay[data-ui-motion="exiting"] > .ui-drawer {
+    animation: ui-drawer-exit var(--ui-motion-exit) var(--ui-motion-ease-exit) both;
+  }
+  .ui-toast-slot { flex-shrink: 0; width: fit-content; max-width: 100%; }
+  .ui-toast-viewport--top-right > .ui-toast-slot { margin-left: auto; }
+  .ui-toast[data-ui-motion="entering"] { animation-name: ui-toast-enter; }
+  .ui-toast[data-ui-motion="exiting"] { animation-name: ui-toast-exit; }
+  .ui-toast {
+    --_ui-toast-entry-shift: -8px;
+    --_ui-motion-closed-transform: translateY(var(--_ui-toast-entry-shift));
+  }
+  .ui-toast[data-position="bottom-right"] { --_ui-toast-entry-shift: 8px; }
+  .ui-tooltip__bubble { transition: none; }
+  @keyframes ui-fade-enter { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes ui-fade-exit { from { opacity: 1; } to { opacity: 0; } }
+  @keyframes ui-dialog-enter { from { transform: scale(0.98); } to { transform: scale(1); } }
+  @keyframes ui-dialog-exit { from { transform: scale(1); } to { transform: scale(0.98); } }
+  @keyframes ui-drawer-enter { from { transform: translateX(100%); } to { transform: translateX(0); } }
+  @keyframes ui-drawer-exit { from { transform: translateX(0); } to { transform: translateX(100%); } }
+  @keyframes ui-toast-enter { from { opacity: 0; transform: translateY(var(--_ui-toast-entry-shift)); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes ui-toast-exit { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(var(--_ui-toast-entry-shift)); } }
+  @media (max-width: 640px) {
+    .ui-overlay > .ui-drawer { --_ui-motion-closed-transform: translateY(100%); }
+    @keyframes ui-drawer-enter { from { transform: translateY(100%); } to { transform: translateY(0); } }
+    @keyframes ui-drawer-exit { from { transform: translateY(0); } to { transform: translateY(100%); } }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    [data-ui-motion] { --ui-motion-enter: 0ms; --ui-motion-exit: 0ms; animation: none; }
+    .ui-overlay[data-ui-motion] > :is(.ui-dialog, .ui-drawer) { animation: none; }
+  }
+}
+
+@layer ui.tokens {
 :root,
 .ui-theme[data-color-scheme="light"],
 .ui-theme[data-color-scheme="system"],
@@ -352,13 +429,13 @@
   min-height: 38px;
   padding: 0 15px;
   border: 1px solid var(--ui-border-strong);
-  border-radius: 999px;
+  border-radius: var(--_ui-theme-radius-button, 999px);
   background: var(--ui-surface);
   color: var(--ui-text);
   font-weight: 500;
   line-height: 1.5;
   cursor: pointer;
-  transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease;
+  transition: background-color var(--ui-motion-fast-enter) var(--ui-motion-ease-enter), border-color var(--ui-motion-fast-enter) var(--ui-motion-ease-enter), color var(--ui-motion-fast-enter) var(--ui-motion-ease-enter);
 }
 
 .ui-button:hover:not(:disabled):not([aria-disabled="true"]) {
@@ -652,7 +729,7 @@ fieldset.ui-field > legend {
   color: var(--ui-text);
   outline: 2px solid transparent;
   outline-offset: -2px;
-  transition: border-color 130ms ease, background-color 130ms ease;
+  transition: border-color var(--ui-motion-fast-enter) var(--ui-motion-ease-enter), background-color var(--ui-motion-fast-enter) var(--ui-motion-ease-enter);
 }
 
 .ui-input,
@@ -992,7 +1069,7 @@ input[type="password"]::-ms-reveal {
   min-height: 36px;
   padding: 6px 8px;
   border: 0;
-  border-radius: 6px;
+  border-radius: max(6px, calc(var(--ui-radius-surface) - 6px));
   background: transparent;
   color: var(--ui-text);
   text-align: left;
@@ -1136,7 +1213,7 @@ input[type="password"]::-ms-reveal {
   min-height: 44px;
   padding: 7px 9px;
   border: 0;
-  border-radius: 6px;
+  border-radius: max(6px, calc(var(--ui-radius-surface) - 7px));
   background: transparent;
   color: var(--ui-text);
   text-align: left;
@@ -1265,7 +1342,7 @@ input[type="password"]::-ms-reveal {
   padding: 2px;
   border-radius: 999px;
   background: var(--_ui-switch-track);
-  transition: background-color 140ms ease;
+  transition: background-color var(--ui-motion-fast-enter) var(--ui-motion-ease-enter);
 }
 
 .ui-switch__track > span {
@@ -1273,7 +1350,7 @@ input[type="password"]::-ms-reveal {
   height: 18px;
   border-radius: 50%;
   background: var(--_ui-switch-thumb);
-  transition: transform 140ms ease;
+  transition: transform var(--ui-motion-fast-enter) var(--ui-motion-ease-enter);
 }
 
 .ui-switch input:checked + .ui-switch__track {
@@ -1290,6 +1367,8 @@ input[type="password"]::-ms-reveal {
 }
 
 .ui-segmented {
+  position: relative;
+  isolation: isolate;
   display: inline-flex;
   gap: 3px;
   max-width: 100%;
@@ -1300,6 +1379,8 @@ input[type="password"]::-ms-reveal {
 }
 
 .ui-segmented button {
+  position: relative;
+  z-index: 1;
   min-width: 0;
   max-width: 100%;
   min-height: 32px;
@@ -1325,6 +1406,28 @@ input[type="password"]::-ms-reveal {
   background: var(--ui-surface);
   color: var(--ui-primary-ink);
   box-shadow: var(--_ui-segmented-shadow);
+}
+
+.ui-segmented__indicator {
+  position: absolute;
+  z-index: 0;
+  box-sizing: border-box;
+  border: 1px solid var(--_ui-segmented-border);
+  border-radius: 9px;
+  background: var(--ui-surface);
+  box-shadow: var(--_ui-segmented-shadow);
+  transform-origin: top left;
+  pointer-events: none;
+}
+
+.ui-segmented__indicator[data-ui-selection-disabled="true"] {
+  opacity: 0.62;
+}
+
+.ui-segmented[data-ui-selection-ready="true"] button[aria-pressed="true"] {
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
 }
 
 .ui-segmented--fill {
@@ -1480,6 +1583,8 @@ input[type="password"]::-ms-reveal {
 }
 
 .ui-tabs__list {
+  position: relative;
+  isolation: isolate;
   display: flex;
   gap: 2px;
   margin-inline: 0;
@@ -1488,6 +1593,8 @@ input[type="password"]::-ms-reveal {
 }
 
 .ui-tabs__list button {
+  position: relative;
+  z-index: 1;
   display: inline-flex;
   flex: 0 0 auto;
   align-items: center;
@@ -1522,6 +1629,19 @@ input[type="password"]::-ms-reveal {
 .ui-tabs__list button[aria-selected="true"] {
   border-bottom-color: var(--ui-primary);
   color: var(--ui-primary-ink);
+}
+
+.ui-tabs__indicator {
+  position: absolute;
+  z-index: 0;
+  border-radius: 2px;
+  background: var(--ui-primary);
+  transform-origin: top left;
+  pointer-events: none;
+}
+
+.ui-tabs__list[data-ui-selection-ready="true"] button[aria-selected="true"] {
+  border-bottom-color: transparent;
 }
 
 .ui-tabs__list button:disabled {
@@ -1894,7 +2014,7 @@ input[type="password"]::-ms-reveal {
   height: 100%;
   border-radius: inherit;
   background: var(--ui-primary);
-  transition: width 180ms ease;
+  transition: width var(--ui-motion-standard-enter) var(--ui-motion-ease-enter);
 }
 
 .ui-toast-viewport {
@@ -1907,11 +2027,18 @@ input[type="password"]::-ms-reveal {
   gap: 10px;
   width: min(456px, 100vw);
   max-height: 100vh;
-  max-height: var(--_ui-toast-area-height);
+  max-height: var(--_ui-toast-viewport-limit, var(--_ui-toast-area-height));
   padding: var(--_ui-toast-inset);
+  overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;
+  scrollbar-width: none;
   pointer-events: none;
+}
+
+.ui-toast-viewport::-webkit-scrollbar,
+.ui-toast__description::-webkit-scrollbar {
+  display: none;
 }
 
 .ui-toast-viewport[data-bottom-pair="true"] {
@@ -1941,13 +2068,13 @@ input[type="password"]::-ms-reveal {
    mounted groups and separate scrolling areas instead of covering each other. */
 @media (max-width: 1320px) {
   .ui-toast-viewport--top-center[data-top-pair="true"] {
-    max-height: calc(var(--_ui-toast-area-height) / 2);
+    --_ui-toast-viewport-limit: calc(var(--_ui-toast-area-height) / 2);
   }
 
   .ui-toast-viewport--top-right[data-top-pair="true"] {
     --_ui-toast-top-offset: max(0px, calc(var(--_ui-toast-center-height, 0px) - 2 * var(--_ui-toast-inset) + 10px));
     top: var(--_ui-toast-top-offset);
-    max-height: calc(var(--_ui-toast-area-height) - var(--_ui-toast-top-offset));
+    --_ui-toast-viewport-limit: calc(var(--_ui-toast-area-height) - var(--_ui-toast-top-offset));
   }
 }
 
@@ -1962,9 +2089,11 @@ input[type="password"]::-ms-reveal {
   min-height: 58px;
   overflow: hidden;
   border: 1px solid var(--ui-border);
-  border-radius: 12px;
-  background: var(--ui-surface);
-  box-shadow: var(--_ui-toast-shadow);
+  border-radius: var(--_ui-theme-radius-toast, 12px);
+  background: var(--_ui-material-surface, var(--ui-surface));
+  box-shadow: var(--_ui-theme-shadow-toast, var(--_ui-toast-shadow));
+  -webkit-backdrop-filter: var(--_ui-material-filter, none);
+  backdrop-filter: var(--_ui-material-filter, none);
   color: var(--ui-text);
   pointer-events: auto;
 }
@@ -2031,11 +2160,11 @@ input[type="password"]::-ms-reveal {
   max-height: min(96px, 20dvh);
   overflow: auto;
   overscroll-behavior: contain;
-  scrollbar-width: thin;
+  scrollbar-width: none;
 }
 
 .ui-toast__description:focus-visible {
-  outline: 1px solid var(--ui-primary);
+  outline: 1px solid var(--ui-focus-ring);
   outline-offset: -1px;
   border-radius: 3px;
 }
@@ -2189,8 +2318,10 @@ input[type="password"]::-ms-reveal {
   max-height: min(760px, calc(100dvh - 40px));
   overflow: hidden;
   border-radius: var(--ui-radius-surface);
-  background: var(--ui-surface);
+  background: var(--_ui-material-surface, var(--ui-surface));
   box-shadow: var(--ui-shadow-overlay);
+  -webkit-backdrop-filter: var(--_ui-material-filter, none);
+  backdrop-filter: var(--_ui-material-filter, none);
 }
 
 .ui-dialog:focus-visible,
@@ -2306,8 +2437,10 @@ input[type="password"]::-ms-reveal {
   overflow: hidden;
   border: 1px solid var(--ui-border);
   border-radius: var(--ui-radius-surface);
-  background: var(--ui-surface);
+  background: var(--_ui-material-surface, var(--ui-surface));
   box-shadow: var(--ui-shadow-overlay);
+  -webkit-backdrop-filter: var(--_ui-material-filter, none);
+  backdrop-filter: var(--_ui-material-filter, none);
 }
 
 .ui-drawer--large {
@@ -2316,7 +2449,7 @@ input[type="password"]::-ms-reveal {
 
 .ui-drawer--edge {
   border-width: 0 0 0 1px;
-  border-radius: 16px 0 0 16px;
+  border-radius: var(--_ui-theme-radius-drawer-edge, 16px) 0 0 var(--_ui-theme-radius-drawer-edge, 16px);
 }
 
 .ui-dropdown {
@@ -2356,8 +2489,10 @@ input[type="password"]::-ms-reveal {
   padding: 5px;
   border: 1px solid var(--ui-border);
   border-radius: var(--ui-radius-surface);
-  background: var(--ui-surface);
+  background: var(--_ui-material-surface, var(--ui-surface));
   box-shadow: var(--ui-shadow-popover);
+  -webkit-backdrop-filter: var(--_ui-material-filter, none);
+  backdrop-filter: var(--_ui-material-filter, none);
   overflow-y: auto;
   overscroll-behavior: contain;
 }
@@ -2388,7 +2523,7 @@ input[type="password"]::-ms-reveal {
   min-height: 38px;
   padding: 0 10px;
   border: 0;
-  border-radius: 6px;
+  border-radius: max(6px, calc(var(--ui-radius-surface) - 6px));
   background: transparent;
   color: var(--ui-text);
   text-align: left;
@@ -2556,14 +2691,14 @@ input[type="password"]::-ms-reveal {
   overflow-wrap: anywhere;
   opacity: 0;
   pointer-events: auto;
-  transition: opacity 120ms ease;
+  transition: none;
 }
 
-.ui-tooltip__bubble:not([data-open="true"]) {
+.ui-tooltip__bubble:not([data-present="true"]) {
   display: none;
 }
 
-.ui-tooltip__bubble[data-open="true"][data-positioned="true"] {
+.ui-tooltip__bubble[data-present="true"][data-positioned="true"] {
   opacity: 1;
 }
 
@@ -3491,13 +3626,13 @@ input[type="password"]::-ms-reveal {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ui-spinner,
-  .ui-toast__countdown > span {
+  .ui-spinner {
     animation: none;
   }
 
-  .ui-toast__countdown {
-    display: none;
+  .ui-toast__countdown > span {
+    animation: none;
+    transform: scaleX(var(--_ui-toast-remaining, 1));
   }
 
   .ui-button,

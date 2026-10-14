@@ -11,7 +11,8 @@
     "src/ui/styles.css",
     "src/ui/styles/extended.css",
     "src/ui/styles/inputs-extra.css",
-    "src/ui/styles/layout-actions-display.css"
+    "src/ui/styles/layout-actions-display.css",
+    "src/ui/styles/themes.css"
   ],
   "selectorOwners": [
     {
@@ -504,6 +505,10 @@
     },
     {
       "selector": ".ui-collapse",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-collapse__body",
       "file": "src/ui/styles/layout-actions-display.css"
     },
     {
@@ -1123,6 +1128,10 @@
       "file": "src/ui/styles/extended.css"
     },
     {
+      "selector": ".ui-lightbox__image",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
       "selector": ".ui-lightbox__image-error",
       "file": "src/ui/styles/extended.css"
     },
@@ -1136,6 +1145,10 @@
     },
     {
       "selector": ".ui-lightbox__previous",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-lightbox__previous-image",
       "file": "src/ui/styles/extended.css"
     },
     {
@@ -1563,6 +1576,10 @@
       "file": "src/ui/styles.css"
     },
     {
+      "selector": ".ui-segmented__indicator",
+      "file": "src/ui/styles.css"
+    },
+    {
       "selector": ".ui-segmented--fill",
       "file": "src/ui/styles.css"
     },
@@ -1775,6 +1792,10 @@
       "file": "src/ui/styles.css"
     },
     {
+      "selector": ".ui-tabs__indicator",
+      "file": "src/ui/styles.css"
+    },
+    {
       "selector": ".ui-tabs__label",
       "file": "src/ui/styles.css"
     },
@@ -1960,6 +1981,10 @@
     },
     {
       "selector": ".ui-toast--warning",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-toast-slot",
       "file": "src/ui/styles.css"
     },
     {
@@ -2159,17 +2184,17 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 73
+          "line": 150
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 153
+          "line": 230
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 228
+          "line": 305
         }
       ]
     },
@@ -2180,17 +2205,17 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 76
+          "line": 153
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 156
+          "line": 233
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 231
+          "line": 308
         }
       ]
     },
@@ -2201,17 +2226,17 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 75
+          "line": 152
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 155
+          "line": 232
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 230
+          "line": 307
         }
       ]
     },
@@ -2222,17 +2247,17 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 74
+          "line": 151
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 154
+          "line": 231
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 229
+          "line": 306
         }
       ]
     },
@@ -2243,17 +2268,22 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 69
+          "line": 146
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 149
+          "line": 226
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 224
+          "line": 301
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 77
         }
       ]
     },
@@ -2264,17 +2294,17 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 84
+          "line": 161
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 164
+          "line": 241
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 239
+          "line": 316
         }
       ]
     },
@@ -2285,17 +2315,17 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 83
+          "line": 160
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 163
+          "line": 240
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 238
+          "line": 315
         }
       ]
     },
@@ -2306,17 +2336,17 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 81
+          "line": 158
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 161
+          "line": 238
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 236
+          "line": 313
         }
       ]
     },
@@ -2327,17 +2357,17 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 77
+          "line": 154
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 157
+          "line": 234
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 232
+          "line": 309
         }
       ]
     },
@@ -2348,17 +2378,17 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 79
+          "line": 156
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 159
+          "line": 236
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 234
+          "line": 311
         }
       ]
     },
@@ -2369,17 +2399,17 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 80
+          "line": 157
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 160
+          "line": 237
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 235
+          "line": 312
         }
       ]
     },
@@ -2390,17 +2420,17 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 78
+          "line": 155
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 158
+          "line": 235
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 233
+          "line": 310
         }
       ]
     },
@@ -2411,17 +2441,17 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 90
+          "line": 167
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 170
+          "line": 247
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 245
+          "line": 322
         }
       ]
     },
@@ -2432,17 +2462,17 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 89
+          "line": 166
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 169
+          "line": 246
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 244
+          "line": 321
         }
       ]
     },
@@ -2453,17 +2483,27 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 45
+          "line": 122
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 125
+          "line": 202
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 200
+          "line": 277
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 54
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 136
         }
       ]
     },
@@ -2474,17 +2514,27 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 44
+          "line": 121
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 124
+          "line": 201
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 199
+          "line": 276
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 53
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 135
         }
       ]
     },
@@ -2495,17 +2545,22 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 62
+          "line": 139
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 142
+          "line": 219
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 217
+          "line": 294
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 71
         }
       ]
     },
@@ -2516,17 +2571,22 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 46
+          "line": 123
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 126
+          "line": 203
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 201
+          "line": 278
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 55
         }
       ]
     },
@@ -2537,7 +2597,7 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 2618
+          "line": 2753
         }
       ]
     },
@@ -2548,17 +2608,27 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 47
+          "line": 124
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 127
+          "line": 204
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 202
+          "line": 279
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 56
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 137
         }
       ]
     },
@@ -2569,17 +2639,27 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 48
+          "line": 125
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 128
+          "line": 205
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 203
+          "line": 280
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 57
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 138
         }
       ]
     },
@@ -2600,7 +2680,7 @@
         {
           "file": "src/ui/styles/extended.css",
           "layer": "ui.components",
-          "line": 270
+          "line": 274
         }
       ]
     },
@@ -2611,7 +2691,7 @@
         {
           "file": "src/ui/styles/extended.css",
           "layer": "ui.components",
-          "line": 271
+          "line": 275
         }
       ]
     },
@@ -2622,7 +2702,7 @@
         {
           "file": "src/ui/styles/extended.css",
           "layer": "ui.components",
-          "line": 274
+          "line": 278
         }
       ]
     },
@@ -2633,7 +2713,7 @@
         {
           "file": "src/ui/styles/extended.css",
           "layer": "ui.components",
-          "line": 273
+          "line": 277
         }
       ]
     },
@@ -2644,7 +2724,7 @@
         {
           "file": "src/ui/styles/extended.css",
           "layer": "ui.components",
-          "line": 272
+          "line": 276
         }
       ]
     },
@@ -2655,7 +2735,7 @@
         {
           "file": "src/ui/styles/extended.css",
           "layer": "ui.components",
-          "line": 269
+          "line": 273
         }
       ]
     },
@@ -2666,12 +2746,12 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 665
+          "line": 742
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 708
+          "line": 785
         }
       ]
     },
@@ -2682,12 +2762,12 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 667
+          "line": 744
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 761
+          "line": 838
         }
       ]
     },
@@ -2698,12 +2778,12 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 666
+          "line": 743
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 709
+          "line": 786
         }
       ]
     },
@@ -2714,17 +2794,27 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 63
+          "line": 140
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 143
+          "line": 220
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 218
+          "line": 295
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 72
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 149
         }
       ]
     },
@@ -2735,17 +2825,17 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 85
+          "line": 162
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 165
+          "line": 242
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 240
+          "line": 317
         }
       ]
     },
@@ -2756,17 +2846,59 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 86
+          "line": 163
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 166
+          "line": 243
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 241
+          "line": 318
+        }
+      ]
+    },
+    {
+      "token": "--_ui-material-filter",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 162
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 169
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 177
+        }
+      ]
+    },
+    {
+      "token": "--_ui-material-surface",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 161
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 168
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 176
         }
       ]
     },
@@ -2777,17 +2909,43 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 82
+          "line": 159
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 162
+          "line": 239
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 237
+          "line": 314
+        }
+      ]
+    },
+    {
+      "token": "--_ui-motion-closed-transform",
+      "kind": "internal-component",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.components",
+          "line": 50
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.components",
+          "line": 51
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.components",
+          "line": 70
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.components",
+          "line": 83
         }
       ]
     },
@@ -2798,17 +2956,27 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 57
+          "line": 134
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 137
+          "line": 214
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 212
+          "line": 289
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 66
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 146
         }
       ]
     },
@@ -2819,17 +2987,27 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 56
+          "line": 133
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 136
+          "line": 213
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 211
+          "line": 288
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 65
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 145
         }
       ]
     },
@@ -2840,17 +3018,27 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 58
+          "line": 135
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 138
+          "line": 215
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 213
+          "line": 290
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 67
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 147
         }
       ]
     },
@@ -2861,17 +3049,27 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 49
+          "line": 126
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 129
+          "line": 206
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 204
+          "line": 281
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 58
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 139
         }
       ]
     },
@@ -2882,17 +3080,27 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 59
+          "line": 136
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 139
+          "line": 216
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 214
+          "line": 291
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 68
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 148
         }
       ]
     },
@@ -2903,17 +3111,27 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 64
+          "line": 141
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 144
+          "line": 221
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 219
+          "line": 296
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 73
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 150
         }
       ]
     },
@@ -2924,17 +3142,17 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 88
+          "line": 165
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 168
+          "line": 245
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 243
+          "line": 320
         }
       ]
     },
@@ -2945,17 +3163,27 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 72
+          "line": 149
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 152
+          "line": 229
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 227
+          "line": 304
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 80
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 154
         }
       ]
     },
@@ -2966,17 +3194,27 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 53
+          "line": 130
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 133
+          "line": 210
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 208
+          "line": 285
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 62
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 143
         }
       ]
     },
@@ -2987,17 +3225,27 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 54
+          "line": 131
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 134
+          "line": 211
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 209
+          "line": 286
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 63
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 144
         }
       ]
     },
@@ -3008,17 +3256,22 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 55
+          "line": 132
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 135
+          "line": 212
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 210
+          "line": 287
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 64
         }
       ]
     },
@@ -3029,17 +3282,27 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 50
+          "line": 127
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 130
+          "line": 207
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 205
+          "line": 282
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 59
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 140
         }
       ]
     },
@@ -3050,17 +3313,22 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 60
+          "line": 137
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 140
+          "line": 217
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 215
+          "line": 292
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 69
         }
       ]
     },
@@ -3071,17 +3339,27 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 52
+          "line": 129
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 132
+          "line": 209
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 207
+          "line": 284
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 61
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 142
         }
       ]
     },
@@ -3092,17 +3370,211 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 51
+          "line": 128
         },
         {
           "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 208
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 283
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 60
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 141
+        }
+      ]
+    },
+    {
+      "token": "--_ui-theme-radius-button",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 9
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 126
+        }
+      ]
+    },
+    {
+      "token": "--_ui-theme-radius-control",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 6
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 98
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 123
+        }
+      ]
+    },
+    {
+      "token": "--_ui-theme-radius-drawer-edge",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 11
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 102
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 128
+        }
+      ]
+    },
+    {
+      "token": "--_ui-theme-radius-surface",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 7
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 99
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 124
+        }
+      ]
+    },
+    {
+      "token": "--_ui-theme-radius-table",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 8
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 100
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 125
+        }
+      ]
+    },
+    {
+      "token": "--_ui-theme-radius-toast",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 10
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 101
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 127
+        }
+      ]
+    },
+    {
+      "token": "--_ui-theme-shadow-overlay",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 13
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 104
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 130
+        }
+      ]
+    },
+    {
+      "token": "--_ui-theme-shadow-popover",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 12
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 103
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 129
+        }
+      ]
+    },
+    {
+      "token": "--_ui-theme-shadow-toast",
+      "kind": "internal-theme",
+      "declarations": [
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 14
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 105
+        },
+        {
+          "file": "src/ui/styles/themes.css",
           "layer": "ui.tokens",
           "line": 131
-        },
-        {
-          "file": "src/ui/styles.css",
-          "layer": "ui.tokens",
-          "line": 206
         }
       ]
     },
@@ -3113,12 +3585,12 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 1902
+          "line": 2022
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 1918
+          "line": 2045
         }
       ]
     },
@@ -3134,17 +3606,27 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 65
+          "line": 142
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 145
+          "line": 222
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 220
+          "line": 297
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 74
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 151
         }
       ]
     },
@@ -3155,17 +3637,27 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 68
+          "line": 145
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 148
+          "line": 225
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 223
+          "line": 300
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 76
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 153
         }
       ]
     },
@@ -3176,17 +3668,43 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 67
+          "line": 144
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 147
+          "line": 224
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 222
+          "line": 299
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 75
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 152
+        }
+      ]
+    },
+    {
+      "token": "--_ui-toast-entry-shift",
+      "kind": "internal-component",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.components",
+          "line": 69
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.components",
+          "line": 72
         }
       ]
     },
@@ -3197,14 +3715,19 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 1901
+          "line": 2021
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 3438
+          "line": 3573
         }
       ]
+    },
+    {
+      "token": "--_ui-toast-remaining",
+      "kind": "internal-runtime",
+      "declarations": []
     },
     {
       "token": "--_ui-toast-shadow",
@@ -3213,17 +3736,17 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 66
+          "line": 143
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 146
+          "line": 223
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 221
+          "line": 298
         }
       ]
     },
@@ -3234,7 +3757,23 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 1948
+          "line": 2075
+        }
+      ]
+    },
+    {
+      "token": "--_ui-toast-viewport-limit",
+      "kind": "internal-component",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.components",
+          "line": 2071
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.components",
+          "line": 2077
         }
       ]
     },
@@ -3245,17 +3784,22 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 70
+          "line": 147
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 150
+          "line": 227
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 225
+          "line": 302
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 78
         }
       ]
     },
@@ -3266,17 +3810,22 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 71
+          "line": 148
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 151
+          "line": 228
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 226
+          "line": 303
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 79
         }
       ]
     },
@@ -3287,17 +3836,17 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 87
+          "line": 164
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 167
+          "line": 244
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 242
+          "line": 319
         }
       ]
     },
@@ -3308,17 +3857,22 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 61
+          "line": 138
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 141
+          "line": 218
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 216
+          "line": 293
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 70
         }
       ]
     },
@@ -3329,22 +3883,22 @@
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 588
+          "line": 613
         },
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 589
+          "line": 614
         },
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 590
+          "line": 615
         },
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 591
+          "line": 616
         }
       ]
     },
@@ -3355,22 +3909,22 @@
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 588
+          "line": 613
         },
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 589
+          "line": 614
         },
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 590
+          "line": 615
         },
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 591
+          "line": 616
         }
       ]
     },
@@ -3381,17 +3935,32 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 22
+          "line": 99
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 102
+          "line": 179
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 177
+          "line": 254
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 32
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 84
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 109
         }
       ]
     },
@@ -3402,17 +3971,32 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 27
+          "line": 104
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 107
+          "line": 184
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 182
+          "line": 259
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 37
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 89
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 114
         }
       ]
     },
@@ -3423,17 +4007,32 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 28
+          "line": 105
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 108
+          "line": 185
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 183
+          "line": 260
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 38
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 90
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 115
         }
       ]
     },
@@ -3449,32 +4048,32 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 10
+          "line": 11
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 1620
+          "line": 1740
         },
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 333
+          "line": 351
         },
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 347
+          "line": 365
         },
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 408
+          "line": 426
         },
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 418
+          "line": 436
         }
       ]
     },
@@ -3485,17 +4084,22 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 38
+          "line": 115
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 118
+          "line": 195
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 193
+          "line": 270
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 48
         }
       ]
     },
@@ -3506,17 +4110,22 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 39
+          "line": 116
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 119
+          "line": 196
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 194
+          "line": 271
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 49
         }
       ]
     },
@@ -3537,27 +4146,27 @@
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 499
+          "line": 517
         },
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 500
+          "line": 518
         },
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 501
+          "line": 519
         },
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 1028
+          "line": 1053
         },
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 1050
+          "line": 1075
         }
       ]
     },
@@ -3588,17 +4197,32 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 41
+          "line": 118
         },
         {
           "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 198
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 273
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 51
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 96
+        },
+        {
+          "file": "src/ui/styles/themes.css",
           "layer": "ui.tokens",
           "line": 121
-        },
-        {
-          "file": "src/ui/styles.css",
-          "layer": "ui.tokens",
-          "line": 196
         }
       ]
     },
@@ -3609,7 +4233,7 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 9
+          "line": 10
         }
       ]
     },
@@ -3620,12 +4244,12 @@
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 1029
+          "line": 1054
         },
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 1062
+          "line": 1087
         }
       ]
     },
@@ -3646,22 +4270,162 @@
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 896
+          "line": 921
         },
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 901
+          "line": 926
         },
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 902
+          "line": 927
         },
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 903
+          "line": 928
+        }
+      ]
+    },
+    {
+      "token": "--ui-motion-collapse-enter",
+      "kind": "internal-geometry",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 20
+        }
+      ]
+    },
+    {
+      "token": "--ui-motion-collapse-exit",
+      "kind": "internal-geometry",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 21
+        }
+      ]
+    },
+    {
+      "token": "--ui-motion-ease-enter",
+      "kind": "internal-geometry",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 22
+        }
+      ]
+    },
+    {
+      "token": "--ui-motion-ease-exit",
+      "kind": "internal-geometry",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 23
+        }
+      ]
+    },
+    {
+      "token": "--ui-motion-enter",
+      "kind": "internal-component",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.components",
+          "line": 32
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.components",
+          "line": 36
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.components",
+          "line": 41
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.components",
+          "line": 88
+        }
+      ]
+    },
+    {
+      "token": "--ui-motion-exit",
+      "kind": "internal-component",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.components",
+          "line": 33
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.components",
+          "line": 37
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.components",
+          "line": 42
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.components",
+          "line": 88
+        }
+      ]
+    },
+    {
+      "token": "--ui-motion-fast-enter",
+      "kind": "internal-geometry",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 16
+        }
+      ]
+    },
+    {
+      "token": "--ui-motion-fast-exit",
+      "kind": "internal-geometry",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 17
+        }
+      ]
+    },
+    {
+      "token": "--ui-motion-standard-enter",
+      "kind": "internal-geometry",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 18
+        }
+      ]
+    },
+    {
+      "token": "--ui-motion-standard-exit",
+      "kind": "internal-geometry",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.tokens",
+          "line": 19
         }
       ]
     },
@@ -3672,17 +4436,32 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 26
+          "line": 103
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 106
+          "line": 183
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 181
+          "line": 258
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 36
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 88
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 113
         }
       ]
     },
@@ -3693,17 +4472,22 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 40
+          "line": 117
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 120
+          "line": 197
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 195
+          "line": 272
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 50
         }
       ]
     },
@@ -3714,17 +4498,32 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 33
+          "line": 110
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 113
+          "line": 190
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 188
+          "line": 265
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 43
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 95
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 120
         }
       ]
     },
@@ -3746,17 +4545,32 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 29
+          "line": 106
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 109
+          "line": 186
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 184
+          "line": 261
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 39
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 91
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 116
         }
       ]
     },
@@ -3767,17 +4581,32 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 30
+          "line": 107
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 110
+          "line": 187
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 185
+          "line": 262
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 40
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 92
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 117
         }
       ]
     },
@@ -3788,17 +4617,32 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 32
+          "line": 109
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 112
+          "line": 189
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 187
+          "line": 264
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 42
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 94
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 119
         }
       ]
     },
@@ -3809,17 +4653,32 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 31
+          "line": 108
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 111
+          "line": 188
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 186
+          "line": 263
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 41
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 93
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 118
         }
       ]
     },
@@ -3830,7 +4689,22 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 14
+          "line": 15
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 52
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 97
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 122
         }
       ]
     },
@@ -3846,7 +4720,12 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 11
+          "line": 12
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 21
         }
       ]
     },
@@ -3857,7 +4736,12 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 12
+          "line": 13
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 22
         }
       ]
     },
@@ -3868,7 +4752,12 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 13
+          "line": 14
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 23
         }
       ]
     },
@@ -3900,17 +4789,22 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 43
+          "line": 120
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 123
+          "line": 200
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 198
+          "line": 275
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 25
         }
       ]
     },
@@ -3921,17 +4815,22 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 42
+          "line": 119
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 122
+          "line": 199
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 197
+          "line": 274
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 24
         }
       ]
     },
@@ -3942,17 +4841,22 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 34
+          "line": 111
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 114
+          "line": 191
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 189
+          "line": 266
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 44
         }
       ]
     },
@@ -3963,17 +4867,22 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 35
+          "line": 112
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 115
+          "line": 192
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 190
+          "line": 267
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 45
         }
       ]
     },
@@ -3984,17 +4893,32 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 23
+          "line": 100
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 103
+          "line": 180
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 178
+          "line": 255
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 33
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 85
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 110
         }
       ]
     },
@@ -4005,17 +4929,32 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 24
+          "line": 101
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 104
+          "line": 181
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 179
+          "line": 256
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 34
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 86
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 111
         }
       ]
     },
@@ -4026,17 +4965,32 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 25
+          "line": 102
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 105
+          "line": 182
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 180
+          "line": 257
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 35
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 87
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 112
         }
       ]
     },
@@ -4052,17 +5006,22 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 36
+          "line": 113
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 116
+          "line": 193
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 191
+          "line": 268
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 46
         }
       ]
     },
@@ -4073,20 +5032,25 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 37
+          "line": 114
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 117
+          "line": 194
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.tokens",
-          "line": 192
+          "line": 269
+        },
+        {
+          "file": "src/ui/styles/themes.css",
+          "layer": "ui.tokens",
+          "line": 47
         }
       ]
     }
   ],
-  "selectorCount": 1170
+  "selectorCount": 1211
 }

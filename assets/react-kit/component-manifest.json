@@ -10,6 +10,7 @@
       ],
       "sourceFiles": [
         "src/ui/foundation/layout.tsx",
+        "src/ui/styles/themes.css",
         "src/ui/styles/layout-actions-display.css"
       ],
       "aliases": [
@@ -105,7 +106,10 @@
       "kind": "foundation",
       "publicExports": [],
       "sourceFiles": [
-        "src/ui/styles.css"
+        "src/ui/styles.css",
+        "src/ui/internal/motion.ts",
+        "src/ui/internal/selection-motion.ts",
+        "src/ui/internal/content-motion.ts"
       ],
       "aliases": [
         "motion"
@@ -2182,23 +2186,24 @@
   },
   "sourceIntegrity": {
     "action/actions.tsx": "1e57310fca68bb782f2d90b91d3e15d293da7372c49c4c1d86b9312ad936e407",
-    "data/data-extra.tsx": "5327673f34371ffd1cdd3c0018dfeb32907b70917df464ab92dd8157345b41fa",
+    "data/data-extra.tsx": "f5b949a700190c5c3d7e4edd7c638aaa5c839f663614076c1befc2d49805df20",
     "data/data-table.tsx": "c82f8027eac8ac1957bc3c9c2fab6f1c157f3ef87c3af2b766bd32afb805578f",
     "display/display.tsx": "2ab0b1a8546fca3e4d20d0cf559015cd546d05bcffac81f3f004c7ec7951452c",
     "feedback/feedback-extra.tsx": "640a5c06144fb40786b15c9f7da407cfd1d5629c40e70b8e394bbd817f9ae71e",
-    "feedback/feedback.tsx": "cdce4d1bdc719e2e5985d60ca2fdcc405000c0c757410e8e6857a6e1c0c81aa0",
+    "feedback/feedback.tsx": "1d09d251a408b46642b253933548e616a8a5c16ebccf36aa1c601619669063e8",
     "foundation/contracts.ts": "80756edff16bc33715d9e93aa3a2cf5619fbdaaf3dc94dd8ebd6a255e3cfe489",
-    "foundation/layout.tsx": "7ec40cc127f30cc67830c880e691d3f2ad147c6551979e7c3a974ffb3088c8ce",
+    "foundation/layout.tsx": "e0113c671da47263002dab79da12b793a94e13a5db367008b9e89b8abcab6dd4",
     "foundation/locale.tsx": "817bf7314e9ef769af0bc95337f9feebf24ca876358c8ba7467161da969b76c1",
     "foundation/primitives.tsx": "1aad5847f1c6ca9431161f0b783b6446776e67d6c26a4e3a255f290700b60ab5",
     "index.ts": "653c90a2d9996c5643ba50836eeecdb883c93b43f5358e8fb55593cb0bf75236",
     "input/date-field.tsx": "bbe5295393a454d0b0f020feabd43d61cfc3aa85edcf9fb473f4712e3297c4ea",
-    "input/forms.tsx": "aa19333d04f50b82cb9ba953d651b8dbdc8765687e51734a4b48ba36a5c236a9",
-    "input/inputs-extra.tsx": "8356fe021c89338fe649f72a87088906d19c627835d5cca5c2a41a1c7f0ec409",
+    "input/forms.tsx": "aebfef0993c0e959955975d863637567a18a26229ec9e38632966b7ee2ca72ba",
+    "input/inputs-extra.tsx": "e01dfc3074d5a7a5e8534ff21539b451ab0cfdb2eb5a1c4251cd91fe3505fd18",
     "input/value-controls.tsx": "d4eaf4a3ea98261638d117ad66f71995ec456d6dcc22b7c64c28866d3334ec20",
     "internal/button-slots.tsx": "52687f592280f8ba9b8e7c177664e5af6fce722e9d89bd264f4936b910794c06",
-    "internal/collapse.tsx": "3012db8753bf2034ab5e7f844d1514cde7882ff9946635f467f57c9e99222091",
+    "internal/collapse.tsx": "10c7aea4c128414c48b0828611aec4f7a3528b69795265a3b994037116447de4",
     "internal/composite-form-control.tsx": "3ce22958816573c8f795ebf0c9a28ae65196c673e74358a1f588973a4c51ab71",
+    "internal/content-motion.ts": "ba8527dc09427ed31484aa20d5a4ac1dcdc25f842b0b0468941384af18b1c0ce",
     "internal/control-handles.ts": "76c9ddb192e8f847f650c6ecaa0a4beee881272d0dd1cf51297b230a454be367",
     "internal/controllable-state.ts": "444d847ecc60129030c6fe1f80740de5394bd6abf51d29eacf89d64cac546140",
     "internal/field-context.ts": "2bf838e1aa63c16247c518066856556071ffe53305a0492ec7c5e8f9acac152a",
@@ -2207,21 +2212,24 @@
     "internal/input-slots.tsx": "b93846a135a0cb62968f247ea3076836fd6f8e704b1a951df8738f990434997c",
     "internal/layer-activation.ts": "bea931faf4529cff0511c0da65063b4cf42035b78c227370b8ca9f63c9b001af",
     "internal/layer-kernel.tsx": "67cc5e3857d8b46ff41c32d1f024959b23ffedb35645acf2e492aa4da56b3e5c",
+    "internal/motion.ts": "4c02d73079242a241970ff88715d598153aae560e6900e7210d60e60909633ed",
     "internal/overlay-slots.tsx": "8d75012cdaa42a805fd03bee92356f8a7627ea2e3aed62545873697efc2b0965",
-    "internal/portal-tokens.ts": "888af4f47555b7f79614e6fc929a86397a484ac8c14a5a080e7f8af3a13e934d",
-    "internal/theme-contract.ts": "64cc516c76dd2915593957f1e0c6aa5bc890547cb2bdfce5eac432c2b46ff3e3",
+    "internal/portal-tokens.ts": "1015c8734bdac5ae3dd2239ad2cc608c8091dad756fb67922cd55e070c80469b",
+    "internal/selection-motion.ts": "d03eeba374f344f86479d73c1d7f304a727308129d3b21a1835a13926a75410d",
+    "internal/theme-contract.ts": "b71ad06b9ab0971b1dada16d2903bb55da4ef78f3aa501572b796c39316ea9ec",
     "internal/tree-navigation.ts": "71508b1bb9de51e74322885ec9c4af25c029e5b58311b946d15fe104d523e7ed",
     "internal/utils.ts": "c18fd3ad380bace2c49d1bf9d73d117b88407b7706eb155eb0cb39c359b06ce8",
     "navigation/navigation-extra.tsx": "9ba60077a80d52a6fdcf6ec6b2659a9ba0139bd7d9cd1174b40e1587b92ee5fa",
-    "navigation/navigation.tsx": "478045e9bbbbdabab41df785de8a86087fcb87c3c0fff67abcf3bdaecd57685c",
-    "overlay/overlays-extra.tsx": "ff8c0c86ac860ab86c3541954298f564b6826f80295f1fe8ec865b201b9c64ec",
-    "overlay/overlays.tsx": "f5c4651130470cd82f35ef5e0022e677c60ff703a69ac4c238dd050074e18209",
+    "navigation/navigation.tsx": "e803df72c2b3c2d0c3273cbd746b625b5217f05d8d8907243256045bf911e897",
+    "overlay/overlays-extra.tsx": "9afe2e50370eec3b119c1d22b209359f76195c395dd6a3c4499bed7c1045a2af",
+    "overlay/overlays.tsx": "3b20e3ec75d16fd2917cbb11198d8b27480e57456f3988c89a1496035ad55275",
     "patterns/family-login-page.tsx": "45f54e9867a45d868d691b9ac558ada9390e9c9d24bec75374fb19819c597f1c",
     "patterns/member-management-page.tsx": "d1d277d28a5b1abcc7c0788b5e97e501e80c083872822c143ff9a9619bfaf3a7",
     "patterns/standard-pages.tsx": "a0f974a60c223bbbede3db0c9d1dc728e01556a0a778741dea7be7511e6f5940",
-    "styles/extended.css": "db15d9061bd03e68a8ba490733206e1c31daac2b4c437d0c30d3bb88561bfa5e",
-    "styles/inputs-extra.css": "d05ac73697452e49bcc6201cb6a6aba7374524829918df70b1fc582142a81b85",
-    "styles/layout-actions-display.css": "9662c9c86f0db57fd42788fd508bfef3371c75673d68d0e6e1a641460a1f1bf2",
-    "styles.css": "19581ba9b23b31f96da0c715e40238b7cd73645f9bbc6fdc2923bd2bd04118e4"
+    "styles/extended.css": "381e126ec70044a507939473dfabf34d4a3af9af6a1fce17709087828312a7e5",
+    "styles/inputs-extra.css": "5839b8b9b0b313614f8f1b4cec3b517fed3961363a9d423501dd8885544a75fd",
+    "styles/layout-actions-display.css": "0fbd1d4e59262931d4a479782fc9abad95185917ca6f4d317dc89069954d35f2",
+    "styles/themes.css": "ca5e9233d631ad3f28fb4afdebf6268050f4f2a7b273df69eb702f6aeeec1462",
+    "styles.css": "f3d567896166a41bd95d8de80bc66d29bf153da74aae2ea2e82172bb3fe61616"
   }
 }

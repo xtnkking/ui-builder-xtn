@@ -18,6 +18,7 @@ import { Select } from "../input/forms";
 import { sanitizeFixedControlProps } from "../internal/fixed-control-props";
 import { useUILocale } from "../foundation/locale";
 import { assertUniqueIdentities, cx } from "../internal/utils";
+import { useSelectionIndicator } from "../internal/selection-motion";
 
 function domIdToken(value: string): string {
   return Array.from(value, (character) => character.codePointAt(0)!.toString(16)).join("-") || "empty";
@@ -79,6 +80,8 @@ export function Tabs(rawProps: TabsProps) {
   });
   const instanceId = useId();
   const tabListRef = useRef<HTMLDivElement>(null);
+  const indicatorRef = useRef<HTMLSpanElement>(null);
+  useSelectionIndicator(tabListRef, indicatorRef, ":scope > button[aria-selected='true']", "underline");
   const tabRefs = useRef(new Map<string, HTMLButtonElement>());
   const lastFocusedTabIdRef = useRef<string | null>(null);
   const lastReconciledValueRef = useRef<{ from: string; to: string } | null>(null);
@@ -151,7 +154,8 @@ export function Tabs(rawProps: TabsProps) {
     } else if (event.key === "End") {
       nextIndex = enabledItems.length - 1;
     } else {
-      const direction = event.key === "ArrowRight" ? 1 : -1;
+      const rtl = tabListRef.current?.ownerDocument.defaultView?.getComputedStyle(tabListRef.current).direction === "rtl";
+      const direction = (event.key === "ArrowRight" ? 1 : -1) * (rtl ? -1 : 1);
       const startingIndex = currentIndex >= 0 ? currentIndex : 0;
       nextIndex = (startingIndex + direction + enabledItems.length) % enabledItems.length;
     }
@@ -164,6 +168,7 @@ export function Tabs(rawProps: TabsProps) {
   return (
     <div {...rootProps} className={cx("ui-tabs", fill && "ui-tabs--fill")} data-ui-owner="Tabs">
       <div ref={tabListRef} className="ui-tabs__list" role="tablist" aria-label={ariaLabel}>
+        <span ref={indicatorRef} className="ui-tabs__indicator" aria-hidden="true" hidden />
         {items.map((item) => (
           <button
             id={`${instanceId}-tab-${domIdToken(item.id)}`}

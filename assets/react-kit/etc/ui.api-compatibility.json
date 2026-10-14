@@ -15,11 +15,11 @@
   "current": {
     "packageName": "ui",
     "version": "0.3.1",
-    "apiDigest": "7b0ea1bbdab7d043df41f7b7ec942bef30271124b329719143230568e351ce70",
-    "compatibilityDigest": "8ba1f9b57ad2476dfcf7c72d420e3a954fc9a78f7dfb05f561a554f72ff474bb",
+    "apiDigest": "0ab352688abcb907f8c42091799720550799de86e82a9f301e6e3b0fd059b434",
+    "compatibilityDigest": "1e0def2ea93efca06e7440989ebe5dd97fe454d51cf737ef88dd18399f9a48e5",
     "runtimeExports": 142,
-    "typeOnlyExports": 230,
-    "publicSignatures": 372
+    "typeOnlyExports": 232,
+    "publicSignatures": 374
   },
   "classification": "breaking",
   "versionPolicy": {
@@ -65,6 +65,8 @@
         "SwitchProps",
         "TextControlHandle",
         "TextareaProps",
+        "ThemeMaterial",
+        "ThemePreset",
         "ToastApi",
         "TreeTableRowContext",
         "UILocale",
@@ -103,6 +105,8 @@
         "SwitchProps",
         "TextControlHandle",
         "TextareaProps",
+        "ThemeMaterial",
+        "ThemePreset",
         "ToastApi",
         "TreeTableRowContext",
         "UILocale",
@@ -1470,14 +1474,14 @@
           "baselineKind": "runtime",
           "currentKind": "runtime",
           "baselineHash": "5f66be9d7afadb09ff0b663c77d0beb0abb46d5a7413df28f36aee2318cbe289",
-          "currentHash": "81ca48f6a1f52189b5507448e85bcfb4fea35b86aff104fe316a6486fe0ea7f5"
+          "currentHash": "b5b19f4272bb7ab1645314cdf7af80a389277a958789a734e44f6bea912b94a2"
         },
         {
           "id": "ThemeProviderProps",
           "baselineKind": "type",
           "currentKind": "type",
           "baselineHash": "9c77bd7a61f57125b118055af85593e7ef681b6814a9c457f34743b0379af546",
-          "currentHash": "bd026b95db38e064841ed98466fc3caf83f353418979c4522c9838b1b41e98e8"
+          "currentHash": "2e0e7cd41a03c83836bb06a45e27fc8eb8bf5e7eca857e1b3ae011e2b49ec5cc"
         },
         {
           "id": "ThemeTokens",

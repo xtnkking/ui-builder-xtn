@@ -21,6 +21,7 @@
       ],
       "sourceFiles": [
         "src/ui/foundation/layout.tsx",
+        "src/ui/styles/themes.css",
         "src/ui/styles/layout-actions-display.css"
       ]
     },
@@ -110,9 +111,14 @@
       "exports": [],
       "id": "motion",
       "kind": "foundation",
-      "modules": [],
+      "modules": [
+        "internal"
+      ],
       "sourceFiles": [
-        "src/ui/styles.css"
+        "src/ui/styles.css",
+        "src/ui/internal/motion.ts",
+        "src/ui/internal/selection-motion.ts",
+        "src/ui/internal/content-motion.ts"
       ]
     },
     {
@@ -3755,6 +3761,7 @@
         "src/ui/internal/button-slots.tsx",
         "src/ui/internal/collapse.tsx",
         "src/ui/internal/composite-form-control.tsx",
+        "src/ui/internal/content-motion.ts",
         "src/ui/internal/control-handles.ts",
         "src/ui/internal/controllable-state.ts",
         "src/ui/internal/field-context.ts",
@@ -3763,8 +3770,10 @@
         "src/ui/internal/input-slots.tsx",
         "src/ui/internal/layer-activation.ts",
         "src/ui/internal/layer-kernel.tsx",
+        "src/ui/internal/motion.ts",
         "src/ui/internal/overlay-slots.tsx",
         "src/ui/internal/portal-tokens.ts",
+        "src/ui/internal/selection-motion.ts",
         "src/ui/internal/theme-contract.ts",
         "src/ui/internal/tree-navigation.ts",
         "src/ui/internal/utils.ts"

@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import type { ControllableValueProps, PublicControlProps } from "../foundation/contracts";
 import { useControllableState } from "../internal/controllable-state";
+import { useContentMotion } from "../internal/content-motion";
 import { sanitizeFixedControlProps } from "../internal/fixed-control-props";
 import { adjacentTreeKey, resolvedTreeKey, visibleTreeItems } from "../internal/tree-navigation";
 import { assertUITimeZone, useUILocale } from "../foundation/locale";
@@ -978,6 +979,7 @@ export function Carousel(rawProps: CarouselProps) {
   const [hovered, setHovered] = useState(false);
   const [focused, setFocused] = useState(false);
   const carouselRef = useRef<HTMLElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
   const [reducedMotion, setReducedMotion] = useState(() => (
     typeof window !== "undefined"
     && typeof window.matchMedia === "function"
@@ -1015,6 +1017,7 @@ export function Carousel(rawProps: CarouselProps) {
     return () => window.clearInterval(timer);
   }, [automaticRotation, currentIndex, interval, loop, select, slides.length]);
   const slide = slides[currentIndex];
+  useContentMotion(slide?.id ?? null, stageRef);
   return (
     <section
       {...rootProps}
@@ -1040,6 +1043,7 @@ export function Carousel(rawProps: CarouselProps) {
       data-ui-owner="Carousel"
     >
       <div
+        ref={stageRef}
         className="ui-carousel__stage"
         role={slide ? "group" : undefined}
         aria-roledescription={slide ? "slide" : undefined}

@@ -1,10 +1,10 @@
-// @ui-coverage {"kind":"unit","runner":"components","exports":["GuidedTour","Lightbox","Tooltip"]}
+// @ui-coverage {"kind":"unit","runner":"components","exports":["GuidedTour","Lightbox","Portal","ThemeProvider","Tooltip"]}
 import { createPortal } from "react-dom";
 import { act, cleanup, fireEvent, render } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { useRef, type CSSProperties } from "react";
-import { GuidedTour, Lightbox, Tooltip } from "../../src/ui";
-import { useUIPortalTokens } from "../../src/ui/internal/portal-tokens";
+import { GuidedTour, Lightbox, Portal, ThemeProvider, Tooltip } from "../../src/ui";
+import { syncUIPortalTheme, useUIPortalTokens } from "../../src/ui/internal/portal-tokens";
 
 afterEach(() => {
   vi.useRealTimers();
@@ -22,6 +22,10 @@ function PortalThemeProbe() {
         style={{
           "--ui-primary": "rgb(12, 34, 56)",
           "--ui-radius-control": "99px",
+          "--_ui-theme-radius-surface": "20px",
+          "--_ui-material-filter": "blur(20px) saturate(145%)",
+          "--_ui-control-hover-bg": "rgb(32, 33, 34)",
+          "--_ui-unregistered-geometry": "999px",
           colorScheme: "dark",
         } as CSSProperties}
       />
@@ -55,14 +59,79 @@ class TrackingMutationObserver implements MutationObserver {
 }
 
 describe("portal theme inheritance", () => {
-  it("copies only public semantic tokens and the resolved color scheme", () => {
+  it("copies semantic colors and official theme internals without arbitrary geometry", () => {
     const { getByTestId } = render(<PortalThemeProbe />);
     const portal = getByTestId("portal-theme-probe");
 
     expect(portal.style.getPropertyValue("--ui-primary")).toBe("rgb(12, 34, 56)");
     expect(portal.style.getPropertyValue("--ui-radius-control")).toBe("");
+    expect(portal.style.getPropertyValue("--_ui-theme-radius-surface")).toBe("20px");
+    expect(portal.style.getPropertyValue("--_ui-material-filter")).toBe("blur(20px) saturate(145%)");
+    expect(portal.style.getPropertyValue("--_ui-control-hover-bg")).toBe("rgb(32, 33, 34)");
+    expect(portal.style.getPropertyValue("--_ui-unregistered-geometry")).toBe("");
     expect(portal).toHaveAttribute("data-color-scheme", "dark");
     expect(portal.style.colorScheme).toBe("dark");
+  });
+
+  it("preserves nested preset and material across a body portal and its React descendants", () => {
+    const { getByTestId, rerender } = render(
+      <ThemeProvider mode="dark" preset="apple" material="glass">
+        <ThemeProvider tokens={{ "--ui-primary": "#224466" }}>
+          <Portal><ThemeProvider data-testid="portal-child">Child</ThemeProvider></Portal>
+        </ThemeProvider>
+      </ThemeProvider>,
+    );
+    const child = getByTestId("portal-child");
+    const portal = child.closest(".ui-portal");
+    expect(portal?.parentElement).toBe(document.body);
+    expect(portal).toHaveAttribute("data-theme-preset", "apple");
+    expect(portal).toHaveAttribute("data-theme-material", "glass");
+    expect(portal).toHaveAttribute("data-color-scheme", "dark");
+    expect(child).toHaveAttribute("data-theme-preset", "apple");
+    expect(child).toHaveAttribute("data-theme-material", "glass");
+    expect(child).not.toHaveAttribute("data-theme-definition");
+
+    rerender(
+      <ThemeProvider preset="material" material="solid">
+        <Portal><ThemeProvider data-testid="portal-child">Updated</ThemeProvider></Portal>
+      </ThemeProvider>,
+    );
+    const updatedChild = getByTestId("portal-child");
+    expect(updatedChild.closest(".ui-portal")).toHaveAttribute("data-theme-preset", "material");
+    expect(updatedChild.closest(".ui-portal")).toHaveAttribute("data-theme-material", "solid");
+    expect(updatedChild).toHaveAttribute("data-theme-preset", "material");
+  });
+
+  it("rebinds a portal to its new logical source and removes obsolete theme values", () => {
+    const apple = document.createElement("div");
+    apple.dataset.themePreset = "apple";
+    apple.dataset.themeMaterial = "glass";
+    apple.dataset.colorScheme = "dark";
+    const source = document.createElement("span");
+    source.style.setProperty("--ui-primary", "rgb(12, 34, 56)");
+    source.style.setProperty("--_ui-theme-radius-surface", "20px");
+    source.style.setProperty("--_ui-material-filter", "blur(20px)");
+    apple.append(source);
+    const portal = document.createElement("div");
+    document.body.append(apple, portal);
+
+    const copied = syncUIPortalTheme(source, portal, new Set());
+    expect(portal).toHaveAttribute("data-theme-preset", "apple");
+    expect(portal).toHaveAttribute("data-theme-material", "glass");
+    expect(portal.style.getPropertyValue("--_ui-theme-radius-surface")).toBe("20px");
+
+    source.removeAttribute("style");
+    document.body.append(source);
+    syncUIPortalTheme(source, portal, copied);
+    expect(portal).toHaveAttribute("data-theme-preset", "default");
+    expect(portal).toHaveAttribute("data-theme-material", "solid");
+    expect(portal).toHaveAttribute("data-color-scheme", "light");
+    expect(portal.style.getPropertyValue("--ui-primary")).toBe("");
+    expect(portal.style.getPropertyValue("--_ui-theme-radius-surface")).toBe("");
+    expect(portal.style.getPropertyValue("--_ui-material-filter")).toBe("");
+    apple.remove();
+    source.remove();
+    portal.remove();
   });
 
   it("gives body-level Lightbox and GuidedTour portals a logical theme source", () => {

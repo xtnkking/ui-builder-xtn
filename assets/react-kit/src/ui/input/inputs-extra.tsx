@@ -52,6 +52,7 @@ import { useControllableMode, useControllableState } from "../internal/controlla
 import { Button, IconButton, Spinner, Tag } from "../foundation/primitives";
 import { FieldContext } from "../internal/field-context";
 import { floatingPortalTarget, usePopoverPosition } from "../internal/floating-position";
+import { useNonModalMotion } from "../internal/motion";
 import {
   Combobox,
   Input,
@@ -990,21 +991,30 @@ export function Autocomplete(rawProps: AutocompleteProps) {
   const fieldInvalid = fieldState.invalid === true || fieldState.invalid === "true";
   const rootRef = useRef<HTMLDivElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<TextControlHandle>(null);
+  const handingOffFocusRef = useRef(false);
+  const focusReturnRef = useRef({ focus: (options?: FocusOptions) => {
+    handingOffFocusRef.current = true;
+    try { inputRef.current?.focus(options); }
+    finally { handingOffFocusRef.current = false; }
+  } });
   const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
   const [open, setOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
+  const menuOpen = open && !disabled && portalTarget !== null;
+  const presence = useNonModalMotion(menuOpen, popoverRef, focusReturnRef);
   const filtered = useMemo(() => {
     if (!filterOptions || !search.trim()) return options;
     const needle = search.trim().toLocaleLowerCase();
     return options.filter((option) => `${option.label} ${option.description ?? ""} ${option.searchText ?? ""}`.toLocaleLowerCase().includes(needle));
   }, [filterOptions, options, search]);
-  usePopoverPosition(open && portalTarget !== null, "bottom", rootRef, popoverRef);
-  useOutsideDismiss(open, rootRef, () => setOpen(false), popoverRef);
+  usePopoverPosition(presence.present, "bottom", rootRef, popoverRef);
+  useOutsideDismiss(menuOpen, rootRef, () => setOpen(false), popoverRef);
   useEffect(() => { setPortalTarget(floatingPortalTarget(rootRef.current)); }, []);
   useEffect(() => { if (disabled) setOpen(false); }, [disabled]);
   useEffect(() => { if (activeIndex >= filtered.length) setActiveIndex(0); }, [activeIndex, filtered.length]);
   const choose = (option: AutocompleteOption) => {
-    if (disabled || option.disabled) return;
+    if (!menuOpen || option.disabled) return;
     setSelectedValue(option.value);
     setSearch(option.label);
     onOptionSelect?.(option);
@@ -1012,9 +1022,10 @@ export function Autocomplete(rawProps: AutocompleteProps) {
   };
   const submittedValue = allowCustomValue && !selectedValue ? search : selectedValue;
   return (
-    <div ref={rootRef} data-ui-owner="Autocomplete" className={cx("ui-autocomplete", fieldInvalid && "is-invalid")} data-open={open || undefined}>
+    <div ref={rootRef} data-ui-owner="Autocomplete" className={cx("ui-autocomplete", fieldInvalid && "is-invalid")} data-open={menuOpen || undefined}>
       <CompositeFieldBoundary>
         <Input
+          controlRef={inputRef}
           id={controlId}
           value={search}
           placeholder={placeholder}
@@ -1025,12 +1036,12 @@ export function Autocomplete(rawProps: AutocompleteProps) {
           role="combobox"
           aria-label={ariaLabel}
           aria-autocomplete="list"
-          aria-expanded={open}
-          aria-controls={open ? `${controlId}-listbox` : undefined}
-          aria-activedescendant={open && filtered[activeIndex] ? `${controlId}-option-${activeIndex}` : undefined}
+          aria-expanded={menuOpen}
+          aria-controls={menuOpen ? `${controlId}-listbox` : undefined}
+          aria-activedescendant={menuOpen && filtered[activeIndex] ? `${controlId}-option-${activeIndex}` : undefined}
           startAdornment={<Search />}
           endAdornment={loading ? <LoaderCircle className="ui-spinner" /> : <ChevronDown />}
-          onFocus={() => setOpen(true)}
+          onFocus={() => { if (!handingOffFocusRef.current) setOpen(true); }}
           onChange={(event) => {
             setSearch(event.target.value);
             if (selectedValue) setSelectedValue("");
@@ -1060,10 +1071,10 @@ export function Autocomplete(rawProps: AutocompleteProps) {
           }}
         />
       </CompositeFieldBoundary>
-      {open ? (portalTarget ? createPortal(
-        <div ref={popoverRef} id={`${controlId}-listbox`} className="ui-extra-popover ui-autocomplete__list ui-portal" data-ui-floating-root="true" role="listbox" aria-label={ariaLabel}>
+      {presence.present ? (portalTarget ? createPortal(
+        <div ref={popoverRef} id={`${controlId}-listbox`} className="ui-extra-popover ui-autocomplete__list ui-portal" data-ui-floating-root="true" data-ui-motion={presence.state} data-ui-motion-profile="menu" role="listbox" aria-label={ariaLabel}>
           {loading ? <div className="ui-extra-state"><Spinner label={message("common.loading")} /></div> : filtered.map((option, index) => (
-            <button key={option.value} id={`${controlId}-option-${index}`} type="button" className="ui-extra-option" role="option" aria-selected={option.value === selectedValue} data-active={index === activeIndex || undefined} disabled={option.disabled} onMouseDown={(event) => event.preventDefault()} onMouseMove={() => setActiveIndex(index)} onClick={() => choose(option)}>
+            <button key={option.value} id={`${controlId}-option-${index}`} type="button" className="ui-extra-option" role="option" aria-selected={option.value === selectedValue} data-active={index === activeIndex || undefined} disabled={option.disabled} onMouseDown={(event) => event.preventDefault()} onMouseMove={() => { if (menuOpen) setActiveIndex(index); }} onClick={() => choose(option)}>
               {option.leading != null ? <span className="ui-extra-option__leading" aria-hidden="true">{option.leading}</span> : null}
               <span className="ui-extra-option__copy"><strong>{option.label}</strong>{option.description ? <span>{option.description}</span> : null}</span>
               <Check aria-hidden="true" />
@@ -1216,6 +1227,8 @@ export function AsyncSelect(rawProps: AsyncSelectProps) {
   const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
   const [open, setOpen] = useState(false);
   const [composing, setComposing] = useState(false);
+  const menuOpen = open && !disabled && portalTarget !== null;
+  const presence = useNonModalMotion(menuOpen, popoverRef, triggerRef);
   const [retrying, setRetrying] = useState(false);
   const [loadingMoreInternally, setLoadingMoreInternally] = useState(false);
   const [actionError, setActionError] = useState<"async.retryFailed" | "async.loadMoreFailed">();
@@ -1276,17 +1289,17 @@ export function AsyncSelect(rawProps: AsyncSelectProps) {
       .find((element) => element.dataset.value === currentActiveValue);
     option?.scrollIntoView?.({ block: "nearest" });
   }, [open, currentActiveValue, visibleOptions]);
-  usePopoverPosition(open, "bottom", rootRef, popoverRef);
-  useOutsideDismiss(open, rootRef, () => setOpen(false), popoverRef);
+  usePopoverPosition(presence.present, "bottom", rootRef, popoverRef);
+  useOutsideDismiss(menuOpen, rootRef, () => setOpen(false), popoverRef);
   useEffect(() => { setPortalTarget(floatingPortalTarget(rootRef.current)); }, []);
   useEffect(() => { if (disabled) setOpen(false); }, [disabled]);
   useEffect(() => {
-    if (!open || disabled) return;
+    if (!menuOpen) return;
     const frame = requestAnimationFrame(() => searchRef.current?.focus());
     return () => cancelAnimationFrame(frame);
-  }, [disabled, open]);
+  }, [menuOpen]);
   const retry = async () => {
-    if (disabled || retrying) return;
+    if (!menuOpen || retrying) return;
     if (loadOptions) {
       setRequestVersion((current) => current + 1);
       return;
@@ -1305,7 +1318,7 @@ export function AsyncSelect(rawProps: AsyncSelectProps) {
     }
   };
   const loadMore = async () => {
-    if (disabled || !onLoadMore || loadingMore || loadingMoreInternally) return;
+    if (!menuOpen || !onLoadMore || loadingMore || loadingMoreInternally) return;
     setLoadingMoreInternally(true);
     setActionError(undefined);
     try {
@@ -1319,13 +1332,14 @@ export function AsyncSelect(rawProps: AsyncSelectProps) {
     }
   };
   const choose = (option: AsyncSelectOption) => {
-    if (disabled || option.disabled || !visibleOptions.some((candidate) => candidate.value === option.value && !candidate.disabled)) return;
+    if (!menuOpen || option.disabled || !visibleOptions.some((candidate) => candidate.value === option.value && !candidate.disabled)) return;
     selectedCacheRef.current = option;
     if (option.value !== selectedValue) setSelectedValue(option.value);
     setOpen(false);
     triggerRef.current?.focus();
   };
   const handlePopoverKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (!menuOpen) return;
     if (event.key === "Escape") {
       event.preventDefault();
       event.stopPropagation();
@@ -1352,15 +1366,16 @@ export function AsyncSelect(rawProps: AsyncSelectProps) {
     next.focus({ preventScroll: true });
   };
   return (
-    <div ref={rootRef} data-ui-owner="AsyncSelect" className={cx("ui-async-select", fieldInvalid && "is-invalid")} data-open={open || undefined}>
-      <button ref={triggerRef} id={controlId} type="button" className="ui-combobox__trigger" role={open ? "button" : "combobox"} aria-label={ariaLabel} aria-haspopup={open ? undefined : "listbox"} aria-expanded={open} aria-controls={open ? `${controlId}-listbox` : undefined} aria-describedby={fieldState.describedBy} aria-invalid={fieldState.invalid} aria-required={open ? undefined : fieldState.required} disabled={disabled} onClick={() => setOpen((current) => !current)} onKeyDown={(event) => { if (open && event.key === "Escape") { event.preventDefault(); event.stopPropagation(); setOpen(false); } }}>
+    <div ref={rootRef} data-ui-owner="AsyncSelect" className={cx("ui-async-select", fieldInvalid && "is-invalid")} data-open={menuOpen || undefined}>
+      <button ref={triggerRef} id={controlId} type="button" className="ui-combobox__trigger" role={menuOpen ? "button" : "combobox"} aria-label={ariaLabel} aria-haspopup={menuOpen ? undefined : "listbox"} aria-expanded={menuOpen} aria-controls={menuOpen ? `${controlId}-listbox` : undefined} aria-describedby={fieldState.describedBy} aria-invalid={fieldState.invalid} aria-required={menuOpen ? undefined : fieldState.required} disabled={disabled} onClick={() => setOpen((current) => !current)} onKeyDown={(event) => { if (menuOpen && event.key === "Escape") { event.preventDefault(); event.stopPropagation(); setOpen(false); } }}>
         <span className="ui-combobox__value">{selected?.leading != null ? <span className="ui-option__leading" aria-hidden="true">{selected.leading}</span> : null}<span>{selected?.label ?? placeholder}</span></span>
         {effectiveLoading && !open ? <LoaderCircle className="ui-spinner" aria-hidden="true" /> : <ChevronDown aria-hidden="true" />}
       </button>
-      {open ? (
-        portalTarget ? createPortal(<div ref={popoverRef} className="ui-extra-popover ui-async-select__popover ui-portal" data-ui-floating-root="true" onKeyDown={handlePopoverKeyDown}>
+      {presence.present ? (
+        portalTarget ? createPortal(<div ref={popoverRef} className="ui-extra-popover ui-async-select__popover ui-portal" data-ui-floating-root="true" data-ui-motion={presence.state} data-ui-motion-profile="menu" onKeyDown={handlePopoverKeyDown}>
           <CompositeFieldBoundary>
-            <SearchInput controlRef={searchRef} value={search} placeholder={searchPlaceholder} role="combobox" aria-autocomplete="list" aria-expanded="true" aria-controls={`${controlId}-listbox`} aria-activedescendant={currentActiveValue ? `${controlId}-option-${encodeURIComponent(currentActiveValue)}` : undefined} aria-label={message("select.searchAria", { label: ariaLabel })} onCompositionStart={() => setComposing(true)} onCompositionEnd={() => setComposing(false)} onChange={(event) => { setActionError(undefined); setFailedAction(undefined); setSearch(event.target.value); setActiveValue(null); }} onClear={() => { setActionError(undefined); setFailedAction(undefined); setSearch(""); setActiveValue(null); }} onKeyDown={(event) => {
+            <SearchInput controlRef={searchRef} value={search} placeholder={searchPlaceholder} role="combobox" aria-autocomplete="list" aria-expanded={menuOpen} aria-controls={menuOpen ? `${controlId}-listbox` : undefined} aria-activedescendant={menuOpen && currentActiveValue ? `${controlId}-option-${encodeURIComponent(currentActiveValue)}` : undefined} aria-label={message("select.searchAria", { label: ariaLabel })} onCompositionStart={() => { if (menuOpen) setComposing(true); }} onCompositionEnd={() => setComposing(false)} onChange={(event) => { if (!menuOpen) return; setActionError(undefined); setFailedAction(undefined); setSearch(event.target.value); setActiveValue(null); }} onClear={() => { if (!menuOpen) return; setActionError(undefined); setFailedAction(undefined); setSearch(""); setActiveValue(null); }} onKeyDown={(event) => {
+            if (!menuOpen) return;
             if (composing || event.nativeEvent.isComposing || event.key === "Process" || event.keyCode === 229) return;
             if ((event.key === "ArrowDown" || event.key === "ArrowUp") && enabledOptions.length) {
               event.preventDefault();
@@ -1381,7 +1396,7 @@ export function AsyncSelect(rawProps: AsyncSelectProps) {
           }}>{message("common.retry")}</Button> : null}</div> : null}
           <div id={`${controlId}-listbox`} className="ui-async-select__list" role="listbox" aria-label={ariaLabel} aria-busy={effectiveLoading || undefined}>
             {effectiveError == null ? visibleOptions.map((option) => (
-              <button key={option.value} id={`${controlId}-option-${encodeURIComponent(option.value)}`} data-value={option.value} type="button" tabIndex={-1} className="ui-extra-option" role="option" aria-selected={option.value === selectedValue} data-active={option.value === currentActiveValue || undefined} disabled={option.disabled} onMouseDown={(event) => event.preventDefault()} onMouseMove={() => { if (!option.disabled) setActiveValue(option.value); }} onClick={() => choose(option)}>
+              <button key={option.value} id={`${controlId}-option-${encodeURIComponent(option.value)}`} data-value={option.value} type="button" tabIndex={-1} className="ui-extra-option" role="option" aria-selected={option.value === selectedValue} data-active={option.value === currentActiveValue || undefined} disabled={option.disabled} onMouseDown={(event) => event.preventDefault()} onMouseMove={() => { if (menuOpen && !option.disabled) setActiveValue(option.value); }} onClick={() => choose(option)}>
                 {option.leading != null ? <span className="ui-extra-option__leading" aria-hidden="true">{option.leading}</span> : null}
                 <span className="ui-extra-option__copy"><strong>{option.label}</strong>{option.description ? <span>{option.description}</span> : null}</span>
                 <Check aria-hidden="true" />
@@ -1486,32 +1501,35 @@ export function MultiSelect(rawProps: MultiSelectProps) {
   const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
   const [open, setOpen] = useState(false);
   const selectedOptions = options.filter((option) => selectedValues.includes(option.value));
+  const menuOpen = open && !disabled && portalTarget !== null;
+  const presence = useNonModalMotion(menuOpen, popoverRef, triggerRef);
   const filtered = useMemo(() => {
     const needle = search.trim().toLocaleLowerCase();
     return needle ? options.filter((option) => `${option.label} ${option.description ?? ""} ${option.searchText ?? ""}`.toLocaleLowerCase().includes(needle)) : options;
   }, [options, search]);
-  usePopoverPosition(open, "bottom", rootRef, popoverRef);
-  useOutsideDismiss(open, rootRef, () => setOpen(false), popoverRef);
+  usePopoverPosition(presence.present, "bottom", rootRef, popoverRef);
+  useOutsideDismiss(menuOpen, rootRef, () => setOpen(false), popoverRef);
   useEffect(() => { setPortalTarget(floatingPortalTarget(rootRef.current)); }, []);
   useEffect(() => { if (disabled) setOpen(false); }, [disabled]);
   useClientLayoutEffect(() => {
-    if (open && !disabled && portalTarget) searchRef.current?.focus();
-  }, [disabled, open, portalTarget]);
+    if (menuOpen) searchRef.current?.focus();
+  }, [menuOpen]);
   const toggle = (option: MultiSelectOption) => {
-    if (disabled || option.disabled) return;
+    if (!menuOpen || option.disabled) return;
     setSelectedValues(selectedValues.includes(option.value) ? selectedValues.filter((item) => item !== option.value) : [...selectedValues, option.value]);
   };
   const summary = !selectedOptions.length ? placeholder : selectedOptions.length === 1 ? selectedOptions[0].label : `${optionText(selectedOptions[0].label, selectedOptions[0].value)} +${selectedOptions.length - 1}`;
   return (
-    <div ref={rootRef} data-ui-owner="MultiSelect" className={cx("ui-multi-select", fieldInvalid && "is-invalid")} data-open={open || undefined}>
-      <button ref={triggerRef} id={controlId} type="button" className="ui-multi-select__trigger" role="combobox" aria-label={message("select.selectedCount", { label: ariaLabel, count: selectedValues.length })} aria-haspopup="listbox" aria-expanded={open} aria-controls={open ? `${controlId}-listbox` : undefined} aria-describedby={fieldState.describedBy} aria-invalid={fieldState.invalid} aria-required={fieldState.required} disabled={disabled} onClick={() => setOpen((current) => !current)} onKeyDown={(event) => { if (open && event.key === "Escape") { event.preventDefault(); event.stopPropagation(); setOpen(false); } }}>
+    <div ref={rootRef} data-ui-owner="MultiSelect" className={cx("ui-multi-select", fieldInvalid && "is-invalid")} data-open={menuOpen || undefined}>
+      <button ref={triggerRef} id={controlId} type="button" className="ui-multi-select__trigger" role="combobox" aria-label={message("select.selectedCount", { label: ariaLabel, count: selectedValues.length })} aria-haspopup="listbox" aria-expanded={menuOpen} aria-controls={menuOpen ? `${controlId}-listbox` : undefined} aria-describedby={fieldState.describedBy} aria-invalid={fieldState.invalid} aria-required={fieldState.required} disabled={disabled} onClick={() => setOpen((current) => !current)} onKeyDown={(event) => { if (menuOpen && event.key === "Escape") { event.preventDefault(); event.stopPropagation(); setOpen(false); } }}>
         <span className={cx("ui-multi-select__summary", !selectedOptions.length && "is-placeholder")}>{summary}</span>
         <span className="ui-multi-select__count" aria-hidden="true">{selectedValues.length || null}</span>
         <ChevronDown aria-hidden="true" />
       </button>
-      {open ? (
-        portalTarget ? createPortal(<div ref={popoverRef} className="ui-extra-popover ui-multi-select__popover ui-portal" data-ui-floating-root="true" onKeyDown={(event) => { if (event.key === "Escape") { event.preventDefault(); event.stopPropagation(); setOpen(false); triggerRef.current?.focus(); } }}>
-          <SearchInput controlRef={searchRef} value={search} placeholder={searchPlaceholder} aria-label={message("select.searchAria", { label: ariaLabel })} onChange={(event) => setSearch(event.target.value)} onClear={() => setSearch("")} onKeyDown={(event) => {
+      {presence.present ? (
+        portalTarget ? createPortal(<div ref={popoverRef} className="ui-extra-popover ui-multi-select__popover ui-portal" data-ui-floating-root="true" data-ui-motion={presence.state} data-ui-motion-profile="menu" onKeyDown={(event) => { if (menuOpen && event.key === "Escape") { event.preventDefault(); event.stopPropagation(); setOpen(false); triggerRef.current?.focus(); } }}>
+          <SearchInput controlRef={searchRef} value={search} placeholder={searchPlaceholder} aria-label={message("select.searchAria", { label: ariaLabel })} onChange={(event) => { if (menuOpen) setSearch(event.target.value); }} onClear={() => { if (menuOpen) setSearch(""); }} onKeyDown={(event) => {
+            if (!menuOpen) return;
             if (event.key !== "ArrowDown") return;
             const firstOption = popoverRef.current?.querySelector<HTMLButtonElement>("[role='option']:not(:disabled)");
             if (firstOption) { event.preventDefault(); firstOption.focus(); }
@@ -1519,6 +1537,7 @@ export function MultiSelect(rawProps: MultiSelectProps) {
           <div id={`${controlId}-listbox`} className="ui-multi-select__list" role="listbox" aria-label={ariaLabel} aria-multiselectable="true">
             {filtered.map((option) => (
               <button key={option.value} type="button" className="ui-extra-option" role="option" aria-selected={selectedValues.includes(option.value)} disabled={option.disabled} onClick={() => toggle(option)} onKeyDown={(event) => {
+                if (!menuOpen) return;
                 if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
                 const options = Array.from(popoverRef.current?.querySelectorAll<HTMLButtonElement>("[role='option']:not(:disabled)") ?? []);
                 const index = options.indexOf(event.currentTarget);
@@ -1533,7 +1552,7 @@ export function MultiSelect(rawProps: MultiSelectProps) {
             ))}
             {!filtered.length ? <div className="ui-extra-state" role="status">{emptyText}</div> : null}
           </div>
-          <div className="ui-multi-select__footer"><Button size="small" disabled={disabled || !selectedValues.length} onClick={() => { if (!disabled) setSelectedValues([]); }}>{message("common.clear")}</Button><Button size="small" variant="primary" disabled={disabled} onClick={() => { setOpen(false); triggerRef.current?.focus(); }}>{message("common.done")}</Button></div>
+          <div className="ui-multi-select__footer"><Button size="small" disabled={disabled || !selectedValues.length} onClick={() => { if (menuOpen) setSelectedValues([]); }}>{message("common.clear")}</Button><Button size="small" variant="primary" disabled={disabled} onClick={() => { if (!menuOpen) return; setOpen(false); triggerRef.current?.focus(); }}>{message("common.done")}</Button></div>
         </div>, portalTarget) : null
       ) : null}
       <CompositeFormControl
@@ -1843,14 +1862,16 @@ export function TreeSelect(rawProps: TreeSelectProps) {
   const treeHasFocusRef = useRef(false);
   const focusOnOpenRef = useRef(false);
   const focusKey = resolvedTreeKey(visible, activeKey, previousOrderRef.current);
-  usePopoverPosition(open, "bottom", rootRef, popoverRef);
-  useOutsideDismiss(open, rootRef, () => setOpen(false), popoverRef);
+  const menuOpen = open && !disabled && portalTarget !== null;
+  const presence = useNonModalMotion(menuOpen, popoverRef, triggerRef);
+  usePopoverPosition(presence.present, "bottom", rootRef, popoverRef);
+  useOutsideDismiss(menuOpen, rootRef, () => setOpen(false), popoverRef);
   useEffect(() => { setPortalTarget(floatingPortalTarget(rootRef.current)); }, []);
   useEffect(() => { if (disabled) setOpen(false); }, [disabled]);
   useEffect(() => {
     previousOrderRef.current = visible.map((item) => item.key);
     if (activeKey !== focusKey) setActiveKey(focusKey);
-    if (!open || (!focusOnOpenRef.current && !treeHasFocusRef.current)) return;
+    if (!menuOpen || (!focusOnOpenRef.current && !treeHasFocusRef.current)) return;
     const target = focusKey
       ? Array.from(popoverRef.current?.querySelectorAll<HTMLElement>("[role='treeitem'][data-tree-key]") ?? [])
         .find((item) => item.dataset.treeKey === focusKey)
@@ -1859,6 +1880,7 @@ export function TreeSelect(rawProps: TreeSelectProps) {
     if (target) focusOnOpenRef.current = false;
   });
   const toggleExpanded = (itemValue: string) => {
+    if (!menuOpen) return;
     const next = new Set(expanded);
     if (next.has(itemValue)) {
       next.delete(itemValue);
@@ -1885,6 +1907,7 @@ export function TreeSelect(rawProps: TreeSelectProps) {
     else trigger.blur();
   };
   const handleTreeKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (!menuOpen) return;
     if (event.key === "Escape") {
       event.preventDefault();
       event.stopPropagation();
@@ -1941,12 +1964,12 @@ export function TreeSelect(rawProps: TreeSelectProps) {
         aria-selected={!option.disabled && option.value === selectedValue}
         aria-expanded={hasChildren ? isExpanded : undefined}
         aria-disabled={option.disabled || undefined}
-        tabIndex={!option.disabled && focusKey === option.value ? 0 : -1}
-        onFocus={(event) => { if (event.target === event.currentTarget && !option.disabled) setActiveKey(option.value); }}
+        tabIndex={menuOpen && !option.disabled && focusKey === option.value ? 0 : -1}
+        onFocus={(event) => { if (menuOpen && event.target === event.currentTarget && !option.disabled) setActiveKey(option.value); }}
         onClick={(event) => {
           if ((event.target as HTMLElement).closest("[role='treeitem']") !== event.currentTarget) return;
           event.stopPropagation();
-          if (disabled || option.disabled) return;
+          if (!menuOpen || option.disabled) return;
           setActiveKey(option.value);
           setSelectedValue(option.value);
           setOpen(false);
@@ -1957,7 +1980,7 @@ export function TreeSelect(rawProps: TreeSelectProps) {
           {hasChildren ? (
             <span className="ui-tree-select__expander" aria-hidden="true" onClick={(event) => {
               event.stopPropagation();
-              if (option.disabled) return;
+              if (!menuOpen || option.disabled) return;
               toggleExpanded(option.value);
               event.currentTarget.closest<HTMLElement>("[role='treeitem']")?.focus();
             }}>{isExpanded ? <ChevronDown /> : <ChevronRight />}</span>
@@ -1969,20 +1992,20 @@ export function TreeSelect(rawProps: TreeSelectProps) {
     );
   });
   return (
-    <div ref={rootRef} data-ui-owner="TreeSelect" className={cx("ui-tree-select", fieldInvalid && "is-invalid")} data-open={open || undefined}>
-      <button ref={triggerRef} id={controlId} type="button" className="ui-combobox__trigger" role="combobox" aria-label={ariaLabel} aria-haspopup="tree" aria-expanded={open} aria-controls={open ? `${controlId}-tree` : undefined} aria-describedby={fieldState.describedBy} aria-invalid={fieldState.invalid} aria-required={fieldState.required} disabled={disabled} onClick={() => { focusOnOpenRef.current = true; setOpen((currentOpen) => !currentOpen); }} onKeyDown={(event) => {
+    <div ref={rootRef} data-ui-owner="TreeSelect" className={cx("ui-tree-select", fieldInvalid && "is-invalid")} data-open={menuOpen || undefined}>
+      <button ref={triggerRef} id={controlId} type="button" className="ui-combobox__trigger" role="combobox" aria-label={ariaLabel} aria-haspopup="tree" aria-expanded={menuOpen} aria-controls={menuOpen ? `${controlId}-tree` : undefined} aria-describedby={fieldState.describedBy} aria-invalid={fieldState.invalid} aria-required={fieldState.required} disabled={disabled} onClick={() => { focusOnOpenRef.current = true; setOpen((currentOpen) => !currentOpen); }} onKeyDown={(event) => {
         if (event.key === "ArrowDown" || event.key === "ArrowUp") {
           event.preventDefault();
           setActiveKey((event.key === "ArrowDown" ? visible.find((item) => !item.disabled) : [...visible].reverse().find((item) => !item.disabled))?.key);
           focusOnOpenRef.current = true;
           setOpen(true);
-        } else if (open && event.key === "Escape") {
+        } else if (menuOpen && event.key === "Escape") {
           event.preventDefault();
           event.stopPropagation();
           setOpen(false);
         }
       }}><span className="ui-combobox__value">{selected?.leading != null ? <span className="ui-option__leading">{selected.leading}</span> : null}<span>{selected?.label ?? placeholder}</span></span><ChevronDown /></button>
-      {open && portalTarget ? createPortal(<div ref={popoverRef} id={`${controlId}-tree`} className="ui-extra-popover ui-tree-select__tree ui-portal" data-ui-floating-root="true" role="tree" aria-label={ariaLabel} tabIndex={focusKey ? -1 : 0} onKeyDown={handleTreeKeyDown} onFocusCapture={() => { treeHasFocusRef.current = true; }} onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) treeHasFocusRef.current = false; }}>{renderNodes(options)}</div>, portalTarget) : null}
+      {presence.present && portalTarget ? createPortal(<div ref={popoverRef} id={`${controlId}-tree`} className="ui-extra-popover ui-tree-select__tree ui-portal" data-ui-floating-root="true" data-ui-motion={presence.state} data-ui-motion-profile="menu" role="tree" aria-label={ariaLabel} tabIndex={menuOpen && !focusKey ? 0 : -1} onKeyDown={handleTreeKeyDown} onFocusCapture={() => { if (menuOpen) treeHasFocusRef.current = true; }} onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) treeHasFocusRef.current = false; }}>{renderNodes(options)}</div>, portalTarget) : null}
       <CompositeFormControl
         name={name}
         form={form}

@@ -4,7 +4,7 @@
 This is the generated consumer API for UI 0.3.1. It is built from the TypeScript public barrel, Manifest ownership, per-export applicability metadata, structurally checked runnable Explorer state fixtures, runtime default initializers, registered CSS token sources, and machine-associated migration records. Applicable states and source-demonstrated states are recorded separately; source evidence does not certify browser behavior or accessibility. The generator does not read `component-coverage.json`.
 
 - Runtime exports: 142
-- Type-only exports: 230
+- Type-only exports: 232
 - Manifest families: 119
 - Public entry point: `src/ui/index.ts`
 
@@ -94,7 +94,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `layout` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `AspectRatioProps` |
-| Implementation | [assets/react-kit/src/ui/foundation/layout.tsx:255](../assets/react-kit/src/ui/foundation/layout.tsx#L255) |
+| Implementation | [assets/react-kit/src/ui/foundation/layout.tsx:286](../assets/react-kit/src/ui/foundation/layout.tsx#L286) |
 | Explorer / example | [#/components/aspect](../assets/react-kit/index.html#/components/aspect); [compiled family example](#family-aspect-compiled-example) (case `aspect/overview`, source [assets/react-kit/src/explorer/cases/foundation/aspect.case.tsx](../assets/react-kit/src/explorer/cases/foundation/aspect.case.tsx)) |
 | Keyboard | none: Layout primitives do not own keyboard interaction. |
 | ARIA | none: Layout primitives do not introduce an interactive ARIA contract. |
@@ -118,7 +118,7 @@ export interface AspectRatioProps extends HTMLAttributes<HTMLDivElement> {
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `ratio` | `"16 / 9"` | [assets/react-kit/src/ui/foundation/layout.tsx:255](../assets/react-kit/src/ui/foundation/layout.tsx#L255) |
+| `ratio` | `"16 / 9"` | [assets/react-kit/src/ui/foundation/layout.tsx:286](../assets/react-kit/src/ui/foundation/layout.tsx#L286) |
 
 #### Semantic Tokens
 
@@ -180,7 +180,7 @@ export function StatePreview({ state, children }: {
   </>;
 }
 
-import { Stack, Tag, ThemeProvider } from "./ui";
+import { Box, Button, Inline, Stack, Tag, ThemeProvider } from "./ui";
 
 export type UIExampleState = "default" | "dark" | "locale";
 export type UIExampleComponent = "ThemeProvider";
@@ -200,7 +200,11 @@ export function UIExample({ state, component }: {
   state?: UIExampleState;
   component?: UIExampleComponent;
 } = {}) {
-  if (state === undefined) return (<ThemeProvider mode="light"><Stack gap="small"><Tag tone="blue">品牌色</Tag><Tag tone="success">成功</Tag><Tag tone="danger">危险</Tag></Stack></ThemeProvider>);
+  if (state === undefined) return (<Inline gap="large" align="stretch">
+    <ThemeProvider mode="light" preset="default" material="solid"><Box padding="medium" surface="raised"><Stack gap="small"><Tag tone="blue">默认 Default</Tag><Button variant="primary">保存设置</Button></Stack></Box></ThemeProvider>
+    <ThemeProvider mode="light" preset="apple" material="glass"><Box padding="medium" surface="raised"><Stack gap="small"><Tag tone="blue">苹果风格 Apple-inspired</Tag><Button variant="primary">保存设置</Button></Stack></Box></ThemeProvider>
+    <ThemeProvider mode="light" preset="material" material="solid"><Box padding="medium" surface="raised"><Stack gap="small"><Tag tone="blue">Material 风格</Tag><Button variant="primary">保存设置</Button></Stack></Box></ThemeProvider>
+  </Inline>);
   const fixture = UIStateExamples.find((example) => example.state === state
     && (component === undefined || example.exports.some((name) => name === component)));
   if (!fixture) throw new RangeError(`No state fixture for ${component ?? "this family"}:${state}.`);
@@ -220,7 +224,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `provider` |
 | Parameter type | `ThemeProviderProps` |
-| Implementation | [assets/react-kit/src/ui/foundation/layout.tsx:33](../assets/react-kit/src/ui/foundation/layout.tsx#L33) |
+| Implementation | [assets/react-kit/src/ui/foundation/layout.tsx:46](../assets/react-kit/src/ui/foundation/layout.tsx#L46) |
 | Explorer / example | [#/components/color](../assets/react-kit/index.html#/components/color); [compiled family example](#family-color-compiled-example) (case `color/overview`, source [assets/react-kit/src/explorer/cases/foundation/color.case.tsx](../assets/react-kit/src/explorer/cases/foundation/color.case.tsx)) |
 | Keyboard | none: This provider has no independent keyboard interaction. |
 | ARIA | none: This provider introduces no rendered interactive ARIA contract. |
@@ -235,9 +239,13 @@ Select one fixture from the complete family module with `<UIExample state="defau
 
 ```ts
 export declare function ThemeProvider(rawProps: ThemeProviderProps): import("react").JSX.Element;
+export type ThemeMaterial = UIThemeMaterial;
 export type ThemeMode = UIThemeMode;
+export type ThemePreset = UIThemePreset;
 export type ThemeProviderProps = PublicControlProps<HTMLAttributes<HTMLDivElement>> & {
     mode?: ThemeMode;
+    preset?: ThemePreset;
+    material?: ThemeMaterial;
     tokens?: ThemeTokens;
 };
 export type ThemeTokens = PublicThemeTokens;
@@ -247,13 +255,13 @@ export type ThemeTokens = PublicThemeTokens;
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `mode` | `"inherit"` | [assets/react-kit/src/ui/foundation/layout.tsx:35](../assets/react-kit/src/ui/foundation/layout.tsx#L35) |
+| `mode` | `"inherit"` | [assets/react-kit/src/ui/foundation/layout.tsx:48](../assets/react-kit/src/ui/foundation/layout.tsx#L48) |
 
 #### Semantic Tokens
 
-Derived from registered family CSS ([src/ui/styles/layout-actions-display.css](../assets/react-kit/src/ui/styles/layout-actions-display.css)).
+Derived from registered family CSS ([src/ui/styles/layout-actions-display.css](../assets/react-kit/src/ui/styles/layout-actions-display.css), [src/ui/styles/themes.css](../assets/react-kit/src/ui/styles/themes.css)).
 
-`--ui-bg`, `--ui-border`, `--ui-border-strong`, `--ui-danger`, `--ui-danger-soft`, `--ui-focus-ring`, `--ui-muted`, `--ui-on-primary`, `--ui-primary`, `--ui-primary-ink`, `--ui-primary-soft`, `--ui-success`, `--ui-success-soft`, `--ui-surface`, `--ui-surface-subtle`, `--ui-text`, `--ui-warning`
+`--ui-bg`, `--ui-border`, `--ui-border-strong`, `--ui-danger`, `--ui-danger-soft`, `--ui-focus-ring`, `--ui-muted`, `--ui-on-danger`, `--ui-on-primary`, `--ui-primary`, `--ui-primary-hover`, `--ui-primary-ink`, `--ui-primary-soft`, `--ui-product-accent`, `--ui-success`, `--ui-success-soft`, `--ui-surface`, `--ui-surface-subtle`, `--ui-text`, `--ui-warning`, `--ui-warning-soft`
 
 #### Limits
 
@@ -262,7 +270,9 @@ Derived from registered family CSS ([src/ui/styles/layout-actions-display.css](.
 #### Usage Excerpt
 
 ```tsx
-<ThemeProvider mode="light">{children}</ThemeProvider>
+<ThemeProvider mode="light" preset="apple" material="glass">
+  <Button variant="primary">保存设置</Button>
+</ThemeProvider>
 ```
 
 #### Migration
@@ -350,7 +360,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `layout` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `DividerProps` |
-| Implementation | [assets/react-kit/src/ui/foundation/layout.tsx:163](../assets/react-kit/src/ui/foundation/layout.tsx#L163) |
+| Implementation | [assets/react-kit/src/ui/foundation/layout.tsx:194](../assets/react-kit/src/ui/foundation/layout.tsx#L194) |
 | Explorer / example | [#/components/divider](../assets/react-kit/index.html#/components/divider); [compiled family example](#family-divider-compiled-example) (case `divider/overview`, source [assets/react-kit/src/explorer/cases/foundation/divider.case.tsx](../assets/react-kit/src/explorer/cases/foundation/divider.case.tsx)) |
 | Keyboard | none: Layout primitives do not own keyboard interaction. |
 | ARIA | none: Layout primitives do not introduce an interactive ARIA contract. |
@@ -375,8 +385,8 @@ export interface DividerProps extends HTMLAttributes<HTMLDivElement> {
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `decorative` | `false` | [assets/react-kit/src/ui/foundation/layout.tsx:163](../assets/react-kit/src/ui/foundation/layout.tsx#L163) |
-| `orientation` | `"horizontal"` | [assets/react-kit/src/ui/foundation/layout.tsx:163](../assets/react-kit/src/ui/foundation/layout.tsx#L163) |
+| `decorative` | `false` | [assets/react-kit/src/ui/foundation/layout.tsx:194](../assets/react-kit/src/ui/foundation/layout.tsx#L194) |
+| `orientation` | `"horizontal"` | [assets/react-kit/src/ui/foundation/layout.tsx:194](../assets/react-kit/src/ui/foundation/layout.tsx#L194) |
 
 #### Semantic Tokens
 
@@ -480,7 +490,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `layout` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `FocusTrapProps` |
-| Implementation | [assets/react-kit/src/ui/foundation/layout.tsx:389](../assets/react-kit/src/ui/foundation/layout.tsx#L389) |
+| Implementation | [assets/react-kit/src/ui/foundation/layout.tsx:420](../assets/react-kit/src/ui/foundation/layout.tsx#L420) |
 | Explorer / example | [#/components/focus-trap](../assets/react-kit/index.html#/components/focus-trap); [compiled family example](#family-focus-trap-compiled-example) (case `focus-trap/overview`, source [assets/react-kit/src/explorer/cases/foundation/focus-trap.case.tsx](../assets/react-kit/src/explorer/cases/foundation/focus-trap.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -508,10 +518,10 @@ export interface FocusTrapProps extends HTMLAttributes<HTMLDivElement> {
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `active` | `true` | [assets/react-kit/src/ui/foundation/layout.tsx:390](../assets/react-kit/src/ui/foundation/layout.tsx#L390) |
-| `additionalContainers` | `[]` | [assets/react-kit/src/ui/foundation/layout.tsx:394](../assets/react-kit/src/ui/foundation/layout.tsx#L394) |
-| `autoFocus` | `true` | [assets/react-kit/src/ui/foundation/layout.tsx:391](../assets/react-kit/src/ui/foundation/layout.tsx#L391) |
-| `restoreFocus` | `true` | [assets/react-kit/src/ui/foundation/layout.tsx:392](../assets/react-kit/src/ui/foundation/layout.tsx#L392) |
+| `active` | `true` | [assets/react-kit/src/ui/foundation/layout.tsx:421](../assets/react-kit/src/ui/foundation/layout.tsx#L421) |
+| `additionalContainers` | `[]` | [assets/react-kit/src/ui/foundation/layout.tsx:425](../assets/react-kit/src/ui/foundation/layout.tsx#L425) |
+| `autoFocus` | `true` | [assets/react-kit/src/ui/foundation/layout.tsx:422](../assets/react-kit/src/ui/foundation/layout.tsx#L422) |
+| `restoreFocus` | `true` | [assets/react-kit/src/ui/foundation/layout.tsx:423](../assets/react-kit/src/ui/foundation/layout.tsx#L423) |
 
 #### Semantic Tokens
 
@@ -616,7 +626,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `KeyboardShortcutProps` |
-| Implementation | [assets/react-kit/src/ui/foundation/layout.tsx:313](../assets/react-kit/src/ui/foundation/layout.tsx#L313) |
+| Implementation | [assets/react-kit/src/ui/foundation/layout.tsx:344](../assets/react-kit/src/ui/foundation/layout.tsx#L344) |
 | Explorer / example | [#/components/keyboard](../assets/react-kit/index.html#/components/keyboard); [compiled family example](#family-keyboard-compiled-example) (case `keyboard/overview`, source [assets/react-kit/src/explorer/cases/foundation/keyboard.case.tsx](../assets/react-kit/src/explorer/cases/foundation/keyboard.case.tsx)) |
 | Keyboard | none: This export has no independent keyboard interaction. |
 | ARIA | none: This export introduces no independent interactive ARIA contract. |
@@ -743,7 +753,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `layout` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `BoxProps` |
-| Implementation | [assets/react-kit/src/ui/foundation/layout.tsx:63](../assets/react-kit/src/ui/foundation/layout.tsx#L63) |
+| Implementation | [assets/react-kit/src/ui/foundation/layout.tsx:94](../assets/react-kit/src/ui/foundation/layout.tsx#L94) |
 | Explorer / example | [#/components/layout](../assets/react-kit/index.html#/components/layout); [compiled family example](#family-layout-compiled-example) (case `layout/overview`, source [assets/react-kit/src/explorer/cases/foundation/layout.case.tsx](../assets/react-kit/src/explorer/cases/foundation/layout.case.tsx)) |
 | Keyboard | none: Layout primitives do not own keyboard interaction. |
 | ARIA | none: Layout primitives do not introduce an interactive ARIA contract. |
@@ -770,8 +780,8 @@ export type LayoutSpace = "none" | "xsmall" | "small" | "medium" | "large" | "xl
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `padding` | `"none"` | [assets/react-kit/src/ui/foundation/layout.tsx:64](../assets/react-kit/src/ui/foundation/layout.tsx#L64) |
-| `surface` | `"transparent"` | [assets/react-kit/src/ui/foundation/layout.tsx:65](../assets/react-kit/src/ui/foundation/layout.tsx#L65) |
+| `padding` | `"none"` | [assets/react-kit/src/ui/foundation/layout.tsx:95](../assets/react-kit/src/ui/foundation/layout.tsx#L95) |
+| `surface` | `"transparent"` | [assets/react-kit/src/ui/foundation/layout.tsx:96](../assets/react-kit/src/ui/foundation/layout.tsx#L96) |
 
 #### Semantic Tokens
 
@@ -804,7 +814,7 @@ No migration is required for the current public export.
 | Kind / stability | `layout` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `InlineProps` |
-| Implementation | [assets/react-kit/src/ui/foundation/layout.tsx:101](../assets/react-kit/src/ui/foundation/layout.tsx#L101) |
+| Implementation | [assets/react-kit/src/ui/foundation/layout.tsx:132](../assets/react-kit/src/ui/foundation/layout.tsx#L132) |
 | Explorer / example | [#/components/layout](../assets/react-kit/index.html#/components/layout); [compiled family example](#family-layout-compiled-example) (case `layout/overview`, source [assets/react-kit/src/explorer/cases/foundation/layout.case.tsx](../assets/react-kit/src/explorer/cases/foundation/layout.case.tsx)) |
 | Keyboard | none: Layout primitives do not own keyboard interaction. |
 | ARIA | none: Layout primitives do not introduce an interactive ARIA contract. |
@@ -832,10 +842,10 @@ export type LayoutSpace = "none" | "xsmall" | "small" | "medium" | "large" | "xl
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `align` | `"center"` | [assets/react-kit/src/ui/foundation/layout.tsx:103](../assets/react-kit/src/ui/foundation/layout.tsx#L103) |
-| `gap` | `"small"` | [assets/react-kit/src/ui/foundation/layout.tsx:102](../assets/react-kit/src/ui/foundation/layout.tsx#L102) |
-| `justify` | `"start"` | [assets/react-kit/src/ui/foundation/layout.tsx:104](../assets/react-kit/src/ui/foundation/layout.tsx#L104) |
-| `wrap` | `true` | [assets/react-kit/src/ui/foundation/layout.tsx:105](../assets/react-kit/src/ui/foundation/layout.tsx#L105) |
+| `align` | `"center"` | [assets/react-kit/src/ui/foundation/layout.tsx:134](../assets/react-kit/src/ui/foundation/layout.tsx#L134) |
+| `gap` | `"small"` | [assets/react-kit/src/ui/foundation/layout.tsx:133](../assets/react-kit/src/ui/foundation/layout.tsx#L133) |
+| `justify` | `"start"` | [assets/react-kit/src/ui/foundation/layout.tsx:135](../assets/react-kit/src/ui/foundation/layout.tsx#L135) |
+| `wrap` | `true` | [assets/react-kit/src/ui/foundation/layout.tsx:136](../assets/react-kit/src/ui/foundation/layout.tsx#L136) |
 
 #### Semantic Tokens
 
@@ -868,7 +878,7 @@ No migration is required for the current public export.
 | Kind / stability | `layout` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `StackProps` |
-| Implementation | [assets/react-kit/src/ui/foundation/layout.tsx:86](../assets/react-kit/src/ui/foundation/layout.tsx#L86) |
+| Implementation | [assets/react-kit/src/ui/foundation/layout.tsx:117](../assets/react-kit/src/ui/foundation/layout.tsx#L117) |
 | Explorer / example | [#/components/layout](../assets/react-kit/index.html#/components/layout); [compiled family example](#family-layout-compiled-example) (case `layout/overview`, source [assets/react-kit/src/explorer/cases/foundation/layout.case.tsx](../assets/react-kit/src/explorer/cases/foundation/layout.case.tsx)) |
 | Keyboard | none: Layout primitives do not own keyboard interaction. |
 | ARIA | none: Layout primitives do not introduce an interactive ARIA contract. |
@@ -894,8 +904,8 @@ export type LayoutSpace = "none" | "xsmall" | "small" | "medium" | "large" | "xl
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `align` | `"stretch"` | [assets/react-kit/src/ui/foundation/layout.tsx:86](../assets/react-kit/src/ui/foundation/layout.tsx#L86) |
-| `gap` | `"medium"` | [assets/react-kit/src/ui/foundation/layout.tsx:86](../assets/react-kit/src/ui/foundation/layout.tsx#L86) |
+| `align` | `"stretch"` | [assets/react-kit/src/ui/foundation/layout.tsx:117](../assets/react-kit/src/ui/foundation/layout.tsx#L117) |
+| `gap` | `"medium"` | [assets/react-kit/src/ui/foundation/layout.tsx:117](../assets/react-kit/src/ui/foundation/layout.tsx#L117) |
 
 #### Semantic Tokens
 
@@ -1552,7 +1562,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `layout` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `PortalProps` |
-| Implementation | [assets/react-kit/src/ui/foundation/layout.tsx:337](../assets/react-kit/src/ui/foundation/layout.tsx#L337) |
+| Implementation | [assets/react-kit/src/ui/foundation/layout.tsx:368](../assets/react-kit/src/ui/foundation/layout.tsx#L368) |
 | Explorer / example | [#/components/portal](../assets/react-kit/index.html#/components/portal); [compiled family example](#family-portal-compiled-example) (case `portal/overview`, source [assets/react-kit/src/explorer/cases/foundation/portal.case.tsx](../assets/react-kit/src/explorer/cases/foundation/portal.case.tsx)) |
 | Keyboard | none: Layout primitives do not own keyboard interaction. |
 | ARIA | none: Layout primitives do not introduce an interactive ARIA contract. |
@@ -1579,7 +1589,7 @@ export interface PortalProps {
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `disabled` | `false` | [assets/react-kit/src/ui/foundation/layout.tsx:337](../assets/react-kit/src/ui/foundation/layout.tsx#L337) |
+| `disabled` | `false` | [assets/react-kit/src/ui/foundation/layout.tsx:368](../assets/react-kit/src/ui/foundation/layout.tsx#L368) |
 
 #### Semantic Tokens
 
@@ -1685,7 +1695,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `layout` / `stable` |
 | State mode | `uncontrolled` |
 | Parameter type | `ResizablePanelsProps` |
-| Implementation | [assets/react-kit/src/ui/data/data-extra.tsx:1081](../assets/react-kit/src/ui/data/data-extra.tsx#L1081) |
+| Implementation | [assets/react-kit/src/ui/data/data-extra.tsx:1085](../assets/react-kit/src/ui/data/data-extra.tsx#L1085) |
 | Explorer / example | [#/components/resizable](../assets/react-kit/index.html#/components/resizable); [compiled family example](#family-resizable-compiled-example) (case `resizable/overview`, source [assets/react-kit/src/explorer/cases/foundation/resizable.case.tsx](../assets/react-kit/src/explorer/cases/foundation/resizable.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -1716,10 +1726,10 @@ export type ResizablePanelsProps = PublicControlProps<Omit<HTMLAttributes<HTMLDi
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `defaultSize` | `50` | [assets/react-kit/src/ui/data/data-extra.tsx:1088](../assets/react-kit/src/ui/data/data-extra.tsx#L1088) |
-| `maxSize` | `80` | [assets/react-kit/src/ui/data/data-extra.tsx:1090](../assets/react-kit/src/ui/data/data-extra.tsx#L1090) |
-| `minSize` | `20` | [assets/react-kit/src/ui/data/data-extra.tsx:1089](../assets/react-kit/src/ui/data/data-extra.tsx#L1089) |
-| `orientation` | `"horizontal"` | [assets/react-kit/src/ui/data/data-extra.tsx:1087](../assets/react-kit/src/ui/data/data-extra.tsx#L1087) |
+| `defaultSize` | `50` | [assets/react-kit/src/ui/data/data-extra.tsx:1092](../assets/react-kit/src/ui/data/data-extra.tsx#L1092) |
+| `maxSize` | `80` | [assets/react-kit/src/ui/data/data-extra.tsx:1094](../assets/react-kit/src/ui/data/data-extra.tsx#L1094) |
+| `minSize` | `20` | [assets/react-kit/src/ui/data/data-extra.tsx:1093](../assets/react-kit/src/ui/data/data-extra.tsx#L1093) |
+| `orientation` | `"horizontal"` | [assets/react-kit/src/ui/data/data-extra.tsx:1091](../assets/react-kit/src/ui/data/data-extra.tsx#L1091) |
 
 #### Semantic Tokens
 
@@ -1823,7 +1833,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `layout` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `GridProps` |
-| Implementation | [assets/react-kit/src/ui/foundation/layout.tsx:131](../assets/react-kit/src/ui/foundation/layout.tsx#L131) |
+| Implementation | [assets/react-kit/src/ui/foundation/layout.tsx:162](../assets/react-kit/src/ui/foundation/layout.tsx#L162) |
 | Explorer / example | [#/components/responsive](../assets/react-kit/index.html#/components/responsive); [compiled family example](#family-responsive-compiled-example) (case `responsive/overview`, source [assets/react-kit/src/explorer/cases/foundation/responsive.case.tsx](../assets/react-kit/src/explorer/cases/foundation/responsive.case.tsx)) |
 | Keyboard | none: Layout primitives do not own keyboard interaction. |
 | ARIA | none: Layout primitives do not introduce an interactive ARIA contract. |
@@ -1850,8 +1860,8 @@ export type LayoutSpace = "none" | "xsmall" | "small" | "medium" | "large" | "xl
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `gap` | `"medium"` | [assets/react-kit/src/ui/foundation/layout.tsx:132](../assets/react-kit/src/ui/foundation/layout.tsx#L132) |
-| `minItemWidth` | `"220px"` | [assets/react-kit/src/ui/foundation/layout.tsx:134](../assets/react-kit/src/ui/foundation/layout.tsx#L134) |
+| `gap` | `"medium"` | [assets/react-kit/src/ui/foundation/layout.tsx:163](../assets/react-kit/src/ui/foundation/layout.tsx#L163) |
+| `minItemWidth` | `"220px"` | [assets/react-kit/src/ui/foundation/layout.tsx:165](../assets/react-kit/src/ui/foundation/layout.tsx#L165) |
 
 #### Semantic Tokens
 
@@ -1955,7 +1965,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `layout` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `ResponsiveVisibilityProps` |
-| Implementation | [assets/react-kit/src/ui/foundation/layout.tsx:274](../assets/react-kit/src/ui/foundation/layout.tsx#L274) |
+| Implementation | [assets/react-kit/src/ui/foundation/layout.tsx:305](../assets/react-kit/src/ui/foundation/layout.tsx#L305) |
 | Explorer / example | [#/components/responsive-visibility](../assets/react-kit/index.html#/components/responsive-visibility); [compiled family example](#family-responsive-visibility-compiled-example) (case `responsive-visibility/overview`, source [assets/react-kit/src/explorer/cases/foundation/responsive-visibility.case.tsx](../assets/react-kit/src/explorer/cases/foundation/responsive-visibility.case.tsx)) |
 | Keyboard | none: Layout primitives do not own keyboard interaction. |
 | ARIA | none: Layout primitives do not introduce an interactive ARIA contract. |
@@ -2249,8 +2259,8 @@ export type ResponsiveVisibilityMode = "all" | "mobile" | "tablet" | "desktop";
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `as` | `"div"` | [assets/react-kit/src/ui/foundation/layout.tsx:275](../assets/react-kit/src/ui/foundation/layout.tsx#L275) |
-| `visibleOn` | `"all"` | [assets/react-kit/src/ui/foundation/layout.tsx:276](../assets/react-kit/src/ui/foundation/layout.tsx#L276) |
+| `as` | `"div"` | [assets/react-kit/src/ui/foundation/layout.tsx:306](../assets/react-kit/src/ui/foundation/layout.tsx#L306) |
+| `visibleOn` | `"all"` | [assets/react-kit/src/ui/foundation/layout.tsx:307](../assets/react-kit/src/ui/foundation/layout.tsx#L307) |
 
 #### Semantic Tokens
 
@@ -2354,7 +2364,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `layout` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `ScrollAreaProps` |
-| Implementation | [assets/react-kit/src/ui/foundation/layout.tsx:183](../assets/react-kit/src/ui/foundation/layout.tsx#L183) |
+| Implementation | [assets/react-kit/src/ui/foundation/layout.tsx:214](../assets/react-kit/src/ui/foundation/layout.tsx#L214) |
 | Explorer / example | [#/components/scroll](../assets/react-kit/index.html#/components/scroll); [compiled family example](#family-scroll-compiled-example) (case `scroll/overview`, source [assets/react-kit/src/explorer/cases/foundation/scroll.case.tsx](../assets/react-kit/src/explorer/cases/foundation/scroll.case.tsx)) |
 | Keyboard | none: Layout primitives do not own keyboard interaction. |
 | ARIA | none: Layout primitives do not introduce an interactive ARIA contract. |
@@ -2381,7 +2391,7 @@ export interface ScrollAreaProps extends HTMLAttributes<HTMLDivElement> {
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `orientation` | `"vertical"` | [assets/react-kit/src/ui/foundation/layout.tsx:185](../assets/react-kit/src/ui/foundation/layout.tsx#L185) |
+| `orientation` | `"vertical"` | [assets/react-kit/src/ui/foundation/layout.tsx:216](../assets/react-kit/src/ui/foundation/layout.tsx#L216) |
 
 #### Semantic Tokens
 
@@ -2485,7 +2495,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `layout` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `StickyHeaderActionBarProps` |
-| Implementation | [assets/react-kit/src/ui/foundation/layout.tsx:216](../assets/react-kit/src/ui/foundation/layout.tsx#L216) |
+| Implementation | [assets/react-kit/src/ui/foundation/layout.tsx:247](../assets/react-kit/src/ui/foundation/layout.tsx#L247) |
 | Explorer / example | [#/components/sticky](../assets/react-kit/index.html#/components/sticky); [compiled family example](#family-sticky-compiled-example) (case `sticky/overview`, source [assets/react-kit/src/explorer/cases/foundation/sticky.case.tsx](../assets/react-kit/src/explorer/cases/foundation/sticky.case.tsx)) |
 | Keyboard | none: Layout primitives do not own keyboard interaction. |
 | ARIA | none: Layout primitives do not introduce an interactive ARIA contract. |
@@ -2512,7 +2522,7 @@ export interface StickyHeaderActionBarProps extends HTMLAttributes<HTMLElement> 
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `position` | `"top"` | [assets/react-kit/src/ui/foundation/layout.tsx:220](../assets/react-kit/src/ui/foundation/layout.tsx#L220) |
+| `position` | `"top"` | [assets/react-kit/src/ui/foundation/layout.tsx:251](../assets/react-kit/src/ui/foundation/layout.tsx#L251) |
 
 #### Semantic Tokens
 
@@ -2617,7 +2627,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `layout` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `VisuallyHiddenProps` |
-| Implementation | [assets/react-kit/src/ui/foundation/layout.tsx:297](../assets/react-kit/src/ui/foundation/layout.tsx#L297) |
+| Implementation | [assets/react-kit/src/ui/foundation/layout.tsx:328](../assets/react-kit/src/ui/foundation/layout.tsx#L328) |
 | Explorer / example | [#/components/visually-hidden](../assets/react-kit/index.html#/components/visually-hidden); [compiled family example](#family-visually-hidden-compiled-example) (case `visually-hidden/overview`, source [assets/react-kit/src/explorer/cases/foundation/visually-hidden.case.tsx](../assets/react-kit/src/explorer/cases/foundation/visually-hidden.case.tsx)) |
 | Keyboard | none: This export has no independent keyboard interaction. |
 | ARIA | none: This export introduces no independent interactive ARIA contract. |
@@ -2641,7 +2651,7 @@ export interface VisuallyHiddenProps extends HTMLAttributes<HTMLSpanElement> {
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `focusable` | `false` | [assets/react-kit/src/ui/foundation/layout.tsx:297](../assets/react-kit/src/ui/foundation/layout.tsx#L297) |
+| `focusable` | `false` | [assets/react-kit/src/ui/foundation/layout.tsx:328](../assets/react-kit/src/ui/foundation/layout.tsx#L328) |
 
 #### Semantic Tokens
 
@@ -3227,7 +3237,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `DragDropProps` |
-| Implementation | [assets/react-kit/src/ui/data/data-extra.tsx:1170](../assets/react-kit/src/ui/data/data-extra.tsx#L1170) |
+| Implementation | [assets/react-kit/src/ui/data/data-extra.tsx:1174](../assets/react-kit/src/ui/data/data-extra.tsx#L1174) |
 | Explorer / example | [#/components/drag](../assets/react-kit/index.html#/components/drag); [compiled family example](#family-drag-compiled-example) (case `drag/overview`, source [assets/react-kit/src/explorer/cases/actions/drag.case.tsx](../assets/react-kit/src/explorer/cases/actions/drag.case.tsx)) |
 | Keyboard | native: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -3260,10 +3270,10 @@ export type DragDropProps = PublicControlProps<Omit<HTMLAttributes<HTMLDivElemen
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `ariaLabel` | `message("dragDrop.label")` | [assets/react-kit/src/ui/data/data-extra.tsx:1182](../assets/react-kit/src/ui/data/data-extra.tsx#L1182) |
-| `browseLabel` | `message("upload.browse")` | [assets/react-kit/src/ui/data/data-extra.tsx:1181](../assets/react-kit/src/ui/data/data-extra.tsx#L1181) |
-| `multiple` | `true` | [assets/react-kit/src/ui/data/data-extra.tsx:1179](../assets/react-kit/src/ui/data/data-extra.tsx#L1179) |
-| `showBrowseButton` | `true` | [assets/react-kit/src/ui/data/data-extra.tsx:1180](../assets/react-kit/src/ui/data/data-extra.tsx#L1180) |
+| `ariaLabel` | `message("dragDrop.label")` | [assets/react-kit/src/ui/data/data-extra.tsx:1186](../assets/react-kit/src/ui/data/data-extra.tsx#L1186) |
+| `browseLabel` | `message("upload.browse")` | [assets/react-kit/src/ui/data/data-extra.tsx:1185](../assets/react-kit/src/ui/data/data-extra.tsx#L1185) |
+| `multiple` | `true` | [assets/react-kit/src/ui/data/data-extra.tsx:1183](../assets/react-kit/src/ui/data/data-extra.tsx#L1183) |
+| `showBrowseButton` | `true` | [assets/react-kit/src/ui/data/data-extra.tsx:1184](../assets/react-kit/src/ui/data/data-extra.tsx#L1184) |
 
 #### Semantic Tokens
 
@@ -3854,7 +3864,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled` |
 | Parameter type | `SortableListProps<T>` |
-| Implementation | [assets/react-kit/src/ui/data/data-extra.tsx:1258](../assets/react-kit/src/ui/data/data-extra.tsx#L1258) |
+| Implementation | [assets/react-kit/src/ui/data/data-extra.tsx:1262](../assets/react-kit/src/ui/data/data-extra.tsx#L1262) |
 | Explorer / example | [#/components/sortable](../assets/react-kit/index.html#/components/sortable); [compiled family example](#family-sortable-compiled-example) (case `sortable/overview`, source [assets/react-kit/src/explorer/cases/actions/sortable.case.tsx](../assets/react-kit/src/explorer/cases/actions/sortable.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -3887,7 +3897,7 @@ export type SortableListProps<T> = PublicControlProps<Omit<HTMLAttributes<HTMLOL
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `getItemLabel` | `(item) => item.id` | [assets/react-kit/src/ui/data/data-extra.tsx:1261](../assets/react-kit/src/ui/data/data-extra.tsx#L1261) |
+| `getItemLabel` | `(item) => item.id` | [assets/react-kit/src/ui/data/data-extra.tsx:1265](../assets/react-kit/src/ui/data/data-extra.tsx#L1265) |
 
 #### Semantic Tokens
 
@@ -4438,7 +4448,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled-uncontrolled` |
 | Parameter type | `CascaderProps` |
-| Implementation | [assets/react-kit/src/ui/input/inputs-extra.tsx:1727](../assets/react-kit/src/ui/input/inputs-extra.tsx#L1727) |
+| Implementation | [assets/react-kit/src/ui/input/inputs-extra.tsx:1746](../assets/react-kit/src/ui/input/inputs-extra.tsx#L1746) |
 | Explorer / example | [#/components/cascader](../assets/react-kit/index.html#/components/cascader); [compiled family example](#family-cascader-compiled-example) (case `cascader/overview`, source [assets/react-kit/src/explorer/cases/input/cascader.case.tsx](../assets/react-kit/src/explorer/cases/input/cascader.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -4487,9 +4497,9 @@ type ControllableListValueProps = {
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `levelLabels` | `[]` | [assets/react-kit/src/ui/input/inputs-extra.tsx:1730](../assets/react-kit/src/ui/input/inputs-extra.tsx#L1730) |
-| `placeholder` | `message("select.placeholder")` | [assets/react-kit/src/ui/input/inputs-extra.tsx:1730](../assets/react-kit/src/ui/input/inputs-extra.tsx#L1730) |
-| `submitValue` | `"leaf"` | [assets/react-kit/src/ui/input/inputs-extra.tsx:1730](../assets/react-kit/src/ui/input/inputs-extra.tsx#L1730) |
+| `levelLabels` | `[]` | [assets/react-kit/src/ui/input/inputs-extra.tsx:1749](../assets/react-kit/src/ui/input/inputs-extra.tsx#L1749) |
+| `placeholder` | `message("select.placeholder")` | [assets/react-kit/src/ui/input/inputs-extra.tsx:1749](../assets/react-kit/src/ui/input/inputs-extra.tsx#L1749) |
+| `submitValue` | `"leaf"` | [assets/react-kit/src/ui/input/inputs-extra.tsx:1749](../assets/react-kit/src/ui/input/inputs-extra.tsx#L1749) |
 
 #### Semantic Tokens
 
@@ -4610,7 +4620,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled-uncontrolled` |
 | Parameter type | `CheckboxProps` |
-| Implementation | [assets/react-kit/src/ui/input/forms.tsx:1346](../assets/react-kit/src/ui/input/forms.tsx#L1346) |
+| Implementation | [assets/react-kit/src/ui/input/forms.tsx:1354](../assets/react-kit/src/ui/input/forms.tsx#L1354) |
 | Explorer / example | [#/components/checkbox](../assets/react-kit/index.html#/components/checkbox); [compiled family example](#family-checkbox-compiled-example) (case `checkbox/overview`, source [assets/react-kit/src/explorer/cases/input/checkbox.case.tsx](../assets/react-kit/src/explorer/cases/input/checkbox.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -4769,7 +4779,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled` |
 | Parameter type | `CodeEditorProps` |
-| Implementation | [assets/react-kit/src/ui/input/inputs-extra.tsx:706](../assets/react-kit/src/ui/input/inputs-extra.tsx#L706) |
+| Implementation | [assets/react-kit/src/ui/input/inputs-extra.tsx:707](../assets/react-kit/src/ui/input/inputs-extra.tsx#L707) |
 | Explorer / example | [#/components/code-editor](../assets/react-kit/index.html#/components/code-editor); [compiled family example](#family-code-editor-compiled-example) (case `code-editor/overview`, source [assets/react-kit/src/explorer/cases/input/code-editor.case.tsx](../assets/react-kit/src/explorer/cases/input/code-editor.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -4798,9 +4808,9 @@ export type CodeEditorProps = PublicControlProps<Omit<TextareaHTMLAttributes<HTM
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `indent` | `"  "` | [assets/react-kit/src/ui/input/inputs-extra.tsx:714](../assets/react-kit/src/ui/input/inputs-extra.tsx#L714) |
-| `language` | `"text"` | [assets/react-kit/src/ui/input/inputs-extra.tsx:713](../assets/react-kit/src/ui/input/inputs-extra.tsx#L713) |
-| `tabBehavior` | `"focus"` | [assets/react-kit/src/ui/input/inputs-extra.tsx:715](../assets/react-kit/src/ui/input/inputs-extra.tsx#L715) |
+| `indent` | `"  "` | [assets/react-kit/src/ui/input/inputs-extra.tsx:715](../assets/react-kit/src/ui/input/inputs-extra.tsx#L715) |
+| `language` | `"text"` | [assets/react-kit/src/ui/input/inputs-extra.tsx:714](../assets/react-kit/src/ui/input/inputs-extra.tsx#L714) |
+| `tabBehavior` | `"focus"` | [assets/react-kit/src/ui/input/inputs-extra.tsx:716](../assets/react-kit/src/ui/input/inputs-extra.tsx#L716) |
 
 #### Semantic Tokens
 
@@ -5114,7 +5124,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled-uncontrolled` |
 | Parameter type | `AutocompleteProps` |
-| Implementation | [assets/react-kit/src/ui/input/inputs-extra.tsx:941](../assets/react-kit/src/ui/input/inputs-extra.tsx#L941) |
+| Implementation | [assets/react-kit/src/ui/input/inputs-extra.tsx:942](../assets/react-kit/src/ui/input/inputs-extra.tsx#L942) |
 | Explorer / example | [#/components/combobox](../assets/react-kit/index.html#/components/combobox); [compiled family example](#family-combobox-compiled-example) (case `combobox/overview`, source [assets/react-kit/src/explorer/cases/input/combobox.case.tsx](../assets/react-kit/src/explorer/cases/input/combobox.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -5162,9 +5172,9 @@ type ControllableQueryProps = {
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `allowCustomValue` | `false` | [assets/react-kit/src/ui/input/inputs-extra.tsx:955](../assets/react-kit/src/ui/input/inputs-extra.tsx#L955) |
-| `emptyText` | `message("select.empty")` | [assets/react-kit/src/ui/input/inputs-extra.tsx:957](../assets/react-kit/src/ui/input/inputs-extra.tsx#L957) |
-| `filterOptions` | `true` | [assets/react-kit/src/ui/input/inputs-extra.tsx:954](../assets/react-kit/src/ui/input/inputs-extra.tsx#L954) |
+| `allowCustomValue` | `false` | [assets/react-kit/src/ui/input/inputs-extra.tsx:956](../assets/react-kit/src/ui/input/inputs-extra.tsx#L956) |
+| `emptyText` | `message("select.empty")` | [assets/react-kit/src/ui/input/inputs-extra.tsx:958](../assets/react-kit/src/ui/input/inputs-extra.tsx#L958) |
+| `filterOptions` | `true` | [assets/react-kit/src/ui/input/inputs-extra.tsx:955](../assets/react-kit/src/ui/input/inputs-extra.tsx#L955) |
 
 #### Semantic Tokens
 
@@ -5198,7 +5208,7 @@ No migration is required for the current public export.
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled` |
 | Parameter type | `ComboboxProps` |
-| Implementation | [assets/react-kit/src/ui/input/forms.tsx:1019](../assets/react-kit/src/ui/input/forms.tsx#L1019) |
+| Implementation | [assets/react-kit/src/ui/input/forms.tsx:1025](../assets/react-kit/src/ui/input/forms.tsx#L1025) |
 | Explorer / example | [#/components/combobox](../assets/react-kit/index.html#/components/combobox); [compiled family example](#family-combobox-compiled-example) (case `combobox/overview`, source [assets/react-kit/src/explorer/cases/input/combobox.case.tsx](../assets/react-kit/src/explorer/cases/input/combobox.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -5243,10 +5253,10 @@ type FieldControlAriaProps = Pick<InputHTMLAttributes<HTMLInputElement>, "id" | 
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `emptyText` | `message("select.empty")` | [assets/react-kit/src/ui/input/forms.tsx:1031](../assets/react-kit/src/ui/input/forms.tsx#L1031) |
-| `placeholder` | `message("select.placeholder")` | [assets/react-kit/src/ui/input/forms.tsx:1029](../assets/react-kit/src/ui/input/forms.tsx#L1029) |
-| `placement` | `"bottom"` | [assets/react-kit/src/ui/input/forms.tsx:1034](../assets/react-kit/src/ui/input/forms.tsx#L1034) |
-| `searchPlaceholder` | `message("select.searchPlaceholder")` | [assets/react-kit/src/ui/input/forms.tsx:1030](../assets/react-kit/src/ui/input/forms.tsx#L1030) |
+| `emptyText` | `message("select.empty")` | [assets/react-kit/src/ui/input/forms.tsx:1037](../assets/react-kit/src/ui/input/forms.tsx#L1037) |
+| `placeholder` | `message("select.placeholder")` | [assets/react-kit/src/ui/input/forms.tsx:1035](../assets/react-kit/src/ui/input/forms.tsx#L1035) |
+| `placement` | `"bottom"` | [assets/react-kit/src/ui/input/forms.tsx:1040](../assets/react-kit/src/ui/input/forms.tsx#L1040) |
+| `searchPlaceholder` | `message("select.searchPlaceholder")` | [assets/react-kit/src/ui/input/forms.tsx:1036](../assets/react-kit/src/ui/input/forms.tsx#L1036) |
 
 #### Semantic Tokens
 
@@ -5804,7 +5814,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `FieldProps` |
-| Implementation | [assets/react-kit/src/ui/input/forms.tsx:254](../assets/react-kit/src/ui/input/forms.tsx#L254) |
+| Implementation | [assets/react-kit/src/ui/input/forms.tsx:256](../assets/react-kit/src/ui/input/forms.tsx#L256) |
 | Explorer / example | [#/components/field](../assets/react-kit/index.html#/components/field); [compiled family example](#family-field-compiled-example) (case `field/overview`, source [assets/react-kit/src/explorer/cases/input/field.case.tsx](../assets/react-kit/src/explorer/cases/input/field.case.tsx)) |
 | Keyboard | none: This export has no independent keyboard interaction. |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -5839,7 +5849,7 @@ export type FieldProps = FieldBaseProps & ({
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `group` | `false` | [assets/react-kit/src/ui/input/forms.tsx:257](../assets/react-kit/src/ui/input/forms.tsx#L257) |
+| `group` | `false` | [assets/react-kit/src/ui/input/forms.tsx:259](../assets/react-kit/src/ui/input/forms.tsx#L259) |
 
 #### Semantic Tokens
 
@@ -5977,7 +5987,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `composed` |
 | Parameter type | `FormProps` |
-| Implementation | [assets/react-kit/src/ui/input/inputs-extra.tsx:156](../assets/react-kit/src/ui/input/inputs-extra.tsx#L156) |
+| Implementation | [assets/react-kit/src/ui/input/inputs-extra.tsx:157](../assets/react-kit/src/ui/input/inputs-extra.tsx#L157) |
 | Explorer / example | [#/components/form](../assets/react-kit/index.html#/components/form); [compiled family example](#family-form-compiled-example) (case `form/overview`, source [assets/react-kit/src/explorer/cases/input/form.case.tsx](../assets/react-kit/src/explorer/cases/input/form.case.tsx)) |
 | Keyboard | delegated: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | delegated: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -6002,7 +6012,7 @@ export type FormProps = PublicControlProps<FormHTMLAttributes<HTMLFormElement>> 
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `busy` | `false` | [assets/react-kit/src/ui/input/inputs-extra.tsx:158](../assets/react-kit/src/ui/input/inputs-extra.tsx#L158) |
+| `busy` | `false` | [assets/react-kit/src/ui/input/inputs-extra.tsx:159](../assets/react-kit/src/ui/input/inputs-extra.tsx#L159) |
 
 #### Semantic Tokens
 
@@ -6155,7 +6165,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled` |
 | Parameter type | `InlineEditProps` |
-| Implementation | [assets/react-kit/src/ui/input/inputs-extra.tsx:785](../assets/react-kit/src/ui/input/inputs-extra.tsx#L785) |
+| Implementation | [assets/react-kit/src/ui/input/inputs-extra.tsx:786](../assets/react-kit/src/ui/input/inputs-extra.tsx#L786) |
 | Explorer / example | [#/components/inline-edit](../assets/react-kit/index.html#/components/inline-edit); [compiled family example](#family-inline-edit-compiled-example) (case `inline-edit/overview`, source [assets/react-kit/src/explorer/cases/input/inline-edit.case.tsx](../assets/react-kit/src/explorer/cases/input/inline-edit.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -6189,8 +6199,8 @@ export type InlineEditProps = PublicControlProps<{
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `editLabel` | `message("common.edit")` | [assets/react-kit/src/ui/input/inputs-extra.tsx:807](../assets/react-kit/src/ui/input/inputs-extra.tsx#L807) |
-| `emptyLabel` | `message("common.notProvided")` | [assets/react-kit/src/ui/input/inputs-extra.tsx:806](../assets/react-kit/src/ui/input/inputs-extra.tsx#L806) |
+| `editLabel` | `message("common.edit")` | [assets/react-kit/src/ui/input/inputs-extra.tsx:808](../assets/react-kit/src/ui/input/inputs-extra.tsx#L808) |
+| `emptyLabel` | `message("common.notProvided")` | [assets/react-kit/src/ui/input/inputs-extra.tsx:807](../assets/react-kit/src/ui/input/inputs-extra.tsx#L807) |
 
 #### Semantic Tokens
 
@@ -6322,7 +6332,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled` |
 | Parameter type | `MarkdownEditorProps` |
-| Implementation | [assets/react-kit/src/ui/input/inputs-extra.tsx:645](../assets/react-kit/src/ui/input/inputs-extra.tsx#L645) |
+| Implementation | [assets/react-kit/src/ui/input/inputs-extra.tsx:646](../assets/react-kit/src/ui/input/inputs-extra.tsx#L646) |
 | Explorer / example | [#/components/markdown-editor](../assets/react-kit/index.html#/components/markdown-editor); [compiled family example](#family-markdown-editor-compiled-example) (case `markdown-editor/overview`, source [assets/react-kit/src/explorer/cases/input/markdown-editor.case.tsx](../assets/react-kit/src/explorer/cases/input/markdown-editor.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -6349,7 +6359,7 @@ export type MarkdownEditorProps = PublicControlProps<Omit<TextareaHTMLAttributes
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `toolbarLabel` | `variant === "markdown" ? message("editor.markdownToolbar") : message("editor.textToolbar")` | [assets/react-kit/src/ui/input/inputs-extra.tsx:600](../assets/react-kit/src/ui/input/inputs-extra.tsx#L600) |
+| `toolbarLabel` | `variant === "markdown" ? message("editor.markdownToolbar") : message("editor.textToolbar")` | [assets/react-kit/src/ui/input/inputs-extra.tsx:601](../assets/react-kit/src/ui/input/inputs-extra.tsx#L601) |
 
 #### Semantic Tokens
 
@@ -6383,7 +6393,7 @@ No migration is required for the current public export.
 | Kind / stability | `component` / `deprecated` |
 | State mode | `controlled` |
 | Parameter type | `MarkdownEditorProps` |
-| Implementation | [assets/react-kit/src/ui/input/inputs-extra.tsx:650](../assets/react-kit/src/ui/input/inputs-extra.tsx#L650) |
+| Implementation | [assets/react-kit/src/ui/input/inputs-extra.tsx:651](../assets/react-kit/src/ui/input/inputs-extra.tsx#L651) |
 | Explorer / example | [#/components/markdown-editor](../assets/react-kit/index.html#/components/markdown-editor); [compiled family example](#family-markdown-editor-compiled-example) (case `markdown-editor/overview`, source [assets/react-kit/src/explorer/cases/input/markdown-editor.case.tsx](../assets/react-kit/src/explorer/cases/input/markdown-editor.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -6411,7 +6421,7 @@ export type RichTextEditorProps = MarkdownEditorProps;
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `toolbarLabel` | `variant === "markdown" ? message("editor.markdownToolbar") : message("editor.textToolbar")` | [assets/react-kit/src/ui/input/inputs-extra.tsx:600](../assets/react-kit/src/ui/input/inputs-extra.tsx#L600) |
+| `toolbarLabel` | `variant === "markdown" ? message("editor.markdownToolbar") : message("editor.textToolbar")` | [assets/react-kit/src/ui/input/inputs-extra.tsx:601](../assets/react-kit/src/ui/input/inputs-extra.tsx#L601) |
 
 #### Semantic Tokens
 
@@ -6556,7 +6566,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled-uncontrolled` |
 | Parameter type | `MultiSelectProps` |
-| Implementation | [assets/react-kit/src/ui/input/inputs-extra.tsx:1430](../assets/react-kit/src/ui/input/inputs-extra.tsx#L1430) |
+| Implementation | [assets/react-kit/src/ui/input/inputs-extra.tsx:1445](../assets/react-kit/src/ui/input/inputs-extra.tsx#L1445) |
 | Explorer / example | [#/components/multi-select](../assets/react-kit/index.html#/components/multi-select); [compiled family example](#family-multi-select-compiled-example) (case `multi-select/overview`, source [assets/react-kit/src/explorer/cases/input/multi-select.case.tsx](../assets/react-kit/src/explorer/cases/input/multi-select.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -6610,9 +6620,9 @@ export type MultiSelectProps = PublicControlProps<{
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `emptyText` | `message("select.empty")` | [assets/react-kit/src/ui/input/inputs-extra.tsx:1444](../assets/react-kit/src/ui/input/inputs-extra.tsx#L1444) |
-| `placeholder` | `message("select.placeholder")` | [assets/react-kit/src/ui/input/inputs-extra.tsx:1442](../assets/react-kit/src/ui/input/inputs-extra.tsx#L1442) |
-| `searchPlaceholder` | `message("select.searchPlaceholder")` | [assets/react-kit/src/ui/input/inputs-extra.tsx:1443](../assets/react-kit/src/ui/input/inputs-extra.tsx#L1443) |
+| `emptyText` | `message("select.empty")` | [assets/react-kit/src/ui/input/inputs-extra.tsx:1459](../assets/react-kit/src/ui/input/inputs-extra.tsx#L1459) |
+| `placeholder` | `message("select.placeholder")` | [assets/react-kit/src/ui/input/inputs-extra.tsx:1457](../assets/react-kit/src/ui/input/inputs-extra.tsx#L1457) |
+| `searchPlaceholder` | `message("select.searchPlaceholder")` | [assets/react-kit/src/ui/input/inputs-extra.tsx:1458](../assets/react-kit/src/ui/input/inputs-extra.tsx#L1458) |
 
 #### Semantic Tokens
 
@@ -6749,7 +6759,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled` |
 | Parameter type | `NumberInputProps` |
-| Implementation | [assets/react-kit/src/ui/input/inputs-extra.tsx:201](../assets/react-kit/src/ui/input/inputs-extra.tsx#L201) |
+| Implementation | [assets/react-kit/src/ui/input/inputs-extra.tsx:202](../assets/react-kit/src/ui/input/inputs-extra.tsx#L202) |
 | Explorer / example | [#/components/number](../assets/react-kit/index.html#/components/number); [compiled family example](#family-number-compiled-example) (case `number/overview`, source [assets/react-kit/src/explorer/cases/input/number.case.tsx](../assets/react-kit/src/explorer/cases/input/number.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -6787,7 +6797,7 @@ export type NumberInputProps = PublicControlProps<{
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `step` | `1` | [assets/react-kit/src/ui/input/inputs-extra.tsx:211](../assets/react-kit/src/ui/input/inputs-extra.tsx#L211) |
+| `step` | `1` | [assets/react-kit/src/ui/input/inputs-extra.tsx:212](../assets/react-kit/src/ui/input/inputs-extra.tsx#L212) |
 
 #### Semantic Tokens
 
@@ -6909,7 +6919,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled-uncontrolled` |
 | Parameter type | `OtpInputProps` |
-| Implementation | [assets/react-kit/src/ui/input/inputs-extra.tsx:279](../assets/react-kit/src/ui/input/inputs-extra.tsx#L279) |
+| Implementation | [assets/react-kit/src/ui/input/inputs-extra.tsx:280](../assets/react-kit/src/ui/input/inputs-extra.tsx#L280) |
 | Explorer / example | [#/components/otp](../assets/react-kit/index.html#/components/otp); [compiled family example](#family-otp-compiled-example) (case `otp/overview`, source [assets/react-kit/src/explorer/cases/input/otp.case.tsx](../assets/react-kit/src/explorer/cases/input/otp.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -6942,9 +6952,9 @@ export type OtpInputProps = PublicControlProps<{
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `ariaLabel` | `message("otp.label")` | [assets/react-kit/src/ui/input/inputs-extra.tsx:294](../assets/react-kit/src/ui/input/inputs-extra.tsx#L294) |
-| `length` | `6` | [assets/react-kit/src/ui/input/inputs-extra.tsx:287](../assets/react-kit/src/ui/input/inputs-extra.tsx#L287) |
-| `mode` | `"numeric"` | [assets/react-kit/src/ui/input/inputs-extra.tsx:288](../assets/react-kit/src/ui/input/inputs-extra.tsx#L288) |
+| `ariaLabel` | `message("otp.label")` | [assets/react-kit/src/ui/input/inputs-extra.tsx:295](../assets/react-kit/src/ui/input/inputs-extra.tsx#L295) |
+| `length` | `6` | [assets/react-kit/src/ui/input/inputs-extra.tsx:288](../assets/react-kit/src/ui/input/inputs-extra.tsx#L288) |
+| `mode` | `"numeric"` | [assets/react-kit/src/ui/input/inputs-extra.tsx:289](../assets/react-kit/src/ui/input/inputs-extra.tsx#L289) |
 
 #### Semantic Tokens
 
@@ -7067,7 +7077,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled-uncontrolled` |
 | Parameter type | `RadioProps` |
-| Implementation | [assets/react-kit/src/ui/input/forms.tsx:1417](../assets/react-kit/src/ui/input/forms.tsx#L1417) |
+| Implementation | [assets/react-kit/src/ui/input/forms.tsx:1425](../assets/react-kit/src/ui/input/forms.tsx#L1425) |
 | Explorer / example | [#/components/radio](../assets/react-kit/index.html#/components/radio); [compiled family example](#family-radio-compiled-example) (case `radio/overview`, source [assets/react-kit/src/explorer/cases/input/radio.case.tsx](../assets/react-kit/src/explorer/cases/input/radio.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -7402,7 +7412,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled` |
 | Parameter type | `SearchInputProps` |
-| Implementation | [assets/react-kit/src/ui/input/forms.tsx:530](../assets/react-kit/src/ui/input/forms.tsx#L530) |
+| Implementation | [assets/react-kit/src/ui/input/forms.tsx:532](../assets/react-kit/src/ui/input/forms.tsx#L532) |
 | Explorer / example | [#/components/search-input](../assets/react-kit/index.html#/components/search-input); [compiled family example](#family-search-input-compiled-example) (case `search-input/overview`, source [assets/react-kit/src/explorer/cases/input/search-input.case.tsx](../assets/react-kit/src/explorer/cases/input/search-input.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -7442,7 +7452,7 @@ type WrappedInputControlProps<Props extends object> = PublicControlProps<Props> 
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `clearLabel` | `message("search.clear")` | [assets/react-kit/src/ui/input/forms.tsx:537](../assets/react-kit/src/ui/input/forms.tsx#L537) |
+| `clearLabel` | `message("search.clear")` | [assets/react-kit/src/ui/input/forms.tsx:539](../assets/react-kit/src/ui/input/forms.tsx#L539) |
 
 #### Semantic Tokens
 
@@ -7568,7 +7578,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled` |
 | Parameter type | `SegmentedControlProps<T>` |
-| Implementation | [assets/react-kit/src/ui/input/forms.tsx:1583](../assets/react-kit/src/ui/input/forms.tsx#L1583) |
+| Implementation | [assets/react-kit/src/ui/input/forms.tsx:1591](../assets/react-kit/src/ui/input/forms.tsx#L1591) |
 | Explorer / example | [#/components/segmented](../assets/react-kit/index.html#/components/segmented); [compiled family example](#family-segmented-compiled-example) (case `segmented/overview`, source [assets/react-kit/src/explorer/cases/input/segmented.case.tsx](../assets/react-kit/src/explorer/cases/input/segmented.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -7607,8 +7617,8 @@ export type SegmentedControlProps<T extends string> = PublicControlProps<Pick<Fi
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `disabled` | `false` | [assets/react-kit/src/ui/input/forms.tsx:1593](../assets/react-kit/src/ui/input/forms.tsx#L1593) |
-| `fill` | `false` | [assets/react-kit/src/ui/input/forms.tsx:1594](../assets/react-kit/src/ui/input/forms.tsx#L1594) |
+| `disabled` | `false` | [assets/react-kit/src/ui/input/forms.tsx:1601](../assets/react-kit/src/ui/input/forms.tsx#L1601) |
+| `fill` | `false` | [assets/react-kit/src/ui/input/forms.tsx:1602](../assets/react-kit/src/ui/input/forms.tsx#L1602) |
 
 #### Semantic Tokens
 
@@ -7787,7 +7797,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled-uncontrolled` |
 | Parameter type | `AsyncSelectProps` |
-| Implementation | [assets/react-kit/src/ui/input/inputs-extra.tsx:1155](../assets/react-kit/src/ui/input/inputs-extra.tsx#L1155) |
+| Implementation | [assets/react-kit/src/ui/input/inputs-extra.tsx:1166](../assets/react-kit/src/ui/input/inputs-extra.tsx#L1166) |
 | Explorer / example | [#/components/select](../assets/react-kit/index.html#/components/select); [compiled family example](#family-select-compiled-example) (case `select/overview`, source [assets/react-kit/src/explorer/cases/input/select.case.tsx](../assets/react-kit/src/explorer/cases/input/select.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -7852,10 +7862,10 @@ type ControllableQueryProps = {
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `debounceMs` | `250` | [assets/react-kit/src/ui/input/inputs-extra.tsx:1163](../assets/react-kit/src/ui/input/inputs-extra.tsx#L1163) |
-| `emptyText` | `message("select.empty")` | [assets/react-kit/src/ui/input/inputs-extra.tsx:1180](../assets/react-kit/src/ui/input/inputs-extra.tsx#L1180) |
-| `placeholder` | `message("select.placeholder")` | [assets/react-kit/src/ui/input/inputs-extra.tsx:1178](../assets/react-kit/src/ui/input/inputs-extra.tsx#L1178) |
-| `searchPlaceholder` | `message("select.searchShortPlaceholder")` | [assets/react-kit/src/ui/input/inputs-extra.tsx:1179](../assets/react-kit/src/ui/input/inputs-extra.tsx#L1179) |
+| `debounceMs` | `250` | [assets/react-kit/src/ui/input/inputs-extra.tsx:1174](../assets/react-kit/src/ui/input/inputs-extra.tsx#L1174) |
+| `emptyText` | `message("select.empty")` | [assets/react-kit/src/ui/input/inputs-extra.tsx:1191](../assets/react-kit/src/ui/input/inputs-extra.tsx#L1191) |
+| `placeholder` | `message("select.placeholder")` | [assets/react-kit/src/ui/input/inputs-extra.tsx:1189](../assets/react-kit/src/ui/input/inputs-extra.tsx#L1189) |
+| `searchPlaceholder` | `message("select.searchShortPlaceholder")` | [assets/react-kit/src/ui/input/inputs-extra.tsx:1190](../assets/react-kit/src/ui/input/inputs-extra.tsx#L1190) |
 
 #### Semantic Tokens
 
@@ -7910,7 +7920,7 @@ Derived from registered family CSS ([src/ui/styles.css](../assets/react-kit/src/
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled` |
 | Parameter type | `SearchableSelectProps` |
-| Implementation | [assets/react-kit/src/ui/input/inputs-extra.tsx:1108](../assets/react-kit/src/ui/input/inputs-extra.tsx#L1108) |
+| Implementation | [assets/react-kit/src/ui/input/inputs-extra.tsx:1119](../assets/react-kit/src/ui/input/inputs-extra.tsx#L1119) |
 | Explorer / example | [#/components/select](../assets/react-kit/index.html#/components/select); [compiled family example](#family-select-compiled-example) (case `select/overview`, source [assets/react-kit/src/explorer/cases/input/select.case.tsx](../assets/react-kit/src/explorer/cases/input/select.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -7981,7 +7991,7 @@ No migration is required for the current public export.
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled` |
 | Parameter type | `SelectProps` |
-| Implementation | [assets/react-kit/src/ui/input/forms.tsx:709](../assets/react-kit/src/ui/input/forms.tsx#L709) |
+| Implementation | [assets/react-kit/src/ui/input/forms.tsx:711](../assets/react-kit/src/ui/input/forms.tsx#L711) |
 | Explorer / example | [#/components/select](../assets/react-kit/index.html#/components/select); [compiled family example](#family-select-compiled-example) (case `select/overview`, source [assets/react-kit/src/explorer/cases/input/select.case.tsx](../assets/react-kit/src/explorer/cases/input/select.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -8025,10 +8035,10 @@ export type SelectProps = PublicControlProps<FieldControlAriaProps & {
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `loading` | `false` | [assets/react-kit/src/ui/input/forms.tsx:722](../assets/react-kit/src/ui/input/forms.tsx#L722) |
-| `loadingLabel` | `message("common.loading")` | [assets/react-kit/src/ui/input/forms.tsx:723](../assets/react-kit/src/ui/input/forms.tsx#L723) |
-| `placeholder` | `message("select.placeholder")` | [assets/react-kit/src/ui/input/forms.tsx:720](../assets/react-kit/src/ui/input/forms.tsx#L720) |
-| `placement` | `"bottom"` | [assets/react-kit/src/ui/input/forms.tsx:724](../assets/react-kit/src/ui/input/forms.tsx#L724) |
+| `loading` | `false` | [assets/react-kit/src/ui/input/forms.tsx:724](../assets/react-kit/src/ui/input/forms.tsx#L724) |
+| `loadingLabel` | `message("common.loading")` | [assets/react-kit/src/ui/input/forms.tsx:725](../assets/react-kit/src/ui/input/forms.tsx#L725) |
+| `placeholder` | `message("select.placeholder")` | [assets/react-kit/src/ui/input/forms.tsx:722](../assets/react-kit/src/ui/input/forms.tsx#L722) |
+| `placement` | `"bottom"` | [assets/react-kit/src/ui/input/forms.tsx:726](../assets/react-kit/src/ui/input/forms.tsx#L726) |
 
 #### Semantic Tokens
 
@@ -8315,7 +8325,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled-uncontrolled` |
 | Parameter type | `SwitchProps` |
-| Implementation | [assets/react-kit/src/ui/input/forms.tsx:1488](../assets/react-kit/src/ui/input/forms.tsx#L1488) |
+| Implementation | [assets/react-kit/src/ui/input/forms.tsx:1496](../assets/react-kit/src/ui/input/forms.tsx#L1496) |
 | Explorer / example | [#/components/switch](../assets/react-kit/index.html#/components/switch); [compiled family example](#family-switch-compiled-example) (case `switch/overview`, source [assets/react-kit/src/explorer/cases/input/switch.case.tsx](../assets/react-kit/src/explorer/cases/input/switch.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -8485,7 +8495,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled-uncontrolled` |
 | Parameter type | `TagInputProps` |
-| Implementation | [assets/react-kit/src/ui/input/inputs-extra.tsx:1580](../assets/react-kit/src/ui/input/inputs-extra.tsx#L1580) |
+| Implementation | [assets/react-kit/src/ui/input/inputs-extra.tsx:1599](../assets/react-kit/src/ui/input/inputs-extra.tsx#L1599) |
 | Explorer / example | [#/components/tag-input](../assets/react-kit/index.html#/components/tag-input); [compiled family example](#family-tag-input-compiled-example) (case `tag-input/overview`, source [assets/react-kit/src/explorer/cases/input/tag-input.case.tsx](../assets/react-kit/src/explorer/cases/input/tag-input.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -8545,11 +8555,11 @@ export type TagInputProps = PublicControlProps<{
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `allowDuplicates` | `false` | [assets/react-kit/src/ui/input/inputs-extra.tsx:1595](../assets/react-kit/src/ui/input/inputs-extra.tsx#L1595) |
-| `ariaLabel` | `message("tagInput.label")` | [assets/react-kit/src/ui/input/inputs-extra.tsx:1601](../assets/react-kit/src/ui/input/inputs-extra.tsx#L1601) |
-| `normalizeValue` | `(candidate) => candidate.trim()` | [assets/react-kit/src/ui/input/inputs-extra.tsx:1592](../assets/react-kit/src/ui/input/inputs-extra.tsx#L1592) |
-| `placeholder` | `message("tagInput.placeholder")` | [assets/react-kit/src/ui/input/inputs-extra.tsx:1596](../assets/react-kit/src/ui/input/inputs-extra.tsx#L1596) |
-| `suggestions` | `[]` | [assets/react-kit/src/ui/input/inputs-extra.tsx:1591](../assets/react-kit/src/ui/input/inputs-extra.tsx#L1591) |
+| `allowDuplicates` | `false` | [assets/react-kit/src/ui/input/inputs-extra.tsx:1614](../assets/react-kit/src/ui/input/inputs-extra.tsx#L1614) |
+| `ariaLabel` | `message("tagInput.label")` | [assets/react-kit/src/ui/input/inputs-extra.tsx:1620](../assets/react-kit/src/ui/input/inputs-extra.tsx#L1620) |
+| `normalizeValue` | `(candidate) => candidate.trim()` | [assets/react-kit/src/ui/input/inputs-extra.tsx:1611](../assets/react-kit/src/ui/input/inputs-extra.tsx#L1611) |
+| `placeholder` | `message("tagInput.placeholder")` | [assets/react-kit/src/ui/input/inputs-extra.tsx:1615](../assets/react-kit/src/ui/input/inputs-extra.tsx#L1615) |
+| `suggestions` | `[]` | [assets/react-kit/src/ui/input/inputs-extra.tsx:1610](../assets/react-kit/src/ui/input/inputs-extra.tsx#L1610) |
 
 #### Semantic Tokens
 
@@ -8717,7 +8727,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled-uncontrolled` |
 | Parameter type | `InputProps` |
-| Implementation | [assets/react-kit/src/ui/input/forms.tsx:346](../assets/react-kit/src/ui/input/forms.tsx#L346) |
+| Implementation | [assets/react-kit/src/ui/input/forms.tsx:348](../assets/react-kit/src/ui/input/forms.tsx#L348) |
 | Explorer / example | [#/components/text-input](../assets/react-kit/index.html#/components/text-input); [compiled family example](#family-text-input-compiled-example) (case `text-input/overview`, source [assets/react-kit/src/explorer/cases/input/text-input.case.tsx](../assets/react-kit/src/explorer/cases/input/text-input.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -8800,7 +8810,7 @@ No migration is required for the current public export.
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled-uncontrolled` |
 | Parameter type | `PasswordInputProps` |
-| Implementation | [assets/react-kit/src/ui/input/forms.tsx:472](../assets/react-kit/src/ui/input/forms.tsx#L472) |
+| Implementation | [assets/react-kit/src/ui/input/forms.tsx:474](../assets/react-kit/src/ui/input/forms.tsx#L474) |
 | Explorer / example | [#/components/text-input](../assets/react-kit/index.html#/components/text-input); [compiled family example](#family-text-input-compiled-example) (case `text-input/overview`, source [assets/react-kit/src/explorer/cases/input/text-input.case.tsx](../assets/react-kit/src/explorer/cases/input/text-input.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -8858,8 +8868,8 @@ type WrappedInputControlProps<Props extends object> = PublicControlProps<Props> 
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `hideLabel` | `message("password.hide")` | [assets/react-kit/src/ui/input/forms.tsx:477](../assets/react-kit/src/ui/input/forms.tsx#L477) |
-| `showLabel` | `message("password.show")` | [assets/react-kit/src/ui/input/forms.tsx:476](../assets/react-kit/src/ui/input/forms.tsx#L476) |
+| `hideLabel` | `message("password.hide")` | [assets/react-kit/src/ui/input/forms.tsx:479](../assets/react-kit/src/ui/input/forms.tsx#L479) |
+| `showLabel` | `message("password.show")` | [assets/react-kit/src/ui/input/forms.tsx:478](../assets/react-kit/src/ui/input/forms.tsx#L478) |
 
 #### Semantic Tokens
 
@@ -8986,7 +8996,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled-uncontrolled` |
 | Parameter type | `TextareaProps` |
-| Implementation | [assets/react-kit/src/ui/input/forms.tsx:596](../assets/react-kit/src/ui/input/forms.tsx#L596) |
+| Implementation | [assets/react-kit/src/ui/input/forms.tsx:598](../assets/react-kit/src/ui/input/forms.tsx#L598) |
 | Explorer / example | [#/components/textarea](../assets/react-kit/index.html#/components/textarea); [compiled family example](#family-textarea-compiled-example) (case `textarea/overview`, source [assets/react-kit/src/explorer/cases/input/textarea.case.tsx](../assets/react-kit/src/explorer/cases/input/textarea.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -9153,7 +9163,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled-uncontrolled` |
 | Parameter type | `TransferProps` |
-| Implementation | [assets/react-kit/src/ui/input/inputs-extra.tsx:2024](../assets/react-kit/src/ui/input/inputs-extra.tsx#L2024) |
+| Implementation | [assets/react-kit/src/ui/input/inputs-extra.tsx:2047](../assets/react-kit/src/ui/input/inputs-extra.tsx#L2047) |
 | Explorer / example | [#/components/transfer](../assets/react-kit/index.html#/components/transfer); [compiled family example](#family-transfer-compiled-example) (case `transfer/overview`, source [assets/react-kit/src/explorer/cases/input/transfer.case.tsx](../assets/react-kit/src/explorer/cases/input/transfer.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -9200,9 +9210,9 @@ export type TransferProps = PublicControlProps<{
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `ariaLabel` | `message("transfer.label")` | [assets/react-kit/src/ui/input/inputs-extra.tsx:2027](../assets/react-kit/src/ui/input/inputs-extra.tsx#L2027) |
-| `sourceTitle` | `message("transfer.source")` | [assets/react-kit/src/ui/input/inputs-extra.tsx:2027](../assets/react-kit/src/ui/input/inputs-extra.tsx#L2027) |
-| `targetTitle` | `message("transfer.target")` | [assets/react-kit/src/ui/input/inputs-extra.tsx:2027](../assets/react-kit/src/ui/input/inputs-extra.tsx#L2027) |
+| `ariaLabel` | `message("transfer.label")` | [assets/react-kit/src/ui/input/inputs-extra.tsx:2050](../assets/react-kit/src/ui/input/inputs-extra.tsx#L2050) |
+| `sourceTitle` | `message("transfer.source")` | [assets/react-kit/src/ui/input/inputs-extra.tsx:2050](../assets/react-kit/src/ui/input/inputs-extra.tsx#L2050) |
+| `targetTitle` | `message("transfer.target")` | [assets/react-kit/src/ui/input/inputs-extra.tsx:2050](../assets/react-kit/src/ui/input/inputs-extra.tsx#L2050) |
 
 #### Semantic Tokens
 
@@ -9333,7 +9343,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled-uncontrolled` |
 | Parameter type | `TreeSelectProps` |
-| Implementation | [assets/react-kit/src/ui/input/inputs-extra.tsx:1811](../assets/react-kit/src/ui/input/inputs-extra.tsx#L1811) |
+| Implementation | [assets/react-kit/src/ui/input/inputs-extra.tsx:1830](../assets/react-kit/src/ui/input/inputs-extra.tsx#L1830) |
 | Explorer / example | [#/components/tree-select](../assets/react-kit/index.html#/components/tree-select); [compiled family example](#family-tree-select-compiled-example) (case `tree-select/overview`, source [assets/react-kit/src/explorer/cases/input/tree-select.case.tsx](../assets/react-kit/src/explorer/cases/input/tree-select.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -9373,7 +9383,7 @@ export type TreeSelectProps = PublicControlProps<{
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `placeholder` | `message("select.placeholder")` | [assets/react-kit/src/ui/input/inputs-extra.tsx:1814](../assets/react-kit/src/ui/input/inputs-extra.tsx#L1814) |
+| `placeholder` | `message("select.placeholder")` | [assets/react-kit/src/ui/input/inputs-extra.tsx:1833](../assets/react-kit/src/ui/input/inputs-extra.tsx#L1833) |
 
 #### Semantic Tokens
 
@@ -9571,7 +9581,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled` |
 | Parameter type | `FileUploadProps` |
-| Implementation | [assets/react-kit/src/ui/input/inputs-extra.tsx:435](../assets/react-kit/src/ui/input/inputs-extra.tsx#L435) |
+| Implementation | [assets/react-kit/src/ui/input/inputs-extra.tsx:436](../assets/react-kit/src/ui/input/inputs-extra.tsx#L436) |
 | Explorer / example | [#/components/upload](../assets/react-kit/index.html#/components/upload); [compiled family example](#family-upload-compiled-example) (case `upload/overview`, source [assets/react-kit/src/explorer/cases/input/upload.case.tsx](../assets/react-kit/src/explorer/cases/input/upload.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -9632,10 +9642,10 @@ export type FileUploadStatus = "queued" | "uploading" | "success" | "error";
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `browseLabel` | `message("upload.browse")` | [assets/react-kit/src/ui/input/inputs-extra.tsx:457](../assets/react-kit/src/ui/input/inputs-extra.tsx#L457) |
-| `label` | `message("upload.drop")` | [assets/react-kit/src/ui/input/inputs-extra.tsx:455](../assets/react-kit/src/ui/input/inputs-extra.tsx#L455) |
-| `multiple` | `true` | [assets/react-kit/src/ui/input/inputs-extra.tsx:448](../assets/react-kit/src/ui/input/inputs-extra.tsx#L448) |
-| `startLabel` | `message("upload.start")` | [assets/react-kit/src/ui/input/inputs-extra.tsx:458](../assets/react-kit/src/ui/input/inputs-extra.tsx#L458) |
+| `browseLabel` | `message("upload.browse")` | [assets/react-kit/src/ui/input/inputs-extra.tsx:458](../assets/react-kit/src/ui/input/inputs-extra.tsx#L458) |
+| `label` | `message("upload.drop")` | [assets/react-kit/src/ui/input/inputs-extra.tsx:456](../assets/react-kit/src/ui/input/inputs-extra.tsx#L456) |
+| `multiple` | `true` | [assets/react-kit/src/ui/input/inputs-extra.tsx:449](../assets/react-kit/src/ui/input/inputs-extra.tsx#L449) |
+| `startLabel` | `message("upload.start")` | [assets/react-kit/src/ui/input/inputs-extra.tsx:459](../assets/react-kit/src/ui/input/inputs-extra.tsx#L459) |
 
 #### Semantic Tokens
 
@@ -10302,7 +10312,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `BreadcrumbsProps` |
-| Implementation | [assets/react-kit/src/ui/navigation/navigation.tsx:226](../assets/react-kit/src/ui/navigation/navigation.tsx#L226) |
+| Implementation | [assets/react-kit/src/ui/navigation/navigation.tsx:231](../assets/react-kit/src/ui/navigation/navigation.tsx#L231) |
 | Explorer / example | [#/components/breadcrumb](../assets/react-kit/index.html#/components/breadcrumb); [compiled family example](#family-breadcrumb-compiled-example) (case `breadcrumb/overview`, source [assets/react-kit/src/explorer/cases/navigation/breadcrumb.case.tsx](../assets/react-kit/src/explorer/cases/navigation/breadcrumb.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -10333,7 +10343,7 @@ export type BreadcrumbsProps = PublicControlProps<Omit<HTMLAttributes<HTMLElemen
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `ariaLabel` | `message("navigation.breadcrumbs")` | [assets/react-kit/src/ui/navigation/navigation.tsx:229](../assets/react-kit/src/ui/navigation/navigation.tsx#L229) |
+| `ariaLabel` | `message("navigation.breadcrumbs")` | [assets/react-kit/src/ui/navigation/navigation.tsx:234](../assets/react-kit/src/ui/navigation/navigation.tsx#L234) |
 
 #### Semantic Tokens
 
@@ -11171,7 +11181,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `ContextMenuProps` |
-| Implementation | [assets/react-kit/src/ui/overlay/overlays-extra.tsx:420](../assets/react-kit/src/ui/overlay/overlays-extra.tsx#L420) |
+| Implementation | [assets/react-kit/src/ui/overlay/overlays-extra.tsx:425](../assets/react-kit/src/ui/overlay/overlays-extra.tsx#L425) |
 | Explorer / example | [#/components/menu](../assets/react-kit/index.html#/components/menu); [compiled family example](#family-menu-compiled-example) (case `menu/overview`, source [assets/react-kit/src/explorer/cases/navigation/menu.case.tsx](../assets/react-kit/src/explorer/cases/navigation/menu.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -11230,7 +11240,7 @@ No migration is required for the current public export.
 | Kind / stability | `component` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `DropdownMenuProps` |
-| Implementation | [assets/react-kit/src/ui/overlay/overlays.tsx:241](../assets/react-kit/src/ui/overlay/overlays.tsx#L241) |
+| Implementation | [assets/react-kit/src/ui/overlay/overlays.tsx:252](../assets/react-kit/src/ui/overlay/overlays.tsx#L252) |
 | Explorer / example | [#/components/menu](../assets/react-kit/index.html#/components/menu); [compiled family example](#family-menu-compiled-example) (case `menu/overview`, source [assets/react-kit/src/explorer/cases/navigation/menu.case.tsx](../assets/react-kit/src/explorer/cases/navigation/menu.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -11266,7 +11276,7 @@ export type DropdownMenuProps = PublicControlProps<{
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `align` | `"end"` | [assets/react-kit/src/ui/overlay/overlays.tsx:243](../assets/react-kit/src/ui/overlay/overlays.tsx#L243) |
+| `align` | `"end"` | [assets/react-kit/src/ui/overlay/overlays.tsx:254](../assets/react-kit/src/ui/overlay/overlays.tsx#L254) |
 
 #### Semantic Tokens
 
@@ -11466,7 +11476,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled` |
 | Parameter type | `PaginationProps` |
-| Implementation | [assets/react-kit/src/ui/navigation/navigation.tsx:301](../assets/react-kit/src/ui/navigation/navigation.tsx#L301) |
+| Implementation | [assets/react-kit/src/ui/navigation/navigation.tsx:306](../assets/react-kit/src/ui/navigation/navigation.tsx#L306) |
 | Explorer / example | [#/components/pagination](../assets/react-kit/index.html#/components/pagination); [compiled family example](#family-pagination-compiled-example) (case `pagination/overview`, source [assets/react-kit/src/explorer/cases/navigation/pagination.case.tsx](../assets/react-kit/src/explorer/cases/navigation/pagination.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -11504,8 +11514,8 @@ export type PaginationProps = PublicControlProps<Omit<HTMLAttributes<HTMLElement
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `loadingTarget` | `"auto"` | [assets/react-kit/src/ui/navigation/navigation.tsx:322](../assets/react-kit/src/ui/navigation/navigation.tsx#L322) |
-| `pageSizeOptions` | `[10, 20, 50]` | [assets/react-kit/src/ui/navigation/navigation.tsx:326](../assets/react-kit/src/ui/navigation/navigation.tsx#L326) |
+| `loadingTarget` | `"auto"` | [assets/react-kit/src/ui/navigation/navigation.tsx:327](../assets/react-kit/src/ui/navigation/navigation.tsx#L327) |
+| `pageSizeOptions` | `[10, 20, 50]` | [assets/react-kit/src/ui/navigation/navigation.tsx:331](../assets/react-kit/src/ui/navigation/navigation.tsx#L331) |
 
 #### Semantic Tokens
 
@@ -11788,7 +11798,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled-uncontrolled` |
 | Parameter type | `TabsProps` |
-| Implementation | [assets/react-kit/src/ui/navigation/navigation.tsx:58](../assets/react-kit/src/ui/navigation/navigation.tsx#L58) |
+| Implementation | [assets/react-kit/src/ui/navigation/navigation.tsx:59](../assets/react-kit/src/ui/navigation/navigation.tsx#L59) |
 | Explorer / example | [#/components/tabs](../assets/react-kit/index.html#/components/tabs); [compiled family example](#family-tabs-compiled-example) (case `tabs/overview`, source [assets/react-kit/src/explorer/cases/navigation/tabs.case.tsx](../assets/react-kit/src/explorer/cases/navigation/tabs.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -12764,7 +12774,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled-uncontrolled` |
 | Parameter type | `CalendarProps` |
-| Implementation | [assets/react-kit/src/ui/data/data-extra.tsx:625](../assets/react-kit/src/ui/data/data-extra.tsx#L625) |
+| Implementation | [assets/react-kit/src/ui/data/data-extra.tsx:626](../assets/react-kit/src/ui/data/data-extra.tsx#L626) |
 | Explorer / example | [#/components/calendar](../assets/react-kit/index.html#/components/calendar); [compiled family example](#family-calendar-compiled-example) (case `calendar/overview`, source [assets/react-kit/src/explorer/cases/data/calendar.case.tsx](../assets/react-kit/src/explorer/cases/data/calendar.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -12795,7 +12805,7 @@ export type CalendarProps = CalendarBaseProps & ControllableValueProps<Date>;
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `ariaLabel` | `message("calendar.label")` | [assets/react-kit/src/ui/data/data-extra.tsx:641](../assets/react-kit/src/ui/data/data-extra.tsx#L641) |
+| `ariaLabel` | `message("calendar.label")` | [assets/react-kit/src/ui/data/data-extra.tsx:642](../assets/react-kit/src/ui/data/data-extra.tsx#L642) |
 
 #### Semantic Tokens
 
@@ -13065,7 +13075,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled-uncontrolled` |
 | Parameter type | `CarouselProps` |
-| Implementation | [assets/react-kit/src/ui/data/data-extra.tsx:948](../assets/react-kit/src/ui/data/data-extra.tsx#L948) |
+| Implementation | [assets/react-kit/src/ui/data/data-extra.tsx:949](../assets/react-kit/src/ui/data/data-extra.tsx#L949) |
 | Explorer / example | [#/components/carousel](../assets/react-kit/index.html#/components/carousel); [compiled family example](#family-carousel-compiled-example) (case `carousel/overview`, source [assets/react-kit/src/explorer/cases/data/carousel.case.tsx](../assets/react-kit/src/explorer/cases/data/carousel.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -13099,9 +13109,9 @@ export type CarouselProps = CarouselBaseProps & ControllableValueProps<string>;
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `autoplay` | `false` | [assets/react-kit/src/ui/data/data-extra.tsx:960](../assets/react-kit/src/ui/data/data-extra.tsx#L960) |
-| `interval` | `5000` | [assets/react-kit/src/ui/data/data-extra.tsx:961](../assets/react-kit/src/ui/data/data-extra.tsx#L961) |
-| `loop` | `false` | [assets/react-kit/src/ui/data/data-extra.tsx:959](../assets/react-kit/src/ui/data/data-extra.tsx#L959) |
+| `autoplay` | `false` | [assets/react-kit/src/ui/data/data-extra.tsx:961](../assets/react-kit/src/ui/data/data-extra.tsx#L961) |
+| `interval` | `5000` | [assets/react-kit/src/ui/data/data-extra.tsx:962](../assets/react-kit/src/ui/data/data-extra.tsx#L962) |
+| `loop` | `false` | [assets/react-kit/src/ui/data/data-extra.tsx:960](../assets/react-kit/src/ui/data/data-extra.tsx#L960) |
 
 #### Semantic Tokens
 
@@ -13249,7 +13259,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `BarChartProps` |
-| Implementation | [assets/react-kit/src/ui/data/data-extra.tsx:908](../assets/react-kit/src/ui/data/data-extra.tsx#L908) |
+| Implementation | [assets/react-kit/src/ui/data/data-extra.tsx:909](../assets/react-kit/src/ui/data/data-extra.tsx#L909) |
 | Explorer / example | [#/components/chart](../assets/react-kit/index.html#/components/chart); [compiled family example](#family-chart-compiled-example) (case `chart/overview`, source [assets/react-kit/src/explorer/cases/data/chart.case.tsx](../assets/react-kit/src/explorer/cases/data/chart.case.tsx)) |
 | Keyboard | none: This export has no independent keyboard interaction. |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -13282,7 +13292,7 @@ export type BarChartProps = PublicControlProps<Omit<HTMLAttributes<HTMLElement>,
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `formatValue` | `String` | [assets/react-kit/src/ui/data/data-extra.tsx:910](../assets/react-kit/src/ui/data/data-extra.tsx#L910) |
+| `formatValue` | `String` | [assets/react-kit/src/ui/data/data-extra.tsx:911](../assets/react-kit/src/ui/data/data-extra.tsx#L911) |
 
 #### Semantic Tokens
 
@@ -13596,7 +13606,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled-uncontrolled` |
 | Parameter type | `CollapseProps` |
-| Implementation | [assets/react-kit/src/ui/foundation/layout.tsx:246](../assets/react-kit/src/ui/foundation/layout.tsx#L246) |
+| Implementation | [assets/react-kit/src/ui/foundation/layout.tsx:277](../assets/react-kit/src/ui/foundation/layout.tsx#L277) |
 | Explorer / example | [#/components/collapse](../assets/react-kit/index.html#/components/collapse); [compiled family example](#family-collapse-compiled-example) (case `collapse/overview`, source [assets/react-kit/src/explorer/cases/data/collapse.case.tsx](../assets/react-kit/src/explorer/cases/data/collapse.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -14133,7 +14143,7 @@ No migration is required for the current public export.
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled-uncontrolled` |
 | Parameter type | `TreeTableProps<T>` |
-| Implementation | [assets/react-kit/src/ui/data/data-extra.tsx:423](../assets/react-kit/src/ui/data/data-extra.tsx#L423) |
+| Implementation | [assets/react-kit/src/ui/data/data-extra.tsx:424](../assets/react-kit/src/ui/data/data-extra.tsx#L424) |
 | Explorer / example | [#/components/data-table](../assets/react-kit/index.html#/components/data-table); [compiled family example](#family-data-table-compiled-example) (case `data-table/overview`, source [assets/react-kit/src/explorer/cases/data/data-table.case.tsx](../assets/react-kit/src/explorer/cases/data/data-table.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -14195,8 +14205,8 @@ export type TreeTableProps<T> = TreeTableBaseProps<T> & ControllableExpandedIdsP
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `empty` | `message("tree.empty")` | [assets/react-kit/src/ui/data/data-extra.tsx:438](../assets/react-kit/src/ui/data/data-extra.tsx#L438) |
-| `getRowLabel` | `(node) => node.id` | [assets/react-kit/src/ui/data/data-extra.tsx:433](../assets/react-kit/src/ui/data/data-extra.tsx#L433) |
+| `empty` | `message("tree.empty")` | [assets/react-kit/src/ui/data/data-extra.tsx:439](../assets/react-kit/src/ui/data/data-extra.tsx#L439) |
+| `getRowLabel` | `(node) => node.id` | [assets/react-kit/src/ui/data/data-extra.tsx:434](../assets/react-kit/src/ui/data/data-extra.tsx#L434) |
 
 #### Semantic Tokens
 
@@ -14858,7 +14868,7 @@ No migration is required for the current public export.
 | Kind / stability | `component` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `VirtualListProps<T>` |
-| Implementation | [assets/react-kit/src/ui/data/data-extra.tsx:61](../assets/react-kit/src/ui/data/data-extra.tsx#L61) |
+| Implementation | [assets/react-kit/src/ui/data/data-extra.tsx:62](../assets/react-kit/src/ui/data/data-extra.tsx#L62) |
 | Explorer / example | [#/components/list](../assets/react-kit/index.html#/components/list); [compiled family example](#family-list-compiled-example) (case `list/overview`, source [assets/react-kit/src/explorer/cases/data/list.case.tsx](../assets/react-kit/src/explorer/cases/data/list.case.tsx)) |
 | Keyboard | none: Layout primitives do not own keyboard interaction. |
 | ARIA | none: Layout primitives do not introduce an interactive ARIA contract. |
@@ -14896,8 +14906,8 @@ export type VirtualListProps<T> = PublicControlProps<Omit<HTMLAttributes<HTMLDiv
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `itemSize` | `48` | [assets/react-kit/src/ui/data/data-extra.tsx:69](../assets/react-kit/src/ui/data/data-extra.tsx#L69) |
-| `overscan` | `5` | [assets/react-kit/src/ui/data/data-extra.tsx:70](../assets/react-kit/src/ui/data/data-extra.tsx#L70) |
+| `itemSize` | `48` | [assets/react-kit/src/ui/data/data-extra.tsx:70](../assets/react-kit/src/ui/data/data-extra.tsx#L70) |
+| `overscan` | `5` | [assets/react-kit/src/ui/data/data-extra.tsx:71](../assets/react-kit/src/ui/data/data-extra.tsx#L71) |
 
 #### Semantic Tokens
 
@@ -15368,7 +15378,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `ExpandableTextProps` |
-| Implementation | [assets/react-kit/src/ui/data/data-extra.tsx:1310](../assets/react-kit/src/ui/data/data-extra.tsx#L1310) |
+| Implementation | [assets/react-kit/src/ui/data/data-extra.tsx:1314](../assets/react-kit/src/ui/data/data-extra.tsx#L1314) |
 | Explorer / example | [#/components/overflow](../assets/react-kit/index.html#/components/overflow); [compiled family example](#family-overflow-compiled-example) (case `overflow/overview`, source [assets/react-kit/src/explorer/cases/data/overflow.case.tsx](../assets/react-kit/src/explorer/cases/data/overflow.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -15395,9 +15405,9 @@ export type ExpandableTextProps = PublicControlProps<Omit<HTMLAttributes<HTMLDiv
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `collapseLabel` | `message("expandable.collapse")` | [assets/react-kit/src/ui/data/data-extra.tsx:1317](../assets/react-kit/src/ui/data/data-extra.tsx#L1317) |
-| `collapsedLines` | `2` | [assets/react-kit/src/ui/data/data-extra.tsx:1315](../assets/react-kit/src/ui/data/data-extra.tsx#L1315) |
-| `expandLabel` | `message("expandable.expand")` | [assets/react-kit/src/ui/data/data-extra.tsx:1316](../assets/react-kit/src/ui/data/data-extra.tsx#L1316) |
+| `collapseLabel` | `message("expandable.collapse")` | [assets/react-kit/src/ui/data/data-extra.tsx:1321](../assets/react-kit/src/ui/data/data-extra.tsx#L1321) |
+| `collapsedLines` | `2` | [assets/react-kit/src/ui/data/data-extra.tsx:1319](../assets/react-kit/src/ui/data/data-extra.tsx#L1319) |
+| `expandLabel` | `message("expandable.expand")` | [assets/react-kit/src/ui/data/data-extra.tsx:1320](../assets/react-kit/src/ui/data/data-extra.tsx#L1320) |
 
 #### Semantic Tokens
 
@@ -15431,7 +15441,7 @@ No migration is required for the current public export.
 | Kind / stability | `component` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `OverflowTextProps` |
-| Implementation | [assets/react-kit/src/ui/overlay/overlays.tsx:777](../assets/react-kit/src/ui/overlay/overlays.tsx#L777) |
+| Implementation | [assets/react-kit/src/ui/overlay/overlays.tsx:801](../assets/react-kit/src/ui/overlay/overlays.tsx#L801) |
 | Explorer / example | [#/components/overflow](../assets/react-kit/index.html#/components/overflow); [compiled family example](#family-overflow-compiled-example) (case `overflow/overview`, source [assets/react-kit/src/explorer/cases/data/overflow.case.tsx](../assets/react-kit/src/explorer/cases/data/overflow.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -15599,7 +15609,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled` |
 | Parameter type | `SchedulerProps` |
-| Implementation | [assets/react-kit/src/ui/data/data-extra.tsx:845](../assets/react-kit/src/ui/data/data-extra.tsx#L845) |
+| Implementation | [assets/react-kit/src/ui/data/data-extra.tsx:846](../assets/react-kit/src/ui/data/data-extra.tsx#L846) |
 | Explorer / example | [#/components/scheduler](../assets/react-kit/index.html#/components/scheduler); [compiled family example](#family-scheduler-compiled-example) (case `scheduler/overview`, source [assets/react-kit/src/explorer/cases/data/scheduler.case.tsx](../assets/react-kit/src/explorer/cases/data/scheduler.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -16481,7 +16491,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled-uncontrolled` |
 | Parameter type | `TreeProps` |
-| Implementation | [assets/react-kit/src/ui/data/data-extra.tsx:193](../assets/react-kit/src/ui/data/data-extra.tsx#L193) |
+| Implementation | [assets/react-kit/src/ui/data/data-extra.tsx:194](../assets/react-kit/src/ui/data/data-extra.tsx#L194) |
 | Explorer / example | [#/components/tree](../assets/react-kit/index.html#/components/tree); [compiled family example](#family-tree-compiled-example) (case `tree/overview`, source [assets/react-kit/src/explorer/cases/data/tree.case.tsx](../assets/react-kit/src/explorer/cases/data/tree.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -16626,7 +16636,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `AlertProps` |
-| Implementation | [assets/react-kit/src/ui/feedback/feedback.tsx:59](../assets/react-kit/src/ui/feedback/feedback.tsx#L59) |
+| Implementation | [assets/react-kit/src/ui/feedback/feedback.tsx:60](../assets/react-kit/src/ui/feedback/feedback.tsx#L60) |
 | Explorer / example | [#/components/alert](../assets/react-kit/index.html#/components/alert); [compiled family example](#family-alert-compiled-example) (case `alert/overview`, source [assets/react-kit/src/explorer/cases/feedback/alert.case.tsx](../assets/react-kit/src/explorer/cases/feedback/alert.case.tsx)) |
 | Keyboard | none: This export has no independent keyboard interaction. |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -16654,7 +16664,7 @@ export type FeedbackTone = "info" | "success" | "warning" | "danger";
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `tone` | `"info"` | [assets/react-kit/src/ui/feedback/feedback.tsx:61](../assets/react-kit/src/ui/feedback/feedback.tsx#L61) |
+| `tone` | `"info"` | [assets/react-kit/src/ui/feedback/feedback.tsx:62](../assets/react-kit/src/ui/feedback/feedback.tsx#L62) |
 
 #### Semantic Tokens
 
@@ -17031,7 +17041,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `ProgressProps` |
-| Implementation | [assets/react-kit/src/ui/feedback/feedback.tsx:120](../assets/react-kit/src/ui/feedback/feedback.tsx#L120) |
+| Implementation | [assets/react-kit/src/ui/feedback/feedback.tsx:121](../assets/react-kit/src/ui/feedback/feedback.tsx#L121) |
 | Explorer / example | [#/components/progress](../assets/react-kit/index.html#/components/progress); [compiled family example](#family-progress-compiled-example) (case `progress/overview`, source [assets/react-kit/src/explorer/cases/feedback/progress.case.tsx](../assets/react-kit/src/explorer/cases/feedback/progress.case.tsx)) |
 | Keyboard | none: This export has no independent keyboard interaction. |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -17295,7 +17305,7 @@ No migration is required for the current public export.
 | Kind / stability | `component` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `EmptyStateProps` |
-| Implementation | [assets/react-kit/src/ui/feedback/feedback.tsx:93](../assets/react-kit/src/ui/feedback/feedback.tsx#L93) |
+| Implementation | [assets/react-kit/src/ui/feedback/feedback.tsx:94](../assets/react-kit/src/ui/feedback/feedback.tsx#L94) |
 | Explorer / example | [#/components/result](../assets/react-kit/index.html#/components/result); [compiled family example](#family-result-compiled-example) (case `result/overview`, source [assets/react-kit/src/explorer/cases/feedback/result.case.tsx](../assets/react-kit/src/explorer/cases/feedback/result.case.tsx)) |
 | Keyboard | none: This export has no independent keyboard interaction. |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -17485,7 +17495,7 @@ No migration is required for the current public export.
 | Kind / stability | `component` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `RetryButtonProps` |
-| Implementation | [assets/react-kit/src/ui/feedback/feedback.tsx:635](../assets/react-kit/src/ui/feedback/feedback.tsx#L635) |
+| Implementation | [assets/react-kit/src/ui/feedback/feedback.tsx:735](../assets/react-kit/src/ui/feedback/feedback.tsx#L735) |
 | Explorer / example | [#/components/result](../assets/react-kit/index.html#/components/result); [compiled family example](#family-result-compiled-example) (case `result/overview`, source [assets/react-kit/src/explorer/cases/feedback/result.case.tsx](../assets/react-kit/src/explorer/cases/feedback/result.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -17510,7 +17520,7 @@ export type RetryButtonProps = PublicControlProps<Omit<ButtonProps, "children" |
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `label` | `message("common.retry")` | [assets/react-kit/src/ui/feedback/feedback.tsx:638](../assets/react-kit/src/ui/feedback/feedback.tsx#L638) |
+| `label` | `message("common.retry")` | [assets/react-kit/src/ui/feedback/feedback.tsx:738](../assets/react-kit/src/ui/feedback/feedback.tsx#L738) |
 
 #### Semantic Tokens
 
@@ -17995,7 +18005,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `provider` |
 | Parameter type | `ToastProviderProps` |
-| Implementation | [assets/react-kit/src/ui/feedback/feedback.tsx:230](../assets/react-kit/src/ui/feedback/feedback.tsx#L230) |
+| Implementation | [assets/react-kit/src/ui/feedback/feedback.tsx:232](../assets/react-kit/src/ui/feedback/feedback.tsx#L232) |
 | Explorer / example | [#/components/toast](../assets/react-kit/index.html#/components/toast); [compiled family example](#family-toast-compiled-example) (case `toast/overview`, source [assets/react-kit/src/explorer/cases/feedback/toast.case.tsx](../assets/react-kit/src/explorer/cases/feedback/toast.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -18027,8 +18037,8 @@ export type ToastShape = "rounded" | "pill";
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `defaultPosition` | `"top-right"` | [assets/react-kit/src/ui/feedback/feedback.tsx:233](../assets/react-kit/src/ui/feedback/feedback.tsx#L233) |
-| `defaultShape` | `"rounded"` | [assets/react-kit/src/ui/feedback/feedback.tsx:233](../assets/react-kit/src/ui/feedback/feedback.tsx#L233) |
+| `defaultPosition` | `"top-right"` | [assets/react-kit/src/ui/feedback/feedback.tsx:235](../assets/react-kit/src/ui/feedback/feedback.tsx#L235) |
+| `defaultShape` | `"rounded"` | [assets/react-kit/src/ui/feedback/feedback.tsx:235](../assets/react-kit/src/ui/feedback/feedback.tsx#L235) |
 
 #### Semantic Tokens
 
@@ -18071,7 +18081,7 @@ No migration is required for the current public export.
 | Kind / stability | `non-visual` / `stable` |
 | State mode | `hook` |
 | Parameter type | No public parameter |
-| Implementation | [assets/react-kit/src/ui/feedback/feedback.tsx:619](../assets/react-kit/src/ui/feedback/feedback.tsx#L619) |
+| Implementation | [assets/react-kit/src/ui/feedback/feedback.tsx:719](../assets/react-kit/src/ui/feedback/feedback.tsx#L719) |
 | Explorer / example | [#/components/toast](../assets/react-kit/index.html#/components/toast); [compiled family example](#family-toast-compiled-example) (case `toast/overview`, source [assets/react-kit/src/explorer/cases/feedback/toast.case.tsx](../assets/react-kit/src/explorer/cases/feedback/toast.case.tsx)) |
 | Keyboard | none: This non-visual hook has no independent keyboard contract. |
 | ARIA | none: This non-visual hook renders no ARIA semantics. |
@@ -18453,7 +18463,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled` |
 | Parameter type | `ConfirmDialogProps` |
-| Implementation | [assets/react-kit/src/ui/overlay/overlays-extra.tsx:314](../assets/react-kit/src/ui/overlay/overlays-extra.tsx#L314) |
+| Implementation | [assets/react-kit/src/ui/overlay/overlays-extra.tsx:319](../assets/react-kit/src/ui/overlay/overlays-extra.tsx#L319) |
 | Explorer / example | [#/components/dialog](../assets/react-kit/index.html#/components/dialog); [compiled family example](#family-dialog-compiled-example) (case `dialog/overview`, source [assets/react-kit/src/explorer/cases/overlay/dialog.case.tsx](../assets/react-kit/src/explorer/cases/overlay/dialog.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -18485,11 +18495,11 @@ export type ConfirmDialogProps = ConfirmDialogBaseProps & ControlledOpenProps;
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `cancelLabel` | `message("common.cancel")` | [assets/react-kit/src/ui/overlay/overlays-extra.tsx:321](../assets/react-kit/src/ui/overlay/overlays-extra.tsx#L321) |
-| `closeOnBackdropClick` | `true` | [assets/react-kit/src/ui/overlay/overlays-extra.tsx:323](../assets/react-kit/src/ui/overlay/overlays-extra.tsx#L323) |
-| `confirmLabel` | `message("common.confirm")` | [assets/react-kit/src/ui/overlay/overlays-extra.tsx:320](../assets/react-kit/src/ui/overlay/overlays-extra.tsx#L320) |
-| `errorMessage` | `message("confirm.failed")` | [assets/react-kit/src/ui/overlay/overlays-extra.tsx:325](../assets/react-kit/src/ui/overlay/overlays-extra.tsx#L325) |
-| `tone` | `"primary"` | [assets/react-kit/src/ui/overlay/overlays-extra.tsx:322](../assets/react-kit/src/ui/overlay/overlays-extra.tsx#L322) |
+| `cancelLabel` | `message("common.cancel")` | [assets/react-kit/src/ui/overlay/overlays-extra.tsx:326](../assets/react-kit/src/ui/overlay/overlays-extra.tsx#L326) |
+| `closeOnBackdropClick` | `true` | [assets/react-kit/src/ui/overlay/overlays-extra.tsx:328](../assets/react-kit/src/ui/overlay/overlays-extra.tsx#L328) |
+| `confirmLabel` | `message("common.confirm")` | [assets/react-kit/src/ui/overlay/overlays-extra.tsx:325](../assets/react-kit/src/ui/overlay/overlays-extra.tsx#L325) |
+| `errorMessage` | `message("confirm.failed")` | [assets/react-kit/src/ui/overlay/overlays-extra.tsx:330](../assets/react-kit/src/ui/overlay/overlays-extra.tsx#L330) |
+| `tone` | `"primary"` | [assets/react-kit/src/ui/overlay/overlays-extra.tsx:327](../assets/react-kit/src/ui/overlay/overlays-extra.tsx#L327) |
 
 #### Semantic Tokens
 
@@ -18528,7 +18538,7 @@ No migration is required for the current public export.
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled` |
 | Parameter type | `DialogProps` |
-| Implementation | [assets/react-kit/src/ui/overlay/overlays.tsx:58](../assets/react-kit/src/ui/overlay/overlays.tsx#L58) |
+| Implementation | [assets/react-kit/src/ui/overlay/overlays.tsx:59](../assets/react-kit/src/ui/overlay/overlays.tsx#L59) |
 | Explorer / example | [#/components/dialog](../assets/react-kit/index.html#/components/dialog); [compiled family example](#family-dialog-compiled-example) (case `dialog/overview`, source [assets/react-kit/src/explorer/cases/overlay/dialog.case.tsx](../assets/react-kit/src/explorer/cases/overlay/dialog.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -18559,9 +18569,9 @@ export type DialogProps = DialogBaseProps & ControlledOpenProps;
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `closable` | `true` | [assets/react-kit/src/ui/overlay/overlays.tsx:61](../assets/react-kit/src/ui/overlay/overlays.tsx#L61) |
-| `closeOnBackdropClick` | `true` | [assets/react-kit/src/ui/overlay/overlays.tsx:61](../assets/react-kit/src/ui/overlay/overlays.tsx#L61) |
-| `width` | `"medium"` | [assets/react-kit/src/ui/overlay/overlays.tsx:61](../assets/react-kit/src/ui/overlay/overlays.tsx#L61) |
+| `closable` | `true` | [assets/react-kit/src/ui/overlay/overlays.tsx:62](../assets/react-kit/src/ui/overlay/overlays.tsx#L62) |
+| `closeOnBackdropClick` | `true` | [assets/react-kit/src/ui/overlay/overlays.tsx:62](../assets/react-kit/src/ui/overlay/overlays.tsx#L62) |
+| `width` | `"medium"` | [assets/react-kit/src/ui/overlay/overlays.tsx:62](../assets/react-kit/src/ui/overlay/overlays.tsx#L62) |
 
 #### Semantic Tokens
 
@@ -18710,7 +18720,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled` |
 | Parameter type | `DrawerProps` |
-| Implementation | [assets/react-kit/src/ui/overlay/overlays.tsx:146](../assets/react-kit/src/ui/overlay/overlays.tsx#L146) |
+| Implementation | [assets/react-kit/src/ui/overlay/overlays.tsx:152](../assets/react-kit/src/ui/overlay/overlays.tsx#L152) |
 | Explorer / example | [#/components/drawer](../assets/react-kit/index.html#/components/drawer); [compiled family example](#family-drawer-compiled-example) (case `drawer/overview`, source [assets/react-kit/src/explorer/cases/overlay/drawer.case.tsx](../assets/react-kit/src/explorer/cases/overlay/drawer.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -18742,10 +18752,10 @@ export type DrawerProps = DrawerBaseProps & ControlledOpenProps;
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `closable` | `true` | [assets/react-kit/src/ui/overlay/overlays.tsx:149](../assets/react-kit/src/ui/overlay/overlays.tsx#L149) |
-| `closeOnBackdropClick` | `true` | [assets/react-kit/src/ui/overlay/overlays.tsx:149](../assets/react-kit/src/ui/overlay/overlays.tsx#L149) |
-| `variant` | `"edge"` | [assets/react-kit/src/ui/overlay/overlays.tsx:149](../assets/react-kit/src/ui/overlay/overlays.tsx#L149) |
-| `width` | `"medium"` | [assets/react-kit/src/ui/overlay/overlays.tsx:149](../assets/react-kit/src/ui/overlay/overlays.tsx#L149) |
+| `closable` | `true` | [assets/react-kit/src/ui/overlay/overlays.tsx:155](../assets/react-kit/src/ui/overlay/overlays.tsx#L155) |
+| `closeOnBackdropClick` | `true` | [assets/react-kit/src/ui/overlay/overlays.tsx:155](../assets/react-kit/src/ui/overlay/overlays.tsx#L155) |
+| `variant` | `"edge"` | [assets/react-kit/src/ui/overlay/overlays.tsx:155](../assets/react-kit/src/ui/overlay/overlays.tsx#L155) |
+| `width` | `"medium"` | [assets/react-kit/src/ui/overlay/overlays.tsx:155](../assets/react-kit/src/ui/overlay/overlays.tsx#L155) |
 
 #### Semantic Tokens
 
@@ -18880,7 +18890,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled-uncontrolled` |
 | Parameter type | `HoverCardProps` |
-| Implementation | [assets/react-kit/src/ui/overlay/overlays-extra.tsx:292](../assets/react-kit/src/ui/overlay/overlays-extra.tsx#L292) |
+| Implementation | [assets/react-kit/src/ui/overlay/overlays-extra.tsx:297](../assets/react-kit/src/ui/overlay/overlays-extra.tsx#L297) |
 | Explorer / example | [#/components/hover-card](../assets/react-kit/index.html#/components/hover-card); [compiled family example](#family-hover-card-compiled-example) (case `hover-card/overview`, source [assets/react-kit/src/explorer/cases/overlay/hover-card.case.tsx](../assets/react-kit/src/explorer/cases/overlay/hover-card.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -19094,7 +19104,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled` |
 | Parameter type | `LightboxProps` |
-| Implementation | [assets/react-kit/src/ui/overlay/overlays-extra.tsx:699](../assets/react-kit/src/ui/overlay/overlays-extra.tsx#L699) |
+| Implementation | [assets/react-kit/src/ui/overlay/overlays-extra.tsx:711](../assets/react-kit/src/ui/overlay/overlays-extra.tsx#L711) |
 | Explorer / example | [#/components/lightbox](../assets/react-kit/index.html#/components/lightbox); [compiled family example](#family-lightbox-compiled-example) (case `lightbox/overview`, source [assets/react-kit/src/explorer/cases/overlay/lightbox.case.tsx](../assets/react-kit/src/explorer/cases/overlay/lightbox.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -19256,7 +19266,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `PopconfirmProps` |
-| Implementation | [assets/react-kit/src/ui/overlay/overlays-extra.tsx:389](../assets/react-kit/src/ui/overlay/overlays-extra.tsx#L389) |
+| Implementation | [assets/react-kit/src/ui/overlay/overlays-extra.tsx:394](../assets/react-kit/src/ui/overlay/overlays-extra.tsx#L394) |
 | Explorer / example | [#/components/popconfirm](../assets/react-kit/index.html#/components/popconfirm); [compiled family example](#family-popconfirm-compiled-example) (case `popconfirm/overview`, source [assets/react-kit/src/explorer/cases/overlay/popconfirm.case.tsx](../assets/react-kit/src/explorer/cases/overlay/popconfirm.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -19291,10 +19301,10 @@ export type PopconfirmProps = PublicControlProps<{
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `cancelLabel` | `message("common.cancel")` | [assets/react-kit/src/ui/overlay/overlays-extra.tsx:392](../assets/react-kit/src/ui/overlay/overlays-extra.tsx#L392) |
-| `confirmLabel` | `message("common.confirm")` | [assets/react-kit/src/ui/overlay/overlays-extra.tsx:392](../assets/react-kit/src/ui/overlay/overlays-extra.tsx#L392) |
-| `errorMessage` | `message("confirm.failed")` | [assets/react-kit/src/ui/overlay/overlays-extra.tsx:392](../assets/react-kit/src/ui/overlay/overlays-extra.tsx#L392) |
-| `tone` | `"danger"` | [assets/react-kit/src/ui/overlay/overlays-extra.tsx:392](../assets/react-kit/src/ui/overlay/overlays-extra.tsx#L392) |
+| `cancelLabel` | `message("common.cancel")` | [assets/react-kit/src/ui/overlay/overlays-extra.tsx:397](../assets/react-kit/src/ui/overlay/overlays-extra.tsx#L397) |
+| `confirmLabel` | `message("common.confirm")` | [assets/react-kit/src/ui/overlay/overlays-extra.tsx:397](../assets/react-kit/src/ui/overlay/overlays-extra.tsx#L397) |
+| `errorMessage` | `message("confirm.failed")` | [assets/react-kit/src/ui/overlay/overlays-extra.tsx:397](../assets/react-kit/src/ui/overlay/overlays-extra.tsx#L397) |
+| `tone` | `"danger"` | [assets/react-kit/src/ui/overlay/overlays-extra.tsx:397](../assets/react-kit/src/ui/overlay/overlays-extra.tsx#L397) |
 
 #### Semantic Tokens
 
@@ -19457,7 +19467,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled-uncontrolled` |
 | Parameter type | `PopoverProps` |
-| Implementation | [assets/react-kit/src/ui/overlay/overlays-extra.tsx:282](../assets/react-kit/src/ui/overlay/overlays-extra.tsx#L282) |
+| Implementation | [assets/react-kit/src/ui/overlay/overlays-extra.tsx:287](../assets/react-kit/src/ui/overlay/overlays-extra.tsx#L287) |
 | Explorer / example | [#/components/popover](../assets/react-kit/index.html#/components/popover); [compiled family example](#family-popover-compiled-example) (case `popover/overview`, source [assets/react-kit/src/explorer/cases/overlay/popover.case.tsx](../assets/react-kit/src/explorer/cases/overlay/popover.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -19641,7 +19651,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `stateless` |
 | Parameter type | `TooltipProps` |
-| Implementation | [assets/react-kit/src/ui/overlay/overlays.tsx:493](../assets/react-kit/src/ui/overlay/overlays.tsx#L493) |
+| Implementation | [assets/react-kit/src/ui/overlay/overlays.tsx:508](../assets/react-kit/src/ui/overlay/overlays.tsx#L508) |
 | Explorer / example | [#/components/tooltip](../assets/react-kit/index.html#/components/tooltip); [compiled family example](#family-tooltip-compiled-example) (case `tooltip/overview`, source [assets/react-kit/src/explorer/cases/overlay/tooltip.case.tsx](../assets/react-kit/src/explorer/cases/overlay/tooltip.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -19670,7 +19680,7 @@ export type TooltipProps = PublicControlProps<{
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `placement` | `"top"` | [assets/react-kit/src/ui/overlay/overlays.tsx:496](../assets/react-kit/src/ui/overlay/overlays.tsx#L496) |
+| `placement` | `"top"` | [assets/react-kit/src/ui/overlay/overlays.tsx:511](../assets/react-kit/src/ui/overlay/overlays.tsx#L511) |
 
 #### Semantic Tokens
 
@@ -19818,7 +19828,7 @@ export function UIExample({ state, component }: {
 | Kind / stability | `component` / `stable` |
 | State mode | `controlled` |
 | Parameter type | `GuidedTourProps` |
-| Implementation | [assets/react-kit/src/ui/overlay/overlays-extra.tsx:955](../assets/react-kit/src/ui/overlay/overlays-extra.tsx#L955) |
+| Implementation | [assets/react-kit/src/ui/overlay/overlays-extra.tsx:1017](../assets/react-kit/src/ui/overlay/overlays-extra.tsx#L1017) |
 | Explorer / example | [#/components/tour](../assets/react-kit/index.html#/components/tour); [compiled family example](#family-tour-compiled-example) (case `tour/overview`, source [assets/react-kit/src/explorer/cases/overlay/tour.case.tsx](../assets/react-kit/src/explorer/cases/overlay/tour.case.tsx)) |
 | Keyboard | custom: [assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts](../assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts) |
 | ARIA | owned: [assets/react-kit/tests/a11y/m6-export-ownership.spec.ts](../assets/react-kit/tests/a11y/m6-export-ownership.spec.ts) |
@@ -19854,9 +19864,9 @@ export type GuidedTourProps = GuidedTourBaseProps & ControlledOpenProps;
 
 | Prop | Runtime initializer | Source |
 | --- | --- | --- |
-| `finishLabel` | `message("tour.finish")` | [assets/react-kit/src/ui/overlay/overlays-extra.tsx:958](../assets/react-kit/src/ui/overlay/overlays-extra.tsx#L958) |
-| `nextLabel` | `message("tour.next")` | [assets/react-kit/src/ui/overlay/overlays-extra.tsx:958](../assets/react-kit/src/ui/overlay/overlays-extra.tsx#L958) |
-| `previousLabel` | `message("tour.previous")` | [assets/react-kit/src/ui/overlay/overlays-extra.tsx:958](../assets/react-kit/src/ui/overlay/overlays-extra.tsx#L958) |
+| `finishLabel` | `message("tour.finish")` | [assets/react-kit/src/ui/overlay/overlays-extra.tsx:1020](../assets/react-kit/src/ui/overlay/overlays-extra.tsx#L1020) |
+| `nextLabel` | `message("tour.next")` | [assets/react-kit/src/ui/overlay/overlays-extra.tsx:1020](../assets/react-kit/src/ui/overlay/overlays-extra.tsx#L1020) |
+| `previousLabel` | `message("tour.previous")` | [assets/react-kit/src/ui/overlay/overlays-extra.tsx:1020](../assets/react-kit/src/ui/overlay/overlays-extra.tsx#L1020) |
 
 #### Semantic Tokens
 

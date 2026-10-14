@@ -29,6 +29,8 @@ import type {
 import { useControllableMode } from "../internal/controllable-state";
 import { FieldContext, type FieldContextValue } from "../internal/field-context";
 import { floatingPortalTarget, usePopoverPosition } from "../internal/floating-position";
+import { useNonModalMotion } from "../internal/motion";
+import { useSelectionIndicator } from "../internal/selection-motion";
 import {
   assignElementRef,
   createTextControlHandle,
@@ -770,7 +772,9 @@ export function Select(rawProps: SelectProps) {
   const activeOptionIsValid = activeIndex >= 0
     && activeIndex < options.length
     && !options[activeIndex].disabled;
-  usePopoverPosition(open, placement, rootRef, popoverRef);
+  const menuOpen = open && !unavailable && portalTarget !== null;
+  const presence = useNonModalMotion(menuOpen, popoverRef, triggerRef);
+  usePopoverPosition(presence.present, placement, rootRef, popoverRef);
 
   useEffect(() => {
     setPortalTarget(floatingPortalTarget(rootRef.current));
@@ -896,7 +900,7 @@ export function Select(rawProps: SelectProps) {
     }
   };
 
-  const menu = open ? (
+  const menu = presence.present ? (
     <div
       ref={popoverRef}
       id={`${generatedId}-listbox`}
@@ -904,6 +908,8 @@ export function Select(rawProps: SelectProps) {
       role="listbox"
       aria-label={ariaLabel}
       data-ui-floating-root="true"
+      data-ui-motion={presence.state}
+      data-ui-motion-profile="menu"
       data-has-leading={hasLeading || undefined}
     >
       {options.map((option, index) => (
@@ -919,9 +925,9 @@ export function Select(rawProps: SelectProps) {
           disabled={option.disabled}
           tabIndex={-1}
           onMouseMove={() => {
-            if (!option.disabled && activeValue !== option.value) setActiveValue(option.value);
+            if (menuOpen && !option.disabled && activeValue !== option.value) setActiveValue(option.value);
           }}
-          onClick={() => choose(index)}
+          onClick={() => { if (menuOpen) choose(index); }}
         >
           {hasLeading ? <span className="ui-option__leading" aria-hidden="true">{option.leading ?? null}</span> : null}
           <span className="ui-select__option-label">{option.label}</span>
@@ -935,7 +941,7 @@ export function Select(rawProps: SelectProps) {
     <div
       ref={rootRef}
       className="ui-select-shell"
-      data-open={open || undefined}
+      data-open={menuOpen || undefined}
       data-placement={placement}
       data-has-leading={hasLeading || undefined}
       data-loading={loading || undefined}
@@ -952,9 +958,9 @@ export function Select(rawProps: SelectProps) {
         aria-invalid={fieldControl.invalid}
         aria-required={fieldControl.required || undefined}
         aria-haspopup="listbox"
-        aria-expanded={open}
-        aria-controls={open ? `${generatedId}-listbox` : undefined}
-        aria-activedescendant={open && activeOptionIsValid ? `${generatedId}-option-${activeIndex}` : undefined}
+        aria-expanded={menuOpen}
+        aria-controls={menuOpen ? `${generatedId}-listbox` : undefined}
+        aria-activedescendant={menuOpen && activeOptionIsValid ? `${generatedId}-option-${activeIndex}` : undefined}
         aria-busy={loading || undefined}
         disabled={Boolean(disabled || options.length === 0)}
         aria-disabled={interactionDisabled || undefined}
@@ -973,7 +979,7 @@ export function Select(rawProps: SelectProps) {
           {loading ? <LoaderCircle className="ui-spinner" /> : <ChevronDown />}
         </span>
       </button>
-      {menu && portalTarget ? createPortal(menu, portalTarget) : menu}
+      {menu && portalTarget ? createPortal(menu, portalTarget) : null}
       {name || form || required || fieldControl.fieldRequired || controlRef ? <CompositeFormControl
         name={name}
         form={form}
@@ -1082,8 +1088,9 @@ export function Combobox(rawProps: ComboboxProps) {
     && activeIndex < filtered.length
     && !filtered[activeIndex].disabled;
   const interactionDisabled = ariaDisabled === true || ariaDisabled === "true";
-  const menuOpen = open && !disabled && !interactionDisabled;
-  usePopoverPosition(menuOpen, placement, rootRef, popoverRef);
+  const menuOpen = open && !disabled && !interactionDisabled && portalTarget !== null;
+  const presence = useNonModalMotion(menuOpen, popoverRef, triggerRef);
+  usePopoverPosition(presence.present, placement, rootRef, popoverRef);
 
   useEffect(() => {
     setPortalTarget(floatingPortalTarget(rootRef.current));
@@ -1151,12 +1158,13 @@ export function Combobox(rawProps: ComboboxProps) {
   }, [activeIndex, activeOptionIsValid, filtered, menuOpen]);
 
   const choose = (option: ComboboxOption) => {
-    if (disabled || interactionDisabled || option.disabled) return;
+    if (!menuOpen || option.disabled) return;
     if (option.value !== value) onValueChange(option.value);
     closeMenu(true);
   };
 
   const handleSearchKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (!menuOpen) return;
     if (event.nativeEvent.isComposing || event.keyCode === 229) return;
     if (disabled || interactionDisabled) {
       event.preventDefault();
@@ -1199,8 +1207,8 @@ export function Combobox(rawProps: ComboboxProps) {
     }
   };
 
-  const menu = menuOpen ? (
-    <div ref={popoverRef} className="ui-combobox__popover ui-portal" data-ui-floating-root="true">
+  const menu = presence.present ? (
+    <div ref={popoverRef} className="ui-combobox__popover ui-portal" data-ui-floating-root="true" data-ui-motion={presence.state} data-ui-motion-profile="menu">
       <div className="ui-combobox__search">
         <Search aria-hidden="true" />
         <input
@@ -1209,15 +1217,15 @@ export function Combobox(rawProps: ComboboxProps) {
           role="combobox"
           aria-label={message("select.searchAria", { label: ariaLabel })}
           aria-autocomplete="list"
-          aria-expanded="true"
-          aria-controls={`${generatedId}-listbox`}
-          aria-activedescendant={activeOptionIsValid ? `${generatedId}-option-${activeIndex}` : undefined}
+          aria-expanded={menuOpen}
+          aria-controls={menuOpen ? `${generatedId}-listbox` : undefined}
+          aria-activedescendant={menuOpen && activeOptionIsValid ? `${generatedId}-option-${activeIndex}` : undefined}
           aria-describedby={mergeAriaIds(fieldControl.describedBy, !filtered.length ? `${generatedId}-empty` : undefined)}
           aria-invalid={fieldControl.invalid}
           aria-required={fieldControl.required || undefined}
           placeholder={searchPlaceholder}
           onChange={(event: ChangeEvent<HTMLInputElement>) => {
-            if (disabled || interactionDisabled) return;
+            if (!menuOpen) return;
             const nextQuery = event.target.value;
             const needle = nextQuery.trim().toLocaleLowerCase();
             const nextOptions = needle
@@ -1248,7 +1256,7 @@ export function Combobox(rawProps: ComboboxProps) {
             disabled={option.disabled}
             tabIndex={-1}
             onMouseMove={() => {
-              if (!disabled && !interactionDisabled && !option.disabled && activeValue !== option.value) {
+              if (menuOpen && !option.disabled && activeValue !== option.value) {
                 setActiveValue(option.value);
               }
             }}
@@ -1313,7 +1321,7 @@ export function Combobox(rawProps: ComboboxProps) {
         </span>
         <ChevronDown aria-hidden="true" />
       </button>
-      {menu && portalTarget ? createPortal(menu, portalTarget) : menu}
+      {menu && portalTarget ? createPortal(menu, portalTarget) : null}
       {name || form || required || fieldControl.fieldRequired || controlRef ? <CompositeFormControl
         name={name}
         form={form}
@@ -1613,6 +1621,9 @@ export function SegmentedControl<T extends string>(rawProps: SegmentedControlPro
   }
   const initialValueRef = useRef(value);
   const focusTargetRef = useRef<HTMLButtonElement>(null);
+  const groupRef = useRef<HTMLDivElement>(null);
+  const indicatorRef = useRef<HTMLSpanElement>(null);
+  useSelectionIndicator(groupRef, indicatorRef, ":scope > button[aria-pressed='true']", "surface");
   const fieldState = useCompositeFieldState({
     id,
     describedBy: ariaDescribedBy,
@@ -1623,6 +1634,7 @@ export function SegmentedControl<T extends string>(rawProps: SegmentedControlPro
   const formDisabled = disabled || !firstEnabledOption;
   return (
     <div
+      ref={groupRef}
       id={fieldState.id}
       className={cx(
         "ui-segmented",
@@ -1638,6 +1650,7 @@ export function SegmentedControl<T extends string>(rawProps: SegmentedControlPro
       aria-disabled={formDisabled || undefined}
       data-ui-owner="SegmentedControl"
     >
+      <span ref={indicatorRef} className="ui-segmented__indicator" aria-hidden="true" hidden />
       {options.map((option) => (
         <button
           key={option.value}

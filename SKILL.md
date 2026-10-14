@@ -33,6 +33,8 @@ If a requested capability has no registered public export, stop that part of pag
 ## Read by task
 
 - Installation, integration, source checks, and field-aligned controls: [integration guide](references/integration.md).
+- Brand colors, Apple-inspired and Material presets, solid/glass surfaces, nested themes and overlay inheritance: [theme contract](references/theme-contract.md). Use the official `ThemeProvider` options and color tokens; preview at `#/themes`. Preserve the default theme unless the product requests another style.
+- Default entry/exit, interrupted reopening, dynamic Collapse height, Tabs/SegmentedControl indicators, Carousel/Lightbox content switching, and system reduced-motion behavior: [motion contract](references/motion-contract.md). Reuse component-owned motion without application animation wrappers or CSS; preview at `#/components/motion`.
 - Native/composite submission, validation, reset, external forms, and React Hook Form: [form contract](references/form-contract.md).
 - Search, async options, explicit queries, loading, tables, sorting, pinning, height, and pagination: [data workflow contract](references/data-workflows.md).
 - Keyboard file selection with drag-and-drop, and manual loading with infinite scrolling: [file and loading workflows](references/data-workflows.md#official-file-and-continuous-loading-compositions). DragDrop and InfiniteScroll own their keyboard command by default; disable that command explicitly when the documented companion control owns it.

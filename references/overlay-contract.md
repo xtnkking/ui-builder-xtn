@@ -23,22 +23,23 @@ const portalRef = useRef<HTMLDivElement>(null);
 const panelRef = useRef<HTMLDivElement>(null);
 const ready = useLayerPortalReady();
 const portalTarget = useLayerPortalTarget(ready, sourceRef);
+const presence = useMotionPresence(open, portalRef);
 const layer = useLayerKernel({
-  active: open && portalTarget !== null,
+  active: presence.present && portalTarget !== null,
   sourceRef,
   portalRef,
   panelRef,
   dismissPolicy: { backdrop: true, closeControl: true, escape: true },
   initialFocus: "panel",
-  onDismiss: () => setOpen(false),
+  onDismiss: () => { if (open) setOpen(false); },
 });
 
 return (
   <LayerParentProvider id={layer.id}>
     <span ref={sourceRef} hidden aria-hidden="true" />
-    {open && portalTarget ? createPortal(
-      <div ref={portalRef} onMouseDown={(event) => {
-        if (event.target === event.currentTarget && layer.isTopLayer()) layer.dismiss("backdrop");
+    {presence.present && portalTarget ? createPortal(
+      <div ref={portalRef} data-ui-motion={presence.state} onMouseDown={(event) => {
+        if (open && event.target === event.currentTarget && layer.isTopLayer()) layer.dismiss("backdrop");
       }}>
         <div ref={panelRef} tabIndex={-1} onFocusCapture={layer.captureRestoreFocus} />
       </div>,
@@ -49,6 +50,16 @@ return (
 ```
 
 `initialFocus` 可选 `"panel"`、`"first-tabbable"` 或返回目标元素的函数。Dialog、Drawer 和 ConfirmDialog 保留现有的安全操作按钮优先规则；图片预览或引导层可明确把焦点放在其 panel/card。
+
+`useMotionPresence` 是官方内部能力，不从公共 barrel 导出。上例只展示内核接入关系；实际组件还在退出阶段统一阻止新的提交/业务操作。公开调用方仍使用原来的 `open` / `onOpenChange`，无需额外生命周期 Props。
+
+## 出入动效与层所有权
+
+Dialog、ConfirmDialog、Drawer、Lightbox 与 GuidedTour 关闭后保留视觉节点至退出结束；期间继续拥有顶层、焦点、背景 inert 和滚动锁，防止连续 Esc 或点击穿透。退出期间不对仍含焦点的模态 panel 设置 `aria-hidden` 或 `inert`，而是阻止重复 dismiss 和新的业务操作。完成后一次性卸载、解锁并恢复焦点。
+
+退出中重开取消旧完成路径，不能提前回焦、释放背景锁或由晚到结束事件卸载新层。受控父级拒绝关闭时保留原状态。父级直接卸载时立即清理，不保证播放退出。Portal 就绪条件与 presence 同时决定内核激活，SSR render 不访问浏览器全局。系统减少动效或页面已隐藏时及时完成退出。完整时序与减少动效见[组件动效契约](motion-contract.md)。
+
+非模态菜单/Popover/Tooltip 的视觉退出不持有模态焦点锁；逻辑关闭后立即停止操作，必要时先移交焦点，再使退出内容 inert 且不再向辅助技术暴露。
 
 ## 3. 关闭策略
 
@@ -61,6 +72,8 @@ return (
 - Lightbox 的 ×、Escape 和空白遮罩均可关闭预览；空白包括图片与说明之外的 figure 区域。点击图片、说明、页码或控件本身不会触发遮罩关闭。遮罩只响应同一空白目标上的主指针按下并松开；右键、取消的手势或移动超过 8px 的拖动不关闭，拖回原点也不例外。关闭后按统一内核恢复触发器焦点；嵌套预览只关闭最上层图片查看器。
 
 ## 4. 验收证据
+
+下列是原有浮层内核的基线验证入口，不代表本轮新增动效已经全部验收通过。动效生命周期与 Collapse 的定向组件入口包括 `tests/components/motion-presence-contracts.test.tsx`、`tests/components/motion-collapse.test.tsx`；本轮实际执行结果、源码身份及尚待完成的浏览器/production 检查仅记录在 organizer 的唯一台账。
 
 - 组件回归：`tests/components/layer-kernel-contracts.test.tsx`、`core-contracts.test.tsx`、`modal-overlay-contracts.test.tsx`。
 - 三引擎行为：`tests/browser/modal-layer-kernel.spec.ts`。

@@ -3,7 +3,7 @@ import {
   useLayoutEffect,
   type RefObject,
 } from "react";
-import { PUBLIC_THEME_TOKEN_NAMES } from "./theme-contract";
+import { INTERNAL_THEME_TOKEN_NAMES, PUBLIC_THEME_TOKEN_NAMES } from "./theme-contract";
 
 const useClientLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
@@ -25,7 +25,7 @@ export function syncUIPortalTheme(
 ): Set<string> {
   const computed = window.getComputedStyle(source);
   const copied = new Set<string>();
-  PUBLIC_THEME_TOKEN_NAMES.forEach((property) => {
+  [...PUBLIC_THEME_TOKEN_NAMES, ...INTERNAL_THEME_TOKEN_NAMES].forEach((property) => {
     const value = computed.getPropertyValue(property);
     if (!value) return;
     copied.add(property);
@@ -37,6 +37,10 @@ export function syncUIPortalTheme(
   const resolvedScheme = resolvePortalColorScheme(source, computed);
   if (target.dataset.colorScheme !== resolvedScheme) target.dataset.colorScheme = resolvedScheme;
   if (target.style.colorScheme !== resolvedScheme) target.style.colorScheme = resolvedScheme;
+  const preset = source.closest<HTMLElement>("[data-theme-preset]")?.dataset.themePreset ?? "default";
+  const material = source.closest<HTMLElement>("[data-theme-material]")?.dataset.themeMaterial ?? "solid";
+  if (target.dataset.themePreset !== preset) target.dataset.themePreset = preset;
+  if (target.dataset.themeMaterial !== material) target.dataset.themeMaterial = material;
   return copied;
 }
 
@@ -44,6 +48,7 @@ const computedStyleMediaFallbacks = [
   "(prefers-color-scheme: dark)",
   "(prefers-contrast: more)",
   "(prefers-reduced-motion: reduce)",
+  "(prefers-reduced-transparency: reduce)",
   "(forced-colors: active)",
   "(hover: hover)",
   "(pointer: coarse)",
