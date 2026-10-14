@@ -6,7 +6,7 @@
 
 它不是一份只靠提示词约束的视觉规范。ui-builder-xtn 源码、公开导出、组件清单、安装器和来源校验器组成同一个闭环：使用者提出功能后，页面中的控件必须直接使用本仓库提供的组件代码。
 
-最新公开版本为 [v0.3.1](https://github.com/xtnkking/ui-builder-xtn/releases/tag/v0.3.1)，已于 2026-10-10 发布并完成公开附件的干净安装核验。`main` 的后续开发与该不可变发行版分开记录，具体改动见 [CHANGELOG.md](CHANGELOG.md)。
+最新正式版本为 **v0.3.2**。可从 [main 下载最新源码](https://github.com/xtnkking/ui-builder-xtn/archive/refs/heads/main.zip)，或进入 [Latest Release](https://github.com/xtnkking/ui-builder-xtn/releases/latest) 下载完整 Skill ZIP 与校验文件；本次正式交付的两个入口包含相同代码。更新内容见 [CHANGELOG.md](CHANGELOG.md)。
 
 M1–M8 的当前交付范围、原目标差异和验收依据见 [目标收口记录](references/m1-m8-closeout.md)。该记录明确区分已发布成果与新增的 M2/M5 原目标、M8 全矩阵工作，避免用历史阶段表误判当前状态。
 
@@ -45,7 +45,7 @@ M1–M8 的当前交付范围、原目标差异和验收依据见 [目标收口�
 
 [打开青屿商城](https://xtnkking.github.io/ui-builder-xtn/#/examples) 可连续体验一个完整商城：浏览商品、收藏、加入购物车、填写收货信息、用 `QINGYU20` 满 ¥199 减 ¥20、提交订单、模拟付款与收货。普通配送满 ¥199 免运费，不足时 ¥10，快递配送 ¥20；付款约 4 秒后自动模拟发货。体验账号为 `demo@qingyu.example` / `Qingyu2026!`。全部数据保存在页面内存中，刷新重置，不发生真实注册、邮件、扣款或物流；这是前端组合示例，未实现后端或真实账户授权。
 
-在线站点由 GitHub Pages 展示 `main` 最近一次成功部署的代码，组件或预览源码更新后自动构建部署。它与固定版本的 Release 附件分别维护；每个组件的 hash 路由可以直接分享和刷新。部署入口为 [Component Preview 工作流](https://github.com/xtnkking/ui-builder-xtn/actions/workflows/preview.yml)。
+在线站点由 GitHub Pages 展示 `main` 最近一次成功部署的代码；每个组件的 hash 路由可以直接分享和刷新。正式发布必须同步 main、Latest Release 和在线预览，并核对新标签、完整代码包和部署对应同一提交；仅更新其中一个入口不算发布完成。旧版本 Release 保留为历史版本，不随 main 自动改写。发布约定见 [发布流程](references/release-process.md)，部署入口为 [Component Preview 工作流](https://github.com/xtnkking/ui-builder-xtn/actions/workflows/preview.yml)。
 
 `assets/react-kit` 中的 React 实例和 `src/ui/` 是实际可安装、可运行的组件来源。旧的 `ui-library-preview.html` 是独立的静态设计稿，其原生控件和演示交互不会随 Skill 源码自动更新，也不能被复制到业务页面。自 v0.2.8 起，基础控件高度、圆角、主色和弹窗间距已向该设计稿的默认浅色模式对齐；复杂表单弹窗、嵌套确认和桌面端默认贴边抽屉等新场景则以 React 预览及公开组件 API 为准。
 

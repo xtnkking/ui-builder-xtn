@@ -1,6 +1,26 @@
 # ui-builder-xtn Release Process
 
-This document describes the M7/M8 release contracts. The development checkout can retain `0.2.19` metadata while candidates are prepared in isolation. A public release exists only when its completed journal, immutable tag, GitHub Release, checksums, and generated copies identify the same plan. Hosted CI, M8 acceptance, and any eligible assembler-only continuity record are retained outside the candidate source after freeze; this document cannot attest to their outcome.
+This document records both current-main maintenance delivery and the historical M7/M8 RC promotion contracts. Choose the applicable path before executing. Historical evidence keeps its original source/candidate identity; this document cannot attest to its outcome.
+
+## Current-main synchronized releases
+
+The user requires every formal delivery to update all current public entry points together: `main`, an immutable new version tag, the GitHub **Latest Release** with its complete Skill ZIP/checksums, and a successful GitHub Pages deployment. A main-only push or Pages-only deployment is incomplete. Previous tags and Release assets remain immutable historical downloads; links intended to mean “latest” use `/releases/latest` or main rather than an old version URL. Explicitly selecting an old version still returns that historical version.
+
+Version `0.3.2` packages all reviewed changes since `0.3.1`, including themes/material, motion, Toast, storefront, source enforcement, tree actions and preview fixes. This is a current-main maintenance delivery with change-impact verification, not a new M8 RC promotion or a claim that historical M8/hosted-CI evidence ran against this release commit. The `release_ui.py prepare/verify/publish` RC path below remains tied to its historical baseline/candidate contracts and must not be invoked with fabricated evidence or with a reset historical baseline to force a maintenance release through it.
+
+For a current-main delivery:
+
+1. Start from the clean reviewed main and an unused semantic version; align package/lockfile, registry, Manifest, release target, generated compatibility/coverage/module reports and component docs. Keep the historical `v0.2.19` baseline unchanged. Move the reviewed Unreleased changes into the dated version entry.
+2. Reuse passing component/browser checks only for the source hashes they actually identify. Review the release-cut delta separately and run the affected metadata/source-integrity/installation checks. Do not restart full suites or historical M8 merely because version or documentation changed.
+3. Commit the reviewed version/docs delta. Use `release_ui.collect_commit_files` and its existing deterministic ZIP producer/verifier on that exact immutable commit. Retain the complete release file inventory, per-file SHA-256, source commit/tree, ZIP hash/size, release notes and `SHA256SUMS`. Never package uncommitted source, credentials, dependencies, build output or logs. The maintenance manifest uses the distinct `ui-current-main-release` kind; it is not an M8 candidate or formal verification record.
+4. Create an annotated new tag at that same commit; normally push main and the tag atomically without force. Create a draft GitHub Release, upload the exact artifacts, download them again and verify their hashes and ZIP member bytes against the tagged source. Preserve a journal of actual remote IDs and successful actions so failures resume without duplicate releases/uploads.
+5. Deploy Pages for that exact main commit. After successful deployment and draft artifact checks, publish the Release with `make_latest: true`. Resolve `/releases/latest` and prove main, tag, Release, public attachment bytes and deployed source agree. Exercise installation from the actual public ZIP. Report completion only after these checks; record any incomplete entrance as a blocker.
+
+Publishing remains an explicitly authorized action. No historical tag/asset is overwritten to make it appear current. Named installed Skill copies are updated only when included in the requested scope.
+
+## Historical M7/M8 RC promotion
+
+The following contracts describe the isolated M7/M8 release line. In that workflow the development source may retain `0.2.19` while candidates are prepared in isolation, and its journal, immutable tag, Release, checksums and named generated copies identify one plan.
 
 ## One orchestrator
 
@@ -126,7 +146,7 @@ All candidate/source deltas, command captures, installed source, raw behavior/ax
 
 ## Version policy
 
-The immutable historical compatibility and M8 migration baseline remains the annotated `v0.2.19` source. The current development `releaseTarget` is `0.3.1`, while public `v0.3.0` and its acceptance records remain unchanged. The compatibility report's `breaking` classification describes the historical comparison from `0.2.19`; it does not claim a new breaking change relative to published `0.3.0`. This patch prepares source-policy and tooling corrections without extending the public component API. A future change relative to the published API requires its own comparison and version decision; it must not silently replace the historical baseline.
+The immutable historical compatibility and M8 migration baseline remains the annotated `v0.2.19` source. The current-main `releaseTarget` is `0.3.2`; the isolated M7/M8 line described below targeted `0.3.1`. Public historical tags and their acceptance records remain unchanged. The compatibility report's `breaking` classification describes comparison from `0.2.19`; it does not imply a new breaking change relative to `0.3.1`. The additive theme API and maintenance changes use the repository's pre-1.0 patch policy. A new comparison must not silently replace the historical baseline.
 
 - Before `1.0.0`, a breaking public API change requires the next minor line and an additive public API change requires at least a patch. At or after `1.0.0`, breaking changes require a major and additive changes require a minor.
 - This cycle prepares `<releaseTarget>-rc.N`, currently `0.3.1-rc.N`, where `N` is a positive integer without leading zeroes, and permits the same-line stable version only through the verified promotion contract. Beta, arbitrary prerelease labels, build metadata, downgrades, other release lines, and reused versions fail.
