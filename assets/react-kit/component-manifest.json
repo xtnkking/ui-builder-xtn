@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "kitVersion": "0.3.7",
+  "kitVersion": "0.3.8",
   "entries": [
     {
       "id": "color",
@@ -2190,9 +2190,9 @@
     ]
   },
   "sourceIntegrity": {
-    "action/actions.tsx": "d6b2e7e4511109ed8f78b0e71870fc99e00819f55f7f317a5886e70afcf48b93",
+    "action/actions.tsx": "adef59df7bf0b03e8a372a34daec393d80ccf14ccbd4e64948a49c6523e47f22",
     "data/data-extra.tsx": "8e834b0b0beafa84b5afe9561b72cb162b0bb99f713c127bba81bfe268bf6897",
-    "data/data-table.tsx": "45b8de11763447a16fc9b2faa53fd0ca2780205dbd230710b386a3422f89c703",
+    "data/data-table.tsx": "4df82fc17416c8534c1392fd2293cdbb1c198981483d224196ebe79047a18c5c",
     "data/table-cell-text.tsx": "2138eac4ec44a245e7dbf60bbd85d398ad1d993e59d29fe5743f0a8be845b3d8",
     "display/display.tsx": "2ab0b1a8546fca3e4d20d0cf559015cd546d05bcffac81f3f004c7ec7951452c",
     "feedback/feedback-extra.tsx": "356829eb2c518b8818fa50048fb8259d04390d5b1eed3d0f6817c5e097b2a552",
@@ -2200,10 +2200,10 @@
     "foundation/contracts.ts": "80756edff16bc33715d9e93aa3a2cf5619fbdaaf3dc94dd8ebd6a255e3cfe489",
     "foundation/layout.tsx": "e0113c671da47263002dab79da12b793a94e13a5db367008b9e89b8abcab6dd4",
     "foundation/locale.tsx": "4963002f5d615b4d690c33f4220f13fe0067b48e7bb522c90d07a45e9968013b",
-    "foundation/primitives.tsx": "0c9420c177e3d78329f232924a0af57bda5b97f86834509c3c39c6016ae81ee5",
+    "foundation/primitives.tsx": "2863b4baaf2e816ecc83e90d4a5523aef64a0598935b2769bea453288ccd4131",
     "index.ts": "93558e2a003459cea430ecf5878b5e5721efc4fcb3cf15fbfe776d47257bb4d8",
     "input/date-field.tsx": "bbe5295393a454d0b0f020feabd43d61cfc3aa85edcf9fb473f4712e3297c4ea",
-    "input/forms.tsx": "aebfef0993c0e959955975d863637567a18a26229ec9e38632966b7ee2ca72ba",
+    "input/forms.tsx": "2df5a86f15c0e5c2cf5b79edfb0496ecc594159d10be89deed05b7672f09ed51",
     "input/inputs-extra.tsx": "e01dfc3074d5a7a5e8534ff21539b451ab0cfdb2eb5a1c4251cd91fe3505fd18",
     "input/value-controls.tsx": "d4eaf4a3ea98261638d117ad66f71995ec456d6dcc22b7c64c28866d3334ec20",
     "internal/button-slots.tsx": "d95649f2f0f9d31526c473ad958bb8c38741918bc07913ac04316496407e037a",
@@ -2228,16 +2228,16 @@
     "internal/tree-navigation.ts": "71508b1bb9de51e74322885ec9c4af25c029e5b58311b946d15fe104d523e7ed",
     "internal/utils.ts": "c18fd3ad380bace2c49d1bf9d73d117b88407b7706eb155eb0cb39c359b06ce8",
     "navigation/navigation-extra.tsx": "9ba60077a80d52a6fdcf6ec6b2659a9ba0139bd7d9cd1174b40e1587b92ee5fa",
-    "navigation/navigation.tsx": "e803df72c2b3c2d0c3273cbd746b625b5217f05d8d8907243256045bf911e897",
+    "navigation/navigation.tsx": "f2e018ea780b710e5c517a47507501b2c58fecc9e5daf29a08ae00030efd9b3e",
     "overlay/overlays-extra.tsx": "6048f73c6e1497349ea38ae505de8d4308f5ccb2e36f68286e75622920361233",
-    "overlay/overlays.tsx": "675aa4c3220647db7d4d47b7373faa0169a2a023e410aa138f1a4f773ef46a69",
+    "overlay/overlays.tsx": "52fd86a6f41eb5a260ee0d31bfd937b108411fcc1ff6a311456d833e99d28408",
     "patterns/family-login-page.tsx": "6b57fcb3884d857eafb7ff4e1aeb15766d8db18c2617ca4942f1a3ba05c6c042",
-    "patterns/member-management-page.tsx": "ca122684b0a6ca805a0872c70b7aefcba88593fdb62c6f96cc5a68d3487eefe9",
-    "patterns/standard-pages.tsx": "a0f974a60c223bbbede3db0c9d1dc728e01556a0a778741dea7be7511e6f5940",
-    "styles/extended.css": "9870952462dcd2f18b03cc4839939a8a6c3cf80319f6f071b3142d54de57f1e6",
-    "styles/inputs-extra.css": "5839b8b9b0b313614f8f1b4cec3b517fed3961363a9d423501dd8885544a75fd",
-    "styles/layout-actions-display.css": "d4826d953d2c6cb09e3264799b5dc9ebf479d94484bc140c08f176fccc1fed51",
+    "patterns/member-management-page.tsx": "9351fd4822c6d1b9eb5c87883cb1499623a9ada260f586349d270fb81ca14cd6",
+    "patterns/standard-pages.tsx": "74121e9c662c8d3d40eb8c95922caa123822c0dcb628c5c8bc0fe6bf55413400",
+    "styles/extended.css": "8518461306b456d10e90513adc24ff031feb4f8d74f088f4eb4ebf5cacaae5ae",
+    "styles/inputs-extra.css": "08363c0aa71c2717b6df640b3579eef93f661d9d1a06aebc51384ba877dab0d4",
+    "styles/layout-actions-display.css": "f0d928914ee192101af98adb3c1f0176df749c633807c59cfbcbcbcf17be837f",
     "styles/themes.css": "ca5e9233d631ad3f28fb4afdebf6268050f4f2a7b273df69eb702f6aeeec1462",
-    "styles.css": "dd05727b4a8caa3e8a80a38929c8076aa666fd38f77ef8f07c6808d52b27568a"
+    "styles.css": "1ee6250399cf602c855790b07c75851c533baeab332578eef214d1a4a145da1a"
   }
 }

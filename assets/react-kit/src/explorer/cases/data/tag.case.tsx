@@ -29,6 +29,7 @@ function TagExample({ english = false }: { english?: boolean }) {
     <div style={{ display: "grid", gap: 20 }}>
       <Inline gap="small" wrap>
         <Tag tone="neutral">草稿</Tag>
+        <Tag size="small">排队中</Tag>
         <Tag tone="success" selected>已启用</Tag>
         <Tag tone="blue" leading={<span aria-hidden="true">US</span>}>+1</Tag>
         <Tag tone="blue" leading={<Flag />}>GB +44</Tag>
@@ -43,7 +44,7 @@ function TagExample({ english = false }: { english?: boolean }) {
 function LongTagExample() {
   const [visible, setVisible] = useState(true);
   return <Inline gap="small" wrap>
-    <Tag>此标签包含全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置，请确认所有关联配置均符合团队的实际使用要求。</Tag>
+    <Tag size="small">此标签包含全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置，请确认所有关联配置均符合团队的实际使用要求。</Tag>
     <Tag tone="blue" leading={<Flag />}>跨区域企业工作区身份认证与安全策略审核的完整业务标签</Tag>
     {visible ? <Tag tone="warning" onRemove={() => setVisible(false)}>即将过期的企业订阅标签，包含跨地区结算与访问权限审核的完整业务说明</Tag> : <Button size="small" onClick={() => setVisible(true)}>恢复长标签</Button>}
     <Tag tone="blue" country={{ code: "GB", name: "英国跨区域企业工作区身份认证、访问权限与安全策略审核国家名称", callingCode: "+44" }} />

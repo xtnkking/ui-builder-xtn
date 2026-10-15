@@ -1,6 +1,6 @@
 {
   "schemaVersion": 3,
-  "kitVersion": "0.3.7",
+  "kitVersion": "0.3.8",
   "generatedFrom": [
     "assets/react-kit/component-manifest.json",
     "assets/react-kit/registry.json",
@@ -42,6 +42,7 @@
     "assets/react-kit/src/explorer/cases/data/scheduler.case.tsx",
     "assets/react-kit/src/explorer/cases/data/statistic.case.tsx",
     "assets/react-kit/src/explorer/cases/data/status.case.tsx",
+    "assets/react-kit/src/explorer/cases/data/table-dimensions.example.tsx",
     "assets/react-kit/src/explorer/cases/data/tag.case.tsx",
     "assets/react-kit/src/explorer/cases/data/timeline.case.tsx",
     "assets/react-kit/src/explorer/cases/data/tree.case.tsx",
@@ -128,11 +129,16 @@
     "assets/react-kit/tests/browser/d2-drag-upload.spec.ts",
     "assets/react-kit/tests/browser/data-table-toast.spec.ts",
     "assets/react-kit/tests/browser/detail-floating.spec.ts",
+    "assets/react-kit/tests/browser/dimension-controls.spec.ts",
+    "assets/react-kit/tests/browser/dimension-overlays.spec.ts",
+    "assets/react-kit/tests/browser/dimension-pagination.spec.ts",
     "assets/react-kit/tests/browser/drawer-width.spec.ts",
     "assets/react-kit/tests/browser/explorer-audit-findings.spec.ts",
     "assets/react-kit/tests/browser/explorer-responsive-followup.spec.ts",
     "assets/react-kit/tests/browser/feedback-results-toast.spec.ts",
+    "assets/react-kit/tests/browser/filter-hint-sizing.spec.ts",
     "assets/react-kit/tests/browser/filter-sizing.spec.ts",
+    "assets/react-kit/tests/browser/form-settings-sizing.spec.ts",
     "assets/react-kit/tests/browser/infinite-scroll-composition.spec.ts",
     "assets/react-kit/tests/browser/legacy-regressions.spec.ts",
     "assets/react-kit/tests/browser/lightbox-interaction.spec.ts",
@@ -159,7 +165,9 @@
     "assets/react-kit/tests/browser/modal-layer-kernel.spec.ts",
     "assets/react-kit/tests/browser/motion-content.spec.ts",
     "assets/react-kit/tests/browser/motion-enhancement.spec.ts",
+    "assets/react-kit/tests/browser/search-feedback.spec.ts",
     "assets/react-kit/tests/browser/table-actions.spec.ts",
+    "assets/react-kit/tests/browser/table-dimensions.spec.ts",
     "assets/react-kit/tests/browser/table-typography.spec.ts",
     "assets/react-kit/tests/browser/theme-contracts.spec.ts",
     "assets/react-kit/tests/browser/theme-presets.spec.ts",
@@ -187,6 +195,7 @@
     "assets/react-kit/tests/components/filter-field.test.tsx",
     "assets/react-kit/tests/components/form-control-contracts.test.tsx",
     "assets/react-kit/tests/components/form-library-adapter.test.tsx",
+    "assets/react-kit/tests/components/form-sizing.test.tsx",
     "assets/react-kit/tests/components/infinite-scroll-composition.test.tsx",
     "assets/react-kit/tests/components/inputs-extra-contracts.test.tsx",
     "assets/react-kit/tests/components/layer-kernel-contracts.test.tsx",
@@ -214,6 +223,7 @@
     "assets/react-kit/tests/components/navigation-extra-contracts.test.tsx",
     "assets/react-kit/tests/components/overlay-contracts.test.tsx",
     "assets/react-kit/tests/components/page-composition-ownership.test.tsx",
+    "assets/react-kit/tests/components/pagination-cursor.test.tsx",
     "assets/react-kit/tests/components/portal-theme-contracts.test.tsx",
     "assets/react-kit/tests/components/simple-fixed-controls.test.tsx",
     "assets/react-kit/tests/components/table-cell-text.test.tsx",
@@ -243,8 +253,8 @@
       "owner": 144,
       "source": 144,
       "example": 144,
-      "unit": 121,
-      "browser": 71,
+      "unit": 122,
+      "browser": 74,
       "keyboard": 100,
       "a11y": 120
     },
@@ -3770,7 +3780,9 @@
       "unit": [
         "assets/react-kit/tests/components/actions-contracts.test.tsx"
       ],
-      "browser": [],
+      "browser": [
+        "assets/react-kit/tests/browser/dimension-controls.spec.ts"
+      ],
       "keyboard": [],
       "a11y": [
         "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
@@ -6897,12 +6909,16 @@
         "assets/react-kit/tests/components/data-table-contracts.test.tsx",
         "assets/react-kit/tests/components/data-table-toast.test.tsx",
         "assets/react-kit/tests/components/page-composition-ownership.test.tsx",
+        "assets/react-kit/tests/components/pagination-cursor.test.tsx",
         "assets/react-kit/tests/components/table-cell-text.test.tsx"
       ],
       "browser": [
         "assets/react-kit/tests/browser/data-table-toast.spec.ts",
+        "assets/react-kit/tests/browser/dimension-pagination.spec.ts",
         "assets/react-kit/tests/browser/legacy-regressions.spec.ts",
+        "assets/react-kit/tests/browser/search-feedback.spec.ts",
         "assets/react-kit/tests/browser/table-actions.spec.ts",
+        "assets/react-kit/tests/browser/table-dimensions.spec.ts",
         "assets/react-kit/tests/browser/table-typography.spec.ts"
       ],
       "keyboard": [
@@ -7984,6 +8000,7 @@
         "assets/react-kit/tests/components/motion-overlay-toast.test.tsx"
       ],
       "browser": [
+        "assets/react-kit/tests/browser/dimension-overlays.spec.ts",
         "assets/react-kit/tests/browser/legacy-regressions.spec.ts",
         "assets/react-kit/tests/browser/modal-layer-kernel.spec.ts",
         "assets/react-kit/tests/browser/motion-enhancement.spec.ts"
@@ -8484,6 +8501,7 @@
         "assets/react-kit/tests/components/motion-overlay-toast.test.tsx"
       ],
       "browser": [
+        "assets/react-kit/tests/browser/dimension-overlays.spec.ts",
         "assets/react-kit/tests/browser/drawer-width.spec.ts",
         "assets/react-kit/tests/browser/legacy-regressions.spec.ts",
         "assets/react-kit/tests/browser/modal-layer-kernel.spec.ts",
@@ -9616,10 +9634,12 @@
       ],
       "unit": [
         "assets/react-kit/tests/components/core-contracts.test.tsx",
-        "assets/react-kit/tests/components/form-control-contracts.test.tsx"
+        "assets/react-kit/tests/components/form-control-contracts.test.tsx",
+        "assets/react-kit/tests/components/form-sizing.test.tsx"
       ],
       "browser": [
         "assets/react-kit/tests/browser/explorer-responsive-followup.spec.ts",
+        "assets/react-kit/tests/browser/form-settings-sizing.spec.ts",
         "assets/react-kit/tests/browser/legacy-regressions.spec.ts"
       ],
       "keyboard": [],
@@ -10023,9 +10043,12 @@
       ],
       "browser": [
         "assets/react-kit/tests/browser/auth-query-layout.spec.ts",
+        "assets/react-kit/tests/browser/dimension-controls.spec.ts",
         "assets/react-kit/tests/browser/explorer-responsive-followup.spec.ts",
+        "assets/react-kit/tests/browser/filter-hint-sizing.spec.ts",
         "assets/react-kit/tests/browser/filter-sizing.spec.ts",
-        "assets/react-kit/tests/browser/legacy-regressions.spec.ts"
+        "assets/react-kit/tests/browser/legacy-regressions.spec.ts",
+        "assets/react-kit/tests/browser/search-feedback.spec.ts"
       ],
       "keyboard": [
         "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
@@ -10077,7 +10100,7 @@
         },
         "migration": {
           "status": "none",
-          "reason": "No migration is required for the current public export."
+          "reason": "No prop migration is required. Preset widths use 140/240/320px baselines and expand for the contained input's actual-font placeholder plus padding, borders, icon and clear-button slots, up to 360px and the container. Numeric widths remain explicit preferences, may exceed 360px and do not auto-expand. Typed values never drive sizing; narrow containers use full-width fields. Long placeholder text can truncate at the cap: put full instructions in a Field label/hint. These library layout choices do not infer business semantics or represent industry standards. See references/data-workflows.md#filter-field-sizing for the complete five-field composition."
         },
         "keyboard": {
           "mode": "none",
@@ -10085,7 +10108,7 @@
         },
         "aria": {
           "mode": "none",
-          "reason": "FilterField introduces no independent ARIA role and preserves the child Field label and control semantics."
+          "reason": "FilterField introduces no independent ARIA role and preserves the child Field label and control semantics. Keep an accessible control name; the placeholder is not a label."
         },
         "family": "filter-bar",
         "category": "actions",
@@ -10180,6 +10203,8 @@
         "assets/react-kit/tests/components/filter-field.test.tsx"
       ],
       "browser": [
+        "assets/react-kit/tests/browser/dimension-controls.spec.ts",
+        "assets/react-kit/tests/browser/filter-hint-sizing.spec.ts",
         "assets/react-kit/tests/browser/filter-sizing.spec.ts"
       ],
       "keyboard": [],
@@ -10535,10 +10560,12 @@
       ],
       "unit": [
         "assets/react-kit/tests/components/form-library-adapter.test.tsx",
+        "assets/react-kit/tests/components/form-sizing.test.tsx",
         "assets/react-kit/tests/components/inputs-extra-contracts.test.tsx"
       ],
       "browser": [
-        "assets/react-kit/tests/browser/composite-form-contracts.spec.ts"
+        "assets/react-kit/tests/browser/composite-form-contracts.spec.ts",
+        "assets/react-kit/tests/browser/form-settings-sizing.spec.ts"
       ],
       "keyboard": [
         "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
@@ -11435,6 +11462,7 @@
         "assets/react-kit/tests/components/button-contracts.test.tsx"
       ],
       "browser": [
+        "assets/react-kit/tests/browser/dimension-controls.spec.ts",
         "assets/react-kit/tests/browser/table-actions.spec.ts"
       ],
       "keyboard": [
@@ -15399,9 +15427,11 @@
         "assets/react-kit/src/explorer/cases/input/number.case.tsx"
       ],
       "unit": [
+        "assets/react-kit/tests/components/form-sizing.test.tsx",
         "assets/react-kit/tests/components/inputs-extra-contracts.test.tsx"
       ],
       "browser": [
+        "assets/react-kit/tests/browser/form-settings-sizing.spec.ts",
         "assets/react-kit/tests/browser/legacy-regressions.spec.ts"
       ],
       "keyboard": [
@@ -16179,9 +16209,11 @@
         "assets/react-kit/src/explorer/cases/navigation/pagination.case.tsx"
       ],
       "unit": [
-        "assets/react-kit/tests/components/navigation-contracts.test.tsx"
+        "assets/react-kit/tests/components/navigation-contracts.test.tsx",
+        "assets/react-kit/tests/components/pagination-cursor.test.tsx"
       ],
       "browser": [
+        "assets/react-kit/tests/browser/dimension-pagination.spec.ts",
         "assets/react-kit/tests/browser/explorer-responsive-followup.spec.ts"
       ],
       "keyboard": [
@@ -19364,7 +19396,9 @@
         "assets/react-kit/tests/components/core-contracts.test.tsx",
         "assets/react-kit/tests/components/form-control-contracts.test.tsx"
       ],
-      "browser": [],
+      "browser": [
+        "assets/react-kit/tests/browser/filter-hint-sizing.spec.ts"
+      ],
       "keyboard": [
         "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
       ],
@@ -19993,8 +20027,12 @@
       "example": [
         "assets/react-kit/src/explorer/cases/pattern/settings.case.tsx"
       ],
-      "unit": [],
-      "browser": [],
+      "unit": [
+        "assets/react-kit/tests/components/form-sizing.test.tsx"
+      ],
+      "browser": [
+        "assets/react-kit/tests/browser/form-settings-sizing.spec.ts"
+      ],
       "keyboard": [
         "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
       ],
@@ -22820,6 +22858,7 @@
       ],
       "browser": [
         "assets/react-kit/tests/browser/country-tag.spec.ts",
+        "assets/react-kit/tests/browser/dimension-controls.spec.ts",
         "assets/react-kit/tests/browser/explorer-responsive-followup.spec.ts"
       ],
       "keyboard": [
@@ -23958,6 +23997,7 @@
         "assets/react-kit/tests/browser/data-table-toast.spec.ts",
         "assets/react-kit/tests/browser/feedback-results-toast.spec.ts",
         "assets/react-kit/tests/browser/motion-enhancement.spec.ts",
+        "assets/react-kit/tests/browser/search-feedback.spec.ts",
         "assets/react-kit/tests/browser/toast-capacity.spec.ts",
         "assets/react-kit/tests/browser/toast-positions.spec.ts",
         "assets/react-kit/tests/browser/toast-scrollbar.spec.ts",
@@ -25873,6 +25913,7 @@
         "assets/react-kit/tests/components/toast-capacity.test.tsx"
       ],
       "browser": [
+        "assets/react-kit/tests/browser/search-feedback.spec.ts",
         "assets/react-kit/tests/browser/toast-capacity.spec.ts",
         "assets/react-kit/tests/browser/toast-positions.spec.ts",
         "assets/react-kit/tests/browser/toast-scrollbar.spec.ts",

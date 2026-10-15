@@ -1463,6 +1463,13 @@ input[type="password"]::-ms-reveal {
   color: var(--ui-primary-ink);
 }
 
+.ui-tag--small {
+  min-height: 26px;
+  padding-inline: 8px;
+  font-size: 13px;
+  line-height: 18px;
+}
+
 .ui-tag--success {
   border-color: var(--_ui-success-border);
   background: var(--ui-success-soft);
@@ -1733,19 +1740,26 @@ input[type="password"]::-ms-reveal {
 }
 
 .ui-pagination__controls {
+  --_ui-pagination-control-size: 36px;
   margin-left: auto;
 }
 
 .ui-pagination__controls .ui-select-shell {
-  --ui-control-height: 36px;
+  --ui-control-height: var(--_ui-pagination-control-size);
   width: 94px;
+}
+
+.ui-pagination__controls > .ui-icon-button {
+  flex-basis: var(--_ui-pagination-control-size);
+  width: var(--_ui-pagination-control-size);
+  height: var(--_ui-pagination-control-size);
 }
 
 .ui-page-button {
   display: grid;
   place-items: center;
-  width: 36px;
-  height: 36px;
+  width: var(--_ui-pagination-control-size);
+  height: var(--_ui-pagination-control-size);
   padding: 0;
   overflow: hidden;
   border: 1px solid var(--ui-border-strong);
@@ -1802,6 +1816,10 @@ input[type="password"]::-ms-reveal {
   vertical-align: middle;
 }
 
+.ui-pagination__cursor-label {
+  display: block;
+}
+
 .ui-pagination__mobile-loading {
   display: grid;
   place-items: center;
@@ -1820,12 +1838,42 @@ input[type="password"]::-ms-reveal {
 }
 
 @container ui-pagination (max-width: 600px) {
+  .ui-pagination__controls {
+    --_ui-pagination-control-size: 44px;
+  }
+
   .ui-pagination__pages {
     display: none;
   }
 
   .ui-pagination__mobile-label {
     display: block;
+  }
+}
+
+@container ui-pagination (max-width: 280px) {
+  .ui-pagination__controls {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr) 44px;
+    width: 100%;
+  }
+
+  .ui-pagination__controls .ui-select-shell {
+    grid-column: 1 / -1;
+    justify-self: start;
+    width: 94px;
+    max-width: 100%;
+  }
+
+  .ui-pagination__mobile-label {
+    justify-self: center;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 736px), (pointer: coarse) {
+  .ui-pagination__controls {
+    --_ui-pagination-control-size: 44px;
   }
 }
 
@@ -2386,8 +2434,16 @@ input[type="password"]::-ms-reveal {
 .ui-dialog__header p,
 .ui-drawer__header p {
   margin: 3px 0 0;
+  max-height: min(144px, 20dvh);
+  overflow-y: auto;
+  overscroll-behavior: contain;
   color: var(--ui-muted);
   overflow-wrap: anywhere;
+}
+
+.ui-overlay-description:focus-visible {
+  outline: 2px solid var(--ui-focus-ring);
+  outline-offset: -2px;
 }
 
 .ui-dialog__body,
@@ -2768,7 +2824,7 @@ input[type="password"]::-ms-reveal {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  height: calc(var(--ui-data-table-desktop-viewport-height, var(--_ui-data-table-error-desktop-height)) + 2px);
+  height: calc(var(--_ui-data-table-desktop-height, var(--_ui-data-table-error-desktop-height)) + 2px);
 }
 
 .ui-data-table .ui-data-table__frame--error-footer > :is(.ui-data-table__scroller, .ui-data-table__mobile) {
@@ -2795,6 +2851,18 @@ input[type="password"]::-ms-reveal {
   background: var(--ui-surface);
 }
 
+.ui-data-table__frame--fixed-viewport {
+  --_ui-data-table-desktop-height: var(--ui-data-table-desktop-viewport-height);
+  --_ui-data-table-mobile-height: var(--ui-data-table-mobile-viewport-height);
+}
+
+.ui-data-table__frame--default-viewport {
+  /* Keep the default surface useful on short screens without changing explicit capacities. */
+  --_ui-data-table-default-limit: max(158px, calc(100dvh - 220px));
+  --_ui-data-table-desktop-height: min(var(--ui-data-table-desktop-viewport-height), var(--_ui-data-table-default-limit));
+  --_ui-data-table-mobile-height: min(var(--ui-data-table-mobile-viewport-height), var(--_ui-data-table-default-limit));
+}
+
 .ui-data-table__scroller,
 .ui-data-table__mobile,
 .ui-data-table__empty-scroller {
@@ -2813,7 +2881,7 @@ input[type="password"]::-ms-reveal {
 
 .ui-data-table__frame--fixed-viewport > .ui-data-table__scroller {
   --_ui-data-table-header-height: 42px;
-  height: var(--ui-data-table-desktop-viewport-height);
+  height: var(--_ui-data-table-desktop-height);
   overflow-y: auto;
   scrollbar-gutter: stable;
   /* Continue the table bands through the reserved scrollbar gutter. */
@@ -2866,7 +2934,7 @@ input[type="password"]::-ms-reveal {
 }
 
 .ui-data-table__frame--fixed-viewport > .ui-data-table__mobile {
-  height: var(--ui-data-table-mobile-viewport-height);
+  height: var(--_ui-data-table-mobile-height);
   overflow-y: auto;
   scrollbar-gutter: stable;
 }
@@ -2887,7 +2955,7 @@ input[type="password"]::-ms-reveal {
 }
 
 .ui-data-table__frame--fixed-viewport > .ui-data-table__empty-scroller {
-  height: var(--ui-data-table-desktop-viewport-height);
+  height: var(--_ui-data-table-desktop-height);
   min-height: 0;
   overflow-y: auto;
   scrollbar-gutter: stable;
@@ -3616,11 +3684,11 @@ input[type="password"]::-ms-reveal {
   }
 
   .ui-data-table--has-mobile .ui-data-table__frame--error-footer {
-    height: calc(var(--ui-data-table-mobile-viewport-height, var(--_ui-data-table-error-mobile-height)) + 2px);
+    height: calc(var(--_ui-data-table-mobile-height, var(--_ui-data-table-error-mobile-height)) + 2px);
   }
 
   .ui-data-table--has-mobile .ui-data-table__frame--fixed-viewport > .ui-data-table__empty-scroller {
-    height: var(--ui-data-table-mobile-viewport-height);
+    height: var(--_ui-data-table-mobile-height);
   }
 
   .ui-pagination {

@@ -304,6 +304,8 @@ export interface CountryTagData {
 
 export type TagProps = PublicControlProps<Omit<HTMLAttributes<HTMLSpanElement>, "onClick" | "children">> & {
   tone?: TagTone;
+  /** Small business-status tags keep readable text in dense table rows. */
+  size?: "small" | "medium";
   selected?: boolean;
   onRemove?: () => void;
   removeLabel?: string;
@@ -331,6 +333,7 @@ function CountryTagFlag({ src }: { src: string }) {
 
 export function Tag({
   tone = "neutral",
+  size = "medium",
   leading,
   selected = false,
   onRemove,
@@ -378,7 +381,7 @@ export function Tag({
     <span
       {...rootProps}
       title={contentTitle}
-      className={cx("ui-tag", `ui-tag--${tone}`, country && "ui-tag--country", selected && "is-selected")}
+      className={cx("ui-tag", `ui-tag--${tone}`, size === "small" && "ui-tag--small", country && "ui-tag--country", selected && "is-selected")}
       data-selected={selected || undefined}
       data-ui-owner="Tag"
     >

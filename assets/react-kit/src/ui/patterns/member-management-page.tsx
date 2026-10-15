@@ -386,7 +386,7 @@ export function MemberManagementPage({
       id: "status",
       header: message("member.columnStatus"),
       width: 132,
-      cell: (member) => <Tag tone={statusTone(member.status)}>{statusLabel(member.status, message)}</Tag>,
+      cell: (member) => <Tag size="small" tone={statusTone(member.status)}>{statusLabel(member.status, message)}</Tag>,
     },
     { id: "joinedAt", header: message("member.columnJoined"), width: 160, sortable: true, cell: (member) => formatMemberDate(member.joinedAt, formatDate) },
     {

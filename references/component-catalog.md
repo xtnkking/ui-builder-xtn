@@ -5,7 +5,7 @@ This generated index is for discovery. Follow an export link for its Props, runt
 
 - Families: 119
 - Runtime exports: 144
-- Version: `0.3.7`
+- Version: `0.3.8`
 
 ## Choosing The Right API
 

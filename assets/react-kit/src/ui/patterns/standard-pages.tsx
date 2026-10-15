@@ -139,22 +139,23 @@ export interface SettingsPageProps extends PageHeadingProps {
   sections: readonly SettingsSection[];
   currentId: string;
   onCurrentChange: (id: string) => void;
+  layoutWidth?: "readable" | "wide";
   className?: string;
 }
 
-export function SettingsPage({ sections, currentId, onCurrentChange, className, ...heading }: SettingsPageProps) {
+export function SettingsPage({ sections, currentId, onCurrentChange, layoutWidth = "readable", className, ...heading }: SettingsPageProps) {
   const { message } = useUILocale();
   assertUniqueIdentities("SettingsPage", "section.id", sections.map((section) => section.id));
   const current = sections.find((section) => section.id === currentId);
   if (!current && sections.length) throw new RangeError(`SettingsPage cannot find currentId ${JSON.stringify(currentId)}.`);
   return (
-    <main className={cx("ui-page", "ui-settings-page", className)} data-ui-owner="SettingsPage">
+    <main className={cx("ui-page", "ui-settings-page", layoutWidth === "wide" && "ui-settings-page--wide", className)} data-ui-owner="SettingsPage">
       <PageHeading {...heading} />
       <div className="ui-settings-page__layout">
         <nav aria-label={message("page.settings")}>
           {sections.map((section) => <button key={section.id} type="button" disabled={section.disabled} aria-current={section.id === currentId ? "page" : undefined} onClick={() => onCurrentChange(section.id)}>{section.label}</button>)}
         </nav>
-        {current ? <section aria-labelledby={`ui-settings-${current.id}`}><header><h2 id={`ui-settings-${current.id}`}>{current.title ?? current.label}</h2>{current.actions}</header><div>{current.content}</div></section> : null}
+        {current ? <section className="ui-settings-page__content" aria-labelledby={`ui-settings-${current.id}`}><header><h2 id={`ui-settings-${current.id}`}>{current.title ?? current.label}</h2>{current.actions}</header><div>{current.content}</div></section> : null}
       </div>
     </main>
   );

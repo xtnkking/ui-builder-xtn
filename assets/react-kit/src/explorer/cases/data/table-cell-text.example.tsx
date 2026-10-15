@@ -48,7 +48,7 @@ function TaskTypographyExample() {
     { id: "type", header: "任务类型", cell: (row) => row.type, width: 100 },
     { id: "country", header: "国家", cell: (row) => row.country, width: 70 },
     { id: "area", header: "区号", cell: (row) => row.area, width: 70 },
-    { id: "status", header: "状态", cell: () => <Tag>排队中</Tag>, width: 100 },
+    { id: "status", header: "状态", cell: () => <Tag size="small">排队中</Tag>, width: 100 },
     { id: "arrangement", header: "当前安排", cell: (row) => row.arrangement, width: 160 },
     { id: "claimed", header: "成功领取次数", cell: (row) => <TableCellText numeric secondary="累计领取">{row.claimed}</TableCellText>, width: 120 },
     { id: "time", header: "时间", cell: () => <TableCellText secondary="档案更新：10/15 15:23:40">首次入库：10/15 15:23:40</TableCellText>, width: 230 },
@@ -113,7 +113,7 @@ const explorerCase = {
     <TableCellText numeric>{row.phone}</TableCellText>, width: 130 },
   { id: "result", header: "结果", cell: (row) =>
     <TableCellText secondary={row.lastError}>{row.result}</TableCellText>, width: 190 },
-  { id: "status", header: "状态", cell: (row) => <Tag>{row.status}</Tag>, width: 100 },
+  { id: "status", header: "状态", cell: (row) => <Tag size="small">{row.status}</Tag>, width: 100 },
 ];
 <DataTable ariaLabel="任务列表" columns={columns} rows={rows} rowKey={(row) => row.id} />
 // numeric 仅使数字等宽；emphasis 才强调正文；wrap 才允许长文本换行。

@@ -14,21 +14,21 @@
   },
   "current": {
     "packageName": "ui",
-    "version": "0.3.7",
-    "apiDigest": "d52dc91d149a6a6e1305a4824b77c93e814d45c08dbf14f2fcee63e1730252e9",
-    "compatibilityDigest": "9461925eecffabecc4575639724581a65efdebd76b47ec3ad1e47b4ea7bdc0e1",
+    "version": "0.3.8",
+    "apiDigest": "4e6e6c829664323a23061956184cadd9139fe2ccf12a4edfd7d94b8829275ef7",
+    "compatibilityDigest": "836b8f984fa6b41fe98974822deebd7cd1b58f44f3310c57c7f1d40a7b4b5a21",
     "runtimeExports": 144,
     "typeOnlyExports": 234,
     "publicSignatures": 378
   },
   "classification": "breaking",
   "versionPolicy": {
-    "releaseTarget": "0.3.7",
-    "packageVersion": "0.3.7",
+    "releaseTarget": "0.3.8",
+    "packageVersion": "0.3.8",
     "valid": true,
     "requiredBump": "minor",
     "minimumVersion": "0.3.0",
-    "message": "Breaking API changes are covered by version 0.3.7."
+    "message": "Breaking API changes are covered by version 0.3.8."
   },
   "changes": {
     "runtimeExports": {
@@ -558,14 +558,14 @@
           "baselineKind": "runtime",
           "currentKind": "runtime",
           "baselineHash": "4fd2bbd3f8be01e254407b98b24f9b1625f5c6c867a37edd2ea5f721961d744b",
-          "currentHash": "6a41d9fbc98abedf01462f8425efbf4f28c9a108b7642786fe508686b18edf98"
+          "currentHash": "0b4b0dca78bd4cd774dae3dce63977451778d2f0e1623e6b34b6f749ff8989f2"
         },
         {
           "id": "DataTableProps",
           "baselineKind": "type",
           "currentKind": "type",
           "baselineHash": "ac6c109067563f6d0f7e8d155d952c1e0601d6342d10353e91c13257f489e530",
-          "currentHash": "c8f5dbf49cf3b4040ce668f6c4abc963f0cad28c2750dd5add7b97ada9c346bc"
+          "currentHash": "aa443d7d9e2b1d21d5dd555d4ff01be85e305de401d7edfc2930c64dd1b8c589"
         },
         {
           "id": "DateField",
@@ -719,14 +719,14 @@
           "baselineKind": "runtime",
           "currentKind": "runtime",
           "baselineHash": "6cebbc8e72ed9453e2653dd7c4d0cf0eeff3bbe81e38a8382e9ab77952f20a93",
-          "currentHash": "12f133203baeab13450b7e3f177088656623314bb247d78ce2cf87a8947054ec"
+          "currentHash": "d75a271c2c2da0abfbdba77c184b9914d3cfed827a6e3e05711361c556e819ff"
         },
         {
           "id": "FieldProps",
           "baselineKind": "type",
           "currentKind": "type",
           "baselineHash": "0edec6c3141aa6a2c0c68643c20af3170a068331d1abf47aa3b2f02b823494dd",
-          "currentHash": "bfd4b520e1e21a6a3d60eca79ec6636a7eb59540ebf0cf71239bec58962dbe36"
+          "currentHash": "d776bcc3dbb32861bf3a058b91d540b2eb8f6cf7b6d8d74db180da967a909a8b"
         },
         {
           "id": "FileUpload",
@@ -1090,14 +1090,14 @@
           "baselineKind": "runtime",
           "currentKind": "runtime",
           "baselineHash": "7ec154b1b5fa783f8c94b984e6dfd32f2d69db7e86836600277ca3542d854a88",
-          "currentHash": "aecc991e02b9894b36681d8ef1d674985f693e78c44fe93da14e9414ff264ce3"
+          "currentHash": "fb25ad58d896c057372fa62ce46fcd09c2a2ea7166a504ed5c447cd7cde09f1d"
         },
         {
           "id": "PaginationProps",
           "baselineKind": "type",
           "currentKind": "type",
           "baselineHash": "539e65ecbd9021dfcbe9621df21790d39b0fe6c5b15dc9f2025f409fbb9acb46",
-          "currentHash": "54e141907f637d776d33cef7d74f436df980dd1bcd2b6e26584ab1feb489f962"
+          "currentHash": "51c705353cc766bb1d187b155c5263568c12d95ad9e1d11bb518a198ce7f6e34"
         },
         {
           "id": "PasswordInput",
@@ -1310,6 +1310,20 @@
           "currentHash": "c59b0bf8780e21cf302c13a10caa3498e7c1863dd103e703856f8fbce45d2326"
         },
         {
+          "id": "SettingsPage",
+          "baselineKind": "runtime",
+          "currentKind": "runtime",
+          "baselineHash": "b82470c506496ee5250bd36ce89e8b5d04f7545c1e8c782836da8a744e96f4d4",
+          "currentHash": "b724be0e2bbe9a5d001fc6dd0493e0ee97473aad442f5c50233150489760da12"
+        },
+        {
+          "id": "SettingsPageProps",
+          "baselineKind": "type",
+          "currentKind": "type",
+          "baselineHash": "38dd0b3f0096737ff1dfdd723ba8addb5bd451a4c21194aed8007a9320bb75c1",
+          "currentHash": "047ac387c5b90c503328281d31f5515206e7faa4b01de6c49c4ca852dbf41bde"
+        },
+        {
           "id": "SideNavigation",
           "baselineKind": "runtime",
           "currentKind": "runtime",
@@ -1447,7 +1461,7 @@
           "baselineKind": "runtime",
           "currentKind": "runtime",
           "baselineHash": "c6d8418cf3bcdbd9157c02a10206fab78d853e75b2ca7259cbc0c7703b6c87ac",
-          "currentHash": "fa3d27156885c6aa5f560daa2573200f736f9ae1d652c6067bf10f40e1071daa"
+          "currentHash": "aa5fde72b6301e9a225fe90415127911a496593e1a5e0b571a98bd71db326fc3"
         },
         {
           "id": "TagInput",
@@ -1468,7 +1482,7 @@
           "baselineKind": "type",
           "currentKind": "type",
           "baselineHash": "6a674e89d68d85635658a9def7c2dbe833a0b3910ee62fc87a38e412385bb565",
-          "currentHash": "a1411b8ae7f5326c238003f6ea7e6566a0ae1c831b8ca75e190755b093f52290"
+          "currentHash": "c69035f400e387b03e9f85e05286720de5fcd27f226edb711cb5a413317a6227"
         },
         {
           "id": "Textarea",

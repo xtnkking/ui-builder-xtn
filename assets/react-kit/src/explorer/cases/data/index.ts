@@ -23,6 +23,7 @@ import status from "./status.case";
 import tag from "./tag.case";
 import tableActions from "./table-actions.example";
 import tableCellText from "./table-cell-text.example";
+import tableDimensions from "./table-dimensions.example";
 import timeline from "./timeline.case";
 import tree from "./tree.case";
 
@@ -37,7 +38,7 @@ export const dataExplorerCases = {
   chart: [chart],
   "code-block": [codeBlock],
   collapse: [collapse],
-  "data-table": [dataTable, projectMembers, tableCellText, tableActions],
+  "data-table": [dataTable, projectMembers, tableCellText, tableActions, tableDimensions],
   description: [description],
   gallery: [gallery],
   list: [list],

@@ -640,7 +640,27 @@
       "file": "src/ui/styles.css"
     },
     {
+      "selector": ".ui-data-table__error-footer",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-data-table__error-status",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-data-table__error-status-text",
+      "file": "src/ui/styles.css"
+    },
+    {
       "selector": ".ui-data-table__frame",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-data-table__frame--default-viewport",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-data-table__frame--error-footer",
       "file": "src/ui/styles.css"
     },
     {
@@ -796,6 +816,10 @@
       "file": "src/ui/styles.css"
     },
     {
+      "selector": ".ui-drawer--fullscreen",
+      "file": "src/ui/styles.css"
+    },
+    {
       "selector": ".ui-drawer--large",
       "file": "src/ui/styles.css"
     },
@@ -888,6 +912,10 @@
       "file": "src/ui/styles.css"
     },
     {
+      "selector": ".ui-field--sized",
+      "file": "src/ui/styles/inputs-extra.css"
+    },
+    {
       "selector": ".ui-file-upload",
       "file": "src/ui/styles/inputs-extra.css"
     },
@@ -949,6 +977,10 @@
     },
     {
       "selector": ".ui-filter-bar__status",
+      "file": "src/ui/styles/layout-actions-display.css"
+    },
+    {
+      "selector": ".ui-filter-field",
       "file": "src/ui/styles/layout-actions-display.css"
     },
     {
@@ -1364,6 +1396,14 @@
       "file": "src/ui/styles.css"
     },
     {
+      "selector": ".ui-overlay--drawer-fullscreen",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-overlay-description",
+      "file": "src/ui/styles.css"
+    },
+    {
       "selector": ".ui-page",
       "file": "src/ui/styles/extended.css"
     },
@@ -1397,6 +1437,10 @@
     },
     {
       "selector": ".ui-pagination__controls",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-pagination__cursor-label",
       "file": "src/ui/styles.css"
     },
     {
@@ -1620,7 +1664,15 @@
       "file": "src/ui/styles/extended.css"
     },
     {
+      "selector": ".ui-settings-page__content",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
       "selector": ".ui-settings-page__layout",
+      "file": "src/ui/styles/extended.css"
+    },
+    {
+      "selector": ".ui-settings-page--wide",
       "file": "src/ui/styles/extended.css"
     },
     {
@@ -1792,6 +1844,30 @@
       "file": "src/ui/styles.css"
     },
     {
+      "selector": ".ui-table-cell-text",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-table-cell-text__primary",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-table-cell-text__secondary",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-table-cell-text--emphasis",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-table-cell-text--numeric",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-table-cell-text--wrap",
+      "file": "src/ui/styles.css"
+    },
+    {
       "selector": ".ui-tabs__indicator",
       "file": "src/ui/styles.css"
     },
@@ -1853,6 +1929,10 @@
     },
     {
       "selector": ".ui-tag--danger",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-tag--small",
       "file": "src/ui/styles.css"
     },
     {
@@ -2591,13 +2671,66 @@
       ]
     },
     {
+      "token": "--_ui-data-table-default-limit",
+      "kind": "internal-component",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.components",
+          "line": 2861
+        }
+      ]
+    },
+    {
+      "token": "--_ui-data-table-desktop-height",
+      "kind": "internal-component",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.components",
+          "line": 2855
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.components",
+          "line": 2862
+        }
+      ]
+    },
+    {
+      "token": "--_ui-data-table-error-desktop-height",
+      "kind": "internal-runtime",
+      "declarations": []
+    },
+    {
+      "token": "--_ui-data-table-error-mobile-height",
+      "kind": "internal-runtime",
+      "declarations": []
+    },
+    {
       "token": "--_ui-data-table-header-height",
       "kind": "internal-component",
       "declarations": [
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 2753
+          "line": 2883
+        }
+      ]
+    },
+    {
+      "token": "--_ui-data-table-mobile-height",
+      "kind": "internal-component",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.components",
+          "line": 2856
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.components",
+          "line": 2863
         }
       ]
     },
@@ -2664,12 +2797,27 @@
       ]
     },
     {
+      "token": "--_ui-drawer-width",
+      "kind": "internal-runtime",
+      "declarations": []
+    },
+    {
       "token": "--_ui-filter-action-offset",
       "kind": "internal-runtime",
       "declarations": []
     },
     {
       "token": "--_ui-filter-align-offset",
+      "kind": "internal-runtime",
+      "declarations": []
+    },
+    {
+      "token": "--_ui-filter-field-fit-width",
+      "kind": "internal-runtime",
+      "declarations": []
+    },
+    {
+      "token": "--_ui-filter-field-width",
       "kind": "internal-runtime",
       "declarations": []
     },
@@ -3039,6 +3187,27 @@
           "file": "src/ui/styles/themes.css",
           "layer": "ui.tokens",
           "line": 147
+        }
+      ]
+    },
+    {
+      "token": "--_ui-pagination-control-size",
+      "kind": "internal-component",
+      "declarations": [
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.components",
+          "line": 1743
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.components",
+          "line": 1842
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.components",
+          "line": 1876
         }
       ]
     },
@@ -3585,12 +3754,12 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 2022
+          "line": 2070
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 2045
+          "line": 2093
         }
       ]
     },
@@ -3715,12 +3884,12 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 2021
+          "line": 2069
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 3573
+          "line": 3760
         }
       ]
     },
@@ -3757,7 +3926,7 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 2075
+          "line": 2123
         }
       ]
     },
@@ -3768,12 +3937,12 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 2071
+          "line": 2119
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 2077
+          "line": 2125
         }
       ]
     },
@@ -3883,22 +4052,22 @@
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 613
+          "line": 633
         },
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 614
+          "line": 634
         },
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 615
+          "line": 635
         },
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 616
+          "line": 636
         }
       ]
     },
@@ -3909,22 +4078,22 @@
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 613
+          "line": 633
         },
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 614
+          "line": 634
         },
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 615
+          "line": 635
         },
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 616
+          "line": 636
         }
       ]
     },
@@ -4053,12 +4222,7 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 1740
-        },
-        {
-          "file": "src/ui/styles/layout-actions-display.css",
-          "layer": "ui.components",
-          "line": 351
+          "line": 1748
         },
         {
           "file": "src/ui/styles/layout-actions-display.css",
@@ -4068,12 +4232,17 @@
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 426
+          "line": 379
         },
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 436
+          "line": 446
+        },
+        {
+          "file": "src/ui/styles/layout-actions-display.css",
+          "layer": "ui.components",
+          "line": 456
         }
       ]
     },
@@ -4146,32 +4315,37 @@
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 517
+          "line": 537
         },
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 518
+          "line": 538
         },
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 519
+          "line": 539
         },
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 1053
+          "line": 1073
         },
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 1075
+          "line": 1095
         }
       ]
     },
     {
       "token": "--ui-event-color",
+      "kind": "internal-runtime",
+      "declarations": []
+    },
+    {
+      "token": "--ui-field-width",
       "kind": "internal-runtime",
       "declarations": []
     },
@@ -4244,12 +4418,12 @@
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 1054
+          "line": 1074
         },
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 1087
+          "line": 1107
         }
       ]
     },
@@ -4270,22 +4444,22 @@
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 921
+          "line": 941
         },
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 926
+          "line": 946
         },
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 927
+          "line": 947
         },
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 928
+          "line": 948
         }
       ]
     },
@@ -5052,5 +5226,5 @@
       ]
     }
   ],
-  "selectorCount": 1211
+  "selectorCount": 1251
 }

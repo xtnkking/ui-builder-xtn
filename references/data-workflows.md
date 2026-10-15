@@ -80,27 +80,45 @@ import { DataTable, ToastProvider } from "./ui";
 
 Pair query commands with fields using `Button size="field"`. `FilterBar` defaults to compact 38px desktop fields/actions with tighter button padding; `density="comfortable"` uses 44px. Narrow containers, mobile viewports and coarse-pointer devices retain 44px targets. Standalone field-aligned buttons remain 44px. For a compact two-character action, pass `loadingLabel="查询"` or `loadingLabel="搜索"` to match its visible label; use the same localized action in other languages. The official spinner then appears beside that label without reserving extra width for the generic processing text, and idle/loading dimensions stay identical. The `FilterBar` Explorer's default example demonstrates an explicit, duplicate-blocked 800ms request while preserving the last applied results; the action's loading state belongs to Button.
 
+## Search feedback
+
+`FilterBar` submits the form and `Button` displays the supplied loading state; neither component knows whether the business query succeeded. Compose result feedback at the owner that awaits the actual request, rather than adding a click-only success handler.
+
+| Request / outcome | Feedback owner and behavior |
+| --- | --- |
+| Query button or Enter submission in progress | The initiating Button must show loading; a shared synchronous request lock blocks duplicate entry before React commits. |
+| Current explicit query succeeds | Optionally send one short success Toast after the awaited request succeeds. Use “查询完成” without repeating the table's result count; omit it when the result change is sufficient feedback. |
+| Explicit query returns no rows | Keep the DataTable empty state. An optional short info Toast may replace, not accompany, the success Toast. |
+| Table query or retry fails | Set `DataTable state="error"` and preserve the last successful rows; the table owns its automatic error Toast and in-frame retry. Do not send another manual error notification. |
+| A query fails without a DataTable feedback owner | Its request owner sends one concise failure Toast and preserves the data and retry command. |
+| Initial load, pagination, live filter edits or reset succeeds | No success Toast. Draft edits do not request data unless the product explicitly chooses live search. |
+| Canceled, stale or unmounted request completes | No Toast and no stale state update. Carry a request identity or AbortSignal through the request owner. |
+
+Use one application-level `ToastProvider` for table errors and optional search-success feedback. The `notifyOnSuccess` option in the `TaskFilters` composition below defaults to `false`; it is an application-owned prop, not a prop on FilterBar, Button or DataTable. Pass it deliberately when a manual query needs a completion confirmation. The runnable [search feedback example](../assets/react-kit/src/explorer/cases/actions/search-feedback.example.tsx), at `#/components/filter-bar` →「搜索反馈」, initially enables its demo switch so this behavior is visible; it uses a shared DataTable failure owner and keeps successful pagination silent.
+
 ## Filter field sizing
 
-Use the public `FilterField` as a direct child of `FilterBar` to choose a stable width for each filter. It wraps an existing `SearchInput`, `Select`, or labeled `Field`; it does not create a label, infer field semantics, or replace its child's value and accessibility contract. Use the control's accessible name, or the existing `Field` label association. Do not give this wrapper application `style`, `className`, or `ref` overrides.
+Use the public `FilterField` as a direct child of `FilterBar` to choose a stable width for each filter. It wraps an existing `SearchInput`, `Select`, or labeled `Field`; it does not create a label, infer field semantics, or replace its child's value and accessibility contract. Give the child an accessible name, such as `SearchInput aria-label`, or associate it with an existing `Field` label; a placeholder does not replace that name. Do not give this wrapper application `style`, `className`, or `ref` overrides.
 
-| `FilterField.width` | Preferred width |
+| `FilterField.width` | Baseline / explicit preferred width |
 | --- | --- |
 | `"short"` | 140px |
 | `"medium"` or omitted | 240px |
 | `"long"` | 320px |
 | Positive finite `number` | That many CSS pixels, for example `180` |
 
-These are optional library design values, not authoritative standards or mandatory widths for a data type. The business owner chooses according to expected content, language and the space available. A short country code or status selector will often need less space than a task ID, email address or broad keyword query. Choose long keyword widths deliberately rather than assigning the longest preset to every field. The component does not grow as the user types. Unsupported runtime values, including non-positive or non-finite numbers, fall back to medium; do not pass CSS strings such as `"180px"`.
+These are library design values, not authoritative standards or mandatory widths for a data type. With a preset or omitted width, FilterField measures its contained input's placeholder using the actual control font and reserves its padding, borders, icon and clear-button slots. It expands beyond the baseline when needed, up to 360px and the available container width. This is text measurement, not an analysis of the field's business meaning; selectors without an input placeholder retain the chosen baseline. The width does not grow or shrink with the typed value, and clearing the input does not collapse the space reserved for its controls.
+
+Use a positive numeric width for a deliberate preference, such as `width={180}`; that mode does not automatically expand for a placeholder. An explicit number may exceed 360px, while still being bounded by its container. Unsupported runtime values, including non-positive or non-finite numbers, fall back to the medium preset; do not pass CSS strings such as `"180px"`. A very long placeholder can still truncate at the automatic limit or in a narrow container. Put full instructions in the official `Field` label/hint rather than relying on a placeholder to display a paragraph.
 
 Fields and actions share the available wrapping space: on a wide container, query/reset follow the last field when they fit; narrower rows wrap naturally without enlarging every field to distribute unused space. Preferred widths are bounded by the container. At a container width of 520px or less, all filter fields use full width and fields/actions retain 44px targets. The normal compact desktop height is 38px; `density="comfortable"` and coarse-pointer devices use 44px. Choose widths based on the local filter container, not just the browser viewport.
 
-Existing controls used directly as `FilterBar` children keep their legacy 320px sizing. Wrap each field explicitly to adopt the mixed-width composition; updating the Skill does not rewrite a consumer's existing JSX. A custom numeric width controls layout only and does not permit control CSS overrides or an input that changes width with its current text.
+Existing controls used directly as `FilterBar` children keep their legacy 320px sizing. Wrap each field explicitly to adopt the mixed-width composition; updating the Skill does not rewrite a consumer's existing JSX. Choose presets for automatic placeholder accommodation, or a numeric preference for a deliberately fixed layout, rather than overriding protected control CSS.
 
-This complete typed composition keeps draft values separate from the last successful query, submits only on the query command or Enter, and treats reset as an explicit query. The caller's `onQuery` performs the request and rejects on failure; retain the last successful rows in that owner. The shared application `ToastProvider` supplies the action feedback.
+This complete typed composition keeps draft values separate from the last successful query, submits only on the query command or Enter, and treats reset as an explicit query. The caller's `onQuery` performs the request with the supplied AbortSignal and rejects on failure; retain the last successful rows in that owner, ignore aborted responses, and do not swallow a failure into a successful resolution. This standalone filter example has no DataTable feedback owner, so its catch owns the sole error Toast. The shared application `ToastProvider` supplies the action feedback. The optional `notifyOnSuccess` affects successful manual submission only; reset stays silent on success.
 
 ```tsx
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button, FilterBar, FilterField, SearchInput, Select, useToast } from "./ui";
 
 type TaskQuery = {
@@ -114,39 +132,52 @@ const emptyTaskQuery: TaskQuery = {
   taskId: "", status: "", taskType: "", country: "", phone: "",
 };
 
-export function TaskFilters({ onQuery }: {
-  onQuery: (query: TaskQuery) => Promise<void>;
+export function TaskFilters({ onQuery, notifyOnSuccess = false }: {
+  onQuery: (query: TaskQuery, signal: AbortSignal) => Promise<void>;
+  notifyOnSuccess?: boolean;
 }) {
   const [draft, setDraft] = useState<TaskQuery>({ ...emptyTaskQuery });
   const [query, setQuery] = useState<TaskQuery | null>(null);
   const [pending, setPending] = useState(false);
-  const requestLock = useRef(false);
+  const requestLock = useRef<AbortController | null>(null);
   const { toast } = useToast();
+  useEffect(() => () => {
+    requestLock.current?.abort();
+    requestLock.current = null;
+  }, []);
   const update = (key: keyof TaskQuery, value: string) => {
     setDraft((current) => ({ ...current, [key]: value }));
   };
-  async function apply(next: TaskQuery) {
+  async function apply(next: TaskQuery, reason: "submit" | "reset") {
     if (requestLock.current) return;
-    requestLock.current = true;
+    const request = new AbortController();
+    requestLock.current = request;
     setPending(true);
     try {
-      await onQuery(next);
+      await onQuery(next, request.signal);
+      if (request.signal.aborted || requestLock.current !== request) return;
       setQuery(next);
+      if (reason === "submit" && notifyOnSuccess) {
+        toast({ tone: "success", description: "查询完成", duration: 2500 });
+      }
     } catch {
+      if (request.signal.aborted || requestLock.current !== request) return;
       toast({ tone: "danger", title: "查询失败", description: "已保留上次结果，请重试。" });
     } finally {
-      requestLock.current = false;
-      setPending(false);
+      if (requestLock.current === request) {
+        requestLock.current = null;
+        if (!request.signal.aborted) setPending(false);
+      }
     }
   }
   function reset() {
     if (requestLock.current) return;
     const next = { ...emptyTaskQuery };
     setDraft(next);
-    void apply(next);
+    void apply(next, "reset");
   }
   return <FilterBar ariaLabel="任务筛选"
-    onSubmit={(event) => { event.preventDefault(); void apply({ ...draft }); }}
+    onSubmit={(event) => { event.preventDefault(); void apply({ ...draft }, "submit"); }}
     status={pending ? "正在查询…" : query ? "筛选条件已应用" : undefined}
     actions={<>
       <Button type="submit" size="field" loading={pending} loadingLabel="查询">查询</Button>
@@ -162,12 +193,14 @@ export function TaskFilters({ onQuery }: {
           { value: "done", label: "已完成" }]}
         onValueChange={(value) => update("status", value)} />
     </FilterField>
+    {/* Numeric width is explicit; it does not expand for the placeholder. */}
     <FilterField width={180}>
       <SearchInput aria-label="任务类型" placeholder="输入任务类型" value={draft.taskType}
         disabled={pending} onChange={(event) => update("taskType", event.target.value)} />
     </FilterField>
+    {/* The 140px baseline expands for this placeholder and its control slots. */}
     <FilterField width="short">
-      <SearchInput aria-label="国家代码" placeholder="国家代码" value={draft.country}
+      <SearchInput aria-label="国家代码" placeholder="输入国家代码" value={draft.country}
         disabled={pending} onChange={(event) => update("country", event.target.value)} />
     </FilterField>
     <FilterField width="medium">
@@ -178,7 +211,7 @@ export function TaskFilters({ onQuery }: {
 }
 ```
 
-If `onQuery` drives `DataTable state="error"`, let that table own its automatic error Toast and remove the catch notification above so the same request has one failure owner. The runnable [mixed-width filter example](../assets/react-kit/src/explorer/cases/actions/filter-sizing.example.tsx) at `#/components/filter-bar` includes the same five field purposes, actual query/reset behavior, accessible control names and narrow-container layouts. The primary FilterBar example separately demonstrates labeled `Field` controls and helper-text alignment. Reuse the public exports and request ownership, replacing the example service with the product API.
+If `onQuery` drives `DataTable state="error"`, let that table own its automatic error Toast and remove the catch notification above so the same request has one failure owner; keep the catch to consume the rejected request, leaving data/error/retry updates with that owner. The `onQuery` promise must still reject on failure so the optional success notification cannot run. The runnable [mixed-width filter example](../assets/react-kit/src/explorer/cases/actions/filter-sizing.example.tsx) at `#/components/filter-bar` includes the same five field purposes, actual query/reset behavior, accessible control names and narrow-container layouts; use the separate [search feedback example](../assets/react-kit/src/explorer/cases/actions/search-feedback.example.tsx) for the complete DataTable-owned failure composition. The primary FilterBar example separately demonstrates labeled `Field` controls and helper-text alignment. Reuse the public exports and request ownership, replacing the example service with the product API.
 
 ## DataTable configuration
 
@@ -221,7 +254,7 @@ export function TaskTable({ tasks, onDetails }: {
     { id: "type", header: "任务类型", width: 130, cell: (task) => task.type },
     { id: "country", header: "国家", width: 90, cell: (task) => task.country },
     { id: "status", header: "状态", width: 100,
-      cell: () => <Tag>排队中</Tag> },
+      cell: () => <Tag size="small">排队中</Tag> },
     { id: "claims", header: "成功领取次数", width: 160,
       cell: (task) => <TableCellText secondary="上次尚未派发">{`筛选 ${task.claims} 次`}</TableCellText> },
     { id: "updatedAt", header: "时间", width: 200,
@@ -354,7 +387,17 @@ The runnable **操作列组合** case (`data-table/actions`) is available at `#/
 
 Pass the typed `pagination` object directly to `DataTable`; this keeps the pager inside the same rounded frame. Do not render a second `Pagination` in the page footer.
 
-Paginated tables use a fixed viewport of five standard rows by default. Keep `pagination` present during loading, empty, and zero-row error states so sparse pages and changing page sizes do not move the pager. Use a numeric `viewportRows` for another fixed capacity, or `viewportRows="auto"` only when following content height is intentional. An unpaginated table follows content unless it receives a numeric `viewportRows`.
+Tables use a stable viewport of five standard row-height units by default, whether paginated or unpaginated; the implicit default is bounded on short screens. Keep `pagination` present during loading, empty, and zero-row error states so sparse pages and changing page sizes do not move the pager. Use a numeric `viewportRows` for another explicit fixed capacity, or `viewportRows="auto"` only when following content height is intentional. Never derive capacity from `rows.length`; taller custom cells scroll without being clipped into standard rows.
+
+For known page counts, keep the ordinary `page`, `pageCount` and `onPageChange` props. For cursor/unknown-total APIs, use the same in-frame component with `mode="cursor"`, `page`, `hasPreviousPage`, `hasNextPage`, and `onPageChange`; this mode has no `pageCount` or `total`, numbered jumps or invented total. For example:
+
+```tsx
+<DataTable ariaLabel="派发队列" columns={columns} rows={rows} rowKey={row => row.id}
+  pagination={{ mode: "cursor", page, hasPreviousPage, hasNextPage,
+    onPageChange: requestAdjacentPage, pageSize, onPageSizeChange: changePageSize }} />
+```
+
+The application owns cursor history, request cancellation and page-size/filter resets. Loading/empty/error retain the same pager; do not rebuild it from ordinary Button and Select. Use `Tag size="small"` or `StatusIndicator` for business status; Badge is for supplementary counts/markers. See [layout and sizing](layout-sizing.md).
 
 A fixed viewport is a named keyboard region even when the current page is sparse, because later pages and custom rows can overflow the same stable surface. An automatic-height viewport becomes a named keyboard region only when it actually scrolls horizontally. A new request, page, page size, or row identity sequence resets vertical position while retaining horizontal column context.
 

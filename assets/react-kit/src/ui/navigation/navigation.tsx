@@ -286,19 +286,32 @@ export type PaginationProps = PublicControlProps<Omit<
   "aria-label" | "children" | "defaultValue" | "onChange"
 >> & {
   page: number;
-  pageCount: number;
   onPageChange: (page: number, trigger: PaginationPageTrigger) => void;
   /** Replaces the generated page or result-count summary while preserving pager geometry. */
   summary?: ReactNode;
   disabled?: boolean;
   loadingPage?: number;
-  loadingTarget?: PaginationLoadingTarget;
   loadingPageSize?: boolean;
-  total?: number;
   pageSize?: number;
   pageSizeOptions?: number[];
   onPageSizeChange?: (pageSize: number) => void;
-};
+} & ({
+  /** Numbered navigation requires a real page count; omitted mode preserves existing usage. */
+  mode?: "numbered";
+  pageCount: number;
+  total?: number;
+  hasPreviousPage?: never;
+  hasNextPage?: never;
+  loadingTarget?: PaginationLoadingTarget;
+} | {
+  /** Sequential navigation for an unknown total. The page is a display ordinal, not a cursor. */
+  mode: "cursor";
+  hasPreviousPage: boolean;
+  hasNextPage: boolean;
+  pageCount?: never;
+  total?: never;
+  loadingTarget?: "previous" | "next" | "auto";
+});
 
 export type PaginationPageTrigger = "page" | "previous" | "next";
 export type PaginationLoadingTarget = PaginationPageTrigger | "auto";
@@ -319,7 +332,10 @@ export function Pagination(rawProps: PaginationProps) {
   const safeProps = sanitizeFixedControlProps(rawProps, ["aria-label", "children", "defaultPage"]);
   const {
     page,
+    mode = "numbered",
     pageCount,
+    hasPreviousPage,
+    hasNextPage,
     onPageChange,
     summary,
     disabled,
@@ -332,16 +348,27 @@ export function Pagination(rawProps: PaginationProps) {
     onPageSizeChange,
     ...rootProps
   } = safeProps;
+  const cursorMode = mode === "cursor";
+  if (cursorMode && (typeof hasPreviousPage !== "boolean" || typeof hasNextPage !== "boolean"
+    || pageCount !== undefined || total !== undefined)) {
+    throw new Error("Pagination cursor mode requires hasPreviousPage and hasNextPage, without pageCount or total.");
+  }
   const rootRef = useRef<HTMLElement>(null);
   const [availableWidth, setAvailableWidth] = useState(0);
-  const normalizedCount = finiteInteger(pageCount, 1, 1);
-  const normalizedPage = normalizePage(page, normalizedCount);
+  const normalizedCount = finiteInteger(pageCount ?? 1, 1, 1);
+  const normalizedPage = cursorMode ? finiteInteger(page, 1, 1) : normalizePage(page, normalizedCount);
+  const canGoPrevious = normalizedPage > 1 && (!cursorMode || hasPreviousPage);
+  const canGoNext = cursorMode
+    ? hasNextPage && normalizedPage < Number.MAX_SAFE_INTEGER
+    : normalizedPage < normalizedCount;
   const changingPage = typeof loadingPage === "number"
     && Number.isInteger(loadingPage)
     && loadingPage >= 1
-    && loadingPage <= normalizedCount;
+    && (cursorMode
+      ? (canGoPrevious && loadingPage === normalizedPage - 1) || (canGoNext && loadingPage === normalizedPage + 1)
+      : loadingPage <= normalizedCount);
   const normalizedLoadingPage = changingPage
-    ? normalizePage(loadingPage, normalizedCount, normalizedPage)
+    ? cursorMode ? loadingPage : normalizePage(loadingPage, normalizedCount, normalizedPage)
     : undefined;
   const hasPageSizeControl = typeof pageSize === "number"
     && Number.isFinite(pageSize)
@@ -355,14 +382,14 @@ export function Pagination(rawProps: PaginationProps) {
     ? "previous"
     : loadingTarget === "next" && normalizedLoadingPage === normalizedPage + 1
       ? "next"
-      : loadingTarget === "auto" && compact && normalizedLoadingPage === normalizedPage - 1
+      : (cursorMode || loadingTarget === "auto" && compact) && normalizedLoadingPage === normalizedPage - 1
         ? "previous"
-        : loadingTarget === "auto" && compact && normalizedLoadingPage === normalizedPage + 1
+        : (cursorMode || loadingTarget === "auto" && compact) && normalizedLoadingPage === normalizedPage + 1
           ? "next"
           : "page";
   const tokens = useMemo(
-    () => pageTokens(normalizedPage, normalizedCount),
-    [normalizedPage, normalizedCount],
+    () => cursorMode ? [] : pageTokens(normalizedPage, normalizedCount),
+    [cursorMode, normalizedPage, normalizedCount],
   );
   const normalizedTotal = typeof total === "number" && Number.isFinite(total)
     ? finiteInteger(total, 0, 0)
@@ -401,10 +428,11 @@ export function Pagination(rawProps: PaginationProps) {
   }, []);
 
   return (
-    <nav {...rootProps} ref={rootRef} className="ui-pagination" aria-label={message("pagination.label")} aria-busy={paginationBusy || undefined} data-ui-owner="Pagination">
+    <nav {...rootProps} ref={rootRef} className="ui-pagination" aria-label={message("pagination.label")} aria-busy={paginationBusy || undefined} data-ui-owner="Pagination" data-mode={mode}>
       <span className="ui-pagination__summary">
         {summary !== undefined
           ? summary
+          : cursorMode ? null
           : normalizedTotal !== undefined && normalizedPageSize
           ? (normalizedTotal
             ? `${formatNumber(start)}-${formatNumber(end)} / ${plural("pagination.results", normalizedTotal)}`
@@ -431,13 +459,13 @@ export function Pagination(rawProps: PaginationProps) {
           aria-label={message("pagination.previous")}
           icon={<ChevronLeft aria-hidden="true" />}
           loading={changingPage && resolvedLoadingTarget === "previous" && normalizedLoadingPage === normalizedPage - 1}
-          disabled={disabled || normalizedPage <= 1}
+          disabled={disabled || !canGoPrevious}
           aria-disabled={paginationBusy || undefined}
           onClick={() => {
             if (!paginationBusy) onPageChange(normalizedPage - 1, "previous");
           }}
         />
-        <div className="ui-pagination__pages">
+        {!cursorMode ? <div className="ui-pagination__pages">
           {tokens.map((token) => typeof token === "number" ? (
             <button
               key={token}
@@ -460,14 +488,16 @@ export function Pagination(rawProps: PaginationProps) {
                 : <span className="ui-page-button__label" title={String(token)}>{token}</span>}
             </button>
           ) : <span key={token} className="ui-pagination__ellipsis" aria-hidden="true">...</span>)}
-        </div>
-        <span className="ui-pagination__mobile-label" title={message("pagination.summaryPages", { page: normalizedPage, pages: normalizedCount })}>
+        </div> : null}
+        <span className={cx("ui-pagination__mobile-label", cursorMode && "ui-pagination__cursor-label")}
+          aria-current={cursorMode ? "page" : undefined}
+          title={cursorMode ? message("pagination.page", { page: normalizedPage }) : message("pagination.summaryPages", { page: normalizedPage, pages: normalizedCount })}>
           <span className="ui-pagination__mobile-status">
             <span className="ui-pagination__mobile-loading" aria-hidden="true">
               {changingPage && resolvedLoadingTarget === "page" ? <LoaderCircle className="ui-spinner" /> : null}
             </span>
             <span className="ui-pagination__mobile-page">
-              {message("pagination.summaryPages", { page: normalizedPage, pages: normalizedCount })}
+              {cursorMode ? message("pagination.page", { page: normalizedPage }) : message("pagination.summaryPages", { page: normalizedPage, pages: normalizedCount })}
             </span>
           </span>
         </span>
@@ -475,7 +505,7 @@ export function Pagination(rawProps: PaginationProps) {
           aria-label={message("pagination.next")}
           icon={<ChevronRight aria-hidden="true" />}
           loading={changingPage && resolvedLoadingTarget === "next" && normalizedLoadingPage === normalizedPage + 1}
-          disabled={disabled || normalizedPage >= normalizedCount}
+          disabled={disabled || !canGoNext}
           aria-disabled={paginationBusy || undefined}
           onClick={() => {
             if (!paginationBusy) onPageChange(normalizedPage + 1, "next");

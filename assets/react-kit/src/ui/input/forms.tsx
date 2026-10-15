@@ -10,6 +10,7 @@ import {
   useState,
   type ChangeEvent,
   type ChangeEventHandler,
+  type CSSProperties,
   type FocusEventHandler,
   type InputHTMLAttributes,
   type KeyboardEvent,
@@ -242,6 +243,7 @@ function focusAdjacentTabStop(trigger: HTMLElement, root: HTMLElement, backwards
 
 type FieldBaseProps = PublicControlProps<{
   label: ReactNode;
+  width?: "short" | "medium" | "long" | number;
   required?: boolean;
   hint?: ReactNode;
   error?: ReactNode;
@@ -256,8 +258,14 @@ export type FieldProps = FieldBaseProps & (
 export function Field(rawProps: FieldProps) {
   const { message } = useUILocale();
   const safeProps = sanitizeFixedControlProps(rawProps, ["aria-describedby", "aria-invalid"]);
-  const { label, htmlFor, group = false, required, hint, error, children } = safeProps;
+  const { label, width, htmlFor, group = false, required, hint, error, children } = safeProps;
   const generatedId = useId();
+  if (typeof width === "number" && (!Number.isFinite(width) || width <= 0)) {
+    throw new RangeError("Field width must be a positive finite number.");
+  }
+  const preferredWidth = typeof width === "number" ? width : width ? { short: 240, medium: 360, long: 560 }[width] : undefined;
+  const fieldStyle = preferredWidth === undefined ? undefined : { "--ui-field-width": `${preferredWidth}px` } as CSSProperties;
+  const fieldClassName = cx("ui-field", width !== undefined && "ui-field--sized");
   if (!group && (!htmlFor || !htmlFor.trim())) {
     throw new TypeError("Field htmlFor must be a non-empty string unless group is true.");
   }
@@ -292,7 +300,8 @@ export function Field(rawProps: FieldProps) {
   if (group) {
     return (
       <fieldset
-        className={cx("ui-field", "ui-field--group")}
+        className={cx(fieldClassName, "ui-field--group")}
+        style={fieldStyle}
         data-invalid={invalid || undefined}
         data-ui-owner="Field"
         aria-describedby={describedBy}
@@ -306,7 +315,7 @@ export function Field(rawProps: FieldProps) {
   }
 
   return (
-    <div className="ui-field" data-invalid={invalid || undefined} data-ui-owner="Field">
+    <div className={fieldClassName} style={fieldStyle} data-invalid={invalid || undefined} data-ui-owner="Field">
       <label id={`${fieldId}-label`} className="ui-label" htmlFor={fieldId}>{labelContent}</label>
       <FieldContext.Provider value={context}>{children}</FieldContext.Provider>
       {messages}

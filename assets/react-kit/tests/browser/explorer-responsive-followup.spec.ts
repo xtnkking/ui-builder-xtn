@@ -163,7 +163,7 @@ test("pagination uses equal control heights before and after its container switc
   for (const width of [900, 280]) {
     await resizeHost(preview, width);
     const select = await box(owner.getByRole("combobox"));
-    expect(select.height).toBe(36);
+    expect(select.height).toBe(width < 600 ? 44 : 36);
     for (const control of await owner.locator("button:visible").all()) {
       expect(Math.abs((await box(control)).height - select.height)).toBeLessThanOrEqual(1);
     }

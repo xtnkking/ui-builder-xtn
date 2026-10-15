@@ -9,6 +9,17 @@
   cursor: wait;
 }
 
+.ui-form > .ui-button {
+  justify-self: start;
+}
+
+.ui-field--sized {
+  align-content: start;
+  justify-self: start;
+  width: min(100%, var(--ui-field-width));
+  max-width: 100%;
+}
+
 .ui-form-control-bridge,
 .ui-autocomplete,
 .ui-async-select,

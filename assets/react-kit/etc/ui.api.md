@@ -60,6 +60,8 @@ export interface CountryTagData {
 }
 export type TagProps = PublicControlProps<Omit<HTMLAttributes<HTMLSpanElement>, "onClick" | "children">> & {
     tone?: TagTone;
+    /** Small business-status tags keep readable text in dense table rows. */
+    size?: "small" | "medium";
     selected?: boolean;
     onRemove?: () => void;
     removeLabel?: string;
@@ -72,7 +74,7 @@ export type TagProps = PublicControlProps<Omit<HTMLAttributes<HTMLSpanElement>, 
     children?: ReactNode;
     leading?: ReactNode;
 });
-export declare function Tag({ tone, leading, selected, onRemove, removeLabel, title, children, country, ...props }: TagProps): import("react").JSX.Element;
+export declare function Tag({ tone, size, leading, selected, onRemove, removeLabel, title, children, country, ...props }: TagProps): import("react").JSX.Element;
 ```
 
 ## `./foundation/contracts`
@@ -560,7 +562,7 @@ export type FilterBarProps = PublicControlProps<Omit<FormHTMLAttributes<HTMLForm
 };
 export type FilterFieldProps = PublicControlProps<Omit<HTMLAttributes<HTMLDivElement>, "children">> & {
     children: ReactNode;
-    /** Preferred desktop width; narrow containers stack fields at the full available width. */
+    /** Presets fit input hints up to 360px; numeric widths remain explicit. Narrow containers stack fields. */
     width?: "short" | "medium" | "long" | number;
 };
 export declare function FilterField(rawProps: FilterFieldProps): import("react").JSX.Element;
@@ -638,6 +640,7 @@ type NativeCheckedProps = {
 type FieldControlAriaProps = Pick<InputHTMLAttributes<HTMLInputElement>, "id" | "aria-describedby" | "aria-disabled" | "aria-invalid" | "aria-required">;
 type FieldBaseProps = PublicControlProps<{
     label: ReactNode;
+    width?: "short" | "medium" | "long" | number;
     required?: boolean;
     hint?: ReactNode;
     error?: ReactNode;
@@ -1222,19 +1225,32 @@ export type BreadcrumbsProps = PublicControlProps<Omit<HTMLAttributes<HTMLElemen
 export declare function Breadcrumbs(rawProps: BreadcrumbsProps): import("react").JSX.Element;
 export type PaginationProps = PublicControlProps<Omit<HTMLAttributes<HTMLElement>, "aria-label" | "children" | "defaultValue" | "onChange">> & {
     page: number;
-    pageCount: number;
     onPageChange: (page: number, trigger: PaginationPageTrigger) => void;
     /** Replaces the generated page or result-count summary while preserving pager geometry. */
     summary?: ReactNode;
     disabled?: boolean;
     loadingPage?: number;
-    loadingTarget?: PaginationLoadingTarget;
     loadingPageSize?: boolean;
-    total?: number;
     pageSize?: number;
     pageSizeOptions?: number[];
     onPageSizeChange?: (pageSize: number) => void;
-};
+} & ({
+    /** Numbered navigation requires a real page count; omitted mode preserves existing usage. */
+    mode?: "numbered";
+    pageCount: number;
+    total?: number;
+    hasPreviousPage?: never;
+    hasNextPage?: never;
+    loadingTarget?: PaginationLoadingTarget;
+} | {
+    /** Sequential navigation for an unknown total. The page is a display ordinal, not a cursor. */
+    mode: "cursor";
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+    pageCount?: never;
+    total?: never;
+    loadingTarget?: "previous" | "next" | "auto";
+});
 export type PaginationPageTrigger = "page" | "previous" | "next";
 export type PaginationLoadingTarget = PaginationPageTrigger | "auto";
 export declare function Pagination(rawProps: PaginationProps): import("react").JSX.Element;
@@ -1695,7 +1711,7 @@ export type DataTableProps<T> = PublicControlProps<Omit<HTMLAttributes<HTMLDivEl
     onSort?: (sort: DataSort) => void;
     loadingSortColumnId?: string;
     loadingRows?: number;
-    /** Fixed viewport size in standard row-height units. Paginated tables default to five units; use "auto" for content height. Fixed viewports are keyboard-scrollable and reset vertically for new results. */
+    /** Fixed viewport size in standard row-height units. All tables default to five units, bounded on short screens; a number chooses an explicit capacity, and "auto" follows content height. Fixed viewports are keyboard-scrollable and reset vertically for new results. */
     viewportRows?: number | "auto";
     ariaLabel: string;
     emptyTitle?: ReactNode;
@@ -1706,7 +1722,7 @@ export type DataTableProps<T> = PublicControlProps<Omit<HTMLAttributes<HTMLDivEl
     onRetry?: () => void;
     retrying?: boolean;
     mobileRow?: (row: T) => ReactNode;
-    pagination?: Omit<PaginationProps, "className">;
+    pagination?: PaginationProps;
 };
 export declare function DataTable<T>(rawProps: DataTableProps<T>): import("react").JSX.Element;
 ```
@@ -2239,9 +2255,10 @@ export interface SettingsPageProps extends PageHeadingProps {
     sections: readonly SettingsSection[];
     currentId: string;
     onCurrentChange: (id: string) => void;
+    layoutWidth?: "readable" | "wide";
     className?: string;
 }
-export declare function SettingsPage({ sections, currentId, onCurrentChange, className, ...heading }: SettingsPageProps): import("react").JSX.Element;
+export declare function SettingsPage({ sections, currentId, onCurrentChange, layoutWidth, className, ...heading }: SettingsPageProps): import("react").JSX.Element;
 export interface WizardFlowProps extends PageHeadingProps {
     steps: readonly StepperItem[];
     currentId: string;

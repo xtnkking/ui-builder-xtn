@@ -1,6 +1,7 @@
 import { createRef } from "react";
 import {
   Breadcrumbs,
+  DataTable,
   Pagination,
   Tabs,
   type BreadcrumbsProps,
@@ -35,10 +36,15 @@ const paginationProps: PaginationProps = {
   onPageChange: () => undefined,
   title: "Result pages",
 };
+const cursorPaginationProps: PaginationProps = {
+  mode: "cursor", page: 3, hasPreviousPage: true, hasNextPage: false,
+  onPageChange: () => undefined, loadingTarget: "previous",
+};
 void controlledTabs;
 void uncontrolledTabs;
 void breadcrumbProps;
 void paginationProps;
+void cursorPaginationProps;
 
 const allowedUsage = (
   <>
@@ -46,6 +52,9 @@ const allowedUsage = (
     <Tabs items={items} ariaLabel="Account sections" value="overview" onValueChange={() => undefined} />
     <Breadcrumbs items={[{ id: "home", label: "Home", href: "/" }]} data-track="breadcrumbs" />
     <Pagination page={1} pageCount={3} onPageChange={() => undefined} data-track="pagination" />
+    <Pagination {...cursorPaginationProps} />
+    <DataTable ariaLabel="Cursor data" columns={[{ id: "name", header: "Name", cell: (row: { id: string }) => row.id }]}
+      rows={[{ id: "one" }]} rowKey={(row) => row.id} pagination={cursorPaginationProps} />
   </>
 );
 void allowedUsage;
@@ -76,6 +85,18 @@ const paginationStyle = <Pagination page={1} pageCount={3} onPageChange={() => u
 const paginationRef = <Pagination page={1} pageCount={3} onPageChange={() => undefined} ref={createRef<HTMLElement>()} />;
 // @ts-expect-error Pagination does not expose internal ownership
 const paginationOwner = <Pagination page={1} pageCount={3} onPageChange={() => undefined} data-ui-owner="Consumer" />;
+// @ts-expect-error numbered pagination requires a real page count
+const paginationMissingCount = <Pagination page={1} onPageChange={() => undefined} />;
+// @ts-expect-error cursor pagination cannot advertise an invented page count
+const cursorPaginationCount = <Pagination mode="cursor" page={1} pageCount={3} hasPreviousPage={false} hasNextPage onPageChange={() => undefined} />;
+// @ts-expect-error cursor pagination cannot advertise a result total
+const cursorPaginationTotal = <Pagination mode="cursor" page={1} total={30} hasPreviousPage={false} hasNextPage onPageChange={() => undefined} />;
+// @ts-expect-error cursor pagination needs explicit endpoint availability
+const cursorPaginationAvailability = <Pagination mode="cursor" page={1} onPageChange={() => undefined} />;
+// @ts-expect-error cursor pagination has no direct page-jump loading target
+const cursorPaginationJump = <Pagination mode="cursor" page={1} hasPreviousPage={false} hasNextPage loadingTarget="page" onPageChange={() => undefined} />;
+// @ts-expect-error DataTable preserves cursor pagination's discriminated total contract
+const cursorTableCount = <DataTable ariaLabel="Invalid cursor" columns={[{ id: "id", header: "ID", cell: (row: { id: string }) => row.id }]} rows={[]} rowKey={(row) => row.id} pagination={{ mode: "cursor", page: 1, pageCount: 3, hasPreviousPage: false, hasNextPage: true, onPageChange: () => undefined }} />;
 
 void tabsMissingChange;
 void tabsContradictory;
@@ -89,3 +110,9 @@ void paginationMissingChange;
 void paginationStyle;
 void paginationRef;
 void paginationOwner;
+void paginationMissingCount;
+void cursorPaginationCount;
+void cursorPaginationTotal;
+void cursorPaginationAvailability;
+void cursorPaginationJump;
+void cursorTableCount;

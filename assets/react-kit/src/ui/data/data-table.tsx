@@ -50,7 +50,7 @@ export type DataTableProps<T> = PublicControlProps<Omit<HTMLAttributes<HTMLDivEl
   onSort?: (sort: DataSort) => void;
   loadingSortColumnId?: string;
   loadingRows?: number;
-  /** Fixed viewport size in standard row-height units. Paginated tables default to five units; use "auto" for content height. Fixed viewports are keyboard-scrollable and reset vertically for new results. */
+  /** Fixed viewport size in standard row-height units. All tables default to five units, bounded on short screens; a number chooses an explicit capacity, and "auto" follows content height. Fixed viewports are keyboard-scrollable and reset vertically for new results. */
   viewportRows?: number | "auto";
   ariaLabel: string;
   emptyTitle?: ReactNode;
@@ -61,7 +61,7 @@ export type DataTableProps<T> = PublicControlProps<Omit<HTMLAttributes<HTMLDivEl
   onRetry?: () => void;
   retrying?: boolean;
   mobileRow?: (row: T) => ReactNode;
-  pagination?: Omit<PaginationProps, "className">;
+  pagination?: PaginationProps;
 };
 
 interface ColumnMetrics<T> {
@@ -97,10 +97,9 @@ function preferredColumnWidth<T>(column: DataColumn<T>): number {
     ?? DEFAULT_COLUMN_WIDTH;
 }
 
-function normalizedViewportRows(value: DataTableProps<unknown>["viewportRows"], paginated: boolean): number | undefined {
+function normalizedViewportRows(value: DataTableProps<unknown>["viewportRows"]): number | undefined {
   if (value === "auto") return undefined;
-  if (value === undefined) return paginated ? DEFAULT_VIEWPORT_ROWS : undefined;
-  if (!Number.isFinite(value)) return paginated ? DEFAULT_VIEWPORT_ROWS : undefined;
+  if (typeof value !== "number" || !Number.isFinite(value)) return DEFAULT_VIEWPORT_ROWS;
   return Math.min(MAX_LOADING_ROWS, Math.max(1, Math.trunc(value)));
 }
 
@@ -243,7 +242,8 @@ function DataTableContent<T>({ rawProps }: { rawProps: DataTableProps<T> }) {
   const activeRetrying = state === "error" && Boolean(onRetry) && (Boolean(retrying) || localRetrying);
   const hasErrorFooter = state === "error" && !pagination && (rows.length > 0 || Boolean(onRetry));
   const busy = loading || activeRetrying || activeLoadingSortColumnId !== undefined;
-  const fixedViewportRows = normalizedViewportRows(viewportRows, Boolean(pagination));
+  const fixedViewportRows = normalizedViewportRows(viewportRows);
+  const defaultViewport = viewportRows === undefined || (viewportRows !== "auto" && !Number.isFinite(viewportRows));
   const viewportHasSlack = fixedViewportRows !== undefined
     && showRows
     && rows.length < fixedViewportRows;
@@ -270,6 +270,7 @@ function DataTableContent<T>({ rawProps }: { rawProps: DataTableProps<T> }) {
     pagination && "ui-data-table__frame--paginated",
     hasErrorFooter && "ui-data-table__frame--error-footer",
     fixedViewportRows !== undefined && "ui-data-table__frame--fixed-viewport",
+    defaultViewport && "ui-data-table__frame--default-viewport",
     viewportHasSlack && "ui-data-table__frame--viewport-slack",
   );
   const frameStyle = ({

@@ -66,6 +66,8 @@ For a table request error, keep `DataTable` mounted with `state="error"`. The ta
 
 Keep IDs stable and unique for detail sections, settings sections, and wizard steps. Controlled navigation state remains with the application; patterns render its accessible structure and built-in pending state. Use `DescriptionList` for term/value metadata and public feedback components for business outcomes.
 
+SettingsPage defaults to `layoutWidth="readable"`, bounding its content section to 800px, and switches navigation/content by the actual container width. Choose `layoutWidth="wide"` deliberately for content that needs more room. Short numerical settings use `Field width="short"`; save actions keep content width. See [layout and sizing](layout-sizing.md) and the runnable service-settings form at `#/patterns/settings`.
+
 `ImportExportPage` provides operation shells and pending buttons, not parsing, upload transport, or authorization. Its operation outcomes use Toast. `StatusPage` represents a page-level outcome; use `EmptyState` or `ErrorState` for a persistent unavailable/empty region within an otherwise usable page. Persistent notifications can use `Toast duration={null}` or Banner, which now renders a persistent floating Toast. Alert is an explicit inline option, not an automatic operation-result companion. Table request failures use DataTable's own Toast/status/retry rather than an additional feedback surface.
 
 ## Overlays, locale, and responsive behavior

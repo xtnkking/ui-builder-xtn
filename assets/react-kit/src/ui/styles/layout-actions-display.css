@@ -289,13 +289,27 @@
 
 .ui-button-group {
   display: inline-flex;
+  flex-wrap: wrap;
   align-items: stretch;
   gap: 8px;
   min-width: 0;
   max-width: 100%;
 }
-.ui-button-group[data-orientation="vertical"] { flex-direction: column; }
+.ui-button-group[data-orientation="vertical"] { flex-direction: column; flex-wrap: nowrap; }
 .ui-button-group--attached { gap: 0; }
+.ui-button-group--attached[data-orientation="horizontal"] {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.ui-button-group[tabindex="0"]:focus-visible {
+  outline: 2px solid var(--ui-focus-ring);
+  outline-offset: -2px;
+}
+.ui-button-group--attached[data-orientation="horizontal"] > :focus-visible {
+  /* Keep the full focus ring inside the scrolling surface, including its edges. */
+  outline-offset: -2px;
+}
 .ui-button-group--attached[data-orientation="horizontal"] > :is(.ui-button, .ui-icon-button) {
   border-radius: 0;
 }
@@ -368,15 +382,15 @@
   display: contents;
 }
 .ui-filter-bar__fields > * {
-  flex: 0 1 var(--_ui-filter-field-width, 320px);
-  width: var(--_ui-filter-field-width, 320px);
+  flex: 0 1 var(--_ui-filter-field-fit-width, var(--_ui-filter-field-width, 320px));
+  width: var(--_ui-filter-field-fit-width, var(--_ui-filter-field-width, 320px));
   min-width: 0;
   max-width: min(360px, 100%);
   overflow-wrap: anywhere;
 }
 .ui-filter-field,
 .ui-filter-bar__fields > .ui-filter-field {
-  width: var(--_ui-filter-field-width, 240px);
+  width: var(--_ui-filter-field-fit-width, var(--_ui-filter-field-width, 240px));
   min-width: 0;
   max-width: 100%;
 }
@@ -404,6 +418,7 @@
 }
 .ui-filter-bar__actions > .ui-button {
   padding-inline: 12px;
+  border-radius: var(--ui-radius-control);
 }
 .ui-filter-bar__active,
 .ui-filter-bar__status {

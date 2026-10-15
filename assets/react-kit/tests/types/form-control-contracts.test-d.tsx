@@ -11,6 +11,7 @@ import {
   Select,
   Combobox,
   SegmentedControl,
+  SettingsPage,
   Switch,
   Textarea,
   type ControllerFieldBinding,
@@ -41,6 +42,12 @@ const allowedFormControls = (
   <>
     <Field label="Email" htmlFor="email"><Input id="email" /></Field>
     <Field label="Methods" group><Checkbox label="Email" /></Field>
+    <Field label="Retries" htmlFor="retries" width="short"><Input /></Field>
+    <Field label="Methods" group width="medium"><Checkbox label="Email" /></Field>
+    <Field label="URL" htmlFor="url" width="long"><Input /></Field>
+    <Field label="Code" htmlFor="code" width={280}><Input /></Field>
+    <SettingsPage title="Settings" currentId="" sections={[]} onCurrentChange={() => undefined} layoutWidth="readable" />
+    <SettingsPage title="Settings" currentId="" sections={[]} onCurrentChange={() => undefined} layoutWidth="wide" />
     <Input defaultValue="draft" controlRef={textControlRef} data-track="email" />
     <Input data-ui-consumer-state="draft" />
     <Input value="saved" onChange={() => undefined} />
@@ -143,6 +150,10 @@ const switchStyle = <Switch label="Alerts" style={{ color: "red" }} />;
 const fieldWithoutTarget = <Field label="Email"><Input /></Field>;
 // @ts-expect-error Field does not expose className
 const fieldClassName = <Field label="Email" htmlFor="email" className="foreign"><Input id="email" /></Field>;
+// @ts-expect-error Field width supports presets or positive pixel numbers, not CSS strings
+const fieldCssWidth = <Field label="Email" htmlFor="email" width="50%"><Input /></Field>;
+// @ts-expect-error SettingsPage width is a deliberate layout choice, not an arbitrary CSS value
+const settingsCssWidth = <SettingsPage title="Settings" currentId="" sections={[]} onCurrentChange={() => undefined} layoutWidth="100%" />;
 // @ts-expect-error Textarea does not expose raw DOM refs
 const textareaRef = <Textarea ref={createRef<HTMLTextAreaElement>()} />;
 
@@ -183,4 +194,6 @@ void radioClassName;
 void switchStyle;
 void fieldWithoutTarget;
 void fieldClassName;
+void fieldCssWidth;
+void settingsCssWidth;
 void textareaRef;

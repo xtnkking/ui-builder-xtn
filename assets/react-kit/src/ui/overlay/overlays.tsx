@@ -45,6 +45,22 @@ function dialogInitialFocus(panel: HTMLElement): HTMLElement {
   return (footer && getTabStops(footer)[0]) || panel;
 }
 
+function OverlayDescription({ id, children }: { id: string; children: ReactNode }) {
+  const descriptionRef = useRef<HTMLParagraphElement>(null);
+  const [scrollable, setScrollable] = useState(false);
+  useClientLayoutEffect(() => {
+    const element = descriptionRef.current;
+    if (!element) return;
+    const measure = () => {
+      const next = element.scrollHeight > element.clientHeight + 1;
+      setScrollable((current) => current === next ? current : next);
+    };
+    measure();
+    return observeComputedStyleChanges(element, measure, { observeAncestors: false });
+  }, [children]);
+  return <p id={id} ref={descriptionRef} className="ui-overlay-description" tabIndex={scrollable ? 0 : undefined}>{children}</p>;
+}
+
 type DialogBaseProps = PublicControlProps<{
   title: ReactNode;
   description?: ReactNode;
@@ -123,7 +139,7 @@ export function Dialog(rawProps: DialogProps) {
             <header className="ui-dialog__header">
               <div>
                 <h2 id={titleId} title={typeof title === "string" || typeof title === "number" ? String(title) : undefined}>{title}</h2>
-                {description != null ? <p id={descriptionId}>{description}</p> : null}
+                {description != null ? <OverlayDescription id={descriptionId}>{description}</OverlayDescription> : null}
               </div>
               {closable ? <IconButton aria-label={message("dialog.close")} icon={<X aria-hidden="true" />} onClick={() => layer.dismiss("close-control")} /> : null}
             </header>
@@ -227,7 +243,7 @@ export function Drawer(rawProps: DrawerProps) {
             <header className="ui-drawer__header">
               <div>
                 <h2 id={titleId} title={typeof title === "string" || typeof title === "number" ? String(title) : undefined}>{title}</h2>
-                {description != null ? <p id={descriptionId}>{description}</p> : null}
+                {description != null ? <OverlayDescription id={descriptionId}>{description}</OverlayDescription> : null}
               </div>
               {closable ? <IconButton aria-label={message("drawer.close")} icon={<X aria-hidden="true" />} onClick={() => layer.dismiss("close-control")} /> : null}
             </header>

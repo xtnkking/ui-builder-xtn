@@ -61,7 +61,7 @@ function LongDialogs() {
         open={open}
         onOpenChange={setOpen}
         title="项目配置详情"
-        description="此项目包含全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置，请在保存前确认所有关联配置均符合团队的实际使用要求。"
+        description={"此项目包含全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置，请在保存前确认所有关联配置均符合团队的实际使用要求。".repeat(12)}
         footer={<Button onClick={() => setOpen(false)}>完成查看</Button>}
       >
         <Button onClick={() => setOpen(false)}>返回项目列表</Button>

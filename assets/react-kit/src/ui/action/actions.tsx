@@ -16,6 +16,7 @@ import { useControllableState } from "../internal/controllable-state";
 import { InternalButtonSlot, InternalFilterActionBoundary } from "../internal/button-slots";
 import { sanitizeFixedControlProps } from "../internal/fixed-control-props";
 import { InternalDropdownMenuSlot } from "../internal/overlay-slots";
+import { observeComputedStyleChanges } from "../internal/portal-tokens";
 import { useUILocale } from "../foundation/locale";
 import { Button, IconButton, type ButtonProps } from "../foundation/primitives";
 import { DropdownMenu, Tooltip, type MenuItem } from "../overlay/overlays";
@@ -82,14 +83,47 @@ export function ButtonGroup(rawProps: ButtonGroupProps) {
     children,
     ...props
   } = safeProps;
+  const groupRef = useRef<HTMLDivElement>(null);
+  const [scrollable, setScrollable] = useState(false);
+  const horizontalAttached = attached && orientation === "horizontal";
+  useClientLayoutEffect(() => {
+    const group = groupRef.current;
+    if (!group || !horizontalAttached) {
+      setScrollable(false);
+      return;
+    }
+    const measure = () => {
+      const nextScrollable = group.scrollWidth > group.clientWidth + 1;
+      setScrollable((current) => current === nextScrollable ? current : nextScrollable);
+    };
+    measure();
+    return observeComputedStyleChanges(group, measure);
+  }, [children, horizontalAttached]);
   return (
     <div
       {...props}
+      ref={groupRef}
       data-ui-owner="ButtonGroup"
       className={cx("ui-button-group", attached && "ui-button-group--attached")}
       role="group"
       aria-label={ariaLabel}
       data-orientation={orientation}
+      tabIndex={props.tabIndex ?? (scrollable ? 0 : undefined)}
+      onFocusCapture={(event) => {
+        props.onFocusCapture?.(event);
+        if (!horizontalAttached || event.target === event.currentTarget) return;
+        const group = event.currentTarget;
+        const groupBounds = group.getBoundingClientRect();
+        const targetBounds = event.target.getBoundingClientRect();
+        const left = groupBounds.left + group.clientLeft;
+        const right = left + group.clientWidth;
+        const physicalDelta = targetBounds.left < left
+          ? targetBounds.left - left
+          : targetBounds.right > right
+            ? targetBounds.right - right
+            : 0;
+        if (physicalDelta) group.scrollLeft += physicalDelta;
+      }}
     >
       {children}
     </div>
@@ -140,20 +174,78 @@ export type FilterBarProps = PublicControlProps<Omit<FormHTMLAttributes<HTMLForm
 
 export type FilterFieldProps = PublicControlProps<Omit<HTMLAttributes<HTMLDivElement>, "children">> & {
   children: ReactNode;
-  /** Preferred desktop width; narrow containers stack fields at the full available width. */
+  /** Presets fit input hints up to 360px; numeric widths remain explicit. Narrow containers stack fields. */
   width?: "short" | "medium" | "long" | number;
 };
 
 const FILTER_FIELD_WIDTHS = { short: 140, medium: 240, long: 320 } as const;
+const useClientLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
+
+/** Fit only placeholder text, preserving a stable clear-button slot and typed-value width. */
+function useFilterFieldHintWidth(fieldRef: RefObject<HTMLDivElement | null>, baseline: number, enabled: boolean) {
+  useClientLayoutEffect(() => {
+    const field = fieldRef.current;
+    const document = field?.ownerDocument;
+    const view = document?.defaultView;
+    if (!enabled || !field || !document || !view || typeof view.CanvasRenderingContext2D !== "function") return;
+    const context = document.createElement("canvas").getContext("2d");
+    if (!context) return;
+    let frame = 0;
+    let disposed = false;
+    const measure = () => {
+      frame = 0;
+      if (disposed) return;
+      let width = baseline;
+      const input = field.querySelector<HTMLInputElement>("input.ui-input[placeholder]");
+      if (input?.placeholder && input.offsetWidth) {
+        const style = view.getComputedStyle(input);
+        context.font = style.font || `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+        const spacing = Number.parseFloat(style.letterSpacing) || 0;
+        const textWidth = context.measureText(input.placeholder).width
+          + spacing * Math.max(0, Array.from(input.placeholder).length - 1);
+        const paddingAndBorder = ["paddingLeft", "paddingRight", "borderLeftWidth", "borderRightWidth"] as const;
+        let chromeWidth = paddingAndBorder.reduce((total, key) => total + (Number.parseFloat(style[key]) || 0), 0);
+        const shell = input.closest<HTMLElement>(".ui-input-shell");
+        // offsetWidth stays in CSS pixels even when a preview ancestor is transformed.
+        if (shell && field.contains(shell)) chromeWidth += Math.max(0, shell.offsetWidth - input.offsetWidth);
+        width = Math.min(360, Math.max(baseline, Math.ceil(textWidth + chromeWidth + 2)));
+      }
+      const value = `${width}px`;
+      if (field.style.getPropertyValue("--_ui-filter-field-fit-width") !== value) {
+        field.style.setProperty("--_ui-filter-field-fit-width", value);
+      }
+    };
+    const schedule = () => {
+      if (!disposed && !frame) frame = view.requestAnimationFrame(measure);
+    };
+    measure();
+    // Reuse shared font, theme, stylesheet and resize subscriptions; ignore our own width write.
+    const stopObservingStyle = observeComputedStyleChanges(field, schedule, { ignoredMutationRoot: field });
+    const mutations = new view.MutationObserver((records) => {
+      if (records.some((record) => record.target !== field || record.type === "childList")) schedule();
+    });
+    mutations.observe(field, { childList: true, attributes: true, subtree: true, attributeFilter: ["placeholder", "class", "style"] });
+    return () => {
+      disposed = true;
+      view.cancelAnimationFrame(frame);
+      mutations.disconnect();
+      stopObservingStyle();
+      field.style.removeProperty("--_ui-filter-field-fit-width");
+    };
+  }, [baseline, enabled, fieldRef]);
+}
 
 export function FilterField(rawProps: FilterFieldProps) {
   const { children, width = "medium", ...props } = sanitizeFixedControlProps(rawProps);
   const resolvedWidth = typeof width === "number"
     ? Number.isFinite(width) && width > 0 ? width : FILTER_FIELD_WIDTHS.medium
     : width === "short" || width === "long" ? FILTER_FIELD_WIDTHS[width] : FILTER_FIELD_WIDTHS.medium;
+  const fieldRef = useRef<HTMLDivElement>(null);
+  useFilterFieldHintWidth(fieldRef, resolvedWidth, typeof width !== "number");
   return (
     <div
       {...props}
+      ref={fieldRef}
       className="ui-filter-field"
       data-ui-owner="FilterField"
       style={{ "--_ui-filter-field-width": `${resolvedWidth}px` } as CSSProperties}
@@ -163,7 +255,6 @@ export function FilterField(rawProps: FilterFieldProps) {
   );
 }
 
-const useClientLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 const FILTER_CONTROL_ANCHOR = ".ui-input-shell, .ui-input:not(.ui-input--embedded), .ui-textarea, .ui-select, .ui-combobox__trigger";
 
 /** Align actual controls within each flex row without counting Field helper text. */

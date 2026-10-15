@@ -109,7 +109,7 @@ function TableActionsExample({ more = false }: { more?: boolean }) {
     { id: "name", header: "名称", width: 180, cell: (row) => <TableCellText secondary={row.readOnly ? "只读，操作暂不可用" : "可管理"}>{row.name}</TableCellText> },
     { id: "address", header: "连接地址", minWidth: 300, cell: (row) => row.address },
     { id: "protocol", header: "协议", width: 80, cell: () => "HTTP" },
-    { id: "status", header: "状态", width: 100, cell: () => <Tag tone="success">已启用</Tag> },
+    { id: "status", header: "状态", width: 100, cell: () => <Tag size="small" tone="success">已启用</Tag> },
     {
       id: "actions", header: "操作", width: 120, pin: "end",
       cell: (row) => more ? <DropdownMenu

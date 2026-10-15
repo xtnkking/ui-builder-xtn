@@ -21,6 +21,8 @@ Native inputs such as `Input`, `Textarea`, and `DateField` use browser form beha
 
 ## Values And FormData
 
+For geometry, `Field width="short" | "medium" | "long"` uses bounded 240/360/560px preferences; a positive finite number selects another width, while omission retains full width. Form direct Buttons keep content width. Use [layout and sizing](layout-sizing.md) for responsive settings forms without stretching short values or actions.
+
 The machine value is independent from the displayed label and locale.
 
 | Value shape | `FormData` contract |

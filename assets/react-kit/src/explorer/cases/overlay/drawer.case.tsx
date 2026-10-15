@@ -53,7 +53,7 @@ function DrawerExample() {
 
 function LongDrawerExample() {
   const [open, setOpen] = useState(false);
-  return <><Button onClick={() => setOpen(true)}>打开长内容详情</Button><Drawer open={open} onOpenChange={setOpen} title="完整成员资料" description="此成员负责全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置，请在保存前确认所有关联配置均符合团队的实际使用要求。"><DescriptionList items={[{ id: "responsibility", term: "职责", description: "成员管理、账户安全、数据访问权限、通知偏好和操作审计管理，需要在团队成员列表中持续保持完整的联系方式与全部配置记录。" }]} /></Drawer></>;
+  return <><Button onClick={() => setOpen(true)}>打开长内容详情</Button><Drawer open={open} onOpenChange={setOpen} title="完整成员资料" description={"此成员负责全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置，请在保存前确认所有关联配置均符合团队的实际使用要求。".repeat(12)} footer={<Button onClick={() => setOpen(false)}>完成查看</Button>}><DescriptionList items={[{ id: "responsibility", term: "职责", description: "成员管理、账户安全、数据访问权限、通知偏好和操作审计管理，需要在团队成员列表中持续保持完整的联系方式与全部配置记录。" }]} /></Drawer></>;
 }
 
 function EnglishDrawerExample() {
