@@ -1,6 +1,6 @@
 {
   "schemaVersion": 3,
-  "kitVersion": "0.3.2",
+  "kitVersion": "0.3.3",
   "generatedFrom": [
     "assets/react-kit/component-manifest.json",
     "assets/react-kit/registry.json",
@@ -203,6 +203,7 @@
     "assets/react-kit/tests/components/navigation-contracts.test.tsx",
     "assets/react-kit/tests/components/navigation-extra-contracts.test.tsx",
     "assets/react-kit/tests/components/overlay-contracts.test.tsx",
+    "assets/react-kit/tests/components/page-composition-ownership.test.tsx",
     "assets/react-kit/tests/components/portal-theme-contracts.test.tsx",
     "assets/react-kit/tests/components/simple-fixed-controls.test.tsx",
     "assets/react-kit/tests/components/theme-css-contracts.test.ts",
@@ -231,7 +232,7 @@
       "owner": 142,
       "source": 142,
       "example": 142,
-      "unit": 118,
+      "unit": 119,
       "browser": 68,
       "keyboard": 100,
       "a11y": 120
@@ -6874,7 +6875,8 @@
       ],
       "unit": [
         "assets/react-kit/tests/components/core-contracts.test.tsx",
-        "assets/react-kit/tests/components/data-table-contracts.test.tsx"
+        "assets/react-kit/tests/components/data-table-contracts.test.tsx",
+        "assets/react-kit/tests/components/page-composition-ownership.test.tsx"
       ],
       "browser": [
         "assets/react-kit/tests/browser/legacy-regressions.spec.ts"
@@ -9987,7 +9989,8 @@
         "assets/react-kit/src/explorer/cases/actions/filter-bar.case.tsx"
       ],
       "unit": [
-        "assets/react-kit/tests/components/actions-contracts.test.tsx"
+        "assets/react-kit/tests/components/actions-contracts.test.tsx",
+        "assets/react-kit/tests/components/page-composition-ownership.test.tsx"
       ],
       "browser": [
         "assets/react-kit/tests/browser/auth-query-layout.spec.ts",
@@ -13231,7 +13234,9 @@
       "example": [
         "assets/react-kit/src/explorer/cases/pattern/list-filter.case.tsx"
       ],
-      "unit": [],
+      "unit": [
+        "assets/react-kit/tests/components/page-composition-ownership.test.tsx"
+      ],
       "browser": [],
       "keyboard": [
         "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
@@ -14280,7 +14285,8 @@
         "assets/react-kit/src/explorer/cases/pattern/list-filter.case.tsx"
       ],
       "unit": [
-        "assets/react-kit/tests/components/locale-contracts.test.tsx"
+        "assets/react-kit/tests/components/locale-contracts.test.tsx",
+        "assets/react-kit/tests/components/page-composition-ownership.test.tsx"
       ],
       "browser": [],
       "keyboard": [

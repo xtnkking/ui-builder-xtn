@@ -204,7 +204,7 @@ export function MemberManagementPage({
   onOpenMember,
   onEditMember,
 }: MemberManagementPageProps) {
-  const { formatDate, message, plural } = useUILocale();
+  const { formatDate, message } = useUILocale();
   const resolvedTitle = title ?? message("member.title");
   const titleId = useId();
   const initialPageSizeRef = useRef(finiteInteger(initialPageSize, DEFAULT_PAGE_SIZE, 1));
@@ -436,9 +436,6 @@ export function MemberManagementPage({
       <header className="ui-page-header">
         <div>
           <h1 id={titleId} title={resolvedTitle}>{resolvedTitle}</h1>
-          <span>{tableState === "loading" && requestAction === "initial"
-            ? message("member.loading")
-            : plural("member.count", result.total)}</span>
         </div>
         {onInvite ? (
           <Button variant="primary" icon={<UserPlus aria-hidden="true" />} onClick={onInvite}>{message("member.invite")}</Button>
@@ -507,8 +504,7 @@ export function MemberManagementPage({
           ? message("member.loadingData")
           : tableState === "error"
             ? result.items.length ? message("member.queryFailedCached") : message("member.queryFailedEmpty")
-            : plural("member.dataRows", result.total)}</span>
-        <span>{updatedLabel}</span>
+            : updatedLabel}</span>
       </div>
 
       <DataTable

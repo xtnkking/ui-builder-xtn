@@ -12,7 +12,7 @@ import {
 import { AlertCircle, Check, Copy, ExternalLink } from "lucide-react";
 import type { PublicControlProps } from "../foundation/contracts";
 import { useControllableState } from "../internal/controllable-state";
-import { InternalButtonSlot } from "../internal/button-slots";
+import { InternalButtonSlot, InternalFilterActionBoundary } from "../internal/button-slots";
 import { sanitizeFixedControlProps } from "../internal/fixed-control-props";
 import { InternalDropdownMenuSlot } from "../internal/overlay-slots";
 import { useUILocale } from "../foundation/locale";
@@ -253,7 +253,7 @@ export function FilterBar(rawProps: FilterBarProps) {
   return (
     <form {...props} data-ui-owner="FilterBar" data-density={density} className="ui-filter-bar" aria-label={ariaLabel}>
       <div ref={fieldsRef} className="ui-filter-bar__fields">{children}</div>
-      <div ref={actionsRef} className="ui-filter-bar__actions">{actions}</div>
+      <div ref={actionsRef} className="ui-filter-bar__actions"><InternalFilterActionBoundary>{actions}</InternalFilterActionBoundary></div>
       {activeFilters != null ? <div className="ui-filter-bar__active">{activeFilters}</div> : null}
       {status != null ? <div className="ui-filter-bar__status" role="status" aria-live="polite">{status}</div> : null}
     </form>

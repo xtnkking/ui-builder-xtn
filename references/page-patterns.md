@@ -22,6 +22,27 @@ For a complete application composition, see the [青屿商城 / storefront examp
 
 Do not copy a pattern's JSX into a local variant. Compose its slots with other public exports. If the pattern lacks a reusable capability, follow the canonical missing-capability workflow instead of patching the installed source.
 
+## Page composition ownership
+
+Choose one complete page pattern for the active route. `ListManagementPage`, `SearchFilterPage`, `MemberManagementPage` and the other full-page patterns already render their page heading. Place the pattern inside the application's navigation shell; do not nest another complete page pattern inside it or add a second `PageHeading` for the same page. Use `PageHeading` on its own only when assembling a page without a heading-owning pattern. A separate section title is appropriate for a distinct section; it should not repeat the page title.
+
+Before composing controls, assign each request a data scope, command owner and result-status owner:
+
+| Information or action | Default owner | Avoid |
+| --- | --- | --- |
+| Product identity and global navigation | Application shell | Repeating the full identity in every page heading |
+| Page title and page-level creation action | Page pattern heading | A second heading or the same creation action in the filter bar |
+| Draft filters and explicit query | One `FilterBar` | A second button that executes the same list request with the same applied filters |
+| List total and record range | `DataTable.pagination` | Repeating the total in the heading and a result-summary line |
+| Loading, error, or successful update state | One status region for that request | Two unlabeled “最近读取” times for one dataset |
+| Row actions and selected-row count | Row or bulk-action area | Treating legitimate per-row actions as duplicated page commands |
+
+Querying changed draft filters and refreshing the last applied query are different operations only when the workflow needs both. If both are exposed, label the scopes and use the correct draft/applied state; otherwise keep one query entry point. Different requests may each have a command and status, for example “检查服务状态 / 服务状态更新于…” and “查询任务 / 任务列表更新于…”. Each timestamp must change only after its own request succeeds. Do not invent extra timestamps, English eyebrows, subtitles, descriptions or buttons merely because slots are available. Responsive alternatives are acceptable when only the applicable version is visible; retry and row actions remain valid in their own context.
+
+The runnable “作用域分离” tab at `#/patterns/list-filter` composes one `ListManagementPage`, a service-status region, one list `FilterBar`, and `DataTable` using public exports. Its service check leaves the list result/time unchanged; list submission leaves service status/time unchanged; the pager owns the total. Reuse this structure with product callbacks rather than copying the Explorer shell. `MemberManagementPage` follows the same total ownership: its heading shows the title, its status region shows request state, and its built-in table pager shows the count.
+
+Before handoff, inspect the composed page once for duplicate headings, same-scope buttons, repeated totals and update times. Compare the callbacks and request state, not just button wording: two buttons with different labels can duplicate an operation, while identical row labels can be correct. The provenance checker enforces component source and public API ownership; it does not infer this business meaning.
+
 ## Family login
 
 `AuthenticationPage` defaults to `layout="page"` and fills at least the viewport height. Use `layout="embedded"` in a preview, tab or other bounded surface; its minimum height is capped while long content can still grow. Without a `visual`, the form is a single centered column with a maximum content width of 420px. With a visual, it uses two columns above 760px of **component container** width, and hides the visual below that width. Compose the form body with the official `Form` and `Field`; submit through the Form so click and Enter share one path. Do not patch page geometry with application CSS.

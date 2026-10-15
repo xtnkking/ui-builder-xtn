@@ -13,6 +13,7 @@ import type { ControlHandle, ControlRef, PublicControlProps } from "./contracts"
 import {
   InternalControlSlotBoundary,
   useInternalButtonSlot,
+  useInternalFilterAction,
   useInternalIconButtonSlot,
   type InternalButtonSlotName,
   type InternalIconButtonSlotName,
@@ -66,6 +67,7 @@ const ICON_BUTTON_SLOT_CONFIG: Record<InternalIconButtonSlotName, IconButtonSlot
 
 export function Button(rawProps: ButtonProps) {
   const { message } = useUILocale();
+  const filterAction = useInternalFilterAction();
   const safeProps = sanitizeFixedControlProps(rawProps);
   const {
     variant = "secondary",
@@ -73,13 +75,13 @@ export function Button(rawProps: ButtonProps) {
     icon,
     trailingIcon,
     loading = false,
-    loadingLabel = message("common.processing"),
+    children,
+    loadingLabel = filterAction && (typeof children === "string" || typeof children === "number") ? children : message("common.processing"),
     disabled,
     "aria-disabled": ariaDisabled,
     onClick,
     onClickCapture,
     onPointerDownCapture,
-    children,
     type = "button",
     controlRef,
     ...props

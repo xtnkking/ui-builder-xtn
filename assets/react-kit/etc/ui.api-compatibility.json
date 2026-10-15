@@ -14,7 +14,7 @@
   },
   "current": {
     "packageName": "ui",
-    "version": "0.3.2",
+    "version": "0.3.3",
     "apiDigest": "0ab352688abcb907f8c42091799720550799de86e82a9f301e6e3b0fd059b434",
     "compatibilityDigest": "1e0def2ea93efca06e7440989ebe5dd97fe454d51cf737ef88dd18399f9a48e5",
     "runtimeExports": 142,
@@ -23,12 +23,12 @@
   },
   "classification": "breaking",
   "versionPolicy": {
-    "releaseTarget": "0.3.2",
-    "packageVersion": "0.3.2",
+    "releaseTarget": "0.3.3",
+    "packageVersion": "0.3.3",
     "valid": true,
     "requiredBump": "minor",
     "minimumVersion": "0.3.0",
-    "message": "Breaking API changes are covered by version 0.3.2."
+    "message": "Breaking API changes are covered by version 0.3.3."
   },
   "changes": {
     "runtimeExports": {

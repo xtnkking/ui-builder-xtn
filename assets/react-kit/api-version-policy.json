@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "baselineVersion": "0.2.19",
-  "releaseTarget": "0.3.2",
+  "releaseTarget": "0.3.3",
   "packageLineage": {
     "from": "personal-ui",
     "to": "ui"

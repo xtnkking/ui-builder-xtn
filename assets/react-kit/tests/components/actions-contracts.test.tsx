@@ -3,6 +3,8 @@ import { createElement } from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import {
+  Button,
+  Dialog,
   ButtonGroup,
   ClipboardButton,
   FilterBar,
@@ -52,6 +54,44 @@ function expectEscapesRemoved(element: HTMLElement, owner: string) {
 }
 
 describe("action public-control contracts", () => {
+  it("keeps rich query labels unique and isolates nested modal action defaults", async () => {
+    render(<FilterBar ariaLabel="更多筛选" actions={<>
+      <Button><span id="rich-query-label">高级查询</span></Button>
+      <Dialog open onOpenChange={() => {}} title="导出设置" footer={<Button loading>保存设置</Button>}>
+        <span>导出选项</span>
+      </Dialog>
+    </>}><span>筛选字段</span></FilterBar>);
+    expect(document.querySelectorAll("#rich-query-label")).toHaveLength(1);
+    expect(await screen.findByRole("dialog", { name: "导出设置" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "处理中", exact: true })).toHaveAttribute("aria-busy", "true");
+  });
+
+  it("keeps query action labels compact by default without leaking loading defaults", () => {
+    const onQuery = vi.fn();
+    const onSubmit = vi.fn((event: React.FormEvent<HTMLFormElement>) => event.preventDefault());
+    const content = (loading: boolean) => <>
+      <FilterBar ariaLabel="任务筛选" onSubmit={onSubmit} actions={<>
+        <Button type="submit" loading={loading} onClick={onQuery}>查询</Button>
+        <Button loading loadingLabel="正在导出任务">导出</Button>
+      </>}><span>筛选字段</span></FilterBar>
+      <Button loading>保存</Button>
+    </>;
+    const { rerender } = render(content(false));
+    const query = screen.getByRole("button", { name: "查询", exact: true });
+    fireEvent.click(query);
+    expect(onQuery).toHaveBeenCalledTimes(1);
+    expect(onSubmit).toHaveBeenCalledTimes(1);
+    rerender(content(true));
+    expect(screen.getByRole("button", { name: "查询", exact: true })).toBe(query);
+    expect(query).toHaveAttribute("aria-busy", "true");
+    expect(query).toHaveAttribute("aria-disabled", "true");
+    fireEvent.click(query);
+    expect(onQuery).toHaveBeenCalledTimes(1);
+    expect(onSubmit).toHaveBeenCalledTimes(1);
+    expect(screen.getByRole("button", { name: "正在导出任务", exact: true })).toHaveAttribute("aria-busy", "true");
+    expect(screen.getByRole("button", { name: "处理中", exact: true })).toHaveAttribute("aria-busy", "true");
+  });
+
   it("filters Link escape props while preserving anchor semantics and events", () => {
     const onMouseEnter = vi.fn();
     const rawProps = {

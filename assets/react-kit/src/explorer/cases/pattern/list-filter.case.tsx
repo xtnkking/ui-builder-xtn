@@ -1,7 +1,7 @@
 // @ui-coverage {"kind":"example","runner":"explorer","caseId":"list-filter/overview","exports":["PageHeading","ListManagementPage","SearchFilterPage","MemberManagementPage"]}
 import { StatePreview } from "../state-preview";
-import { Box, Button, EmptyState, FilterBar, ListManagementPage, MemberManagementPage, PageHeading, SearchFilterPage, SearchInput, Tabs } from "../../../ui";
-import { useState } from "react";
+import { Box, Button, DataTable, EmptyState, FilterBar, Inline, ListManagementPage, MemberManagementPage, PageHeading, SearchFilterPage, SearchInput, Tabs, useUILocale } from "../../../ui";
+import { useRef, useState } from "react";
 import type { MemberQuery, MemberResult } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
@@ -49,6 +49,81 @@ function DraftListPage({ kind }: { kind: "management" | "search" }) {
   return kind === "management" ? <ListManagementPage title="项目" description="显式查询并保持结果区域稳定。" filters={filters}>{content}</ListManagementPage> : <SearchFilterPage title="审计记录" filters={filters}>{content}</SearchFilterPage>;
 }
 
+const scopedTasks = [
+  { id: "task-001", name: "同步商品库存", status: "运行中" },
+  { id: "task-002", name: "核对订单金额", status: "已完成" },
+  { id: "task-003", name: "生成配送清单", status: "待处理" },
+];
+
+// One complete page; independent service and list requests own their own status.
+export function ScopedListExample() {
+  const { formatDate } = useUILocale();
+  const [draft, setDraft] = useState("");
+  const [rows, setRows] = useState(scopedTasks);
+  const [page, setPage] = useState(1);
+  const [querying, setQuerying] = useState(false);
+  const [checkingService, setCheckingService] = useState(false);
+  const [listUpdatedAt, setListUpdatedAt] = useState<Date | null>(null);
+  const [serviceUpdatedAt, setServiceUpdatedAt] = useState<Date | null>(null);
+  const listBusy = useRef(false);
+  const serviceBusy = useRef(false);
+  const time = (value: Date) => formatDate(value, { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+  const queryTasks = async () => {
+    if (listBusy.current) return;
+    listBusy.current = true;
+    setQuerying(true);
+    const search = draft.trim();
+    await new Promise<void>((resolve) => setTimeout(resolve, 300));
+    setRows(scopedTasks.filter((task) => task.name.includes(search)));
+    setPage(1);
+    setListUpdatedAt(new Date());
+    listBusy.current = false;
+    setQuerying(false);
+  };
+  const checkService = async () => {
+    if (serviceBusy.current) return;
+    serviceBusy.current = true;
+    setCheckingService(true);
+    await new Promise<void>((resolve) => setTimeout(resolve, 300));
+    setServiceUpdatedAt(new Date());
+    serviceBusy.current = false;
+    setCheckingService(false);
+  };
+  return (
+    <ListManagementPage
+      title="任务档案"
+      filters={(
+        <FilterBar
+          ariaLabel="任务列表筛选"
+          onSubmit={(event) => { event.preventDefault(); void queryTasks(); }}
+          actions={<Button type="submit" size="field" variant="primary" loading={querying} loadingLabel="查询任务">查询任务</Button>}
+          status={querying ? "任务列表查询中" : listUpdatedAt ? `任务列表更新于 ${time(listUpdatedAt)}` : "任务列表：演示初始数据"}
+        >
+          <SearchInput aria-label="任务名称" placeholder="输入任务名称" value={draft} readOnly={querying} onChange={(event) => setDraft(event.currentTarget.value)} onClear={() => setDraft("")} />
+        </FilterBar>
+      )}
+    >
+      <section aria-label="服务状态">
+        <Inline gap="small">
+          <Button size="small" loading={checkingService} loadingLabel="检查服务状态" onClick={checkService}>检查服务状态</Button>
+          <span role="status">{checkingService ? "服务状态检查中" : serviceUpdatedAt ? `服务正常 · 服务状态更新于 ${time(serviceUpdatedAt)}` : "服务状态尚未检查"}</span>
+        </Inline>
+      </section>
+      <DataTable
+        ariaLabel="任务列表"
+        columns={[
+          { id: "name", header: "任务名称", cell: (task) => task.name },
+          { id: "status", header: "状态", width: 120, cell: (task) => task.status },
+        ]}
+        rows={rows.slice((page - 1) * 2, page * 2)}
+        rowKey={(task) => task.id}
+        state={querying ? "loading" : rows.length ? "ready" : "empty"}
+        pagination={{ page, pageCount: Math.max(1, Math.ceil(rows.length / 2)), pageSize: 2, total: rows.length, disabled: querying, onPageChange: setPage }}
+      />
+    </ListManagementPage>
+  );
+}
+
 function ListFilterExample() {
   const [feedback, setFeedback] = useState("");
   return (
@@ -66,6 +141,11 @@ function ListFilterExample() {
           id: "search",
           label: "搜索筛选",
           content: <DraftListPage kind="search" />,
+        },
+        {
+          id: "scoped",
+          label: "作用域分离",
+          content: <ScopedListExample />,
         },
         {
           id: "members",

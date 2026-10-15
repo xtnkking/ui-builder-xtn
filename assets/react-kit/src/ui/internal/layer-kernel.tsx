@@ -11,6 +11,7 @@ import {
   type RefObject,
 } from "react";
 import { useUIPortalTokens } from "./portal-tokens";
+import { InternalFilterActionBoundary } from "./button-slots";
 import { consumeLayerActivation, recordLayerActivation } from "./layer-activation";
 import { getTabStops, isVisibleElement } from "./utils";
 
@@ -432,7 +433,7 @@ export function useLayerPortalTarget(
 }
 
 export function LayerParentProvider({ id, children }: { id: symbol; children: ReactNode }) {
-  return <LayerParentContext.Provider value={id}>{children}</LayerParentContext.Provider>;
+  return <LayerParentContext.Provider value={id}><InternalFilterActionBoundary enabled={false}>{children}</InternalFilterActionBoundary></LayerParentContext.Provider>;
 }
 
 export function useLayerKernel({

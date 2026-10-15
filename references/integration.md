@@ -147,7 +147,7 @@ Buttons that share a row with input controls must declare `size="field"`. In `Fi
 </FilterBar>
 ```
 
-The same `size="field"` contract applies when a product intentionally composes the command beside a field inside `Inline`; do not recreate the 44px height with application CSS. For compact query actions, keep `loadingLabel` equal to the displayed action (for example, `查询`, `搜索`, or localized `Search`): the bundled spinner communicates loading while the button reserves one stable, compact width. Ordinary `Button` instances remain 38px and `size="small"` remains 32px.
+The same `size="field"` contract applies when a product intentionally composes the command beside a field inside `Inline`; do not recreate the 44px height with application CSS. Buttons in `FilterBar.actions` default their loading label to their own plain string/number content, so an omitted `loadingLabel` does not reserve extra width for a longer generic message. Rich ReactNode labels keep the generic fallback to avoid rendering their content twice; nested modal actions keep their ordinary defaults. An explicit `loadingLabel` is still honored and reserves its full width; use it only when the longer feedback is needed. Outside FilterBar, keep a compact query action's `loadingLabel` equal to its displayed action (for example, `查询`, `搜索`, or localized `Search`). The bundled spinner communicates loading while the button keeps stable dimensions. Ordinary `Button` instances remain 38px and `size="small"` remains 32px.
 
 Do not deep-import an implementation file:
 

@@ -25,6 +25,16 @@ interface InternalButtonSlotValue {
 
 const ButtonSlotContext = createContext<InternalButtonSlotValue | null>(null);
 const IconButtonSlotContext = createContext<InternalIconButtonSlotName | null>(null);
+const FilterActionContext = createContext(false);
+
+/** Query actions keep their own short label during loading without consumer boilerplate. */
+export function InternalFilterActionBoundary({ children, enabled = true }: { children: ReactNode; enabled?: boolean }) {
+  return <FilterActionContext.Provider value={enabled}>{children}</FilterActionContext.Provider>;
+}
+
+export function useInternalFilterAction(): boolean {
+  return useContext(FilterActionContext);
+}
 
 type InternalButtonSlotProps =
   | {
@@ -65,8 +75,10 @@ export function useInternalIconButtonSlot(): InternalIconButtonSlotName | null {
 
 export function InternalControlSlotBoundary({ children }: { children: ReactNode }) {
   return (
-    <ButtonSlotContext.Provider value={null}>
-      <IconButtonSlotContext.Provider value={null}>{children}</IconButtonSlotContext.Provider>
-    </ButtonSlotContext.Provider>
+    <FilterActionContext.Provider value={false}>
+      <ButtonSlotContext.Provider value={null}>
+        <IconButtonSlotContext.Provider value={null}>{children}</IconButtonSlotContext.Provider>
+      </ButtonSlotContext.Provider>
+    </FilterActionContext.Provider>
   );
 }
