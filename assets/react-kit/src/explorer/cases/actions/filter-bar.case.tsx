@@ -1,7 +1,7 @@
-// @ui-coverage {"kind":"example","runner":"explorer","caseId":"filter-bar/overview","exports":["FilterBar"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"filter-bar/overview","exports":["FilterBar","FilterField"]}
 import { useId, useRef, useState, type FormEvent } from "react";
 import { StatePreview } from "../state-preview";
-import { Button, Field, FilterBar, SearchInput, Select, Tag } from "../../../ui";
+import { Button, Field, FilterBar, FilterField, SearchInput, Select, Tag } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 const members = ["林夏 lin.xia@example.com", "陈屿 chen.yu@example.com", "王宁 wang.ning@example.com"];
@@ -26,14 +26,19 @@ function FilterBarExample({ longContent = false, simulateRequest = false, densit
       setLoading(false);
     }
   };
-  return <FilterBar ariaLabel={longContent ? "完整成员筛选说明" : "成员筛选"} density={density} onSubmit={applyQuery} actions={<Button type="submit" size="field" variant="primary" loading={loading}>查询</Button>} activeFilters={query ? <Tag tone="blue">关键词：{query}</Tag> : null} status={`${loading ? "正在查询；" : ""}共 ${results.length} 条结果；${results.join("；") || "没有匹配成员"}`}><SearchInput aria-label="搜索成员" placeholder="姓名或邮箱" value={draft} onChange={(event) => setDraft(event.currentTarget.value)} />{longContent ? <span>此筛选覆盖全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置，请确认所有关联配置均符合团队的实际使用要求。</span> : null}</FilterBar>;
+  return <FilterBar ariaLabel={longContent ? "完整成员筛选说明" : "成员筛选"} density={density} onSubmit={applyQuery} actions={<Button type="submit" size="field" variant="primary" loading={loading}>查询</Button>} activeFilters={query ? <Tag tone="blue">关键词：{query}</Tag> : null} status={`${loading ? "正在查询；" : ""}共 ${results.length} 条结果；${results.join("；") || "没有匹配成员"}`}>
+    <FilterField width="long">
+      <SearchInput aria-label="搜索成员" placeholder="姓名或邮箱" value={draft} onChange={(event) => setDraft(event.currentTarget.value)} />
+      {longContent ? <span>此筛选覆盖全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置，请确认所有关联配置均符合团队的实际使用要求。</span> : null}
+    </FilterField>
+  </FilterBar>;
 }
 
 function EnglishFilterBarExample() {
   const [draft, setDraft] = useState("");
   const [query, setQuery] = useState("");
   const results = members.filter((member) => member.toLocaleLowerCase().includes(query.toLocaleLowerCase()));
-  return <FilterBar ariaLabel="Member filters" onSubmit={(event) => { event.preventDefault(); setQuery(draft.trim()); }} actions={<Button type="submit" size="field" variant="primary" loadingLabel="Search">Search</Button>} activeFilters={query ? <Tag>Keyword: {query}</Tag> : null} status={`${results.length} results`}><SearchInput aria-label="Search members" placeholder="Name or email" value={draft} onChange={(event) => setDraft(event.currentTarget.value)} /></FilterBar>;
+  return <FilterBar ariaLabel="Member filters" onSubmit={(event) => { event.preventDefault(); setQuery(draft.trim()); }} actions={<Button type="submit" size="field" variant="primary" loadingLabel="Search">Search</Button>} activeFilters={query ? <Tag>Keyword: {query}</Tag> : null} status={`${results.length} results`}><FilterField width="long"><SearchInput aria-label="Search members" placeholder="Name or email" value={draft} onChange={(event) => setDraft(event.currentTarget.value)} /></FilterField></FilterBar>;
 }
 
 function FieldFilterBarExample() {
@@ -65,19 +70,21 @@ function FieldFilterBarExample() {
 const explorerCase = {
   id: "filter-bar/overview",
   label: "筛选栏",
-  summary: "桌面默认 38px 紧凑控件，搜索字段约 320px；移动端与窄容器恢复 44px 并换行。字段只更新草稿，显式查询才应用条件；需要宽松尺寸时使用 density=comfortable。",
+  summary: "桌面默认 38px 紧凑控件，本例用 FilterField long 保留 320px 搜索字段；可按业务选择短、中、长或自定义宽度。移动端与窄容器恢复 44px 并换行。字段只更新草稿，显式查询才应用条件。",
   states: ["default", "longContent", "keyboard", "mobile", "overlay", "dark", "locale"],
   stateExamples: [
-    { state: "default", exports: ["FilterBar"], instructions: "输入 lin 后点击查询或按 Enter，模拟 800ms 请求；动作按钮保留查询文字并显示转圈，保持高度和宽度，重复提交不会启动新请求，完成后显示林夏。加载由 Button 拥有，FilterBar 仅组合字段、动作与结果。", content: <FilterBarExample simulateRequest /> },
-    { state: "longContent", exports: ["FilterBar"], instructions: "此例使用 density=comfortable，保留 44px 宽松控件；长说明与操作自然换行。其他案例默认使用紧凑密度。", content: <FilterBarExample longContent density="comfortable" /> },
+    { state: "default", exports: ["FilterBar", "FilterField"], instructions: "输入 lin 后点击查询或按 Enter，模拟 800ms 请求；动作按钮保留查询文字并显示转圈，保持高度和宽度，重复提交不会启动新请求，完成后显示林夏。加载由 Button 拥有，FilterBar 仅组合字段、动作与结果。", content: <FilterBarExample simulateRequest /> },
+    { state: "longContent", exports: ["FilterBar", "FilterField"], instructions: "此例使用 density=comfortable，保留 44px 宽松控件；长说明与操作自然换行。其他案例默认使用紧凑密度。", content: <FilterBarExample longContent density="comfortable" /> },
     { state: "keyboard", exports: ["FilterBar"], instructions: "输入 lin，再用 Tab 和 Enter 激活查询，或在搜索框按 Enter 提交；输入期间结果不变，提交后结果变为林夏。", content: <FilterBarExample /> },
-    { state: "mobile", exports: ["FilterBar"], instructions: "此 320px 容器在桌面视口内也会纵排字段和动作；搜索框保持原高度，输入不会自动提交。", content: <StatePreview state="mobile"><FilterBarExample /></StatePreview> },
+    { state: "mobile", exports: ["FilterBar", "FilterField"], instructions: "此 320px 容器在桌面视口内也会纵排字段和动作；搜索框占满可用宽度并恢复 44px，输入不会自动提交。", content: <StatePreview state="mobile"><FilterBarExample /></StatePreview> },
     { state: "overlay", exports: ["FilterBar"], content: <StatePreview state="overlay"><FilterBarExample /></StatePreview> },
-    { state: "dark", exports: ["FilterBar"], content: <StatePreview state="dark"><FilterBarExample /></StatePreview> },
-    { state: "locale", exports: ["FilterBar"], content: <StatePreview state="locale"><EnglishFilterBarExample /></StatePreview> },
+    { state: "dark", exports: ["FilterBar", "FilterField"], content: <StatePreview state="dark"><FilterBarExample /></StatePreview> },
+    { state: "locale", exports: ["FilterBar", "FilterField"], content: <StatePreview state="locale"><EnglishFilterBarExample /></StatePreview> },
   ],
   content: <div style={{ display: "grid", gap: 24 }}><FilterBarExample simulateRequest /><FieldFilterBarExample /></div>,
-  code: `<FilterBar ariaLabel="成员筛选" onSubmit={applyFilters} actions={<Button type="submit" size="field" variant="primary" loading={querying} loadingLabel="查询">查询</Button>}>{fields}</FilterBar>`,
+  code: `<FilterBar ariaLabel="成员筛选" onSubmit={applyFilters} actions={<Button type="submit" size="field" variant="primary" loading={querying} loadingLabel="查询">查询</Button>}>
+  <FilterField width="long"><SearchInput aria-label="搜索成员" value={draft} onChange={changeDraft} /></FilterField>
+</FilterBar>`,
 } satisfies ExplorerCase;
 
 export default explorerCase;

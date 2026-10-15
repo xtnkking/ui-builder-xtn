@@ -1,6 +1,6 @@
 {
   "name": "ui",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "stack": [
     "react",
     "typescript",
@@ -63,6 +63,7 @@
     "Field",
     "FileUpload",
     "FilterBar",
+    "FilterField",
     "FocusTrap",
     "Form",
     "Gallery",
@@ -201,6 +202,7 @@
       "Field",
       "FileUpload",
       "FilterBar",
+      "FilterField",
       "Form",
       "Gallery",
       "GuidedTour",
@@ -364,6 +366,7 @@
       "Field",
       "FileUpload",
       "FilterBar",
+      "FilterField",
       "FocusTrap",
       "Form",
       "Gallery",

@@ -11,6 +11,7 @@ Use this reference for searchable lists, server-backed filters, asynchronous opt
 | Searchable local options | `Combobox` or `SearchableSelect` |
 | Remote or very large options | `AsyncSelect` |
 | Submitted filter row and applied-filter summary | `FilterBar` |
+| Different, stable field widths within a filter row | `FilterField` inside `FilterBar` |
 | Sortable, selectable, responsive result set | `DataTable` |
 | Hierarchical rows with branch commands and row operations | `TreeTable` |
 | Consistent table primary/secondary text and long-value overflow | `TableCellText` |
@@ -78,6 +79,106 @@ import { DataTable, ToastProvider } from "./ui";
 ```
 
 Pair query commands with fields using `Button size="field"`. `FilterBar` defaults to compact 38px desktop fields/actions with tighter button padding; `density="comfortable"` uses 44px. Narrow containers, mobile viewports and coarse-pointer devices retain 44px targets. Standalone field-aligned buttons remain 44px. For a compact two-character action, pass `loadingLabel="查询"` or `loadingLabel="搜索"` to match its visible label; use the same localized action in other languages. The official spinner then appears beside that label without reserving extra width for the generic processing text, and idle/loading dimensions stay identical. The `FilterBar` Explorer's default example demonstrates an explicit, duplicate-blocked 800ms request while preserving the last applied results; the action's loading state belongs to Button.
+
+## Filter field sizing
+
+Use the public `FilterField` as a direct child of `FilterBar` to choose a stable width for each filter. It wraps an existing `SearchInput`, `Select`, or labeled `Field`; it does not create a label, infer field semantics, or replace its child's value and accessibility contract. Use the control's accessible name, or the existing `Field` label association. Do not give this wrapper application `style`, `className`, or `ref` overrides.
+
+| `FilterField.width` | Preferred width |
+| --- | --- |
+| `"short"` | 140px |
+| `"medium"` or omitted | 240px |
+| `"long"` | 320px |
+| Positive finite `number` | That many CSS pixels, for example `180` |
+
+These are optional library design values, not authoritative standards or mandatory widths for a data type. The business owner chooses according to expected content, language and the space available. A short country code or status selector will often need less space than a task ID, email address or broad keyword query. Choose long keyword widths deliberately rather than assigning the longest preset to every field. The component does not grow as the user types. Unsupported runtime values, including non-positive or non-finite numbers, fall back to medium; do not pass CSS strings such as `"180px"`.
+
+Fields and actions share the available wrapping space: on a wide container, query/reset follow the last field when they fit; narrower rows wrap naturally without enlarging every field to distribute unused space. Preferred widths are bounded by the container. At a container width of 520px or less, all filter fields use full width and fields/actions retain 44px targets. The normal compact desktop height is 38px; `density="comfortable"` and coarse-pointer devices use 44px. Choose widths based on the local filter container, not just the browser viewport.
+
+Existing controls used directly as `FilterBar` children keep their legacy 320px sizing. Wrap each field explicitly to adopt the mixed-width composition; updating the Skill does not rewrite a consumer's existing JSX. A custom numeric width controls layout only and does not permit control CSS overrides or an input that changes width with its current text.
+
+This complete typed composition keeps draft values separate from the last successful query, submits only on the query command or Enter, and treats reset as an explicit query. The caller's `onQuery` performs the request and rejects on failure; retain the last successful rows in that owner. The shared application `ToastProvider` supplies the action feedback.
+
+```tsx
+import { useRef, useState } from "react";
+import { Button, FilterBar, FilterField, SearchInput, Select, useToast } from "./ui";
+
+type TaskQuery = {
+  taskId: string;
+  status: string;
+  taskType: string;
+  country: string;
+  phone: string;
+};
+const emptyTaskQuery: TaskQuery = {
+  taskId: "", status: "", taskType: "", country: "", phone: "",
+};
+
+export function TaskFilters({ onQuery }: {
+  onQuery: (query: TaskQuery) => Promise<void>;
+}) {
+  const [draft, setDraft] = useState<TaskQuery>({ ...emptyTaskQuery });
+  const [query, setQuery] = useState<TaskQuery | null>(null);
+  const [pending, setPending] = useState(false);
+  const requestLock = useRef(false);
+  const { toast } = useToast();
+  const update = (key: keyof TaskQuery, value: string) => {
+    setDraft((current) => ({ ...current, [key]: value }));
+  };
+  async function apply(next: TaskQuery) {
+    if (requestLock.current) return;
+    requestLock.current = true;
+    setPending(true);
+    try {
+      await onQuery(next);
+      setQuery(next);
+    } catch {
+      toast({ tone: "danger", title: "查询失败", description: "已保留上次结果，请重试。" });
+    } finally {
+      requestLock.current = false;
+      setPending(false);
+    }
+  }
+  function reset() {
+    if (requestLock.current) return;
+    const next = { ...emptyTaskQuery };
+    setDraft(next);
+    void apply(next);
+  }
+  return <FilterBar ariaLabel="任务筛选"
+    onSubmit={(event) => { event.preventDefault(); void apply({ ...draft }); }}
+    status={pending ? "正在查询…" : query ? "筛选条件已应用" : undefined}
+    actions={<>
+      <Button type="submit" size="field" loading={pending} loadingLabel="查询">查询</Button>
+      <Button type="button" size="field" variant="secondary" disabled={pending} onClick={reset}>重置</Button>
+    </>}>
+    <FilterField width="medium">
+      <SearchInput aria-label="任务编号" placeholder="输入任务编号" value={draft.taskId}
+        disabled={pending} onChange={(event) => update("taskId", event.target.value)} />
+    </FilterField>
+    <FilterField width="short">
+      <Select ariaLabel="状态" value={draft.status} disabled={pending}
+        options={[{ value: "", label: "全部状态" }, { value: "queued", label: "排队中" },
+          { value: "done", label: "已完成" }]}
+        onValueChange={(value) => update("status", value)} />
+    </FilterField>
+    <FilterField width={180}>
+      <SearchInput aria-label="任务类型" placeholder="输入任务类型" value={draft.taskType}
+        disabled={pending} onChange={(event) => update("taskType", event.target.value)} />
+    </FilterField>
+    <FilterField width="short">
+      <SearchInput aria-label="国家代码" placeholder="国家代码" value={draft.country}
+        disabled={pending} onChange={(event) => update("country", event.target.value)} />
+    </FilterField>
+    <FilterField width="medium">
+      <SearchInput aria-label="号码" placeholder="输入号码或部分号码" value={draft.phone}
+        disabled={pending} onChange={(event) => update("phone", event.target.value)} />
+    </FilterField>
+  </FilterBar>;
+}
+```
+
+If `onQuery` drives `DataTable state="error"`, let that table own its automatic error Toast and remove the catch notification above so the same request has one failure owner. The runnable [mixed-width filter example](../assets/react-kit/src/explorer/cases/actions/filter-sizing.example.tsx) at `#/components/filter-bar` includes the same five field purposes, actual query/reset behavior, accessible control names and narrow-container layouts. The primary FilterBar example separately demonstrates labeled `Field` controls and helper-text alignment. Reuse the public exports and request ownership, replacing the example service with the product API.
 
 ## DataTable configuration
 

@@ -4,6 +4,7 @@ import {
   useRef,
   useState,
   type AnchorHTMLAttributes,
+  type CSSProperties,
   type FormHTMLAttributes,
   type HTMLAttributes,
   type ReactNode,
@@ -137,6 +138,31 @@ export type FilterBarProps = PublicControlProps<Omit<FormHTMLAttributes<HTMLForm
   status?: ReactNode;
 };
 
+export type FilterFieldProps = PublicControlProps<Omit<HTMLAttributes<HTMLDivElement>, "children">> & {
+  children: ReactNode;
+  /** Preferred desktop width; narrow containers stack fields at the full available width. */
+  width?: "short" | "medium" | "long" | number;
+};
+
+const FILTER_FIELD_WIDTHS = { short: 140, medium: 240, long: 320 } as const;
+
+export function FilterField(rawProps: FilterFieldProps) {
+  const { children, width = "medium", ...props } = sanitizeFixedControlProps(rawProps);
+  const resolvedWidth = typeof width === "number"
+    ? Number.isFinite(width) && width > 0 ? width : FILTER_FIELD_WIDTHS.medium
+    : width === "short" || width === "long" ? FILTER_FIELD_WIDTHS[width] : FILTER_FIELD_WIDTHS.medium;
+  return (
+    <div
+      {...props}
+      className="ui-filter-field"
+      data-ui-owner="FilterField"
+      style={{ "--_ui-filter-field-width": `${resolvedWidth}px` } as CSSProperties}
+    >
+      {children}
+    </div>
+  );
+}
+
 const useClientLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 const FILTER_CONTROL_ANCHOR = ".ui-input-shell, .ui-input:not(.ui-input--embedded), .ui-textarea, .ui-select, .ui-combobox__trigger";
 
@@ -148,8 +174,9 @@ function useFilterBarAlignment(
   useClientLayoutEffect(() => {
     const fields = fieldsRef.current;
     const actions = actionsRef.current;
+    const form = fields?.parentElement;
     const ownerWindow = fields?.ownerDocument.defaultView;
-    if (!fields || !actions || !ownerWindow) return;
+    if (!fields || !actions || !form || !ownerWindow) return;
     const offsets = new Map<HTMLElement, number>();
     const observed = new Set<Element>();
     let frame = 0;
@@ -165,7 +192,7 @@ function useFilterBarAlignment(
     };
     const measure = () => {
       frame = 0;
-      if (disposed || fields.getBoundingClientRect().width === 0) return;
+      if (disposed || form.getBoundingClientRect().width === 0) return;
       const current = new Set<HTMLElement>();
       const rows: Array<{ top: number; lead: number; items: Array<{ element: HTMLElement; lead: number }> }> = [];
       for (const child of Array.from(fields.children)) {
@@ -189,11 +216,9 @@ function useFilterBarAlignment(
         row.lead = Math.max(row.lead, lead);
         row.items.push({ element: child, lead });
       }
-      const fieldsTop = fields.getBoundingClientRect().top;
       const actionMargin = Number.parseFloat(ownerWindow.getComputedStyle(actions).marginBlockStart) || 0;
       const actionRowTop = actions.getBoundingClientRect().top - actionMargin;
-      const firstRow = rows.reduce<typeof rows[number] | undefined>((first, row) => !first || row.top < first.top ? row : first, undefined);
-      const sharedRow = Math.abs(actionRowTop - fieldsTop) <= 1;
+      const actionRow = rows.find((row) => Math.abs(actionRowTop - row.top) <= 1);
       for (const element of offsets.keys()) if (!current.has(element)) clearField(element);
       for (const row of rows) {
         for (const { element, lead } of row.items) {
@@ -203,14 +228,14 @@ function useFilterBarAlignment(
           setOffset(element, "--_ui-filter-align-offset", offset);
         }
       }
-      setOffset(actions, "--_ui-filter-action-offset", sharedRow && firstRow ? firstRow.top - fieldsTop + firstRow.lead : 0);
+      setOffset(actions, "--_ui-filter-action-offset", actionRow?.lead ?? 0);
     };
     const schedule = () => {
       if (!disposed && !frame) frame = ownerWindow.requestAnimationFrame(measure);
     };
     const resizeObserver = typeof ownerWindow.ResizeObserver === "function" ? new ownerWindow.ResizeObserver(schedule) : null;
     const refreshObserved = () => {
-      const next = new Set<Element>([fields, actions, ...fields.children, ...fields.querySelectorAll(".ui-label")]);
+      const next = new Set<Element>([form, actions, ...fields.children, ...fields.querySelectorAll(".ui-label")]);
       for (const element of observed) {
         if (!next.has(element)) { resizeObserver?.unobserve(element); observed.delete(element); }
       }

@@ -854,6 +854,17 @@
             "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
           ],
           "name": "FilterBar"
+        },
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/actions/filter-bar.case.tsx"
+          ],
+          "keyboard": [],
+          "name": "FilterField"
         }
       ],
       "id": "filter-bar",
@@ -3640,7 +3651,7 @@
       ]
     }
   ],
-  "kitVersion": "0.3.6",
+  "kitVersion": "0.3.7",
   "modules": [
     {
       "dependencies": [

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 3,
-  "kitVersion": "0.3.6",
+  "kitVersion": "0.3.7",
   "generatedFrom": [
     "assets/react-kit/component-manifest.json",
     "assets/react-kit/registry.json",
@@ -132,6 +132,7 @@
     "assets/react-kit/tests/browser/explorer-audit-findings.spec.ts",
     "assets/react-kit/tests/browser/explorer-responsive-followup.spec.ts",
     "assets/react-kit/tests/browser/feedback-results-toast.spec.ts",
+    "assets/react-kit/tests/browser/filter-sizing.spec.ts",
     "assets/react-kit/tests/browser/infinite-scroll-composition.spec.ts",
     "assets/react-kit/tests/browser/legacy-regressions.spec.ts",
     "assets/react-kit/tests/browser/lightbox-interaction.spec.ts",
@@ -183,6 +184,7 @@
     "assets/react-kit/tests/components/display-contracts.test.tsx",
     "assets/react-kit/tests/components/drawer-width.test.tsx",
     "assets/react-kit/tests/components/feedback-contracts.test.tsx",
+    "assets/react-kit/tests/components/filter-field.test.tsx",
     "assets/react-kit/tests/components/form-control-contracts.test.tsx",
     "assets/react-kit/tests/components/form-library-adapter.test.tsx",
     "assets/react-kit/tests/components/infinite-scroll-composition.test.tsx",
@@ -223,26 +225,26 @@
     "assets/react-kit/tests/visual/drawer-edge.visual.spec.ts"
   ],
   "summary": {
-    "exportCount": 143,
+    "exportCount": 144,
     "classificationCounts": {
-      "fixed-control": 111,
+      "fixed-control": 112,
       "layout": 13,
       "theme-root": 1,
       "pattern": 13,
       "non-visual": 5
     },
     "stabilityCounts": {
-      "stable": 142,
+      "stable": 143,
       "experimental": 0,
       "deprecated": 1
     },
     "evidenceCounts": {
-      "api": 143,
-      "owner": 143,
-      "source": 143,
-      "example": 143,
-      "unit": 120,
-      "browser": 70,
+      "api": 144,
+      "owner": 144,
+      "source": 144,
+      "example": 144,
+      "unit": 121,
+      "browser": 71,
       "keyboard": 100,
       "a11y": 120
     },
@@ -10016,11 +10018,13 @@
       ],
       "unit": [
         "assets/react-kit/tests/components/actions-contracts.test.tsx",
+        "assets/react-kit/tests/components/filter-field.test.tsx",
         "assets/react-kit/tests/components/page-composition-ownership.test.tsx"
       ],
       "browser": [
         "assets/react-kit/tests/browser/auth-query-layout.spec.ts",
         "assets/react-kit/tests/browser/explorer-responsive-followup.spec.ts",
+        "assets/react-kit/tests/browser/filter-sizing.spec.ts",
         "assets/react-kit/tests/browser/legacy-regressions.spec.ts"
       ],
       "keyboard": [
@@ -10029,6 +10033,157 @@
       "a11y": [
         "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
       ]
+    },
+    {
+      "name": "FilterField",
+      "classification": "fixed-control",
+      "stability": "stable",
+      "api": [
+        "assets/react-kit/etc/ui.api.md"
+      ],
+      "owner": {
+        "manifestEntry": "filter-bar",
+        "markers": [
+          "FilterField"
+        ]
+      },
+      "source": [
+        "src/ui/action/actions.tsx",
+        "src/ui/styles/layout-actions-display.css"
+      ],
+      "documentation": {
+        "interaction": "static",
+        "stateMode": "stateless",
+        "applicableStates": [
+          "default",
+          "longContent",
+          "mobile",
+          "dark",
+          "locale"
+        ],
+        "example": {
+          "status": "documented",
+          "id": "filter-bar/overview",
+          "refs": [
+            "assets/react-kit/src/explorer/cases/actions/filter-bar.case.tsx"
+          ]
+        },
+        "apiPage": {
+          "status": "documented",
+          "id": "export-filter-field",
+          "refs": [
+            "references/component-api.md"
+          ]
+        },
+        "migration": {
+          "status": "none",
+          "reason": "No migration is required for the current public export."
+        },
+        "keyboard": {
+          "mode": "none",
+          "reason": "FilterField owns sizing only; keyboard commands remain owned by its canonical child control."
+        },
+        "aria": {
+          "mode": "none",
+          "reason": "FilterField introduces no independent ARIA role and preserves the child Field label and control semantics."
+        },
+        "family": "filter-bar",
+        "category": "actions",
+        "defaultsSource": {
+          "kind": "typescript",
+          "export": "FilterField",
+          "files": [
+            "src/ui/action/actions.tsx"
+          ]
+        },
+        "semanticTokens": {
+          "status": "derived",
+          "source": "manifest-css",
+          "files": [
+            "src/ui/styles/layout-actions-display.css"
+          ],
+          "tokens": [
+            "--ui-bg",
+            "--ui-border",
+            "--ui-border-strong",
+            "--ui-danger",
+            "--ui-danger-soft",
+            "--ui-focus-ring",
+            "--ui-muted",
+            "--ui-on-primary",
+            "--ui-primary",
+            "--ui-primary-ink",
+            "--ui-primary-soft",
+            "--ui-success",
+            "--ui-success-soft",
+            "--ui-surface",
+            "--ui-surface-subtle",
+            "--ui-text",
+            "--ui-warning"
+          ]
+        }
+      },
+      "stateCoverage": {
+        "applicableStates": [
+          "default",
+          "longContent",
+          "mobile",
+          "dark",
+          "locale"
+        ],
+        "sourceDemonstratedStates": [
+          "default",
+          "longContent",
+          "mobile",
+          "dark",
+          "locale"
+        ],
+        "fixtures": [
+          {
+            "state": "default",
+            "file": "assets/react-kit/src/explorer/cases/actions/filter-bar.case.tsx",
+            "exampleIndex": 0,
+            "verification": "runnable-source-fixture"
+          },
+          {
+            "state": "longContent",
+            "file": "assets/react-kit/src/explorer/cases/actions/filter-bar.case.tsx",
+            "exampleIndex": 1,
+            "verification": "runnable-source-fixture"
+          },
+          {
+            "state": "mobile",
+            "file": "assets/react-kit/src/explorer/cases/actions/filter-bar.case.tsx",
+            "exampleIndex": 3,
+            "verification": "runnable-source-fixture"
+          },
+          {
+            "state": "dark",
+            "file": "assets/react-kit/src/explorer/cases/actions/filter-bar.case.tsx",
+            "exampleIndex": 5,
+            "verification": "runnable-source-fixture"
+          },
+          {
+            "state": "locale",
+            "file": "assets/react-kit/src/explorer/cases/actions/filter-bar.case.tsx",
+            "exampleIndex": 6,
+            "verification": "runnable-source-fixture"
+          }
+        ],
+        "verificationKind": "structural-source-fixtures",
+        "behavioralVerification": false
+      },
+      "example": [
+        "assets/react-kit/src/explorer/cases/actions/filter-bar.case.tsx"
+      ],
+      "unit": [
+        "assets/react-kit/tests/components/filter-field.test.tsx"
+      ],
+      "browser": [
+        "assets/react-kit/tests/browser/filter-sizing.spec.ts"
+      ],
+      "keyboard": [],
+      "a11y": []
     },
     {
       "name": "FocusTrap",

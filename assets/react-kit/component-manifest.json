@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "kitVersion": "0.3.6",
+  "kitVersion": "0.3.7",
   "entries": [
     {
       "id": "color",
@@ -583,7 +583,8 @@
       "id": "filter-bar",
       "kind": "component",
       "publicExports": [
-        "FilterBar"
+        "FilterBar",
+        "FilterField"
       ],
       "sourceFiles": [
         "src/ui/action/actions.tsx",
@@ -593,7 +594,8 @@
         "filter-bar"
       ],
       "ownerMarkers": [
-        "FilterBar"
+        "FilterBar",
+        "FilterField"
       ]
     },
     {
@@ -2188,7 +2190,7 @@
     ]
   },
   "sourceIntegrity": {
-    "action/actions.tsx": "f587c1f5573b1347cfdaa7c6e73f22843b3700e38ed4478488d34884ab1b648b",
+    "action/actions.tsx": "d6b2e7e4511109ed8f78b0e71870fc99e00819f55f7f317a5886e70afcf48b93",
     "data/data-extra.tsx": "8e834b0b0beafa84b5afe9561b72cb162b0bb99f713c127bba81bfe268bf6897",
     "data/data-table.tsx": "45b8de11763447a16fc9b2faa53fd0ca2780205dbd230710b386a3422f89c703",
     "data/table-cell-text.tsx": "2138eac4ec44a245e7dbf60bbd85d398ad1d993e59d29fe5743f0a8be845b3d8",
@@ -2234,7 +2236,7 @@
     "patterns/standard-pages.tsx": "a0f974a60c223bbbede3db0c9d1dc728e01556a0a778741dea7be7511e6f5940",
     "styles/extended.css": "9870952462dcd2f18b03cc4839939a8a6c3cf80319f6f071b3142d54de57f1e6",
     "styles/inputs-extra.css": "5839b8b9b0b313614f8f1b4cec3b517fed3961363a9d423501dd8885544a75fd",
-    "styles/layout-actions-display.css": "0fbd1d4e59262931d4a479782fc9abad95185917ca6f4d317dc89069954d35f2",
+    "styles/layout-actions-display.css": "d4826d953d2c6cb09e3264799b5dc9ebf479d94484bc140c08f176fccc1fed51",
     "styles/themes.css": "ca5e9233d631ad3f28fb4afdebf6268050f4f2a7b273df69eb702f6aeeec1462",
     "styles.css": "dd05727b4a8caa3e8a80a38929c8076aa666fd38f77ef8f07c6808d52b27568a"
   }

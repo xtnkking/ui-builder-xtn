@@ -3,6 +3,7 @@ import buttonGroupCase from "./button-group.case";
 import clipboardCase from "./clipboard.case";
 import dragCase from "./drag.case";
 import filterBarCase from "./filter-bar.case";
+import filterSizingCase from "./filter-sizing.example";
 import iconButtonCase from "./icon-button.case";
 import linkCase from "./link.case";
 import sortableCase from "./sortable.case";
@@ -15,7 +16,7 @@ export const actionExplorerCases = {
   "button-group": [buttonGroupCase],
   clipboard: [clipboardCase],
   drag: [dragCase],
-  "filter-bar": [filterBarCase],
+  "filter-bar": [filterBarCase, filterSizingCase],
   "icon-button": [iconButtonCase],
   link: [linkCase],
   sortable: [sortableCase],

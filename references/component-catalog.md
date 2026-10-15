@@ -4,8 +4,8 @@
 This generated index is for discovery. Follow an export link for its Props, runtime defaults, state mode, per-export applicable and source-demonstrated states, keyboard and ARIA ownership, semantic tokens, limitations, complete state-selection example, and migration record. Import runtime APIs only from `src/ui/index.ts` through the installed public barrel.
 
 - Families: 119
-- Runtime exports: 143
-- Version: `0.3.6`
+- Runtime exports: 144
+- Version: `0.3.7`
 
 ## Choosing The Right API
 
@@ -52,7 +52,7 @@ This generated index is for discovery. Follow an export link for its Props, runt
 | `button-group` | [`ButtonGroup`](component-api.md#export-button-group) | `button-group` | [`#/components/button-group`](../assets/react-kit/index.html#/components/button-group) | [`src/ui/action/actions.tsx`](../assets/react-kit/src/ui/action/actions.tsx), [`src/ui/styles/layout-actions-display.css`](../assets/react-kit/src/ui/styles/layout-actions-display.css) |
 | `clipboard` | [`ClipboardButton`](component-api.md#export-clipboard-button) | `clipboard` | [`#/components/clipboard`](../assets/react-kit/index.html#/components/clipboard) | [`src/ui/action/actions.tsx`](../assets/react-kit/src/ui/action/actions.tsx), [`src/ui/styles/layout-actions-display.css`](../assets/react-kit/src/ui/styles/layout-actions-display.css) |
 | `drag` | [`DragDrop`](component-api.md#export-drag-drop) | `drag-drop` | [`#/components/drag`](../assets/react-kit/index.html#/components/drag) | [`src/ui/data/data-extra.tsx`](../assets/react-kit/src/ui/data/data-extra.tsx), [`src/ui/styles/extended.css`](../assets/react-kit/src/ui/styles/extended.css) |
-| `filter-bar` | [`FilterBar`](component-api.md#export-filter-bar) | `filter-bar` | [`#/components/filter-bar`](../assets/react-kit/index.html#/components/filter-bar) | [`src/ui/action/actions.tsx`](../assets/react-kit/src/ui/action/actions.tsx), [`src/ui/styles/layout-actions-display.css`](../assets/react-kit/src/ui/styles/layout-actions-display.css) |
+| `filter-bar` | [`FilterBar`](component-api.md#export-filter-bar), [`FilterField`](component-api.md#export-filter-field) | `filter-bar` | [`#/components/filter-bar`](../assets/react-kit/index.html#/components/filter-bar) | [`src/ui/action/actions.tsx`](../assets/react-kit/src/ui/action/actions.tsx), [`src/ui/styles/layout-actions-display.css`](../assets/react-kit/src/ui/styles/layout-actions-display.css) |
 | `icon-button` | [`IconButton`](component-api.md#export-icon-button) | `icon-button` | [`#/components/icon-button`](../assets/react-kit/index.html#/components/icon-button) | [`src/ui/foundation/primitives.tsx`](../assets/react-kit/src/ui/foundation/primitives.tsx), [`src/ui/internal/button-slots.tsx`](../assets/react-kit/src/ui/internal/button-slots.tsx), [`src/ui/styles.css`](../assets/react-kit/src/ui/styles.css) |
 | `link` | [`Link`](component-api.md#export-link) | `link` | [`#/components/link`](../assets/react-kit/index.html#/components/link) | [`src/ui/action/actions.tsx`](../assets/react-kit/src/ui/action/actions.tsx), [`src/ui/styles/layout-actions-display.css`](../assets/react-kit/src/ui/styles/layout-actions-display.css) |
 | `sortable` | [`SortableList`](component-api.md#export-sortable-list) | `sortable` | [`#/components/sortable`](../assets/react-kit/index.html#/components/sortable) | [`src/ui/data/data-extra.tsx`](../assets/react-kit/src/ui/data/data-extra.tsx), [`src/ui/styles/extended.css`](../assets/react-kit/src/ui/styles/extended.css) |

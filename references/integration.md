@@ -183,6 +183,8 @@ The complete [supported usage example](../assets/react-kit/tests/fixtures/suppor
 
 `FilterBar` aligns labeled controls and same-row actions to the actual control row, independently of multiline labels, hints, or errors. Actions that wrap onto another row have no label offset. Use the official `Field` composition; do not add application padding to compensate for helper text. The Explorer overview includes a long-label/hint/error combination.
 
+For mixed field lengths, use the public `FilterField` wrapper with its typed `width` prop around each existing control or `Field`. Its presets and positive pixel widths describe layout, not label semantics or text-length detection. The [field-sizing contract and complete five-field example](data-workflows.md#filter-field-sizing) explains stable widths, shared field/action wrapping and narrow-container behavior; do not override protected control CSS to size these filters.
+
 ## Managed Source Boundary
 
 `src/ui/` in a target project is generated, versioned source. Do not edit it, add files to it, or copy one of its implementation files elsewhere for customization. The verifier treats every missing, changed, or extra file as a release error; there is no local-extension allowance.

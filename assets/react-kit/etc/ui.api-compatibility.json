@@ -14,25 +14,26 @@
   },
   "current": {
     "packageName": "ui",
-    "version": "0.3.6",
-    "apiDigest": "62679cdaf6696caec509d896134cb0b412d7c7f254de224d67e228187be32596",
-    "compatibilityDigest": "1fdb40d122b4298fd835dcef2908ae3f03d34e301de2385b02d4691b07d2a257",
-    "runtimeExports": 143,
-    "typeOnlyExports": 233,
-    "publicSignatures": 376
+    "version": "0.3.7",
+    "apiDigest": "d52dc91d149a6a6e1305a4824b77c93e814d45c08dbf14f2fcee63e1730252e9",
+    "compatibilityDigest": "9461925eecffabecc4575639724581a65efdebd76b47ec3ad1e47b4ea7bdc0e1",
+    "runtimeExports": 144,
+    "typeOnlyExports": 234,
+    "publicSignatures": 378
   },
   "classification": "breaking",
   "versionPolicy": {
-    "releaseTarget": "0.3.6",
-    "packageVersion": "0.3.6",
+    "releaseTarget": "0.3.7",
+    "packageVersion": "0.3.7",
     "valid": true,
     "requiredBump": "minor",
     "minimumVersion": "0.3.0",
-    "message": "Breaking API changes are covered by version 0.3.6."
+    "message": "Breaking API changes are covered by version 0.3.7."
   },
   "changes": {
     "runtimeExports": {
       "added": [
+        "FilterField",
         "LocaleProvider",
         "MarkdownEditor",
         "TableCellText",
@@ -53,6 +54,7 @@
         "ControlledValueProps",
         "ControllerFieldBinding",
         "CountryTagData",
+        "FilterFieldProps",
         "FormControlHandle",
         "LocaleMessageKey",
         "LocalePluralKey",
@@ -92,6 +94,8 @@
         "ControlledValueProps",
         "ControllerFieldBinding",
         "CountryTagData",
+        "FilterField",
+        "FilterFieldProps",
         "FormControlHandle",
         "LocaleMessageKey",
         "LocalePluralKey",

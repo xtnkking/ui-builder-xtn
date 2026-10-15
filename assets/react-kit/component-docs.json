@@ -318,6 +318,7 @@
     "Field": {"profile":"semantic-static","overrides":{"applicableStates":["default","error","validation","longContent","dark","locale"],"stateMode":"stateless"}},
     "FileUpload": {"profile":"interactive-async","overrides":{"applicableStates":["default","disabled","controlled","loading","empty","error","validation","longContent","keyboard","overlay","dark","locale"],"stateMode":"controlled"}},
     "FilterBar": {"profile":"composed","overrides":{"applicableStates":["default","longContent","keyboard","mobile","overlay","dark","locale"]}},
+    "FilterField": {"profile":"semantic-static","overrides":{"applicableStates":["default","longContent","mobile","dark","locale"],"keyboard":{"mode":"none","reason":"FilterField owns sizing only; keyboard commands remain owned by its canonical child control."},"aria":{"mode":"none","reason":"FilterField introduces no independent ARIA role and preserves the child Field label and control semantics."}}},
     "FocusTrap": {"profile": "interactive-stateless", "overrides": {"applicableStates": ["default", "keyboard", "overlay", "dark", "locale"]}},
     "Form": {"profile":"composed","overrides":{"applicableStates":["default","loading","error","validation","longContent","keyboard","mobile","overlay","dark","locale"],"stateMode":"composed"}},
     "Gallery": {"profile":"interactive-controlled","overrides":{"applicableStates":["default","controlled","empty","longContent","keyboard","overlay","dark","locale"]}},
