@@ -1,4 +1,4 @@
-// @ui-coverage {"kind":"example","runner":"explorer","caseId":"data-table/overview","exports":["DataTable","TreeTable"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"data-table/overview","exports":["DataTable","TreeTable","TableCellText"]}
 import { useEffect, useId, useRef, useState } from "react";
 import { FolderPlus, Plus, Pencil, Trash2 } from "lucide-react";
 import {
@@ -13,6 +13,7 @@ import {
   Input,
   SearchInput,
   StatusIndicator,
+  TableCellText,
   TreeTable,
   VisuallyHidden,
   type DataColumn,
@@ -200,7 +201,7 @@ function DataTableExample() {
         />
       ),
     },
-    { id: "name", header: "账户", cell: (row) => row.name, minWidth: 240, sortable: true },
+    { id: "name", header: "账户", cell: (row) => <TableCellText>{row.name}</TableCellText>, minWidth: 240, sortable: true },
     { id: "owner", header: "负责人", cell: (row) => row.owner, width: 120, sortable: true },
     { id: "status", header: "状态", cell: (row) => <StatusIndicator tone={row.status === "运行中" ? "success" : "warning"} label={row.status} />, width: 140 },
   ];
@@ -218,7 +219,7 @@ function DataTableExample() {
         sort={sort}
         onSort={(nextSort) => { setSort(nextSort); setPage(1); }}
         viewportRows={3}
-        mobileRow={(row) => <Inline gap="small"><strong>{row.name}</strong><span>{row.owner}</span></Inline>}
+        mobileRow={(row) => <TableCellText secondary={row.owner}>{row.name}</TableCellText>}
         pagination={{ page, pageCount, total: sortedRows.length, pageSize: 3, onPageChange: (nextPage) => setPage(nextPage) }}
       />
       <TreeTableActionsExample />
@@ -240,8 +241,13 @@ const loadingTreeNodes: TreeTableNode<FolderRow>[] = [
 const errorTreeNodes: TreeTableNode<FolderRow>[] = [
   { id: "error-folder", value: { name: "展开以模拟请求失败", kind: "目录", owner: "林晓" }, hasChildren: true },
 ];
+const longAccountName = "Enterprise settlement account for the international subscription platform with a deliberately long display name";
 const longRows: AccountRow[] = [
-  { id: "long-account", name: "Enterprise settlement account for the international subscription platform with a deliberately long display name", owner: "Long account owner", status: "运行中" },
+  { id: "long-account", name: longAccountName, owner: "Long account owner", status: "运行中" },
+];
+const longStateColumns: DataColumn<AccountRow>[] = [
+  { id: "name", header: "账户", cell: () => <TableCellText>{longAccountName}</TableCellText>, minWidth: 240 },
+  { id: "owner", header: "负责人", cell: (row) => row.owner, width: 120 },
 ];
 const longTreeNodes: TreeTableNode<FolderRow>[] = [
   { id: "long-file", value: { name: "International subscription platform release notes and operational reference with a deliberately long file name.md", kind: "文件", owner: "Long file owner" } },
@@ -295,7 +301,7 @@ export function TableErrorFeedbackExample() {
     ariaLabel: "账户错误反馈", columns: stateColumns, rows, rowKey: (row) => row.id,
     viewportRows: 3, retrying, onRetry: () => void retry(),
     errorTitle: "账户加载失败", errorDescription: "服务暂时不可用，请稍后重试。",
-    mobileRow: (row) => <Inline gap="small"><strong>{row.name}</strong><span>{row.owner}</span></Inline>,
+    mobileRow: (row) => <TableCellText secondary={row.owner}>{row.name}</TableCellText>,
     pagination: { page: 1, pageCount: 1, total: rows.length, pageSize: 3, onPageChange: () => undefined },
   };
   return <div style={{ display: "grid", gap: 16 }}>
@@ -318,7 +324,7 @@ function ErrorTables() {
 
 function LongTables() {
   return <div style={{ display: "grid", gap: 28 }}>
-    <DataTable ariaLabel="长内容账户" columns={stateColumns} rows={longRows} rowKey={(row) => row.id} viewportRows={3} />
+    <DataTable ariaLabel="长内容账户" columns={longStateColumns} rows={longRows} rowKey={(row) => row.id} viewportRows={3} />
     <TreeTable ariaLabel="长文件名目录" nodes={longTreeNodes} columns={stateTreeColumns} treeColumnId="name" />
   </div>;
 }
@@ -330,21 +336,21 @@ const explorerCase = {
   states: ["default", "controlled", "uncontrolled", "loading", "empty", "error", "longContent", "keyboard", "mobile", "overlay", "dark", "locale", "usage"],
   content: <DataTableExample />,
   stateExamples: [
-    { state: "default", exports: ["DataTable", "TreeTable"], content: <DataTableExample /> },
+    { state: "default", exports: ["DataTable", "TreeTable", "TableCellText"], content: <DataTableExample /> },
     { state: "controlled", exports: ["DataTable", "TreeTable"], content: <DataTableExample /> },
     { state: "uncontrolled", exports: ["TreeTable"], content: <TreeTable ariaLabel="内部管理展开状态的目录" nodes={treeNodes} columns={stateTreeColumns} treeColumnId="name" defaultExpandedIds={["workspace"]} /> },
     { state: "loading", exports: ["DataTable", "TreeTable"], content: <LoadingTables /> },
     { state: "empty", exports: ["DataTable", "TreeTable"], content: <EmptyTables /> },
     { state: "error", exports: ["DataTable", "TreeTable"], content: <ErrorTables />, instructions: "分别模拟首次加载与保留数据的刷新失败：详细错误仅弹出去重轻提示，表格保持高度，在表内重试恢复。树表分支另有独立错误与重试。" },
-    { state: "longContent", exports: ["DataTable", "TreeTable"], content: <LongTables /> },
+    { state: "longContent", exports: ["DataTable", "TreeTable", "TableCellText"], content: <LongTables /> },
     { state: "keyboard", exports: ["DataTable", "TreeTable"], content: <DataTableExample />, instructions: "使用 Tab 聚焦搜索、勾选、排序、分页和树展开按钮；Enter/Space 操作，聚焦表格滚动区域后用方向键滚动。这是操作入口案例，非自动验收结论。" },
-    { state: "mobile", exports: ["DataTable", "TreeTable"], content: <StatePreview state="mobile">{<DataTableExample />}</StatePreview> },
+    { state: "mobile", exports: ["DataTable", "TreeTable", "TableCellText"], content: <StatePreview state="mobile">{<DataTableExample />}</StatePreview> },
     { state: "overlay", exports: ["DataTable", "TreeTable"], content: <StatePreview state="overlay">{<DataTableExample />}</StatePreview> },
-    { state: "dark", exports: ["DataTable", "TreeTable"], content: <StatePreview state="dark">{<DataTableExample />}</StatePreview> },
-    { state: "locale", exports: ["DataTable", "TreeTable"], content: <StatePreview state="locale">{<DataTableExample />}</StatePreview> },
+    { state: "dark", exports: ["DataTable", "TreeTable", "TableCellText"], content: <StatePreview state="dark">{<DataTableExample />}</StatePreview> },
+    { state: "locale", exports: ["DataTable", "TreeTable", "TableCellText"], content: <StatePreview state="locale">{<DataTableExample />}</StatePreview> },
     { state: "usage", exports: ["TreeTable"], content: <TreeTableActionsExample />, instructions: "顶部新增根目录或展开/收起全部分支；每行操作菜单可编辑和删除。展开目录后，在其整个子树末尾新增子项，按钮显示 800ms 加载并阻止重复提交；空目录也可展开添加。底部统计随数据变化。" },
   ],
-  code: `const treeColumns = [\n  { id: "name", header: "名称", cell: (value) => value.name },\n  { id: "actions", header: "操作", cell: (value, { node }) =>\n    <Button onClick={() => editNode(node.id)}>编辑</Button> },\n];\n\n<TreeTable nodes={nodes} columns={treeColumns} treeColumnId="name"\n  expandedIds={expanded} onExpandedChange={setExpanded}\n  toolbar={<Button onClick={addRoot}>新增根目录</Button>}\n  renderBranchFooter={({ node }) => <Button loading={pendingId === node.id}\n    loadingLabel="新增子项" onClick={() => addChild(node.id)}>新增子项</Button>}\n  footer={<span>共 {total} 项</span>} ariaLabel="文件目录" />\n\n// 目录尚无子项时，使用 { hasChildren: true, children: [] } 保留展开入口。\n// toolbar/footer 独立于表格滚动；renderBranchFooter 仅在展开分支末尾显示。\n<DataTable columns={columns} rows={rows} rowKey={(row) => row.id}\n  sort={sort} onSort={setSort} viewportRows={5}\n  pagination={pagination} ariaLabel="账户列表" />`,
+  code: `const treeColumns = [\n  { id: "name", header: "名称", cell: (value) =>\n    <TableCellText>{value.name}</TableCellText> },\n  { id: "actions", header: "操作", cell: (value, { node }) =>\n    <Button onClick={() => editNode(node.id)}>编辑</Button> },\n];\n\n<TreeTable nodes={nodes} columns={treeColumns} treeColumnId="name"\n  expandedIds={expanded} onExpandedChange={setExpanded}\n  toolbar={<Button onClick={addRoot}>新增根目录</Button>}\n  renderBranchFooter={({ node }) => <Button loading={pendingId === node.id}\n    loadingLabel="新增子项" onClick={() => addChild(node.id)}>新增子项</Button>}\n  footer={<span>共 {total} 项</span>} ariaLabel="文件目录" />\n\n// 目录尚无子项时，使用 { hasChildren: true, children: [] } 保留展开入口。\n// toolbar/footer 独立于表格滚动；renderBranchFooter 仅在展开分支末尾显示。\n<DataTable columns={columns} rows={rows} rowKey={(row) => row.id}\n  sort={sort} onSort={setSort} viewportRows={5}\n  pagination={pagination} ariaLabel="账户列表" />\n// 主次正文使用 <TableCellText secondary={row.owner}>{row.name}</TableCellText>。`,
 } satisfies ExplorerCase;
 
 export default explorerCase;

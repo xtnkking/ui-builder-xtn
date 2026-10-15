@@ -16,6 +16,7 @@ import { useUILocale } from "../foundation/locale";
 import { Pagination, type PaginationProps } from "../navigation/navigation";
 import { Button } from "../foundation/primitives";
 import { assertUniqueIdentities, cx } from "../internal/utils";
+import { TableCellText } from "./table-cell-text";
 
 export type DataTableState = "loading" | "ready" | "empty" | "error";
 export type SortDirection = "ascending" | "descending";
@@ -518,7 +519,7 @@ function DataTableContent<T>({ rawProps }: { rawProps: DataTableProps<T> }) {
                         className={cx("ui-data-table__cell-content", contentIsText && "ui-data-table__cell-content--text")}
                         title={contentIsText ? String(content) : undefined}
                       >
-                        {content}
+                        {contentIsText ? <TableCellText>{content}</TableCellText> : content}
                       </div>
                     </td>
                   );

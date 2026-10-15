@@ -384,6 +384,7 @@
     "Stepper": {"profile":"interactive-controlled","overrides":{"applicableStates":["default","disabled","readOnly","controlled","empty","error","longContent","keyboard","mobile","overlay","dark","locale"],"stateMode":"controlled"}},
     "StickyHeaderActionBar": {"profile": "layout"},
     "Switch": {"profile":"interactive-dual","overrides":{"applicableStates":["default","disabled","controlled","uncontrolled","validation","longContent","keyboard","overlay","dark","locale"],"stateMode":"controlled-uncontrolled"}},
+    "TableCellText": {"profile":"static","overrides":{"applicableStates":["default","longContent","mobile","dark","locale"]}},
     "Tabs": {"profile":"interactive-dual","overrides":{"applicableStates":["default","disabled","controlled","uncontrolled","longContent","keyboard","mobile","overlay","dark","locale"],"stateMode":"controlled-uncontrolled"}},
     "Tag": {"profile":"semantic-static","overrides":{"keyboard":{"mode":"delegated","status":"derived","source":"test-evidence"},"aria":{"mode":"delegated","status":"derived","source":"test-evidence"},"applicableStates":["default","error","longContent","keyboard","dark","locale"]}},
     "TagInput": {"profile":"interactive-dual","overrides":{"applicableStates":["default","disabled","controlled","uncontrolled","validation","longContent","keyboard","overlay","dark","locale"],"stateMode":"controlled-uncontrolled"}},

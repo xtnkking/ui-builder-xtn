@@ -2916,6 +2916,52 @@ input[type="password"]::-ms-reveal {
   border-collapse: separate;
   border-spacing: 0;
   table-layout: fixed;
+  font-family: var(--ui-font);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.ui-table-cell-text {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  font-family: var(--ui-font);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.ui-table-cell-text__primary,
+.ui-table-cell-text__secondary {
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ui-table-cell-text__secondary {
+  color: var(--ui-muted);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.ui-table-cell-text--numeric {
+  font-variant-numeric: tabular-nums;
+}
+
+.ui-table-cell-text--emphasis > .ui-table-cell-text__primary {
+  font-weight: 600;
+}
+
+.ui-table-cell-text--wrap > .ui-table-cell-text__primary,
+.ui-table-cell-text--wrap > .ui-table-cell-text__secondary {
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .ui-data-table th,

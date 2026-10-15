@@ -2718,6 +2718,17 @@
             "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
           ],
           "name": "TreeTable"
+        },
+        {
+          "api": [
+            "references/component-api.md"
+          ],
+          "aria": [],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/data/data-table.case.tsx"
+          ],
+          "keyboard": [],
+          "name": "TableCellText"
         }
       ],
       "id": "data-table",
@@ -2727,6 +2738,7 @@
       ],
       "sourceFiles": [
         "src/ui/data/data-table.tsx",
+        "src/ui/data/table-cell-text.tsx",
         "src/ui/styles.css",
         "src/ui/data/data-extra.tsx",
         "src/ui/styles/extended.css"
@@ -3628,7 +3640,7 @@
       ]
     }
   ],
-  "kitVersion": "0.3.5",
+  "kitVersion": "0.3.6",
   "modules": [
     {
       "dependencies": [
@@ -3693,7 +3705,8 @@
       ],
       "files": [
         "src/ui/data/data-extra.tsx",
-        "src/ui/data/data-table.tsx"
+        "src/ui/data/data-table.tsx",
+        "src/ui/data/table-cell-text.tsx"
       ],
       "id": "data",
       "root": "src/ui/data"

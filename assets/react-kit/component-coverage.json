@@ -1,6 +1,6 @@
 {
   "schemaVersion": 3,
-  "kitVersion": "0.3.5",
+  "kitVersion": "0.3.6",
   "generatedFrom": [
     "assets/react-kit/component-manifest.json",
     "assets/react-kit/registry.json",
@@ -158,6 +158,8 @@
     "assets/react-kit/tests/browser/modal-layer-kernel.spec.ts",
     "assets/react-kit/tests/browser/motion-content.spec.ts",
     "assets/react-kit/tests/browser/motion-enhancement.spec.ts",
+    "assets/react-kit/tests/browser/table-actions.spec.ts",
+    "assets/react-kit/tests/browser/table-typography.spec.ts",
     "assets/react-kit/tests/browser/theme-contracts.spec.ts",
     "assets/react-kit/tests/browser/theme-presets.spec.ts",
     "assets/react-kit/tests/browser/toast-capacity.spec.ts",
@@ -212,6 +214,7 @@
     "assets/react-kit/tests/components/page-composition-ownership.test.tsx",
     "assets/react-kit/tests/components/portal-theme-contracts.test.tsx",
     "assets/react-kit/tests/components/simple-fixed-controls.test.tsx",
+    "assets/react-kit/tests/components/table-cell-text.test.tsx",
     "assets/react-kit/tests/components/theme-css-contracts.test.ts",
     "assets/react-kit/tests/components/theme-provider-contracts.test.tsx",
     "assets/react-kit/tests/components/toast-capacity.test.tsx",
@@ -220,26 +223,26 @@
     "assets/react-kit/tests/visual/drawer-edge.visual.spec.ts"
   ],
   "summary": {
-    "exportCount": 142,
+    "exportCount": 143,
     "classificationCounts": {
-      "fixed-control": 110,
+      "fixed-control": 111,
       "layout": 13,
       "theme-root": 1,
       "pattern": 13,
       "non-visual": 5
     },
     "stabilityCounts": {
-      "stable": 141,
+      "stable": 142,
       "experimental": 0,
       "deprecated": 1
     },
     "evidenceCounts": {
-      "api": 142,
-      "owner": 142,
-      "source": 142,
-      "example": 142,
-      "unit": 119,
-      "browser": 68,
+      "api": 143,
+      "owner": 143,
+      "source": 143,
+      "example": 143,
+      "unit": 120,
+      "browser": 70,
       "keyboard": 100,
       "a11y": 120
     },
@@ -6265,7 +6268,8 @@
         "assets/react-kit/tests/browser/feedback-results-toast.spec.ts",
         "assets/react-kit/tests/browser/legacy-regressions.spec.ts",
         "assets/react-kit/tests/browser/modal-layer-kernel.spec.ts",
-        "assets/react-kit/tests/browser/motion-enhancement.spec.ts"
+        "assets/react-kit/tests/browser/motion-enhancement.spec.ts",
+        "assets/react-kit/tests/browser/table-actions.spec.ts"
       ],
       "keyboard": [
         "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
@@ -6690,6 +6694,7 @@
       "source": [
         "src/ui/data/data-extra.tsx",
         "src/ui/data/data-table.tsx",
+        "src/ui/data/table-cell-text.tsx",
         "src/ui/styles.css",
         "src/ui/styles/extended.css"
       ],
@@ -6748,7 +6753,8 @@
           "export": "DataTable",
           "files": [
             "src/ui/data/data-extra.tsx",
-            "src/ui/data/data-table.tsx"
+            "src/ui/data/data-table.tsx",
+            "src/ui/data/table-cell-text.tsx"
           ]
         },
         "semanticTokens": {
@@ -6888,11 +6894,14 @@
         "assets/react-kit/tests/components/core-contracts.test.tsx",
         "assets/react-kit/tests/components/data-table-contracts.test.tsx",
         "assets/react-kit/tests/components/data-table-toast.test.tsx",
-        "assets/react-kit/tests/components/page-composition-ownership.test.tsx"
+        "assets/react-kit/tests/components/page-composition-ownership.test.tsx",
+        "assets/react-kit/tests/components/table-cell-text.test.tsx"
       ],
       "browser": [
         "assets/react-kit/tests/browser/data-table-toast.spec.ts",
-        "assets/react-kit/tests/browser/legacy-regressions.spec.ts"
+        "assets/react-kit/tests/browser/legacy-regressions.spec.ts",
+        "assets/react-kit/tests/browser/table-actions.spec.ts",
+        "assets/react-kit/tests/browser/table-typography.spec.ts"
       ],
       "keyboard": [
         "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
@@ -8685,7 +8694,8 @@
       ],
       "browser": [
         "assets/react-kit/tests/browser/legacy-regressions.spec.ts",
-        "assets/react-kit/tests/browser/motion-enhancement.spec.ts"
+        "assets/react-kit/tests/browser/motion-enhancement.spec.ts",
+        "assets/react-kit/tests/browser/table-actions.spec.ts"
       ],
       "keyboard": [
         "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
@@ -11269,7 +11279,9 @@
       "unit": [
         "assets/react-kit/tests/components/button-contracts.test.tsx"
       ],
-      "browser": [],
+      "browser": [
+        "assets/react-kit/tests/browser/table-actions.spec.ts"
+      ],
       "keyboard": [
         "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
       ],
@@ -22115,6 +22127,167 @@
       ]
     },
     {
+      "name": "TableCellText",
+      "classification": "fixed-control",
+      "stability": "stable",
+      "api": [
+        "assets/react-kit/etc/ui.api.md"
+      ],
+      "owner": {
+        "manifestEntry": "data-table",
+        "markers": [
+          "TableCellText"
+        ]
+      },
+      "source": [
+        "src/ui/data/data-extra.tsx",
+        "src/ui/data/data-table.tsx",
+        "src/ui/data/table-cell-text.tsx",
+        "src/ui/styles.css",
+        "src/ui/styles/extended.css"
+      ],
+      "documentation": {
+        "interaction": "static",
+        "stateMode": "stateless",
+        "applicableStates": [
+          "default",
+          "longContent",
+          "mobile",
+          "dark",
+          "locale"
+        ],
+        "example": {
+          "status": "documented",
+          "id": "data-table/overview",
+          "refs": [
+            "assets/react-kit/src/explorer/cases/data/data-table.case.tsx"
+          ]
+        },
+        "apiPage": {
+          "status": "documented",
+          "id": "export-table-cell-text",
+          "refs": [
+            "references/component-api.md"
+          ]
+        },
+        "migration": {
+          "status": "none",
+          "reason": "No migration is required for the current public export."
+        },
+        "keyboard": {
+          "mode": "none",
+          "reason": "This export has no independent keyboard interaction."
+        },
+        "aria": {
+          "mode": "none",
+          "reason": "This export introduces no independent interactive ARIA contract."
+        },
+        "family": "data-table",
+        "category": "data",
+        "defaultsSource": {
+          "kind": "typescript",
+          "export": "TableCellText",
+          "files": [
+            "src/ui/data/data-extra.tsx",
+            "src/ui/data/data-table.tsx",
+            "src/ui/data/table-cell-text.tsx"
+          ]
+        },
+        "semanticTokens": {
+          "status": "derived",
+          "source": "manifest-css",
+          "files": [
+            "src/ui/styles.css",
+            "src/ui/styles/extended.css"
+          ],
+          "tokens": [
+            "--ui-bg",
+            "--ui-border",
+            "--ui-border-strong",
+            "--ui-danger",
+            "--ui-danger-soft",
+            "--ui-focus-ring",
+            "--ui-muted",
+            "--ui-on-danger",
+            "--ui-on-primary",
+            "--ui-primary",
+            "--ui-primary-hover",
+            "--ui-primary-ink",
+            "--ui-primary-soft",
+            "--ui-product-accent",
+            "--ui-success",
+            "--ui-success-soft",
+            "--ui-surface",
+            "--ui-surface-subtle",
+            "--ui-text",
+            "--ui-warning",
+            "--ui-warning-soft"
+          ]
+        }
+      },
+      "stateCoverage": {
+        "applicableStates": [
+          "default",
+          "longContent",
+          "mobile",
+          "dark",
+          "locale"
+        ],
+        "sourceDemonstratedStates": [
+          "default",
+          "longContent",
+          "mobile",
+          "dark",
+          "locale"
+        ],
+        "fixtures": [
+          {
+            "state": "default",
+            "file": "assets/react-kit/src/explorer/cases/data/data-table.case.tsx",
+            "exampleIndex": 0,
+            "verification": "runnable-source-fixture"
+          },
+          {
+            "state": "longContent",
+            "file": "assets/react-kit/src/explorer/cases/data/data-table.case.tsx",
+            "exampleIndex": 6,
+            "verification": "runnable-source-fixture"
+          },
+          {
+            "state": "mobile",
+            "file": "assets/react-kit/src/explorer/cases/data/data-table.case.tsx",
+            "exampleIndex": 8,
+            "verification": "runnable-source-fixture"
+          },
+          {
+            "state": "dark",
+            "file": "assets/react-kit/src/explorer/cases/data/data-table.case.tsx",
+            "exampleIndex": 10,
+            "verification": "runnable-source-fixture"
+          },
+          {
+            "state": "locale",
+            "file": "assets/react-kit/src/explorer/cases/data/data-table.case.tsx",
+            "exampleIndex": 11,
+            "verification": "runnable-source-fixture"
+          }
+        ],
+        "verificationKind": "structural-source-fixtures",
+        "behavioralVerification": false
+      },
+      "example": [
+        "assets/react-kit/src/explorer/cases/data/data-table.case.tsx"
+      ],
+      "unit": [
+        "assets/react-kit/tests/components/table-cell-text.test.tsx"
+      ],
+      "browser": [
+        "assets/react-kit/tests/browser/table-typography.spec.ts"
+      ],
+      "keyboard": [],
+      "a11y": []
+    },
+    {
       "name": "Tabs",
       "classification": "fixed-control",
       "stability": "stable",
@@ -24189,7 +24362,8 @@
         "assets/react-kit/tests/components/portal-theme-contracts.test.tsx"
       ],
       "browser": [
-        "assets/react-kit/tests/browser/motion-enhancement.spec.ts"
+        "assets/react-kit/tests/browser/motion-enhancement.spec.ts",
+        "assets/react-kit/tests/browser/table-actions.spec.ts"
       ],
       "keyboard": [
         "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
@@ -25013,6 +25187,7 @@
       "source": [
         "src/ui/data/data-extra.tsx",
         "src/ui/data/data-table.tsx",
+        "src/ui/data/table-cell-text.tsx",
         "src/ui/styles.css",
         "src/ui/styles/extended.css"
       ],
@@ -25073,7 +25248,8 @@
           "export": "TreeTable",
           "files": [
             "src/ui/data/data-extra.tsx",
-            "src/ui/data/data-table.tsx"
+            "src/ui/data/data-table.tsx",
+            "src/ui/data/table-cell-text.tsx"
           ]
         },
         "semanticTokens": {
@@ -25228,10 +25404,12 @@
       "unit": [
         "assets/react-kit/tests/components/data-extra-contracts.test.tsx",
         "assets/react-kit/tests/components/m5-tree-table-contracts.test.tsx",
+        "assets/react-kit/tests/components/table-cell-text.test.tsx",
         "assets/react-kit/tests/components/tree-table-actions.test.tsx"
       ],
       "browser": [
         "assets/react-kit/tests/browser/m5-tree-table.spec.ts",
+        "assets/react-kit/tests/browser/table-typography.spec.ts",
         "assets/react-kit/tests/browser/tree-table-actions.spec.ts",
         "assets/react-kit/tests/browser/tree-table-project-members.spec.ts"
       ],

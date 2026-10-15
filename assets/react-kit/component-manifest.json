@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "kitVersion": "0.3.5",
+  "kitVersion": "0.3.6",
   "entries": [
     {
       "id": "color",
@@ -1634,10 +1634,12 @@
       "kind": "component",
       "publicExports": [
         "DataTable",
-        "TreeTable"
+        "TreeTable",
+        "TableCellText"
       ],
       "sourceFiles": [
         "src/ui/data/data-table.tsx",
+        "src/ui/data/table-cell-text.tsx",
         "src/ui/styles.css",
         "src/ui/data/data-extra.tsx",
         "src/ui/styles/extended.css"
@@ -1648,7 +1650,8 @@
       ],
       "ownerMarkers": [
         "DataTable",
-        "TreeTable"
+        "TreeTable",
+        "TableCellText"
       ]
     },
     {
@@ -2186,8 +2189,9 @@
   },
   "sourceIntegrity": {
     "action/actions.tsx": "f587c1f5573b1347cfdaa7c6e73f22843b3700e38ed4478488d34884ab1b648b",
-    "data/data-extra.tsx": "f5b949a700190c5c3d7e4edd7c638aaa5c839f663614076c1befc2d49805df20",
-    "data/data-table.tsx": "8b433cff624d6e7291f55ec81708a26ef33bbcfa91ed01b09cb92a34ed6a8330",
+    "data/data-extra.tsx": "8e834b0b0beafa84b5afe9561b72cb162b0bb99f713c127bba81bfe268bf6897",
+    "data/data-table.tsx": "45b8de11763447a16fc9b2faa53fd0ca2780205dbd230710b386a3422f89c703",
+    "data/table-cell-text.tsx": "2138eac4ec44a245e7dbf60bbd85d398ad1d993e59d29fe5743f0a8be845b3d8",
     "display/display.tsx": "2ab0b1a8546fca3e4d20d0cf559015cd546d05bcffac81f3f004c7ec7951452c",
     "feedback/feedback-extra.tsx": "356829eb2c518b8818fa50048fb8259d04390d5b1eed3d0f6817c5e097b2a552",
     "feedback/feedback.tsx": "25ab0ebaf73dd68ba6b500fbb8f2258fdbddebb4d8f3b6f7c4961c0679837b4e",
@@ -2195,7 +2199,7 @@
     "foundation/layout.tsx": "e0113c671da47263002dab79da12b793a94e13a5db367008b9e89b8abcab6dd4",
     "foundation/locale.tsx": "4963002f5d615b4d690c33f4220f13fe0067b48e7bb522c90d07a45e9968013b",
     "foundation/primitives.tsx": "0c9420c177e3d78329f232924a0af57bda5b97f86834509c3c39c6016ae81ee5",
-    "index.ts": "653c90a2d9996c5643ba50836eeecdb883c93b43f5358e8fb55593cb0bf75236",
+    "index.ts": "93558e2a003459cea430ecf5878b5e5721efc4fcb3cf15fbfe776d47257bb4d8",
     "input/date-field.tsx": "bbe5295393a454d0b0f020feabd43d61cfc3aa85edcf9fb473f4712e3297c4ea",
     "input/forms.tsx": "aebfef0993c0e959955975d863637567a18a26229ec9e38632966b7ee2ca72ba",
     "input/inputs-extra.tsx": "e01dfc3074d5a7a5e8534ff21539b451ab0cfdb2eb5a1c4251cd91fe3505fd18",
@@ -2228,10 +2232,10 @@
     "patterns/family-login-page.tsx": "6b57fcb3884d857eafb7ff4e1aeb15766d8db18c2617ca4942f1a3ba05c6c042",
     "patterns/member-management-page.tsx": "ca122684b0a6ca805a0872c70b7aefcba88593fdb62c6f96cc5a68d3487eefe9",
     "patterns/standard-pages.tsx": "a0f974a60c223bbbede3db0c9d1dc728e01556a0a778741dea7be7511e6f5940",
-    "styles/extended.css": "381e126ec70044a507939473dfabf34d4a3af9af6a1fce17709087828312a7e5",
+    "styles/extended.css": "9870952462dcd2f18b03cc4839939a8a6c3cf80319f6f071b3142d54de57f1e6",
     "styles/inputs-extra.css": "5839b8b9b0b313614f8f1b4cec3b517fed3961363a9d423501dd8885544a75fd",
     "styles/layout-actions-display.css": "0fbd1d4e59262931d4a479782fc9abad95185917ca6f4d317dc89069954d35f2",
     "styles/themes.css": "ca5e9233d631ad3f28fb4afdebf6268050f4f2a7b273df69eb702f6aeeec1462",
-    "styles.css": "f6bad6f845cf4c223e3a589a6586e09023b22015a6ec8c6715e8238045a1b4e9"
+    "styles.css": "dd05727b4a8caa3e8a80a38929c8076aa666fd38f77ef8f07c6808d52b27568a"
   }
 }

@@ -34,6 +34,7 @@ import { adjacentTreeKey, resolvedTreeKey, visibleTreeItems } from "../internal/
 import { assertUITimeZone, useUILocale } from "../foundation/locale";
 import { Button, IconButton, Spinner } from "../foundation/primitives";
 import { assertUniqueIdentities, cx, matchesFileAccept } from "../internal/utils";
+import { TableCellText } from "./table-cell-text";
 
 const useClientLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
@@ -511,17 +512,19 @@ export function TreeTable<T>(rawProps: TreeTableProps<T>) {
                 <tr key={`node:${node.id}`}>
                   {columns.map((column) => {
                     const content = column.cell(node.value, context);
+                    const textContent = typeof content === "string" || typeof content === "number";
+                    const renderedContent = textContent ? <TableCellText>{content}</TableCellText> : content;
                     return (
-                      <td key={column.id} title={typeof content === "string" ? content : undefined}>
+                      <td key={column.id} title={textContent ? String(content) : undefined}>
                         {column.id === treeColumnId ? (
                           <div className="ui-tree-table__tree-cell" style={{ paddingInlineStart: `${(level - 1) * 22}px` }}>
                             {hasChildren ? <IconButton aria-label={requestErrors[node.id]
                               ? message("tree.retryLoad", { label: getRowLabel(node) })
                               : message(isExpanded ? "tree.collapse" : "tree.expand", { label: getRowLabel(node) })} aria-expanded={isExpanded} loading={node.loading || pendingIds.includes(node.id)} icon={isExpanded ? <ChevronDown /> : <ChevronRight />} onClick={() => void toggle(node)} /> : <span className="ui-tree__spacer" />}
-                            <span className="ui-tree-table__label">{content}</span>
+                            <span className="ui-tree-table__label">{renderedContent}</span>
                             {requestErrors[node.id] ? <span role="alert">{message("tree.loadFailed")}</span> : null}
                           </div>
-                        ) : content}
+                        ) : renderedContent}
                       </td>
                     );
                   })}

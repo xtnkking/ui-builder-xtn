@@ -22,6 +22,7 @@ export * from "./feedback/feedback-extra";
 export * from "./overlay/overlays";
 export * from "./overlay/overlays-extra";
 export * from "./data/data-table";
+export * from "./data/table-cell-text";
 export * from "./data/data-extra";
 export * from "./display/display";
 export * from "./patterns/family-login-page";

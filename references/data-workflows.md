@@ -13,6 +13,8 @@ Use this reference for searchable lists, server-backed filters, asynchronous opt
 | Submitted filter row and applied-filter summary | `FilterBar` |
 | Sortable, selectable, responsive result set | `DataTable` |
 | Hierarchical rows with branch commands and row operations | `TreeTable` |
+| Consistent table primary/secondary text and long-value overflow | `TableCellText` |
+| Compact row commands and overflow actions | `IconButton` + `Tooltip` + `Inline`, or `DropdownMenu` |
 | Ordinary list page shell | `ListManagementPage` or `SearchFilterPage` |
 | Complete server-list reference | `MemberManagementPage` |
 | File drop with a keyboard selection command | `DragDrop` (built-in browse); optional `FileUpload` for a file queue |
@@ -85,7 +87,167 @@ Column and row identities are data contracts: every `column.id` and `rowKey` res
 - Give compact status, date, numeric, selection, and action columns explicit numeric widths. Leave flexible width to genuine long-text columns and leave room for action focus outlines.
 - Supply `mobileRow` for data that must remain useful on narrow screens. Do not shrink the desktop table until its content becomes unreadable.
 - Use `state`, `loadingRows`, `onRetry`, `retrying`, `sort`, `onSort`, and `loadingSortColumnId` for their documented state. `loadingRows` controls skeleton count, not table height.
-- Text cells already provide overflow titles. Custom cell content owns its own accessible name and overflow behavior.
+- String/number cells use `TableCellText` automatically, including full-value overflow titles. For custom primary/secondary text use the same public component; other custom content owns its own accessible name and overflow behavior.
+- Compose operation columns using the [table operation-column contract](#table-operation-columns); DataTable does not infer business commands or replace arbitrary caller JSX with icon buttons.
+
+## Table cell typography
+
+`DataTable` and `TreeTable` use the same primary-data baseline: the application UI font, 14px text, weight 400 and 21px line height. A column returning a string or number is automatically rendered through the official `TableCellText`. An ID, phone number, name, country code or date does not acquire a smaller size, a heavier weight or a monospace font merely because of its data type. Return long IDs and phone numbers as strings to preserve leading zeroes and avoid JavaScript number precision loss; the component does not parse or reformat their values.
+
+For multiple text levels in one cell, use this real public component from the installed barrel:
+
+```tsx
+import { Button, DataTable, TableCellText, Tag, type DataColumn } from "./ui";
+
+type Task = {
+  id: string;
+  phone: string;
+  type: string;
+  country: string;
+  claims: number;
+  updatedAt: string;
+  result: string;
+};
+
+export function TaskTable({ tasks, onDetails }: {
+  tasks: Task[];
+  onDetails: (taskId: string) => void;
+}) {
+  const columns: DataColumn<Task>[] = [
+    { id: "id", header: "任务", width: 220, cell: (task) => task.id },
+    { id: "phone", header: "号码", width: 150,
+      cell: (task) => <TableCellText numeric>{task.phone}</TableCellText> },
+    { id: "type", header: "任务类型", width: 130, cell: (task) => task.type },
+    { id: "country", header: "国家", width: 90, cell: (task) => task.country },
+    { id: "status", header: "状态", width: 100,
+      cell: () => <Tag>排队中</Tag> },
+    { id: "claims", header: "成功领取次数", width: 160,
+      cell: (task) => <TableCellText secondary="上次尚未派发">{`筛选 ${task.claims} 次`}</TableCellText> },
+    { id: "updatedAt", header: "时间", width: 200,
+      cell: (task) => <TableCellText secondary="档案更新时间" numeric>{task.updatedAt}</TableCellText> },
+    { id: "result", header: "结果／最近记录错误", minWidth: 180,
+      cell: (task) => <TableCellText secondary="未记录错误">{task.result}</TableCellText> },
+    { id: "actions", header: "操作", width: 100, pin: "end",
+      cell: (task) => <Button size="small" variant="ghost" onClick={() => onDetails(task.id)}>详情</Button> },
+  ];
+  return <DataTable ariaLabel="任务列表" columns={columns} rows={tasks} rowKey={(task) => task.id} />;
+}
+```
+
+`TableCellText` accepts only the text contract below, without application styling overrides:
+
+| Prop | Behavior |
+| --- | --- |
+| `children: string \| number` | Primary value; 14px / 400 / 21px. A numeric zero remains visible. |
+| `secondary?: string \| number` | Optional supporting value on the next line; 12px / 18px and the theme's muted text color. A numeric zero is valid; omitted content reserves no line. |
+| `numeric?: boolean` | Opt into tabular-width digits using the same UI font and primary size/weight. Does not convert to monospace or format the value. |
+| `emphasis?: boolean` | Deliberate primary emphasis at weight 600; default false. Reserve for a product-relevant highlight rather than all values of one data type. |
+| `wrap?: boolean` | Default false: primary and secondary each stay on one line with ellipsis, and each exposes its full value through the native title. True: wrap long text within the available column width. |
+
+Use explicit column widths or `minWidth` as appropriate, and `mobileRow` for a meaningful narrow-screen layout. `TableCellText` fills the available space without imposing a new fixed column width; `wrap` may increase row height and should be a deliberate choice. For example, `<TableCellText numeric secondary="可用库存">{0}</TableCellText>` keeps zero and its supporting label, while `<TableCellText wrap>{task.result}</TableCellText>` allows a verbose result to wrap. The same text export can compose a `TreeTableColumn.cell` or `mobileRow`.
+
+When upgrading an existing custom `cell`, replace ordinary-data `code`, `small`, `strong`, or business font classes with `TableCellText`; upgrading the kit cannot infer the meaning of arbitrary caller JSX. Keep semantic status indicators, Tag and action Button components as those components: they intentionally have their own size and emphasis. Deliberately technical code content can still use the official code components where the product calls for it; that is separate from ordinary business-data typography. No global font override is needed or permitted.
+
+The Explorer's **表格正文排版** case at `#/components/data-table` includes primary/secondary, actual numeric zero, opt-in emphasis, long ellipsis/full titles, wrapping, dark theme, locale and 320px examples. Compare equivalent primary values with each other, rather than expecting supporting labels, status tags and commands to share one text level.
+
+## Table operation columns
+
+For familiar row commands such as edit and delete, use the official `IconButton` with a `Tooltip`, and place the commands on one line with `Inline gap="small" wrap={false}`. Each icon needs its own row-specific `aria-label`; a tooltip is supporting copy, not a replacement for that name. The current IconButton is 36×36px and has no public `size` prop. Do not invent a smaller size, assume it grows to 44px, or override its CSS. Use a small text `Button` for business commands whose icon would be unclear, such as “检查连接”.
+
+Give the two-icon column an explicit `width: 120` to include both controls, the gap, cell padding and focus space. `pin: "end"` is optional when the right-hand actions should stay visible during horizontal scrolling. Do not stack the buttons or reduce their hit areas to fit a narrower column. On mobile, use the official horizontal viewport or compose the same controls in `mobileRow` with enough space; do not squeeze the desktop table's type or buttons.
+
+This complete typed example reuses existing public exports. The page owns the selected delete target and one confirmation dialog outside the row renderer; callers own permissions, request state and business callbacks:
+
+```tsx
+import { useState } from "react";
+import { Pencil, Trash2 } from "lucide-react";
+import {
+  ConfirmDialog, DataTable, IconButton, Inline, Tooltip, type DataColumn,
+} from "./ui";
+
+type ProxyRow = {
+  id: string;
+  name: string;
+  address: string;
+  readOnly?: boolean;
+  pendingAction?: "edit" | "delete";
+};
+type ProxyTableProps = {
+  rows: ProxyRow[];
+  permissions: { edit: boolean; delete: boolean };
+  onEdit: (row: ProxyRow) => void;
+  onDelete: (proxyId: string) => Promise<void>;
+};
+
+export function ProxyTable({ rows, permissions, onEdit, onDelete }: ProxyTableProps) {
+  const [deleteTarget, setDeleteTarget] = useState<ProxyRow | null>(null);
+  const columns: DataColumn<ProxyRow>[] = [
+    { id: "name", header: "代理名称", minWidth: 180, cell: (row) => row.name },
+    { id: "address", header: "连接地址", minWidth: 220, cell: (row) => row.address },
+  ];
+  if (permissions.edit || permissions.delete) columns.push({
+    id: "actions", header: "操作", width: 120, pin: "end",
+    cell: (row) => <Inline gap="small" wrap={false}>
+      {permissions.edit && <Tooltip content={row.readOnly ? "只读，无法编辑" : "编辑"}>
+        <IconButton icon={<Pencil />} variant="ghost" aria-label={`编辑${row.name}`}
+          loading={row.pendingAction === "edit"}
+          disabled={row.readOnly || row.pendingAction === "delete"}
+          onClick={() => onEdit(row)} />
+      </Tooltip>}
+      {permissions.delete && <Tooltip content={row.readOnly ? "只读，无法删除" : "删除"}>
+        <IconButton icon={<Trash2 />} variant="danger" aria-label={`删除${row.name}`}
+          loading={row.pendingAction === "delete"}
+          disabled={row.readOnly || row.pendingAction === "edit"}
+          onClick={() => setDeleteTarget(row)} />
+      </Tooltip>}
+    </Inline>,
+  });
+  return <>
+    <DataTable ariaLabel="代理列表" rows={rows} columns={columns} rowKey={(row) => row.id} />
+    <ConfirmDialog open={deleteTarget !== null}
+      onOpenChange={(open) => { if (!open) setDeleteTarget(null); }}
+      title="删除代理" description={`确认删除“${deleteTarget?.name ?? ""}”？此操作不可撤销。`}
+      tone="danger" confirmLabel="删除代理" cancelLabel="取消"
+      errorMessage="删除失败，请重试。"
+      onConfirm={async () => { if (deleteTarget) await onDelete(deleteTarget.id); }} />
+  </>;
+}
+```
+
+Omit commands the caller has no permission to perform; omit the whole operation column when no commands are available for that scope. Keep temporarily unavailable commands in place with `disabled`, and bind `loading` only to their actual request. Do not reserve empty icon placeholders. If availability differs per row, render only that row's permitted commands and use concise non-interactive text for a row with none. Treat permissions as display decisions, not a replacement for backend authorization.
+
+The delete callback must reject on failure so ConfirmDialog retains the target and supplies its own error Toast; it owns confirmation loading and blocks repeated confirmation. Do not swallow the failure and accidentally close the dialog, add an above-table Alert, or send a second failure Toast. Keep the dialog outside `cell` so row re-renders do not create one modal per row. Edit dialogs or other asynchronous commands should likewise be owned by the page and expose their actual pending state through `pendingAction`.
+
+For a larger set, use one official `DropdownMenu` in place of the icon cluster. It owns its trigger; it does not accept a custom `trigger` prop. Pass an `ariaLabel` that identifies the row, stable unique item IDs, per-command permissions/disabled state, and `danger: true` for deletion. For example, these callbacks can be supplied by the same page owner:
+
+```tsx
+import type { ComponentProps } from "react";
+import { DropdownMenu, type DataColumn } from "./ui";
+
+function moreActionColumn(
+  permissions: { edit: boolean; copy: boolean; delete: boolean },
+  onEdit: (row: ProxyRow) => void,
+  onCopy: (address: string) => void,
+  onRequestDelete: (row: ProxyRow) => void,
+): DataColumn<ProxyRow> | undefined {
+  if (!permissions.edit && !permissions.copy && !permissions.delete) return undefined;
+  return { id: "actions", header: "操作", width: 120, pin: "end", cell: (row) => {
+    const items: ComponentProps<typeof DropdownMenu>["items"] = [];
+    const busy = Boolean(row.pendingAction);
+    if (permissions.edit) items.push({ id: "edit", label: "编辑",
+      disabled: row.readOnly || busy, onSelect: () => onEdit(row) });
+    if (permissions.copy) items.push({ id: "copy", label: "复制地址",
+      disabled: busy, onSelect: () => onCopy(row.address) });
+    if (permissions.delete) items.push({ id: "delete", label: "删除", danger: true,
+      disabled: row.readOnly || busy, onSelect: () => onRequestDelete(row) });
+    return <DropdownMenu label="更多" ariaLabel={`更多操作：${row.name}`} align="end" items={items} />;
+  } };
+}
+```
+
+Add the returned column only when it is defined, instead of the two-icon column; bind `onRequestDelete` to the page's `setDeleteTarget`. The helper filters unauthorized commands before passing `items`; omit the menu when no commands remain. Do not duplicate the same commands in both a menu and an always-visible icon group. Copy/export results may use one official Toast from the page owner. A less common command can instead use `<Button size="small" variant="ghost" loading={checking} loadingLabel="检查连接" onClick={checkConnection}>检查连接</Button>`; reserve enough column width for that complete label.
+
+The runnable **操作列组合** case (`data-table/actions`) is available at `#/components/data-table`. Its [complete companion source](../assets/react-kit/src/explorer/cases/data/table-actions.example.tsx) demonstrates edit, confirmed delete, pending and read-only states, overflow commands, a small text business action, keyboard use, dark theme and narrow screens. It composes existing controls; no new table API or replacement controls are required.
 
 ## Height and pagination
 

@@ -6,7 +6,7 @@
 
 它不是一份只靠提示词约束的视觉规范。ui-builder-xtn 源码、公开导出、组件清单、安装器和来源校验器组成同一个闭环：使用者提出功能后，页面中的控件必须直接使用本仓库提供的组件代码。
 
-最新正式版本为 **v0.3.5**。可从 [main 下载最新源码](https://github.com/xtnkking/ui-builder-xtn/archive/refs/heads/main.zip)，或进入 [Latest Release](https://github.com/xtnkking/ui-builder-xtn/releases/latest) 下载完整 Skill ZIP 与校验文件；本次正式交付的两个入口包含相同代码。更新内容见 [CHANGELOG.md](CHANGELOG.md)。
+最新正式版本为 **v0.3.6**。可从 [main 下载最新源码](https://github.com/xtnkking/ui-builder-xtn/archive/refs/heads/main.zip)，或进入 [Latest Release](https://github.com/xtnkking/ui-builder-xtn/releases/latest) 下载完整 Skill ZIP 与校验文件；本次正式交付的两个入口包含相同代码。更新内容见 [CHANGELOG.md](CHANGELOG.md)。
 
 更新仓库或下载新版不会自动更新已安装的 Skill，也不会升级已生成项目中的组件。先替换本机 Skill，再按[已有项目升级步骤](references/integration.md#updating-an-installed-kit)更新项目。当前筛选栏桌面默认为 38px 紧凑高度，窄屏／触屏为 44px；抽屉动效默认内置，无需业务额外添加。
 
@@ -18,7 +18,7 @@ M1–M8 的当前交付范围、原目标差异和验收依据见 [目标收口�
 - 安装器会把完整、带版本的源码复制到目标项目 `src/ui/`。
 - 业务代码只能从 `src/ui/index.ts` 的公开 barrel 导入运行时组件和页面模式。
 - 目标项目不得临时仿写控件、深层导入实现文件、修改已安装组件、添加本地扩展，或用第三方 JSX 组件绕开 ui-builder-xtn。
-- `component-manifest.json` 将 119 个基础、组件和页面模式家族以及 130 个目录别名绑定到真实源文件，并覆盖 142 个 runtime export。
+- `component-manifest.json` 将 119 个基础、组件和页面模式家族以及 130 个目录别名绑定到真实源文件，并覆盖 143 个 runtime export。
 - `component-manifest.json` 还保存全部 managed source 文件的 SHA-256（精确清单见 `sourceIntegrity`），任何缺失、修改或额外文件都会失败。
 - 安装器会把固定的 `verify:ui` 直接前置到现有 `build` 命令，同时保留调用方自己的 `prebuild`；npm、pnpm 或 Yarn 的常规 build 都必须先通过源码完整性和组件来源门禁。
 - 校验器扫描项目中的脚本、JSX/TSX、MDX、HTML、CSS、PostCSS、SCSS、Sass 和 Less，并识别实际使用的公开导出；不需要靠人工列出组件，也没有允许源码漂移的绕过开关。
@@ -57,7 +57,7 @@ M1–M8 的当前交付范围、原目标差异和验收依据见 [目标收口�
 
 M1–M7 的工程成果与 M8 的独立消费、迁移、质量和公开交付流程已随 v0.3.1 发布。恢复原目标后的新增实现和全矩阵结果集中记录在 [目标收口记录](references/m1-m8-closeout.md)，不再用旧阶段快照表示当前交付状态。
 
-原始范围见 [Hardening Roadmap](references/v0.3.0-roadmap.md)，评估隔离规则见 [M8 独立评估协议](references/m8-evaluation-protocol.md)，执行分解见 [M4–M8 实施计划](references/v0.3.0-m4-m8-execution-plan.md)。当前 142 个 runtime export 的入口见 [组件目录](references/component-catalog.md) 与 [组件 API](references/component-api.md)；兼容范围见 [源码权威与支持政策](references/source-authority.md) 和 [支持矩阵](references/support-matrix.json)。`v0.2.19` 保留为不可变迁移基线。
+原始范围见 [Hardening Roadmap](references/v0.3.0-roadmap.md)，评估隔离规则见 [M8 独立评估协议](references/m8-evaluation-protocol.md)，执行分解见 [M4–M8 实施计划](references/v0.3.0-m4-m8-execution-plan.md)。当前 143 个 runtime export 的入口见 [组件目录](references/component-catalog.md) 与 [组件 API](references/component-api.md)；兼容范围见 [源码权威与支持政策](references/source-authority.md) 和 [支持矩阵](references/support-matrix.json)。`v0.2.19` 保留为不可变迁移基线。
 
 ## 环境要求
 

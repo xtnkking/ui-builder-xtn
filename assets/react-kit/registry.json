@@ -1,6 +1,6 @@
 {
   "name": "ui",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "stack": [
     "react",
     "typescript",
@@ -129,6 +129,7 @@
     "Stepper",
     "StickyHeaderActionBar",
     "Switch",
+    "TableCellText",
     "Tabs",
     "Tag",
     "TagInput",
@@ -248,6 +249,7 @@
       "StatusIndicator",
       "Stepper",
       "Switch",
+      "TableCellText",
       "Tabs",
       "Tag",
       "TagInput",
@@ -427,6 +429,7 @@
       "Stepper",
       "StickyHeaderActionBar",
       "Switch",
+      "TableCellText",
       "Tabs",
       "Tag",
       "TagInput",

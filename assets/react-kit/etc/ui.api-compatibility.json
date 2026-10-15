@@ -14,27 +14,28 @@
   },
   "current": {
     "packageName": "ui",
-    "version": "0.3.5",
-    "apiDigest": "978dabcdaf7cca4d15226ca0074ed40e52208eb7b6dc869f8db31edd525a49b3",
-    "compatibilityDigest": "c18bd9a00d2d6dfb7594f9c5bf295ccf61a51a4857675c25072cf03f759b5b78",
-    "runtimeExports": 142,
-    "typeOnlyExports": 232,
-    "publicSignatures": 374
+    "version": "0.3.6",
+    "apiDigest": "62679cdaf6696caec509d896134cb0b412d7c7f254de224d67e228187be32596",
+    "compatibilityDigest": "1fdb40d122b4298fd835dcef2908ae3f03d34e301de2385b02d4691b07d2a257",
+    "runtimeExports": 143,
+    "typeOnlyExports": 233,
+    "publicSignatures": 376
   },
   "classification": "breaking",
   "versionPolicy": {
-    "releaseTarget": "0.3.5",
-    "packageVersion": "0.3.5",
+    "releaseTarget": "0.3.6",
+    "packageVersion": "0.3.6",
     "valid": true,
     "requiredBump": "minor",
     "minimumVersion": "0.3.0",
-    "message": "Breaking API changes are covered by version 0.3.5."
+    "message": "Breaking API changes are covered by version 0.3.6."
   },
   "changes": {
     "runtimeExports": {
       "added": [
         "LocaleProvider",
         "MarkdownEditor",
+        "TableCellText",
         "useUILocale"
       ],
       "removed": []
@@ -63,6 +64,7 @@
         "SliderValue",
         "SpinnerProps",
         "SwitchProps",
+        "TableCellTextProps",
         "TextControlHandle",
         "TextareaProps",
         "ThemeMaterial",
@@ -103,6 +105,8 @@
         "SliderValue",
         "SpinnerProps",
         "SwitchProps",
+        "TableCellText",
+        "TableCellTextProps",
         "TextControlHandle",
         "TextareaProps",
         "ThemeMaterial",
