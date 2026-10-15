@@ -14,21 +14,21 @@
   },
   "current": {
     "packageName": "ui",
-    "version": "0.3.4",
-    "apiDigest": "e3c7ce2ba89aa14e6a93196046e9de6299764214d671b56f87bd266bc6d4fdd2",
-    "compatibilityDigest": "b5119218e3600703e09e1f9cb40ac8263eb9079a9e4b8b9ac013eba330185d4f",
+    "version": "0.3.5",
+    "apiDigest": "978dabcdaf7cca4d15226ca0074ed40e52208eb7b6dc869f8db31edd525a49b3",
+    "compatibilityDigest": "c18bd9a00d2d6dfb7594f9c5bf295ccf61a51a4857675c25072cf03f759b5b78",
     "runtimeExports": 142,
     "typeOnlyExports": 232,
     "publicSignatures": 374
   },
   "classification": "breaking",
   "versionPolicy": {
-    "releaseTarget": "0.3.4",
-    "packageVersion": "0.3.4",
+    "releaseTarget": "0.3.5",
+    "packageVersion": "0.3.5",
     "valid": true,
     "requiredBump": "minor",
     "minimumVersion": "0.3.0",
-    "message": "Breaking API changes are covered by version 0.3.4."
+    "message": "Breaking API changes are covered by version 0.3.5."
   },
   "changes": {
     "runtimeExports": {
@@ -634,14 +634,14 @@
           "baselineKind": "runtime",
           "currentKind": "runtime",
           "baselineHash": "d4608c5e8b7caeb39e89ba95c1baa5fd140cd351a309897c1f12d08c4a75c94a",
-          "currentHash": "a5fa48ca572192fc63f9408ec0436daec875207ff50b2f8202205a5df8439e65"
+          "currentHash": "4f59b3ec2ea0091123bdcda50f5f6bd1a4fab04a296dcde01b11d01dc162dac8"
         },
         {
           "id": "DrawerProps",
           "baselineKind": "type",
           "currentKind": "type",
           "baselineHash": "d45bc42bd652adb08ccf518b1cc096d75b88bd4249adf0bb0f56304c9c139740",
-          "currentHash": "2d45fccb8d5a45a625802b487d7a6bb285b07a71047408da7a9a34ad42e165cd"
+          "currentHash": "5825d29d647581f04539b0761d83cdbca58bb30b9c55f4e9ee5e5fc4f78c03a6"
         },
         {
           "id": "DropdownMenu",

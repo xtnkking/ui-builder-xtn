@@ -1527,7 +1527,8 @@ type DrawerBaseProps = PublicControlProps<{
     footer?: ReactNode;
     closable?: boolean;
     closeOnBackdropClick?: boolean;
-    width?: "medium" | "large";
+    width?: "medium" | "large" | number | `${number}px` | `${number}%` | `${number}vw`;
+    fullScreen?: boolean;
     variant?: "inset" | "edge";
 }>;
 export type DrawerProps = DrawerBaseProps & ControlledOpenProps;

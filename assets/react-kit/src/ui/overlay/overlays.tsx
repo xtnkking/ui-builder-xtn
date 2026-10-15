@@ -8,6 +8,7 @@ import {
   useLayoutEffect,
   useRef,
   useState,
+  type CSSProperties,
   type KeyboardEvent,
   type ReactElement,
   type ReactNode,
@@ -143,16 +144,27 @@ type DrawerBaseProps = PublicControlProps<{
   footer?: ReactNode;
   closable?: boolean;
   closeOnBackdropClick?: boolean;
-  width?: "medium" | "large";
+  width?: "medium" | "large" | number | `${number}px` | `${number}%` | `${number}vw`;
+  fullScreen?: boolean;
   variant?: "inset" | "edge";
 }>;
 
 export type DrawerProps = DrawerBaseProps & ControlledOpenProps;
 
+function normalizeDrawerWidth(width: unknown): string | undefined {
+  if (typeof width === "number") return Number.isFinite(width) && width > 0 ? `${width}px` : undefined;
+  if (typeof width !== "string") return undefined;
+  const match = /^(\d+(?:\.\d+)?|\.\d+)(px|%|vw)$/.exec(width);
+  return match && Number.isFinite(Number(match[1])) && Number(match[1]) > 0 ? width : undefined;
+}
+
 export function Drawer(rawProps: DrawerProps) {
   const { message } = useUILocale();
   const safeProps = sanitizeFixedControlProps(rawProps);
-  const { title, description, children, footer, closable = true, closeOnBackdropClick = true, width = "medium", variant = "edge" } = safeProps;
+  const { title, description, children, footer, closable = true, closeOnBackdropClick = true, width = "medium", fullScreen = false, variant = "edge" } = safeProps;
+  const customWidth = normalizeDrawerWidth(width);
+  const widthVariant = width === "large" ? "large" : customWidth ? "custom" : "medium";
+  const surfaceVariant = fullScreen ? "fullscreen" : variant;
   const [open, setOpen] = useControllableState({
     componentName: "Drawer",
     controlled: rawProps.open !== undefined,
@@ -190,7 +202,7 @@ export function Drawer(rawProps: DrawerProps) {
     <LayerParentProvider id={layer.id}>
       <span ref={sourceRef} hidden aria-hidden="true" data-ui-portal-source="drawer" />
       {motion.present && portalTarget ? createPortal(
-        <div ref={portalRef} className={cx("ui-overlay", "ui-overlay--drawer", `ui-overlay--drawer-${variant}`, "ui-portal")} data-ui-motion={motion.state} data-ui-motion-profile="drawer" role="presentation"
+        <div ref={portalRef} className={cx("ui-overlay", "ui-overlay--drawer", `ui-overlay--drawer-${surfaceVariant}`, "ui-portal")} data-ui-motion={motion.state} data-ui-motion-profile="drawer" role="presentation"
           onClickCapture={(event) => { if (!open) { event.preventDefault(); event.stopPropagation(); } }}
           onSubmitCapture={(event) => { if (!open) { event.preventDefault(); event.stopPropagation(); } }}
           onKeyDownCapture={(event) => { if (!open && event.key !== "Tab") { event.preventDefault(); event.stopPropagation(); } }}
@@ -202,7 +214,8 @@ export function Drawer(rawProps: DrawerProps) {
         }}>
           <aside
             ref={panelRef}
-            className={cx("ui-drawer", `ui-drawer--${width}`, `ui-drawer--${variant}`)}
+            className={cx("ui-drawer", `ui-drawer--${widthVariant}`, `ui-drawer--${surfaceVariant}`)}
+            style={!fullScreen && customWidth ? { "--_ui-drawer-width": customWidth } as CSSProperties : undefined}
             role="dialog"
             tabIndex={-1}
             aria-modal="true"

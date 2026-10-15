@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "kitVersion": "0.3.4",
+  "kitVersion": "0.3.5",
   "entries": [
     {
       "id": "color",
@@ -2224,7 +2224,7 @@
     "navigation/navigation-extra.tsx": "9ba60077a80d52a6fdcf6ec6b2659a9ba0139bd7d9cd1174b40e1587b92ee5fa",
     "navigation/navigation.tsx": "e803df72c2b3c2d0c3273cbd746b625b5217f05d8d8907243256045bf911e897",
     "overlay/overlays-extra.tsx": "6048f73c6e1497349ea38ae505de8d4308f5ccb2e36f68286e75622920361233",
-    "overlay/overlays.tsx": "3b20e3ec75d16fd2917cbb11198d8b27480e57456f3988c89a1496035ad55275",
+    "overlay/overlays.tsx": "675aa4c3220647db7d4d47b7373faa0169a2a023e410aa138f1a4f773ef46a69",
     "patterns/family-login-page.tsx": "6b57fcb3884d857eafb7ff4e1aeb15766d8db18c2617ca4942f1a3ba05c6c042",
     "patterns/member-management-page.tsx": "ca122684b0a6ca805a0872c70b7aefcba88593fdb62c6f96cc5a68d3487eefe9",
     "patterns/standard-pages.tsx": "a0f974a60c223bbbede3db0c9d1dc728e01556a0a778741dea7be7511e6f5940",
@@ -2232,6 +2232,6 @@
     "styles/inputs-extra.css": "5839b8b9b0b313614f8f1b4cec3b517fed3961363a9d423501dd8885544a75fd",
     "styles/layout-actions-display.css": "0fbd1d4e59262931d4a479782fc9abad95185917ca6f4d317dc89069954d35f2",
     "styles/themes.css": "ca5e9233d631ad3f28fb4afdebf6268050f4f2a7b273df69eb702f6aeeec1462",
-    "styles.css": "570e00661b29a8322232a6dc52d508c22e92a99cdea4224c0603269dcc4527a9"
+    "styles.css": "f6bad6f845cf4c223e3a589a6586e09023b22015a6ec8c6715e8238045a1b4e9"
   }
 }

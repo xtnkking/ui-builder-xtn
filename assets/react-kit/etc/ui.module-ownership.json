@@ -3628,7 +3628,7 @@
       ]
     }
   ],
-  "kitVersion": "0.3.4",
+  "kitVersion": "0.3.5",
   "modules": [
     {
       "dependencies": [

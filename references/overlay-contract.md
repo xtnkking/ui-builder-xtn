@@ -63,6 +63,32 @@ Dialog、ConfirmDialog、Drawer、Lightbox 与 GuidedTour 关闭后保留视觉�
 
 ## 3. 关闭策略
 
+### Drawer 宽度与全屏（v0.3.5）
+
+`width` 默认 `"medium"`（460px），`"large"` 为 620px。需要更宽时直接使用官方参数：正数按 px 处理，正数的 `px`、`%`、`vw` 字符串也受支持。百分比相对于浮层可用内容宽度，vw 相对于视口；最终均不超过浮层可用宽度，inset 模式会保留原有外侧留白。不接受任意 CSS 表达式、负数、零或非有限数；非法运行时值回退 medium。
+
+```tsx
+import { Drawer } from "./ui";
+
+<Drawer open={open} onOpenChange={setOpen} title="编辑项目" width={800}>
+  {projectForm}
+</Drawer>
+
+<Drawer open={open} onOpenChange={setOpen} title="项目详情" width="75%">
+  {projectDetails}
+</Drawer>
+
+<Drawer open={open} onOpenChange={setOpen} title="工作区" width="80vw">
+  {workspace}
+</Drawer>
+
+<Drawer open={open} onOpenChange={setOpen} title="完整工作区" fullScreen>
+  {workspace}
+</Drawer>
+```
+
+`fullScreen` 默认 false；开启时优先于 width 和 variant，在桌面和移动端均铺满视口，移除 inset 留白与边框／圆角。未开启时，普通移动端抽屉继续全宽底部面板，不以自定义桌面宽度压缩手机布局。宽度及全屏均复用官方关闭、焦点和默认出入动效，不需要业务 CSS、style 或动画包装。
+
 `v0.3.4` 起，ConfirmDialog／Popconfirm 的确认失败由组件自动发送轻提示，当前浮层保持打开，原确认按钮继续承担重试。不要在 onConfirm 的失败路径再插入 Alert 或手动通知同一失败。复用应用级 ToastProvider；独立组件有内部兜底。Toast 的关闭只关闭通知，不提交或关闭确认浮层。
 
 内核使用三个互相独立的原因：`backdrop`、`close-control`、`escape`。组件必须把每个入口映射到对应原因，不能用一个旧闭包同时控制所有入口。

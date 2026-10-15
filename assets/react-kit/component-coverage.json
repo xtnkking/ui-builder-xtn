@@ -1,6 +1,6 @@
 {
   "schemaVersion": 3,
-  "kitVersion": "0.3.4",
+  "kitVersion": "0.3.5",
   "generatedFrom": [
     "assets/react-kit/component-manifest.json",
     "assets/react-kit/registry.json",
@@ -128,6 +128,7 @@
     "assets/react-kit/tests/browser/d2-drag-upload.spec.ts",
     "assets/react-kit/tests/browser/data-table-toast.spec.ts",
     "assets/react-kit/tests/browser/detail-floating.spec.ts",
+    "assets/react-kit/tests/browser/drawer-width.spec.ts",
     "assets/react-kit/tests/browser/explorer-audit-findings.spec.ts",
     "assets/react-kit/tests/browser/explorer-responsive-followup.spec.ts",
     "assets/react-kit/tests/browser/feedback-results-toast.spec.ts",
@@ -178,6 +179,7 @@
     "assets/react-kit/tests/components/data-table-toast.test.tsx",
     "assets/react-kit/tests/components/disclosure-contracts.test.tsx",
     "assets/react-kit/tests/components/display-contracts.test.tsx",
+    "assets/react-kit/tests/components/drawer-width.test.tsx",
     "assets/react-kit/tests/components/feedback-contracts.test.tsx",
     "assets/react-kit/tests/components/form-control-contracts.test.tsx",
     "assets/react-kit/tests/components/form-library-adapter.test.tsx",
@@ -8336,7 +8338,7 @@
         },
         "migration": {
           "status": "none",
-          "reason": "No migration is required for the current public export."
+          "reason": "No migration required. Since v0.3.5 width also accepts positive pixel numbers and px/%/vw strings; fullScreen fills the viewport and overrides width/variant. Existing presets and ordinary mobile bottom sheets retain their defaults. See references/overlay-contract.md for concrete usage."
         },
         "keyboard": {
           "mode": "custom",
@@ -8463,6 +8465,7 @@
       ],
       "unit": [
         "assets/react-kit/tests/components/core-contracts.test.tsx",
+        "assets/react-kit/tests/components/drawer-width.test.tsx",
         "assets/react-kit/tests/components/layer-kernel-contracts.test.tsx",
         "assets/react-kit/tests/components/locale-contracts.test.tsx",
         "assets/react-kit/tests/components/modal-dismissal-hydration-contracts.test.tsx",
@@ -8470,6 +8473,7 @@
         "assets/react-kit/tests/components/motion-overlay-toast.test.tsx"
       ],
       "browser": [
+        "assets/react-kit/tests/browser/drawer-width.spec.ts",
         "assets/react-kit/tests/browser/legacy-regressions.spec.ts",
         "assets/react-kit/tests/browser/modal-layer-kernel.spec.ts",
         "assets/react-kit/tests/browser/motion-enhancement.spec.ts",
