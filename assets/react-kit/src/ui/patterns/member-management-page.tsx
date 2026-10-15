@@ -503,7 +503,7 @@ export function MemberManagementPage({
         <span>{tableState === "loading"
           ? message("member.loadingData")
           : tableState === "error"
-            ? result.items.length ? message("member.queryFailedCached") : message("member.queryFailedEmpty")
+            ? null
             : updatedLabel}</span>
       </div>
 

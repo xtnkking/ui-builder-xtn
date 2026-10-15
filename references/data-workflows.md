@@ -45,9 +45,35 @@ Keep editable filter values separate from the last applied query. Typing and opt
 
 - Give every request an identity or cancellation signal so an older response cannot replace newer results.
 - Put the initiating `Button`, sortable header, retry action, or `Pagination` target into its bundled loading state. Loading must block duplicate activation without changing control dimensions.
-- Retain the last successful rows in caller state across requests. A refresh may show stable-height skeleton rows; if it fails, restore or retain the cached rows beneath the error. Retry from a retained-data error keeps those rows visible, while a zero-row error is reserved for requests with no usable result.
+- Retain the last successful rows in caller state across requests. A refresh may show stable-height skeleton rows; if it fails, restore or retain the cached rows. Retry from a retained-data error keeps those rows visible, while a zero-row error is reserved for requests with no usable result.
 - Keep loading, ready, empty, error, and retry transitions in the same `DataTable` frame. Do not swap the table for a differently sized page-level placeholder.
 - Business query values, API errors, and row data remain caller-owned. Locale only owns component fallback and ARIA text; machine values do not change with display language.
+
+### Table request failures
+
+`DataTable state="error"` owns its failure presentation. It automatically sends one danger Toast for that failure episode, using `errorTitle` and `errorDescription` (or localized fallback copy), and keeps a short persistent status with the sole retry command inside the table frame. It does not render an Alert above the table. With cached rows, those rows remain available; with no usable rows, the error state stays inside the existing frame. Supply `onRetry` and `retrying` to the table, rather than adding another external retry button.
+
+Ordinary parent re-renders, new inline callbacks, and newly created description JSX do not create new failure notifications. A new failed request after leaving the error state, or a failed retry after its pending state, is a new failure episode and may notify again. Bind `retrying` to the actual retry request so the table can distinguish a continuing failure from a fresh failed attempt. Each mounted table owns its own failure scope; errors in one table must not be mistaken for another table's request.
+
+Place one official `ToastProvider` around the application to share its default global limit of three visible notifications and its queue across tables and other actions. DataTable reuses that provider; a standalone DataTable without one has an internal fallback, so existing table calls do not require a new wrapper. The automatic table notification lasts five seconds, has a close button, and contains no retry action; its dismissal does not clear the error or remove the persistent in-frame retry/status.
+
+Do not combine that same table request with an above-table `Alert`, an additional `ErrorState`, or a manual `toast()` call. Do not render raw server stacks or verbose technical payloads as notification copy; provide a concise business summary and retain diagnostics in the application's own logging. Other failure scopes may need different owners: field validation remains with `Field`, a page-wide service outage may use an `Alert`, and a non-table action may use Toast. See the [toast contract](toast-contract.md#automatic-table-error-notifications).
+
+```tsx
+import { DataTable, ToastProvider } from "./ui";
+
+<ToastProvider maxVisible={3}>
+  <DataTable
+    ariaLabel="订单列表" columns={columns} rows={lastSuccessfulRows}
+    rowKey={(order) => order.id} state={tableState}
+    errorTitle="订单加载失败"
+    errorDescription="请检查网络后重试。"
+    onRetry={retryOrders} retrying={retrying}
+    pagination={pagination}
+  />
+</ToastProvider>;
+// Do not also render an Alert/ErrorState or call toast() for this failure.
+```
 
 Pair query commands with fields using `Button size="field"`. `FilterBar` defaults to compact 38px desktop fields/actions with tighter button padding; `density="comfortable"` uses 44px. Narrow containers, mobile viewports and coarse-pointer devices retain 44px targets. Standalone field-aligned buttons remain 44px. For a compact two-character action, pass `loadingLabel="查询"` or `loadingLabel="搜索"` to match its visible label; use the same localized action in other languages. The official spinner then appears beside that label without reserving extra width for the generic processing text, and idle/loading dimensions stay identical. The `FilterBar` Explorer's default example demonstrates an explicit, duplicate-blocked 800ms request while preserving the last applied results; the action's loading state belongs to Button.
 
@@ -146,6 +172,6 @@ The complete [DragExample](../assets/react-kit/src/explorer/cases/actions/drag.c
 
 For `DragDrop showBrowseButton={false}` + `FileUpload`, one owner holds the file queue, receive/reject callbacks, disabled state and item removal. `accept=".csv,text/csv"` accepts any listed rule: a matching extension **or** matching MIME is sufficient, and a file matching neither is rejected. FileUpload supplies the composition's sole browse button. The example keeps received files `queued` and reports rejected filenames with an official `InlineMessage`; it performs no network upload. Repeated same-name selections have distinct stable IDs, and removal uses `FileUploadItem.id`. Apply global disabled to both controls and guard shared callbacks. If a business composition configures size/count limits, its drop and selection paths must enforce those same limits; the example does not configure them.
 
-For `InfiniteScroll showLoadMoreButton={false}` + `LoadMore`, bind `onLoadMore` to the same owner callback, records, cursor, loading and hasMore. Establish a synchronous pending-promise latch before fetch can run; React loading state alone is not cross-entry mutual exclusion. Reentrant calls join the pending promise. The owner consumes failures, retains records and cursor, shows the official `Alert`, and releases the latch in `finally`. While an error remains, disable automatic observation and let LoadMore explicitly retry that same cursor. Success appends the returned page once and adopts its cursor/hasMore; after `hasMore=false`, neither path starts another request. A global disabled state blocks both commands without deleting retained data. InfiniteScroll's internal lock coordinates its own default button; an independently bound external LoadMore still requires this shared business callback.
+For `InfiniteScroll showLoadMoreButton={false}` + `LoadMore`, bind `onLoadMore` to the same owner callback, records, cursor, loading and hasMore. Establish a synchronous pending-promise latch before fetch can run; React loading state alone is not cross-entry mutual exclusion. Reentrant calls join the pending promise. The owner consumes failures, retains records and cursor, preserves an accessible failure/retry state, and releases the latch in `finally`. The bundled composition uses one official Toast for each failed request, retains the original LoadMore button and adds a short retry explanation to its existing status line; no Alert is inserted above the records. Wrap direct use of this example in the application's shared ToastProvider. Follow the [feedback selection rules](toast-contract.md#feedback-selection) and do not add another notification for that request. While an error remains, disable automatic observation and let LoadMore explicitly retry that same cursor. Success appends the returned page once and adopts its cursor/hasMore; after `hasMore=false`, neither path starts another request. A global disabled state blocks both commands without deleting retained data. InfiniteScroll's internal lock coordinates its own default button; an independently bound external LoadMore still requires this shared business callback.
 
 The [composition keyboard contract](m5-keyboard-contracts.md#official-compositions-d2d3-2026-10-09) names the actual Tab/activation owners and evidence. D3's four unit contracts and its keyboard/observer/retry/end/focus/axe browser scenario passed in all three engines using retained Chromium and bounded recovery receipts. D2's three unit contracts and nine browser cases passed, with eight prior results retained and only the missing WebKit keyboard case rechecked after fixing its mounted starting-focus prerequisite. Existing individual-component passes retain their original source identities; these development results are not a release. Do not infer OS file-dialog focus restoration from automated filechooser injection or infer full workflow behavior from axe alone.

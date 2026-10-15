@@ -9,7 +9,8 @@ import {
 } from "react";
 import { ArrowDown, ArrowUp, ArrowUpDown, LoaderCircle, RotateCw, SearchX } from "lucide-react";
 import type { PublicControlProps } from "../foundation/contracts";
-import { Alert, EmptyState } from "../feedback/feedback";
+import { EmptyState, useToast } from "../feedback/feedback";
+import { InternalToastBoundary } from "../internal/toast-boundary";
 import { sanitizeFixedControlProps } from "../internal/fixed-control-props";
 import { useUILocale } from "../foundation/locale";
 import { Pagination, type PaginationProps } from "../navigation/navigation";
@@ -183,7 +184,12 @@ function isTextContent(content: ReactNode): content is string | number {
 }
 
 export function DataTable<T>(rawProps: DataTableProps<T>) {
+  return <InternalToastBoundary><DataTableContent rawProps={rawProps} /></InternalToastBoundary>;
+}
+
+function DataTableContent<T>({ rawProps }: { rawProps: DataTableProps<T> }) {
   const { message } = useUILocale();
+  const { toast, dismiss } = useToast();
   const safeProps = sanitizeFixedControlProps(rawProps, ["children"]);
   const {
     columns,
@@ -200,7 +206,7 @@ export function DataTable<T>(rawProps: DataTableProps<T>) {
     emptyDescription = message("table.emptyDescription"),
     emptyAction,
     errorTitle = message("table.errorTitle"),
-    errorDescription = message("table.errorDescription"),
+    errorDescription = rows.length > 0 ? message("table.errorDescription") : message("table.errorNoDataDescription"),
     onRetry,
     retrying,
     mobileRow,
@@ -218,6 +224,11 @@ export function DataTable<T>(rawProps: DataTableProps<T>) {
   const mobileListRef = useRef<HTMLDivElement>(null);
   const readyScrollerHeightRef = useRef(0);
   const readyMobileHeightRef = useRef(0);
+  const loadingScrollerHeightRef = useRef(0);
+  const loadingMobileHeightRef = useRef(0);
+  const failureEpisode = useRef<{ notified: boolean; toastId?: string }>({ notified: false });
+  const [retryAttempt, setRetryAttempt] = useState(0);
+  const [localRetrying, setLocalRetrying] = useState(false);
   const [availableWidth, setAvailableWidth] = useState(0);
   const loading = state === "loading";
   const hasMobileRows = Boolean(mobileRow);
@@ -228,7 +239,8 @@ export function DataTable<T>(rawProps: DataTableProps<T>) {
     && metrics.some(({ column }) => column.id === loadingSortColumnId && column.sortable)
     ? loadingSortColumnId
     : undefined;
-  const activeRetrying = state === "error" && Boolean(onRetry) && Boolean(retrying);
+  const activeRetrying = state === "error" && Boolean(onRetry) && (Boolean(retrying) || localRetrying);
+  const hasErrorFooter = state === "error" && !pagination && (rows.length > 0 || Boolean(onRetry));
   const busy = loading || activeRetrying || activeLoadingSortColumnId !== undefined;
   const fixedViewportRows = normalizedViewportRows(viewportRows, Boolean(pagination));
   const viewportHasSlack = fixedViewportRows !== undefined
@@ -244,29 +256,91 @@ export function DataTable<T>(rawProps: DataTableProps<T>) {
     : DEFAULT_VIEWPORT_ROWS;
   const loadingRowSlots = Math.min(MAX_LOADING_ROWS, Math.max(normalizedLoadingRows, rows.length));
   const skeletonRows = Array.from({ length: loadingRowSlots }, (_, index) => index);
-  const lockedScrollerHeight = fixedViewportRows === undefined && loading && readyScrollerHeightRef.current > 0
-    ? readyScrollerHeightRef.current
+  const retainedScrollerHeight = readyScrollerHeightRef.current || loadingScrollerHeightRef.current;
+  const retainedMobileHeight = readyMobileHeightRef.current || loadingMobileHeightRef.current;
+  const lockedScrollerHeight = fixedViewportRows === undefined && (loading || state === "error") && retainedScrollerHeight > 0
+    ? retainedScrollerHeight
     : undefined;
-  const lockedMobileHeight = fixedViewportRows === undefined && loading && readyMobileHeightRef.current > 0
-    ? readyMobileHeightRef.current
+  const lockedMobileHeight = fixedViewportRows === undefined && (loading || state === "error") && retainedMobileHeight > 0
+    ? retainedMobileHeight
     : undefined;
   const frameClassName = cx(
     "ui-data-table__frame",
     pagination && "ui-data-table__frame--paginated",
+    hasErrorFooter && "ui-data-table__frame--error-footer",
     fixedViewportRows !== undefined && "ui-data-table__frame--fixed-viewport",
     viewportHasSlack && "ui-data-table__frame--viewport-slack",
   );
-  const frameStyle = fixedViewportRows === undefined ? undefined : ({
-    "--ui-data-table-desktop-viewport-height": `${TABLE_HEADER_HEIGHT + (fixedViewportRows * TABLE_ROW_HEIGHT)}px`,
-    "--ui-data-table-mobile-viewport-height": `${fixedViewportRows * MOBILE_ROW_HEIGHT}px`,
+  const frameStyle = ({
+    ...(fixedViewportRows === undefined ? {} : {
+      "--ui-data-table-desktop-viewport-height": `${TABLE_HEADER_HEIGHT + (fixedViewportRows * TABLE_ROW_HEIGHT)}px`,
+      "--ui-data-table-mobile-viewport-height": `${fixedViewportRows * MOBILE_ROW_HEIGHT}px`,
+    }),
+    ...(hasErrorFooter ? {
+      "--_ui-data-table-error-desktop-height": `${retainedScrollerHeight || TABLE_HEADER_HEIGHT + (Math.max(3, rows.length) * TABLE_ROW_HEIGHT)}px`,
+      "--_ui-data-table-error-mobile-height": `${retainedMobileHeight || Math.max(3, rows.length) * MOBILE_ROW_HEIGHT}px`,
+    } : {}),
   } as CSSProperties);
-  const paginationSummary = pagination?.summary !== undefined
-    ? pagination.summary
+  const handleRetry = () => {
+    if (!onRetry || activeRetrying) return;
+    if (failureEpisode.current.toastId) dismiss(failureEpisode.current.toastId);
+    failureEpisode.current = { notified: false };
+    setRetryAttempt((attempt) => attempt + 1);
+    setLocalRetrying(true);
+    try {
+      // The consumer's retrying prop owns network work; returned promises stay pending until settled.
+      void Promise.resolve(onRetry()).catch(() => undefined).finally(() => setLocalRetrying(false));
+    } catch {
+      // The current error remains recoverable even if a consumer retry throws synchronously.
+      setLocalRetrying(false);
+    }
+  };
+  const errorStatus = state === "error" ? (
+    <span className="ui-data-table__error-status">
+      {rows.length > 0 ? <span className="ui-data-table__error-status-text" title={message("table.errorStatus")}>{message("table.errorStatus")}</span> : null}
+      {onRetry ? (
+        <Button size="small" icon={<RotateCw aria-hidden="true" />} loading={activeRetrying}
+          loadingLabel={message("common.retrying")} onClick={handleRetry}>
+          {message("common.retry")}
+        </Button>
+      ) : null}
+    </span>
+  ) : undefined;
+  const paginationSummary = state === "error"
+    ? errorStatus
+    : pagination?.summary !== undefined
+      ? pagination.summary
     : loading && rows.length === 0
       ? message("table.loading")
-      : state === "error" && rows.length === 0
-        ? message("table.noCachedData")
-        : undefined;
+      : undefined;
+
+  useEffect(() => {
+    const episode = failureEpisode.current;
+    if (state !== "error" || activeRetrying) {
+      if (episode.toastId) dismiss(episode.toastId);
+      failureEpisode.current = { notified: false };
+      return;
+    }
+    if (episode.notified) return;
+    episode.notified = true;
+    let cancelled = false;
+    // Enter the queue after effect replay so a parent provider's StrictMode cleanup
+    // cannot clear the new message's clock before its final setup.
+    void Promise.resolve().then(() => {
+      if (cancelled || failureEpisode.current !== episode) return;
+      episode.toastId = toast({
+        title: <>{ariaLabel}：{errorTitle}</>,
+        description: errorDescription,
+        tone: "danger",
+        duration: 5000,
+      });
+    });
+    return () => {
+      cancelled = true;
+      if (failureEpisode.current === episode && !episode.toastId) episode.notified = false;
+    };
+    // Rich ReactNode identity and locale/API changes must not repeat the same failure.
+  }, [activeRetrying, ariaLabel, dismiss, errorDescription, errorTitle, retryAttempt, state, toast]);
 
   useClientLayoutEffect(() => {
     if (fixedViewportRows === undefined) return;
@@ -278,11 +352,18 @@ export function DataTable<T>(rawProps: DataTableProps<T>) {
     if (empty) {
       readyScrollerHeightRef.current = 0;
       readyMobileHeightRef.current = 0;
+      loadingScrollerHeightRef.current = 0;
+      loadingMobileHeightRef.current = 0;
       return;
     }
-    if (loading) return;
     const scrollerHeight = scrollerRef.current?.getBoundingClientRect().height ?? 0;
     const mobileHeight = mobileListRef.current?.getBoundingClientRect().height ?? 0;
+    if (loading) {
+      loadingScrollerHeightRef.current = scrollerHeight;
+      loadingMobileHeightRef.current = mobileHeight;
+      return;
+    }
+    if (state === "error") return;
     readyScrollerHeightRef.current = scrollerHeight > 0 ? scrollerHeight : 0;
     readyMobileHeightRef.current = mobileHeight > 0 ? mobileHeight : 0;
   });
@@ -294,7 +375,7 @@ export function DataTable<T>(rawProps: DataTableProps<T>) {
     const measure = () => {
       const nextWidth = scroller.clientWidth;
       setAvailableWidth((currentWidth) => currentWidth === nextWidth ? currentWidth : nextWidth);
-      if (!loading) {
+      if (!loading && state !== "error") {
         const scrollerHeight = scroller.getBoundingClientRect().height;
         const mobileHeight = mobileList?.getBoundingClientRect().height ?? 0;
         readyScrollerHeightRef.current = scrollerHeight > 0 ? scrollerHeight : 0;
@@ -310,7 +391,7 @@ export function DataTable<T>(rawProps: DataTableProps<T>) {
     observer.observe(scroller);
     if (mobileList) observer.observe(mobileList);
     return () => observer.disconnect();
-  }, [empty, hasMobileRows, loading]);
+  }, [empty, hasMobileRows, loading, state]);
 
   if (empty) {
     return (
@@ -348,25 +429,6 @@ export function DataTable<T>(rawProps: DataTableProps<T>) {
       aria-busy={busy || undefined}
       data-ui-owner="DataTable"
     >
-      {state === "error" ? (
-        <Alert
-          tone="danger"
-          title={errorTitle}
-          action={onRetry ? (
-            <Button
-              size="small"
-              icon={<RotateCw aria-hidden="true" />}
-              loading={activeRetrying}
-              loadingLabel={message("common.retrying")}
-              onClick={onRetry}
-            >
-              {message("common.retry")}
-            </Button>
-          ) : undefined}
-        >
-          {errorDescription}
-        </Alert>
-      ) : null}
       <div className={frameClassName} style={frameStyle}>
       <div
         ref={scrollerRef}
@@ -375,8 +437,8 @@ export function DataTable<T>(rawProps: DataTableProps<T>) {
         aria-label={desktopScrollable ? message("table.scrollRegion", { label: ariaLabel }) : undefined}
         tabIndex={desktopScrollable ? 0 : undefined}
         style={lockedScrollerHeight !== undefined ? {
-          height: lockedScrollerHeight,
-          overflowY: "hidden",
+          height: hasErrorFooter ? undefined : lockedScrollerHeight,
+          overflowY: loading ? "hidden" : "auto",
         } : undefined}
       >
         <table aria-label={ariaLabel} style={{ width: tableWidth, minWidth: minimumTableWidth }}>
@@ -433,6 +495,9 @@ export function DataTable<T>(rawProps: DataTableProps<T>) {
             </tr>
           </thead>
           <tbody>
+            {state === "error" && rows.length === 0 ? (
+              <tr><td colSpan={metrics.length} className="ui-data-table__error-empty">{message("table.errorNoDataStatus")}</td></tr>
+            ) : null}
             {loading ? skeletonRows.map((rowIndex) => (
               <tr key={`skeleton-${rowIndex}`} aria-hidden="true">
                 {metrics.map(({ column, style, pinnedClass }, columnIndex) => (
@@ -472,10 +537,11 @@ export function DataTable<T>(rawProps: DataTableProps<T>) {
           aria-busy={busy || undefined}
           tabIndex={fixedViewportRows !== undefined ? 0 : undefined}
           style={lockedMobileHeight !== undefined ? {
-            height: lockedMobileHeight,
-            overflow: "hidden",
+            height: hasErrorFooter ? undefined : lockedMobileHeight,
+            overflow: loading ? "hidden" : "auto",
           } : undefined}
         >
+          {state === "error" && rows.length === 0 ? <div className="ui-data-table__error-empty">{message("table.errorNoDataStatus")}</div> : null}
           {loading ? skeletonRows.map((rowIndex) => (
             <div className="ui-mobile-data-row ui-mobile-data-row--loading" role="listitem" aria-hidden="true" key={`mobile-skeleton-${rowIndex}`}>
               <span className="ui-skeleton ui-skeleton--avatar" aria-hidden="true" />
@@ -484,6 +550,7 @@ export function DataTable<T>(rawProps: DataTableProps<T>) {
           )) : rows.map((row, rowIndex) => <div className="ui-mobile-data-row" role="listitem" key={rowKeys[rowIndex]}>{mobileRow(row)}</div>)}
         </div>
       ) : null}
+      {hasErrorFooter ? <div className="ui-data-table__error-footer">{errorStatus}</div> : null}
       {pagination ? <div className="ui-data-table__pagination"><Pagination {...pagination} summary={paginationSummary} /></div> : null}
       </div>
     </div>

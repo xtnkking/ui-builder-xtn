@@ -5,7 +5,8 @@ import { InternalButtonSlot } from "../internal/button-slots";
 import { sanitizeFixedControlProps } from "../internal/fixed-control-props";
 import { useUILocale } from "../foundation/locale";
 import { Button, type ButtonProps } from "../foundation/primitives";
-import { Alert, EmptyState, type FeedbackTone } from "./feedback";
+import { EmptyState, type FeedbackTone } from "./feedback";
+import { InternalToastBoundary, useInternalOwnedToast } from "../internal/toast-boundary";
 import { cx } from "../internal/utils";
 
 const feedbackIcons = {
@@ -52,16 +53,23 @@ export type BannerProps = PublicControlProps<Omit<
 };
 
 export function Banner(rawProps: BannerProps) {
+  return <InternalToastBoundary><BannerContent rawProps={rawProps} /></InternalToastBoundary>;
+}
+
+function BannerContent({ rawProps }: { rawProps: BannerProps }) {
   const safeProps = sanitizeFixedControlProps(rawProps);
-  const { tone = "info", title, children, action, sticky, ...props } = safeProps;
+  const { tone = "info", title, children, action, sticky: _sticky, ...props } = safeProps;
+  useInternalOwnedToast(true, {
+    tone, title, duration: null,
+    description: <>{children}{action != null ? <div className="ui-banner__action">{action}</div> : null}</>,
+  });
   return (
     <div
       {...props}
-      className={cx("ui-banner", sticky && "ui-banner--sticky")}
+      hidden
+      className="ui-banner"
       data-ui-owner="Banner"
-    >
-      <Alert tone={tone} title={title} action={action}>{children}</Alert>
-    </div>
+    />
   );
 }
 

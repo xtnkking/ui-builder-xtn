@@ -14,21 +14,21 @@
   },
   "current": {
     "packageName": "ui",
-    "version": "0.3.3",
-    "apiDigest": "0ab352688abcb907f8c42091799720550799de86e82a9f301e6e3b0fd059b434",
-    "compatibilityDigest": "1e0def2ea93efca06e7440989ebe5dd97fe454d51cf737ef88dd18399f9a48e5",
+    "version": "0.3.4",
+    "apiDigest": "e3c7ce2ba89aa14e6a93196046e9de6299764214d671b56f87bd266bc6d4fdd2",
+    "compatibilityDigest": "b5119218e3600703e09e1f9cb40ac8263eb9079a9e4b8b9ac013eba330185d4f",
     "runtimeExports": 142,
     "typeOnlyExports": 232,
     "publicSignatures": 374
   },
   "classification": "breaking",
   "versionPolicy": {
-    "releaseTarget": "0.3.3",
-    "packageVersion": "0.3.3",
+    "releaseTarget": "0.3.4",
+    "packageVersion": "0.3.4",
     "valid": true,
     "requiredBump": "minor",
     "minimumVersion": "0.3.0",
-    "message": "Breaking API changes are covered by version 0.3.3."
+    "message": "Breaking API changes are covered by version 0.3.4."
   },
   "changes": {
     "runtimeExports": {
@@ -698,6 +698,13 @@
           "currentKind": "type",
           "baselineHash": "59e6f97950451f25a7d2fa23151f263de0a3176443635d7ca041b225d81fb416",
           "currentHash": "1ee7259a4835b9a21010c1e49b65ce17c1994fb40adb921c2ca44db497d4f82d"
+        },
+        {
+          "id": "FamilyLoginPage",
+          "baselineKind": "runtime",
+          "currentKind": "runtime",
+          "baselineHash": "32096f3f4b0ce9dac0ba99d33ac78cc19ae778fffcef9e2f15a88c08cbcdcccc",
+          "currentHash": "890fd328bb2d9963dfa2611b397693df1378c8895b9d16ac4861814dd5f56ab0"
         },
         {
           "id": "Field",

@@ -2,7 +2,6 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { ArrowRight, Mail, ShoppingBag } from "lucide-react";
 import {
   Accordion,
-  Alert,
   AuthenticationPage,
   Button,
   Checkbox,
@@ -16,6 +15,7 @@ import {
   SegmentedControl,
   Stack,
   Tag,
+  useToast,
   type FormControlHandle,
   type TextControlHandle,
 } from "../../ui";
@@ -59,6 +59,7 @@ function BrandVisual() {
 /** A local business workflow; no account or credentials are sent to a service. */
 export function BusinessAuthenticationExample({ onContinue }: { onContinue: () => void }) {
   const { account, signIn, registerAccount, signOut } = useCommerce();
+  const { toast } = useToast();
   const [mode, setMode] = useState<AuthMode>("login");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -68,8 +69,6 @@ export function BusinessAuthenticationExample({ onContinue }: { onContinue: () =
   const [simulateFailure, setSimulateFailure] = useState(false);
   const [pending, setPending] = useState(false);
   const [errors, setErrors] = useState<FieldErrors>({});
-  const [submitError, setSubmitError] = useState("");
-  const [notice, setNotice] = useState("");
   const [resetOpen, setResetOpen] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
   const [resetError, setResetError] = useState("");
@@ -111,15 +110,12 @@ export function BusinessAuthenticationExample({ onContinue }: { onContinue: () =
 
   function clearFieldError(field: keyof FieldErrors) {
     setErrors((current) => ({ ...current, [field]: undefined }));
-    setSubmitError("");
   }
 
   function switchMode(next: AuthMode) {
     if (pendingLock.current) return;
     setMode(next);
     setErrors({});
-    setSubmitError("");
-    setNotice("");
     setPassword("");
     setConfirmation("");
   }
@@ -138,8 +134,6 @@ export function BusinessAuthenticationExample({ onContinue }: { onContinue: () =
       if (!terms) nextErrors.terms = "请先阅读并同意演示服务条款。";
     }
     setErrors(nextErrors);
-    setSubmitError("");
-    setNotice("");
     if (Object.keys(nextErrors).length) {
       if (nextErrors.name) nameRef.current?.focus();
       else if (nextErrors.email) emailRef.current?.focus();
@@ -154,7 +148,7 @@ export function BusinessAuthenticationExample({ onContinue }: { onContinue: () =
       if (!(await waitForDemo())) return;
       if (simulateFailure) {
         setSimulateFailure(false);
-        setSubmitError("模拟服务暂时不可用。输入内容已保留，请再次提交重试。此异常只触发一次。");
+        toast({ tone: "danger", title: mode === "login" ? "登录未完成" : "注册未完成", description: "模拟服务暂时不可用。输入内容已保留，请再次提交重试。此异常只触发一次。" });
         return;
       }
       if (mode === "register") {
@@ -163,13 +157,14 @@ export function BusinessAuthenticationExample({ onContinue }: { onContinue: () =
         setMode("login");
         setPassword("");
         setConfirmation("");
-        setNotice("账户已创建，请使用刚设置的密码登录。该账户在本次商城浏览期间保留，刷新页面后清除。");
+        toast({ tone: "success", description: "账户已创建，请使用刚设置的密码登录。该账户在本次商城浏览期间保留，刷新页面后清除。" });
       } else {
         signIn(cleanEmail, password);
         setPassword("");
+        toast({ tone: "success", description: "登录成功，欢迎来到青屿商城。" });
       }
     } catch (error) {
-      if (mounted.current) setSubmitError(error instanceof Error ? error.message : "暂时无法完成提交，请重试。");
+      if (mounted.current) toast({ tone: "danger", title: mode === "login" ? "登录未完成" : "注册未完成", description: error instanceof Error ? error.message : "暂时无法完成提交，请重试。" });
     } finally {
       pendingLock.current = false;
       if (mounted.current) setPending(false);
@@ -195,7 +190,10 @@ export function BusinessAuthenticationExample({ onContinue }: { onContinue: () =
     setResetPending(true);
     setResetError("");
     try {
-      if (await waitForDemo()) setResetSent(true);
+      if (await waitForDemo()) {
+        setResetSent(true);
+        toast({ tone: "success", description: "重置请求已模拟完成。本案例没有发送邮件或修改密码。" });
+      }
     } finally {
       resetLock.current = false;
       if (mounted.current) setResetPending(false);
@@ -215,7 +213,6 @@ export function BusinessAuthenticationExample({ onContinue }: { onContinue: () =
       >
         {account ? (
           <Stack gap="large">
-            <Alert tone="success" title="登录成功">欢迎来到青屿商城，你的账户可在商品、购物车和个人中心继续使用。</Alert>
             <DescriptionList items={[
               { id: "name", term: "账户姓名", description: account.name },
               { id: "email", term: "登录邮箱", description: account.email },
@@ -223,14 +220,12 @@ export function BusinessAuthenticationExample({ onContinue }: { onContinue: () =
             ]} />
             <Inline>
               <Button variant="primary" trailingIcon={<ArrowRight aria-hidden="true" />} onClick={onContinue}>去逛逛商品</Button>
-              <Button onClick={() => { signOut(); setNotice("已退出账户。"); }}>退出登录</Button>
+              <Button onClick={() => { signOut(); toast({ tone: "info", description: "已退出账户。" }); }}>退出登录</Button>
             </Inline>
           </Stack>
         ) : (
           <Stack gap="medium">
             <SegmentedControl<AuthMode> ariaLabel="登录或注册" fill value={mode} disabled={pending} onValueChange={switchMode} options={[{ value: "login", label: "登录" }, { value: "register", label: "注册" }]} />
-            {notice ? <Alert tone="success">{notice}</Alert> : null}
-            {submitError ? <Alert tone="danger" title={mode === "login" ? "登录未完成" : "注册未完成"}>{submitError}</Alert> : null}
             <Form noValidate busy={pending} controlRef={formRef} onSubmit={submit}>
               {mode === "register" ? <Field label="姓名" htmlFor="business-auth-name" required error={errors.name}>
                 <Input id="business-auth-name" name="name" autoComplete="name" maxLength={40} value={name} disabled={pending} controlRef={nameRef} placeholder="怎么称呼你" onChange={(event) => { setName(event.currentTarget.value); clearFieldError("name"); }} />
@@ -261,7 +256,7 @@ export function BusinessAuthenticationExample({ onContinue }: { onContinue: () =
                 <p className="business-auth-help-copy">可注册自己的临时账户，或使用下面的体验账号。</p>
                 <p className="business-auth-help-copy">邮箱：{demoAccount.email}</p>
                 <p className="business-auth-help-copy">密码：{demoAccount.password}</p>
-                <Inline><Button size="small" disabled={pending} onClick={() => { setMode("login"); setEmail(demoAccount.email); setPassword(demoAccount.password); setErrors({}); setSubmitError(""); }}>填入演示账号</Button></Inline>
+                <Inline><Button size="small" disabled={pending} onClick={() => { setMode("login"); setEmail(demoAccount.email); setPassword(demoAccount.password); setErrors({}); }}>填入演示账号</Button></Inline>
                 <Checkbox label="下一次提交模拟服务异常（之后可重试）" checked={simulateFailure} disabled={pending} onChange={(event) => setSimulateFailure(event.currentTarget.checked)} />
               </div>,
             }]} />
@@ -270,7 +265,7 @@ export function BusinessAuthenticationExample({ onContinue }: { onContinue: () =
       </AuthenticationPage>
       <Dialog open={resetOpen} onOpenChange={(open) => { if (!resetLock.current) setResetOpen(open); }} closable={!resetPending} width="small" title="找回密码" description="输入账户邮箱，体验密码重置邮件的发送流程。">
         {resetSent ? <Stack gap="medium">
-          <Alert tone="success" title="重置请求已模拟完成">若此邮箱已注册，真实服务应向 {resetEmail.trim()} 发送重置链接。本案例没有实际发送邮件，也没有修改密码。</Alert>
+          <p>若此邮箱已注册，真实服务应向 {resetEmail.trim()} 发送重置链接。本案例没有实际发送邮件，也没有修改密码。</p>
           <Button onClick={() => setResetOpen(false)}>返回登录</Button>
         </Stack> : <Form noValidate busy={resetPending} onSubmit={submitReset}>
           <Field label="账户邮箱" htmlFor="business-auth-reset-email" required error={resetError}>

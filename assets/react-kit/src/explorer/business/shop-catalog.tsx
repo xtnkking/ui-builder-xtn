@@ -4,7 +4,7 @@ import {
   RotateCcw, ShieldCheck, ShoppingBag, ShoppingCart, Star, Truck,
 } from "lucide-react";
 import {
-  Accordion, Alert, Breadcrumbs, Button, Card, Checkbox, DescriptionList,
+  Accordion, Breadcrumbs, Button, Card, Checkbox, DescriptionList,
   EmptyState, Field, FilterBar, Gallery, IconButton, Inline, Lightbox, Link,
   Media, NumberInput, OverflowText, Rating, SearchInput, Select, Stack, Tabs,
   Tag, useToast,
@@ -233,7 +233,6 @@ function ShopProductContent({ product, onBrowse, onCart }: { product: Product; o
   const addPending = useRef(false);
   const [quantity, setQuantity] = useState<number | "">(1);
   const [pending, setPending] = useState(false);
-  const [addError, setAddError] = useState("");
   const [selectedImage, setSelectedImage] = useState(`${product.id}-0`);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const favorite = favorites.includes(product.id);
@@ -245,14 +244,14 @@ function ShopProductContent({ product, onBrowse, onCart }: { product: Product; o
   const quantityValid = typeof quantity === "number" && Number.isInteger(quantity) && quantity >= 1 && quantity <= available;
   async function add() {
     if (addPending.current || !quantityValid || typeof quantity !== "number") return;
-    addPending.current = true; setPending(true); setAddError("");
+    addPending.current = true; setPending(true);
     const count = quantity;
     if (!(await delay(500))) return;
     try {
       addToCart(product.id, count);
       toast({ description: `已将 ${count} 件${product.name}加入购物车`, tone: "success", shape: "pill", position: "top-center" });
     } catch (error) {
-      setAddError(error instanceof Error ? error.message : "暂时无法添加，请重试。");
+      toast({ tone: "danger", description: error instanceof Error ? error.message : "暂时无法添加，请重试。" });
     } finally { addPending.current = false; setPending(false); }
   }
   const descriptionContent = <div className="shop-product__description-content"><section className="shop-product__story"><div><span className="shop-overline-text">{categoryCopy[product.category]?.title ?? "认真对待日常"}</span><h2>每一次使用，<br />都是刚刚好的体验。</h2><p>{product.description}</p><div className="shop-product__feature-list">{product.tags.map((feature) => <div key={feature}><CheckCircle2 size={17} aria-hidden="true" /><span>{feature}</span></div>)}</div></div>{product.images[1] ? <Media src={product.images[1]} alt={`${product.name}补充展示`} aspectRatio="4 / 3" objectFit="contain" /> : null}</section><div className="shop-product__detail-points">{product.specs.filter((spec) => spec.label !== "服务").map((spec) => <Card key={spec.label} padding="medium"><span className="shop-overline-text">{spec.label}</span><h3>{spec.value}</h3><p className="shop-muted">在每个普通的日常，为你提供稳定、实用的体验。</p></Card>)}</div></div>;
@@ -275,8 +274,7 @@ function ShopProductContent({ product, onBrowse, onCart }: { product: Product; o
           <div className="shop-product__rating"><Star size={15} fill="currentColor" aria-hidden="true" /><strong>{product.rating.toFixed(1)}</strong><span className="shop-muted">来自 {product.reviewCount} 条商品评价</span></div>
           <div className="shop-product__price-block"><div className="shop-product__price"><strong>{formatMoney(product.price)}</strong>{product.comparePrice > product.price ? <del>{formatMoney(product.comparePrice)}</del> : null}</div><p>{product.comparePrice > product.price ? `比参考价优惠 ${formatMoney(product.comparePrice - product.price)} · ` : ""}满 ¥199 包邮</p></div>
           <DescriptionList divided={false} items={[{ id: "variant", term: "规格", description: <Tag selected tone="blue">{product.variants.join("、")}</Tag> }, { id: "stock", term: "库存", description: product.stock ? <span>{product.stock} 件可售{inCart ? ` · 购物车已有 ${inCart} 件` : ""}</span> : <Tag>暂时售罄</Tag> }]} />
-          <div className="shop-product__quantity"><Field label="数量" htmlFor={`${id}-quantity`} hint={available > 0 ? `还可添加 ${available} 件` : product.stock > 0 ? "购物车数量已达可售库存" : "到货后可继续购买"}><NumberInput id={`${id}-quantity`} ariaLabel="购买数量" value={quantity} onValueChange={(value) => { setQuantity(value); setAddError(""); }} min={1} max={Math.max(1, available)} step={1} disabled={available < 1 || pending} /></Field></div>
-          {addError ? <Alert tone="danger">{addError}</Alert> : null}
+          <div className="shop-product__quantity"><Field label="数量" htmlFor={`${id}-quantity`} hint={available > 0 ? `还可添加 ${available} 件` : product.stock > 0 ? "购物车数量已达可售库存" : "到货后可继续购买"}><NumberInput id={`${id}-quantity`} ariaLabel="购买数量" value={quantity} onValueChange={setQuantity} min={1} max={Math.max(1, available)} step={1} disabled={available < 1 || pending} /></Field></div>
           <div className="shop-product__buy-actions"><Button variant="primary" icon={<ShoppingCart />} loading={pending} loadingLabel="加入购物车" disabled={!quantityValid} onClick={() => void add()}>{product.stock === 0 ? "暂时售罄" : available < 1 ? "已达库存" : "加入购物车"}</Button><Button icon={<ShoppingBag />} onClick={onCart}>去购物车</Button><IconButton aria-label={`${favorite ? "取消收藏" : "收藏"}${product.name}`} aria-pressed={favorite} icon={<Heart fill={favorite ? "currentColor" : "none"} />} onClick={() => toggleFavorite(product.id)} /></div>
           <div className="shop-product__assurances"><span><Truck size={16} aria-hidden="true" />满 ¥199 包邮</span><span><RotateCcw size={16} aria-hidden="true" />7 天无理由退货</span><span><ShieldCheck size={16} aria-hidden="true" />品质售后保障</span></div>
           <Accordion ariaLabel="配送与售后说明" type="single" items={[{ id: "delivery", title: "配送说明", content: <p>青屿订单统一配送。商品合计满 ¥199 免配送费；未达到免运费门槛时，最终费用以结算页为准。可在订单详情中查看收货地址与配送状态。</p> }, { id: "return", title: "退换货与售后", content: <p>签收后 7 天内可申请无理由退货，请保持商品、配件与包装完好。商品服务范围以规格参数中的服务说明为准；遇到产品问题，请保留订单与购买凭证，方便后续核实。</p> }]} />

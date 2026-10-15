@@ -18,7 +18,7 @@ import type {
 import { useControllableState } from "../internal/controllable-state";
 import { useContentMotion } from "../internal/content-motion";
 import { useMotionPresence, useNonModalMotion } from "../internal/motion";
-import { Alert } from "../feedback/feedback";
+import { InternalToastBoundary, useInternalOwnedToast } from "../internal/toast-boundary";
 import { floatingPortalTarget, floatingViewportBounds } from "../internal/floating-position";
 import { InternalIconButtonSlot } from "../internal/button-slots";
 import { sanitizeFixedControlProps } from "../internal/fixed-control-props";
@@ -317,6 +317,10 @@ type ConfirmDialogBaseProps = PublicControlProps<{
 export type ConfirmDialogProps = ConfirmDialogBaseProps & ControlledOpenProps;
 
 export function ConfirmDialog(rawProps: ConfirmDialogProps) {
+  return <InternalToastBoundary><ConfirmDialogContent rawProps={rawProps} /></InternalToastBoundary>;
+}
+
+function ConfirmDialogContent({ rawProps }: { rawProps: ConfirmDialogProps }) {
   const { message } = useUILocale();
   const safeProps = sanitizeFixedControlProps(rawProps);
   const {
@@ -343,6 +347,8 @@ export function ConfirmDialog(rawProps: ConfirmDialogProps) {
   });
   const [pending, setPending] = useState(false);
   const [failed, setFailed] = useState(false);
+  const [failureAttempt, setFailureAttempt] = useState(0);
+  useInternalOwnedToast(open && failed, { tone: "danger", title, description: errorMessage, duration: 5000 }, failureAttempt);
   useEffect(() => {
     if (!open) setFailed(false);
   }, [open]);
@@ -355,6 +361,7 @@ export function ConfirmDialog(rawProps: ConfirmDialogProps) {
       setOpen(false);
     } catch {
       setFailed(true);
+      setFailureAttempt((attempt) => attempt + 1);
     } finally {
       setPending(false);
     }
@@ -371,7 +378,7 @@ export function ConfirmDialog(rawProps: ConfirmDialogProps) {
         closeOnBackdropClick={closeOnBackdropClick}
         footer={<div className="ui-confirm-actions"><Button autoFocus disabled={pending} onClick={() => setOpen(false)}>{cancelLabel}</Button><Button variant={tone} loading={pending} loadingLabel={message("common.processing")} onClick={() => void confirm()}>{confirmLabel}</Button></div>}
       >
-        {failed ? <Alert tone="danger">{errorMessage}</Alert> : null}
+        {null}
       </Dialog>
     </div>
   );
@@ -392,6 +399,10 @@ export type PopconfirmProps = PublicControlProps<{
 }>;
 
 export function Popconfirm(rawProps: PopconfirmProps) {
+  return <InternalToastBoundary><PopconfirmContent rawProps={rawProps} /></InternalToastBoundary>;
+}
+
+function PopconfirmContent({ rawProps }: { rawProps: PopconfirmProps }) {
   const { message } = useUILocale();
   const safeProps = sanitizeFixedControlProps(rawProps);
   const { triggerLabel: rawTriggerLabel, ariaLabel, placement, disabled, title, description, confirmLabel = message("common.confirm"), cancelLabel = message("common.cancel"), tone = "danger", onConfirm, errorMessage = message("confirm.failed") } = safeProps;
@@ -399,17 +410,21 @@ export function Popconfirm(rawProps: PopconfirmProps) {
   const [open, setOpen] = useState(false);
   const [pending, setPending] = useState(false);
   const [failed, setFailed] = useState(false);
+  const [failureAttempt, setFailureAttempt] = useState(0);
+  useInternalOwnedToast(open && failed, { tone: "danger", title, description: errorMessage, duration: 5000 }, failureAttempt);
+  useEffect(() => {
+    if (!open) setFailed(false);
+  }, [open]);
   const confirm = async () => {
     if (pending) return;
     setPending(true);
     setFailed(false);
-    try { await onConfirm(); setOpen(false); } catch { setFailed(true); } finally { setPending(false); }
+    try { await onConfirm(); setOpen(false); } catch { setFailed(true); setFailureAttempt((attempt) => attempt + 1); } finally { setPending(false); }
   };
   return (
     <Popover triggerLabel={triggerLabel} ariaLabel={ariaLabel} placement={placement} open={open} onOpenChange={(next) => { if (!pending) setOpen(next); }} disabled={disabled}>
       <div className="ui-popconfirm" data-ui-owner="Popconfirm">
         <div className="ui-popconfirm__heading"><CircleAlert aria-hidden="true" /><div><strong>{title}</strong>{description != null ? <p>{description}</p> : null}</div></div>
-        {failed ? <Alert tone="danger">{errorMessage}</Alert> : null}
         <div className="ui-confirm-actions"><Button size="small" disabled={pending} onClick={() => setOpen(false)}>{cancelLabel}</Button><Button size="small" variant={tone} loading={pending} loadingLabel={message("common.processing")} onClick={() => void confirm()}>{confirmLabel}</Button></div>
       </div>
     </Popover>

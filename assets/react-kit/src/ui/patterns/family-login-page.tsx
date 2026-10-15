@@ -1,7 +1,7 @@
 import { useEffect, useId, useMemo, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { ArrowRight, Building2 } from "lucide-react";
 import type { TextControlHandle } from "../foundation/contracts";
-import { Alert } from "../feedback/feedback";
+import { InternalToastBoundary, useInternalOwnedToast } from "../internal/toast-boundary";
 import { Checkbox, Field, Input, PasswordInput, SegmentedControl } from "../input/forms";
 import { useUILocale } from "../foundation/locale";
 import { Button } from "../foundation/primitives";
@@ -47,19 +47,24 @@ type LoginErrors = {
   submit?: { kind: "default" } | { kind: "business"; message: string };
 };
 
-export function FamilyLoginPage({
-  companyName,
-  companyMark,
-  products,
-  initialProductId,
-  onProductChange,
-  onSubmit,
-  forgotPasswordHref,
-  onForgotPassword,
-  createAccountHref,
-  onCreateAccount,
-  legal,
-}: FamilyLoginPageProps) {
+export function FamilyLoginPage(rawProps: FamilyLoginPageProps) {
+  return <InternalToastBoundary><FamilyLoginPageContent rawProps={rawProps} /></InternalToastBoundary>;
+}
+
+function FamilyLoginPageContent({ rawProps }: { rawProps: FamilyLoginPageProps }) {
+  const {
+    companyName,
+    companyMark,
+    products,
+    initialProductId,
+    onProductChange,
+    onSubmit,
+    forgotPasswordHref,
+    onForgotPassword,
+    createAccountHref,
+    onCreateAccount,
+    legal,
+  } = rawProps;
   const { message } = useUILocale();
   assertUniqueIdentities("FamilyLoginPage", "product.id", products.map((product) => product.id));
   const productTitleId = useId();
@@ -83,6 +88,12 @@ export function FamilyLoginPage({
     : errors.submit
       ? message("login.failedDefault")
       : undefined;
+  useInternalOwnedToast(!product || Boolean(submitError), {
+    tone: "danger",
+    title: !product ? message("login.unavailableTitle") : message("login.failedTitle"),
+    description: !product ? message("login.unavailableDescription") : submitError,
+    duration: !product ? null : 5000,
+  }, !product ? "unavailable" : errors.submit);
 
   useEffect(() => {
     if (productId !== resolvedProductId) setProductId(resolvedProductId);
@@ -90,11 +101,7 @@ export function FamilyLoginPage({
 
   if (!product) {
     return (
-      <div className="ui-auth-unavailable ui-root" data-ui-owner="FamilyLoginPage">
-        <Alert tone="danger" title={message("login.unavailableTitle")}>
-          {message("login.unavailableDescription")}
-        </Alert>
-      </div>
+      <div className="ui-auth-unavailable ui-root" data-ui-owner="FamilyLoginPage" />
     );
   }
 
@@ -171,7 +178,6 @@ export function FamilyLoginPage({
             <p>{message("login.continue", { company: companyName })}</p>
           </div>
 
-          {submitError ? <Alert tone="danger" title={message("login.failedTitle")}>{submitError}</Alert> : null}
 
           <Field label={message("login.email")} htmlFor={emailId} required error={emailError}>
             <Input

@@ -1,8 +1,20 @@
 # Changelog
 
-## [Unreleased]
+## [0.3.4] - 2026-10-15
 
-暂无未发布修改。
+### Changed
+
+- 表格请求失败改由 DataTable 自动发送轻提示，每个失败阶段仅通知一次；表格框内保留简短持久状态与唯一重试入口，不再在表格上方自动渲染大块 Alert。有缓存时继续保留上次成功数据；重试失败可再次通知，普通重渲染不重复通知。
+- FamilyLoginPage 的提交失败与 ConfirmDialog／Popconfirm 的确认失败改为自动轻提示；原字段校验与重试按钮保留，确认失败不关闭浮层。无产品配置使用持续轻提示。
+- Banner 改为持续浮动轻提示，不占页面高度；保留标题、正文和业务操作，更新内容不重新排队，手动关闭后普通重渲染不重放，卸载会清理所属通知。sticky 参数不再改变定位或页面布局。
+- 自动错误提示复用应用共享 ToastProvider；DataTable、FamilyLoginPage、ConfirmDialog、Popconfirm 和 Banner 单独使用时提供内部兜底，不增加公共 Props。共享队列统一管理数量，避免 StrictMode 重复通知与卸载后异步结果误通知。
+- 商城认证、收藏、购物车、地址、订单、结算、异步结果和连续加载组合示例的操作反馈统一使用 Toast；保留数据、字段关联与必要恢复入口，不再插入大块 Alert。
+- Skill 明确推荐轻提示，提供 AsyncAction＋Toast 具体代码与各组件默认反馈表；禁止同一请求叠加 Alert、ErrorState 或手动 Toast。Alert 仍可按明确的行内提示需求使用，整页状态占位保留独立语义。
+
+### Validation
+
+- 按本次影响验证通知生命周期、共享容量、登录／确认失败、持续横幅操作与关闭、连续加载重试及移动端布局；保留上一轮表格证据的原始源码身份，只对抽取共享内部 Provider 接入补定向检查，不重跑全量测试或历史 M8。
+- 正式交付同步 main、新版本标签、Latest Release 完整 Skill ZIP／校验文件、GitHub Pages 和指定本机 Skill；旧版本标签与下载附件保留为历史版本。
 
 ## [0.3.3] - 2026-10-15
 

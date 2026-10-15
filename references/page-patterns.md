@@ -34,7 +34,8 @@ Before composing controls, assign each request a data scope, command owner and r
 | Page title and page-level creation action | Page pattern heading | A second heading or the same creation action in the filter bar |
 | Draft filters and explicit query | One `FilterBar` | A second button that executes the same list request with the same applied filters |
 | List total and record range | `DataTable.pagination` | Repeating the total in the heading and a result-summary line |
-| Loading, error, or successful update state | One status region for that request | Two unlabeled “最近读取” times for one dataset |
+| Loading or successful update state | One status region for that request | Two unlabeled “最近读取” times for one dataset |
+| Table request failure | `DataTable` automatic Toast and its persistent in-frame status/retry | An above-table Alert, second ErrorState, or manual Toast for the same failure |
 | Row actions and selected-row count | Row or bulk-action area | Treating legitimate per-row actions as duplicated page commands |
 
 Querying changed draft filters and refreshing the last applied query are different operations only when the workflow needs both. If both are exposed, label the scopes and use the correct draft/applied state; otherwise keep one query entry point. Different requests may each have a command and status, for example “检查服务状态 / 服务状态更新于…” and “查询任务 / 任务列表更新于…”. Each timestamp must change only after its own request succeeds. Do not invent extra timestamps, English eyebrows, subtitles, descriptions or buttons merely because slots are available. Responsive alternatives are acceptable when only the applicable version is visible; retry and row actions remain valid in their own context.
@@ -43,17 +44,21 @@ The runnable “作用域分离” tab at `#/patterns/list-filter` composes one 
 
 Before handoff, inspect the composed page once for duplicate headings, same-scope buttons, repeated totals and update times. Compare the callbacks and request state, not just button wording: two buttons with different labels can duplicate an operation, while identical row labels can be correct. The provenance checker enforces component source and public API ownership; it does not infer this business meaning.
 
+Use Toast for save/delete/copy/export, login/confirmation and recoverable request outcomes so feedback does not displace the page. FamilyLoginPage, ConfirmDialog, Popconfirm and the bundled storefront already own their Toast feedback. Keep field validation and recovery controls in their relevant context without adding a duplicate notification. See the [implemented defaults and concrete action code](toast-contract.md#feedback-selection).
+
 ## Family login
 
 `AuthenticationPage` defaults to `layout="page"` and fills at least the viewport height. Use `layout="embedded"` in a preview, tab or other bounded surface; its minimum height is capped while long content can still grow. Without a `visual`, the form is a single centered column with a maximum content width of 420px. With a visual, it uses two columns above 760px of **component container** width, and hides the visual below that width. Compose the form body with the official `Form` and `Field`; submit through the Form so click and Enter share one path. Do not patch page geometry with application CSS.
 
 `FamilyLoginPage` intentionally keeps one company identity and one credential form across products. Vary each product through stable `id`, name, accent tokens, headline, supporting copy, and `visual`. Do not fork the form markup for each product or override input/button geometry in application CSS.
 
-The pattern owns validation focus, password visibility, pending submission, duplicate-submit prevention, and component fallback text. The caller owns authentication, account links, legal copy, and errors returned by the business service. Product accents must retain readable control states; visual media must describe the actual product rather than serve as generic decoration. The runnable example is `#/patterns/authentication`.
+The pattern owns validation focus, password visibility, pending submission, duplicate-submit prevention, and component fallback text. Submission failures use one automatic Toast; no-product configuration uses a persistent Toast. Field validation stays inline and the original submit button remains available for retry. The caller owns authentication, account links, legal copy, and errors returned by the business service; do not notify those same errors again. Product accents must retain readable control states; visual media must describe the actual product rather than serve as generic decoration. The runnable example is `#/patterns/authentication`.
 
 ## List and CRUD pages
 
 Place `FilterBar` and `DataTable` inside `ListManagementPage` or `SearchFilterPage`. Their default `layoutWidth="readable"` aligns heading, filters, table, and footer; use `layoutWidth="wide"` only for a table that genuinely needs the width. Keep table pagination in `DataTable.pagination`, not the page footer. Detailed request and height behavior is in the [data workflow contract](data-workflows.md).
+
+For a table request error, keep `DataTable` mounted with `state="error"`. The table owns its automatic short Toast and persistent in-frame status/retry; `MemberManagementPage` uses that same mechanism. Do not add another Alert, ErrorState, manual Toast or error-summary line around it for the same request. A shared application `ToastProvider` coordinates notifications from the page's tables and other operations; the table has a fallback for standalone use. A service-health failure is a distinct scope and may still require its own appropriate feedback. See [table request failures](data-workflows.md#table-request-failures).
 
 `CreateEditPage` owns the form and stable action footer. Compose fields from ui-builder-xtn and follow the [form contract](form-contract.md). For editing inside a modal surface, use `Dialog` or `Drawer` rather than nesting a page pattern merely to obtain actions.
 
@@ -61,7 +66,7 @@ Place `FilterBar` and `DataTable` inside `ListManagementPage` or `SearchFilterPa
 
 Keep IDs stable and unique for detail sections, settings sections, and wizard steps. Controlled navigation state remains with the application; patterns render its accessible structure and built-in pending state. Use `DescriptionList` for term/value metadata and public feedback components for business outcomes.
 
-`ImportExportPage` provides operation shells and pending buttons, not parsing, upload transport, or authorization. `StatusPage` represents a page-level outcome; use `Alert`, `EmptyState`, or `ErrorState` for feedback within an otherwise usable page.
+`ImportExportPage` provides operation shells and pending buttons, not parsing, upload transport, or authorization. Its operation outcomes use Toast. `StatusPage` represents a page-level outcome; use `EmptyState` or `ErrorState` for a persistent unavailable/empty region within an otherwise usable page. Persistent notifications can use `Toast duration={null}` or Banner, which now renders a persistent floating Toast. Alert is an explicit inline option, not an automatic operation-result companion. Table request failures use DataTable's own Toast/status/retry rather than an additional feedback surface.
 
 ## Overlays, locale, and responsive behavior
 

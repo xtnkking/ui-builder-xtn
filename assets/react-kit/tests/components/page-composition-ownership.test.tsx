@@ -39,10 +39,22 @@ describe("page composition ownership", () => {
     expect(screen.getAllByText(/317/)).toHaveLength(1);
     await act(async () => { later.reject(new Error("offline")); });
 
-    expect(screen.getByText("查询失败，仍显示上一次结果")).toBeInTheDocument();
+    expect(screen.queryByText("查询失败，仍显示上一次结果")).toBeNull();
     expect(screen.getByRole("table", { name: "成员数据" })).toHaveTextContent("林夏");
-    expect(screen.getAllByText(/317/)).toHaveLength(1);
+    expect(screen.queryAllByText(/317/)).toHaveLength(0);
     expect(fetchMembers).toHaveBeenCalledTimes(2);
+  });
+
+  it("leaves the member result summary empty when DataTable owns initial failure feedback", async () => {
+    const initial = deferred<MemberResult>();
+    const view = render(<MemberManagementPage fetchMembers={() => initial.promise} />);
+    await act(async () => { initial.reject(new Error("offline")); });
+    expect(view.container.querySelector(".ui-result-summary > span")).toBeEmptyDOMElement();
+    expect(screen.queryByText("查询失败，暂无可显示结果")).toBeNull();
+    expect(screen.getAllByRole("alert")).toHaveLength(1);
+    expect(screen.getByRole("alert")).toHaveClass("ui-toast");
+    expect(screen.getByRole("columnheader", { name: "成员" })).toBeInTheDocument();
+    expect(screen.getAllByRole("button", { name: "重试" })).toHaveLength(1);
   });
 
   it("keeps the concrete service and list requests independent with one heading and one total", async () => {

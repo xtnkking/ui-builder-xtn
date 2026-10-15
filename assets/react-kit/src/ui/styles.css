@@ -2721,8 +2721,55 @@ input[type="password"]::-ms-reveal {
   max-width: 100%;
 }
 
-.ui-data-table > .ui-alert {
-  margin-bottom: 12px;
+.ui-data-table__error-status {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 8px;
+  max-width: 100%;
+  color: var(--ui-danger);
+  font-size: 12px;
+}
+
+.ui-data-table__error-status-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ui-data-table__error-status > .ui-button {
+  flex: none;
+}
+
+.ui-data-table__error-footer {
+  flex: none;
+  padding: 6px 12px;
+  border-top: 1px solid var(--ui-border);
+  background: var(--ui-surface);
+}
+
+.ui-data-table__frame--error-footer {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  height: calc(var(--ui-data-table-desktop-viewport-height, var(--_ui-data-table-error-desktop-height)) + 2px);
+}
+
+.ui-data-table .ui-data-table__frame--error-footer > :is(.ui-data-table__scroller, .ui-data-table__mobile) {
+  flex: 1;
+  min-height: 0;
+  height: auto;
+  overflow-y: auto;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.ui-data-table .ui-data-table__error-empty {
+  height: 174px;
+  padding: 16px;
+  color: var(--ui-muted);
+  text-align: center;
 }
 
 .ui-data-table__frame {
@@ -2840,6 +2887,13 @@ input[type="password"]::-ms-reveal {
 .ui-data-table__pagination .ui-pagination {
   width: 100%;
   border-top: 0;
+}
+
+.ui-data-table__pagination .ui-pagination__summary {
+  display: flex;
+  align-items: center;
+  min-height: 32px;
+  overflow: visible;
 }
 
 .ui-data-table table {
@@ -3498,6 +3552,10 @@ input[type="password"]::-ms-reveal {
 
   .ui-data-table--has-mobile .ui-data-table__mobile {
     display: block;
+  }
+
+  .ui-data-table--has-mobile .ui-data-table__frame--error-footer {
+    height: calc(var(--ui-data-table-mobile-viewport-height, var(--_ui-data-table-error-mobile-height)) + 2px);
   }
 
   .ui-data-table--has-mobile .ui-data-table__frame--fixed-viewport > .ui-data-table__empty-scroller {

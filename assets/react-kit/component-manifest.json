@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "kitVersion": "0.3.3",
+  "kitVersion": "0.3.4",
   "entries": [
     {
       "id": "color",
@@ -2187,13 +2187,13 @@
   "sourceIntegrity": {
     "action/actions.tsx": "f587c1f5573b1347cfdaa7c6e73f22843b3700e38ed4478488d34884ab1b648b",
     "data/data-extra.tsx": "f5b949a700190c5c3d7e4edd7c638aaa5c839f663614076c1befc2d49805df20",
-    "data/data-table.tsx": "c82f8027eac8ac1957bc3c9c2fab6f1c157f3ef87c3af2b766bd32afb805578f",
+    "data/data-table.tsx": "8b433cff624d6e7291f55ec81708a26ef33bbcfa91ed01b09cb92a34ed6a8330",
     "display/display.tsx": "2ab0b1a8546fca3e4d20d0cf559015cd546d05bcffac81f3f004c7ec7951452c",
-    "feedback/feedback-extra.tsx": "640a5c06144fb40786b15c9f7da407cfd1d5629c40e70b8e394bbd817f9ae71e",
-    "feedback/feedback.tsx": "1d09d251a408b46642b253933548e616a8a5c16ebccf36aa1c601619669063e8",
+    "feedback/feedback-extra.tsx": "356829eb2c518b8818fa50048fb8259d04390d5b1eed3d0f6817c5e097b2a552",
+    "feedback/feedback.tsx": "25ab0ebaf73dd68ba6b500fbb8f2258fdbddebb4d8f3b6f7c4961c0679837b4e",
     "foundation/contracts.ts": "80756edff16bc33715d9e93aa3a2cf5619fbdaaf3dc94dd8ebd6a255e3cfe489",
     "foundation/layout.tsx": "e0113c671da47263002dab79da12b793a94e13a5db367008b9e89b8abcab6dd4",
-    "foundation/locale.tsx": "817bf7314e9ef769af0bc95337f9feebf24ca876358c8ba7467161da969b76c1",
+    "foundation/locale.tsx": "4963002f5d615b4d690c33f4220f13fe0067b48e7bb522c90d07a45e9968013b",
     "foundation/primitives.tsx": "0c9420c177e3d78329f232924a0af57bda5b97f86834509c3c39c6016ae81ee5",
     "index.ts": "653c90a2d9996c5643ba50836eeecdb883c93b43f5358e8fb55593cb0bf75236",
     "input/date-field.tsx": "bbe5295393a454d0b0f020feabd43d61cfc3aa85edcf9fb473f4712e3297c4ea",
@@ -2217,19 +2217,21 @@
     "internal/portal-tokens.ts": "1015c8734bdac5ae3dd2239ad2cc608c8091dad756fb67922cd55e070c80469b",
     "internal/selection-motion.ts": "d03eeba374f344f86479d73c1d7f304a727308129d3b21a1835a13926a75410d",
     "internal/theme-contract.ts": "b71ad06b9ab0971b1dada16d2903bb55da4ef78f3aa501572b796c39316ea9ec",
+    "internal/toast-boundary.tsx": "1097f160cbf49791e4e12213982dd2027bb8b1451bf74e5f3385d31e53ba0cb5",
+    "internal/toast-context.ts": "cf664d3a47de7d0200219955573cdbeb02807d87ecba9371527db0795bc2849d",
     "internal/tree-navigation.ts": "71508b1bb9de51e74322885ec9c4af25c029e5b58311b946d15fe104d523e7ed",
     "internal/utils.ts": "c18fd3ad380bace2c49d1bf9d73d117b88407b7706eb155eb0cb39c359b06ce8",
     "navigation/navigation-extra.tsx": "9ba60077a80d52a6fdcf6ec6b2659a9ba0139bd7d9cd1174b40e1587b92ee5fa",
     "navigation/navigation.tsx": "e803df72c2b3c2d0c3273cbd746b625b5217f05d8d8907243256045bf911e897",
-    "overlay/overlays-extra.tsx": "9afe2e50370eec3b119c1d22b209359f76195c395dd6a3c4499bed7c1045a2af",
+    "overlay/overlays-extra.tsx": "6048f73c6e1497349ea38ae505de8d4308f5ccb2e36f68286e75622920361233",
     "overlay/overlays.tsx": "3b20e3ec75d16fd2917cbb11198d8b27480e57456f3988c89a1496035ad55275",
-    "patterns/family-login-page.tsx": "45f54e9867a45d868d691b9ac558ada9390e9c9d24bec75374fb19819c597f1c",
-    "patterns/member-management-page.tsx": "0a55f1c6c955f3a3e8c1f2b8e8fd98c3283677f8ec58084d23c2d99275281851",
+    "patterns/family-login-page.tsx": "6b57fcb3884d857eafb7ff4e1aeb15766d8db18c2617ca4942f1a3ba05c6c042",
+    "patterns/member-management-page.tsx": "ca122684b0a6ca805a0872c70b7aefcba88593fdb62c6f96cc5a68d3487eefe9",
     "patterns/standard-pages.tsx": "a0f974a60c223bbbede3db0c9d1dc728e01556a0a778741dea7be7511e6f5940",
     "styles/extended.css": "381e126ec70044a507939473dfabf34d4a3af9af6a1fce17709087828312a7e5",
     "styles/inputs-extra.css": "5839b8b9b0b313614f8f1b4cec3b517fed3961363a9d423501dd8885544a75fd",
     "styles/layout-actions-display.css": "0fbd1d4e59262931d4a479782fc9abad95185917ca6f4d317dc89069954d35f2",
     "styles/themes.css": "ca5e9233d631ad3f28fb4afdebf6268050f4f2a7b273df69eb702f6aeeec1462",
-    "styles.css": "f3d567896166a41bd95d8de80bc66d29bf153da74aae2ea2e82172bb3fe61616"
+    "styles.css": "570e00661b29a8322232a6dc52d508c22e92a99cdea4224c0603269dcc4527a9"
   }
 }

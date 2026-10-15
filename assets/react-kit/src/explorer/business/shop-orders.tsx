@@ -1,7 +1,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { CheckCheck, CreditCard, PackageCheck, ShoppingBag, Truck, X } from "lucide-react";
 import {
-  Alert, Button, Card, ConfirmDialog, DescriptionList, DetailPage, Dialog,
+  Button, Card, ConfirmDialog, DescriptionList, DetailPage, Dialog,
   EmptyState, Field, FilterBar, Inline, Link, Media, OverflowText, Pagination,
   SearchFilterPage, SearchInput, Select, Stack, Tabs, Tag, Timeline, useToast,
   type TagTone,
@@ -45,7 +45,6 @@ export function ShopOrdersPage({ orderId, onBrowse, onOrder }: {
   const [cancelId, setCancelId] = useState<string | null>(null);
   const [pending, setPending] = useState<"pay" | "cancel" | "complete" | null>(null);
   const [pendingOrderId, setPendingOrderId] = useState<string | null>(null);
-  const [actionError, setActionError] = useState("");
   const actionLock = useRef(false);
   const queryLock = useRef(false);
   const operationGeneration = useRef(0);
@@ -63,7 +62,7 @@ export function ShopOrdersPage({ orderId, onBrowse, onOrder }: {
   }, []);
   useEffect(() => {
     operationGeneration.current += 1;
-    setPaymentId(null); setCancelId(null); setActionError("");
+    setPaymentId(null); setCancelId(null);
   }, [orderId]);
   const delay = (milliseconds: number) => new Promise<boolean>((resolve) => {
     if (!alive.current) { resolve(false); return; }
@@ -75,7 +74,7 @@ export function ShopOrdersPage({ orderId, onBrowse, onOrder }: {
     if (actionLock.current) return;
     actionLock.current = true;
     const startedGeneration = operationGeneration.current;
-    setPending(action); setPendingOrderId(order.id); setActionError("");
+    setPending(action); setPendingOrderId(order.id);
     if (!(await delay(650))) return;
     if (startedGeneration !== operationGeneration.current) {
       actionLock.current = false; setPending(null); setPendingOrderId(null);
@@ -96,15 +95,15 @@ export function ShopOrdersPage({ orderId, onBrowse, onOrder }: {
       });
     } catch (error) {
       const message = error instanceof Error ? error.message : "操作失败，请重试。";
-      setActionError(message);
       if (action === "cancel") throw error;
+      toast({ tone: "danger", description: message });
     } finally { actionLock.current = false; setPending(null); setPendingOrderId(null); }
   }
 
-  const openPayment = (order: Order) => { setPaymentId(order.id); setPaymentMethod("wechat"); setActionError(""); };
+  const openPayment = (order: Order) => { setPaymentId(order.id); setPaymentMethod("wechat"); };
   const buttons = (order: Order) => <Inline gap="small">
     {order.status === "pending" ? <>
-      <Button size="small" disabled={pending !== null} onClick={() => { setActionError(""); setCancelId(order.id); }}>取消订单</Button>
+      <Button size="small" disabled={pending !== null} onClick={() => setCancelId(order.id)}>取消订单</Button>
       <Button size="small" variant="primary" icon={<CreditCard />} disabled={pending !== null} onClick={() => openPayment(order)}>去付款</Button>
     </> : null}
     {order.status === "shipped" ? <Button size="small" variant="primary" icon={<CheckCheck />} loading={pending === "complete" && pendingOrderId === order.id} loadingLabel="确认收货" disabled={pending !== null && !(pending === "complete" && pendingOrderId === order.id)} onClick={() => { void perform(order, "complete"); }}>确认收货</Button> : null}
@@ -138,7 +137,6 @@ export function ShopOrdersPage({ orderId, onBrowse, onOrder }: {
         : selected.status === "shipped" ? "商品已经发出。收到商品并检查无误后，即可确认收货。"
         : selected.status === "completed" ? "订单已完成，感谢你把青屿好物带回家。" : "此订单已取消，预留的商品库存已返还。"}</p>
       {buttons(selected)}
-      {actionError ? <Alert tone="danger">{actionError}</Alert> : null}
     </Stack></Card> },
     { id: `${id}-items`, title: "商品明细", content: <Card><OrderItems order={selected} /></Card> },
     { id: `${id}-delivery`, title: "收货信息", content: <Card><DescriptionList items={[
@@ -149,7 +147,7 @@ export function ShopOrdersPage({ orderId, onBrowse, onOrder }: {
       { id: "note", term: "订单备注", description: selected.note || "无" },
     ]} /></Card> },
     { id: `${id}-timeline`, title: "订单与配送进度", content: <Card><Stack gap="medium">
-      {selected.status === "shipped" || selected.status === "completed" ? <Alert tone="info" title="青屿演示物流">此处展示配送进度，未对接真实物流公司或运单。</Alert> : null}
+      {selected.status === "shipped" || selected.status === "completed" ? <p className="shop-orders__muted">此处展示配送进度，未对接真实物流公司或运单。</p> : null}
       <Timeline ariaLabel="订单处理进度" items={selected.events.map((event) => ({
         id: event.id, title: event.title, time: dateLabel(event.time), dateTime: event.time,
         icon: event.title.includes("发货") ? <Truck /> : event.title.includes("付款") ? <CreditCard /> : event.title.includes("取消") ? <X /> : <PackageCheck />,
@@ -200,8 +198,7 @@ export function ShopOrdersPage({ orderId, onBrowse, onOrder }: {
       {payment ? <Stack gap="large">
         <DescriptionList items={[{ id: "order", term: "订单编号", description: payment.id }, { id: "amount", term: "付款金额", description: <strong className="shop-orders__price">{formatMoney(payment.total)}</strong> }]} />
         <Field htmlFor={`${id}-payment-method`} label="付款方式"><Select id={`${id}-payment-method`} ariaLabel="付款方式" value={paymentMethod} disabled={pending !== null} options={[{ value: "wechat", label: "微信支付（演示）" }, { value: "alipay", label: "支付宝（演示）" }]} onValueChange={setPaymentMethod} /></Field>
-        <Alert tone="info">本次仅模拟支付成功，不会连接支付平台、打开二维码或产生真实扣款。</Alert>
-        {actionError ? <Alert tone="danger">{actionError}</Alert> : null}
+        <p className="shop-orders__muted">本次仅模拟支付成功，不会连接支付平台、打开二维码或产生真实扣款。</p>
       </Stack> : null}
     </Dialog>
     <ConfirmDialog open={cancellation !== undefined} onOpenChange={(open) => { if (!open) setCancelId(null); }} title="取消这笔订单？"

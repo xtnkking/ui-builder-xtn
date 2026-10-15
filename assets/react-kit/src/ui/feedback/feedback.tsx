@@ -1,5 +1,4 @@
 import {
-  createContext,
   useCallback,
   useContext,
   useEffect,
@@ -23,6 +22,7 @@ import {
 } from "lucide-react";
 import type { PublicControlProps } from "../foundation/contracts";
 import { InternalButtonSlot } from "../internal/button-slots";
+import { ToastContext } from "../internal/toast-context";
 import { sanitizeFixedControlProps } from "../internal/fixed-control-props";
 import { useUILocale, type UILocaleContext } from "../foundation/locale";
 import { Button, type ButtonProps } from "../foundation/primitives";
@@ -201,19 +201,11 @@ function normalizeToastDuration(duration: ToastOptions["duration"], hasAction: b
   return Math.min(MAX_TOAST_DURATION, Math.max(1, Math.round(duration)));
 }
 
-interface ToastProviderContextValue {
-  toast: (options: ToastOptions, localeContext: UILocaleContext) => string;
-  dismiss: (id: string) => void;
-  dismissAll: () => void;
-}
-
 export interface ToastApi {
   toast: (options: ToastOptions) => string;
   dismiss: (id: string) => void;
   dismissAll: () => void;
 }
-
-const ToastContext = createContext<ToastProviderContextValue | null>(null);
 
 export type ToastProviderProps = PublicControlProps<{
   children: ReactNode;
@@ -407,7 +399,17 @@ export function ToastProvider(rawProps: ToastProviderProps) {
     timers.current.clear();
   }, []);
 
-  const context = useMemo(() => ({ toast, dismiss, dismissAll }), [toast, dismiss, dismissAll]);
+  const update = useCallback((id: string, options: Pick<ToastOptions, "title" | "description" | "tone" | "closable">, localeContext: UILocaleContext) => {
+    const record = [...records.current.visible, ...records.current.queued].find((item) => item.id === id);
+    if (!record || record.exiting) return;
+    const tone = options.tone ?? "info";
+    const closable = options.closable ?? true;
+    if (record.title === options.title && record.description === options.description
+      && record.tone === tone && record.closable === closable && record.localeContext === localeContext) return;
+    Object.assign(record, { title: options.title, description: options.description, tone, closable, localeContext });
+    publish();
+  }, [publish]);
+  const context = useMemo(() => ({ toast, dismiss, dismissAll, update }), [toast, dismiss, dismissAll, update]);
   const viewportGroups = (["top-center", "top-right", "bottom-right"] as const).map((id) => ({
     id, items: toasts.filter((item) => item.position === id),
   }));

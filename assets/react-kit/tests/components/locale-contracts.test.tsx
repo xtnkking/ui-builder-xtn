@@ -212,7 +212,7 @@ describe("LocaleProvider contracts", () => {
       </LocaleProvider>,
     );
 
-    expect(screen.getByText("Sign-in unavailable")).toBeInTheDocument();
+    expect(await screen.findByText("Sign-in unavailable")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Workspace people" })).toBeInTheDocument();
     await waitFor(() => expect(screen.getByText("No matching members")).toBeInTheDocument());
     expect(screen.getByRole("searchbox", { name: "Search by name or email" })).toBeInTheDocument();

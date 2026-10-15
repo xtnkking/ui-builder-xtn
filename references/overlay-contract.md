@@ -63,6 +63,8 @@ Dialog、ConfirmDialog、Drawer、Lightbox 与 GuidedTour 关闭后保留视觉�
 
 ## 3. 关闭策略
 
+`v0.3.4` 起，ConfirmDialog／Popconfirm 的确认失败由组件自动发送轻提示，当前浮层保持打开，原确认按钮继续承担重试。不要在 onConfirm 的失败路径再插入 Alert 或手动通知同一失败。复用应用级 ToastProvider；独立组件有内部兜底。Toast 的关闭只关闭通知，不提交或关闭确认浮层。
+
 内核使用三个互相独立的原因：`backdrop`、`close-control`、`escape`。组件必须把每个入口映射到对应原因，不能用一个旧闭包同时控制所有入口。
 
 - Dialog/Drawer 的 `closeOnBackdropClick={false}` 只禁用遮罩，保留 × 和 Escape。

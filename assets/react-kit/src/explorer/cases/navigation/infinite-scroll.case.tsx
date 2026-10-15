@@ -1,6 +1,6 @@
 // @ui-coverage {"kind":"example","runner":"explorer","caseId":"infinite-scroll/overview","exports":["InfiniteScroll"]}
-import { useCallback, useRef, useState } from "react";
-import { Alert, InfiniteScroll, LoadMore, Stack } from "../../../ui";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { InfiniteScroll, LoadMore, Stack, useToast } from "../../../ui";
 import { StatePreview } from "../state-preview";
 import type { ExplorerCase } from "../types";
 
@@ -24,20 +24,31 @@ async function fetchRecordsExample(cursor: number): Promise<InfinitePageExample>
 }
 
 export function InfiniteScrollExample({ fetchPage = fetchRecordsExample, initialRecords = recordSourceExample.slice(0, 2), initialCursor = 2, initialHasMore = true, disabled = false }: InfiniteScrollExampleProps = {}) {
+  const { toast } = useToast();
   const [snapshot, setSnapshot] = useState<InfiniteSnapshotExample>({ records: initialRecords, cursor: initialCursor, hasMore: initialHasMore, loading: false, error: null });
   const current = useRef(snapshot);
   const pending = useRef<Promise<void> | null>(null);
   const blocked = useRef(disabled);
+  const mounted = useRef(true);
   blocked.current = disabled;
+  useEffect(() => {
+    mounted.current = true;
+    return () => { mounted.current = false; };
+  }, []);
 
   const loadNext = useCallback((): Promise<void> => {
     if (pending.current) return pending.current;
     if (blocked.current || !current.current.hasMore) return Promise.resolve();
     const cursor = current.current.cursor;
-    const commit = (next: InfiniteSnapshotExample) => { current.current = next; setSnapshot(next); };
+    const commit = (next: InfiniteSnapshotExample) => { if (mounted.current) { current.current = next; setSnapshot(next); } };
     const request = Promise.resolve().then(() => fetchPage(cursor)).then(
       (page) => commit({ records: [...current.current.records, ...page.records], cursor: page.cursor, hasMore: page.hasMore, loading: true, error: null }),
-      (error: unknown) => commit({ ...current.current, error: error instanceof Error ? error.message : "加载失败，请通过下方按钮重试。" }),
+      (error: unknown) => {
+        if (!mounted.current) return;
+        const message = error instanceof Error ? error.message : "加载失败，请通过下方按钮重试。";
+        commit({ ...current.current, error: message });
+        toast({ tone: "danger", title: "加载失败", description: `${message} 已有记录保留，请通过下方按钮重试。` });
+      },
     ).finally(() => {
       pending.current = null;
       commit({ ...current.current, loading: false });
@@ -46,14 +57,13 @@ export function InfiniteScrollExample({ fetchPage = fetchRecordsExample, initial
     pending.current = request;
     commit({ ...current.current, loading: true, error: null });
     return request;
-  }, [fetchPage]);
+  }, [fetchPage, toast]);
 
   return <Stack>
     <InfiniteScroll showLoadMoreButton={false} hasMore={snapshot.hasMore} loadKey={snapshot.cursor} loading={snapshot.loading} disabled={disabled || snapshot.error !== null} onLoadMore={loadNext}>
       <ul aria-label="已加载记录">{snapshot.records.map((record) => <li key={record.id}>{record.label}</li>)}</ul>
     </InfiniteScroll>
-    <p role="status" aria-label="加载状态">已加载 {snapshot.records.length} 条记录，cursor {snapshot.cursor}</p>
-    {snapshot.error ? <Alert tone="danger" title="加载失败">{snapshot.error} 已有记录保留，请通过下方按钮重试。</Alert> : null}
+    <p role="status" aria-label="加载状态">已加载 {snapshot.records.length} 条记录，cursor {snapshot.cursor}{snapshot.error ? "；本次加载未完成，可手动重试。" : ""}</p>
     <LoadMore hasMore={snapshot.hasMore} loading={snapshot.loading} disabled={disabled} onLoadMore={loadNext} label="手动加载下一页" loadingLabel="正在加载下一页" />
   </Stack>;
 }

@@ -3628,7 +3628,7 @@
       ]
     }
   ],
-  "kitVersion": "0.3.3",
+  "kitVersion": "0.3.4",
   "modules": [
     {
       "dependencies": [
@@ -3725,7 +3725,6 @@
     },
     {
       "dependencies": [
-        "feedback",
         "foundation",
         "internal"
       ],
@@ -3756,7 +3755,10 @@
       "root": "src/ui/patterns"
     },
     {
-      "dependencies": [],
+      "dependencies": [
+        "feedback",
+        "foundation"
+      ],
       "files": [
         "src/ui/internal/button-slots.tsx",
         "src/ui/internal/collapse.tsx",
@@ -3775,6 +3777,8 @@
         "src/ui/internal/portal-tokens.ts",
         "src/ui/internal/selection-motion.ts",
         "src/ui/internal/theme-contract.ts",
+        "src/ui/internal/toast-boundary.tsx",
+        "src/ui/internal/toast-context.ts",
         "src/ui/internal/tree-navigation.ts",
         "src/ui/internal/utils.ts"
       ],

@@ -2,6 +2,64 @@
 
 使用公共 barrel 的 `ToastProvider` 和 `useToast`，在需要共享数量管理的页面外放置一个 Provider。Toast 用于短暂反馈；必须留存的业务通知应另存到业务消息列表，不能把等待队列当作可靠消息存储。
 
+<a id="feedback-selection"></a>
+## 反馈选型：短暂结果优先轻提示
+
+新页面组合默认优先使用轻提示反馈短暂操作结果，避免为了成功或一次可重试失败在内容区插入大块提示、挤动表格和表单。按信息是否需要持续可见选择组件：
+
+| 场景 | 推荐方式 |
+| --- | --- |
+| 保存、删除、复制、导出、加购等操作的成功或可重试失败 | `Toast`；简短业务说明、自动关闭，不额外堆叠 Alert |
+| 表格请求失败 | `DataTable state="error"`；组件自动轻提示，并保留表内状态与重试，调用方不再手动通知 |
+| 必填、格式不正确等字段校验 | `Field` 错误；必要时配合 `ValidationSummary`，保持字段关联与定位入口 |
+| 某个区域持续加载失败、无权限、离线或暂不可用 | 保留该区域的紧凑持久说明和可用的重试入口；需要完整状态占位时使用 `ErrorState` / `StatusPage` |
+| 系统维护、账号限制等需要持续显示的通知 | `Toast duration={null}`，或官方 `Banner` 的持久轻提示；每个独立问题只有一个通知出口 |
+
+Toast 消失不代表问题已解决。仍阻断业务的状态需要就地保留必要说明或恢复操作；不能只弹一次轻提示后留下空白。普通点击、展开、切换和每次重渲染不必都弹提示，也不要为同一次失败同时显示 Alert、ErrorState 和手动 Toast。适用时使用一个共享 Provider、短文案和业务范围内的去重键，遵守下文数量上限。
+
+`v0.3.4` 起，以下官方组件和示例已直接采用轻提示，使用者不需要手动补相同通知：
+
+| 组件 / 组合 | 默认反馈与恢复入口 |
+| --- | --- |
+| `FamilyLoginPage` | 提交失败轻提示；无产品配置持续轻提示。字段校验保留在 Field，重试仍使用原提交按钮。 |
+| `ConfirmDialog` / `Popconfirm` | 确认失败轻提示，保留当前浮层与原确认按钮；再次失败属于新的尝试。 |
+| `Banner` | 默认持续显示的轻提示，保留标题、正文、业务 action 和 ×；不占页面高度。 |
+| 商城认证、收藏、购物车、地址、订单和结算 | 操作结果通过共享 ToastProvider 通知；必要的操作入口留在原页面。 |
+| `InfiniteScroll`＋`LoadMore` 官方组合 | 请求失败轻提示，已加载数据和原加载按钮保留；紧凑状态说明可手动重试。 |
+
+这些自动通知组件优先复用最近的 `ToastProvider`，独立使用时有内部兜底；整页仍应只放一个共享 Provider，统一数量上限。`useToast()` 业务调用必须位于明确的 Provider 内。不要为同一次失败增加第二条手动 Toast。
+
+`Banner` 的 `sticky` 仍可传入，但不再改变页面布局或定位；通知位置沿用官方轻提示默认右上角。挂载发送一次，更新标题、正文或 action 会更新原通知，不重新排队或重置计时；手动关闭后普通重渲染不重放，卸载会移除自己拥有的通知。`duration: null` 表示无自动关闭，仍可点击 ×。重要业务状态仍须记录在业务数据中，不能依赖通知队列保证送达。
+
+`Alert` 保留为明确需要行内提示时使用的公开组件，不能再作为上述操作的默认搭配。字段关联的校验以及整页无权限、离线等状态占位仍各有自己的语义，不替换为空白页面上的一条短通知。
+
+下面是新操作使用官方组件的具体组合。`AsyncAction` 负责加载态与阻止重复操作；成功和失败各只有一个轻提示出口，失败后保留原操作按钮供重试：
+
+```tsx
+import { AsyncAction, ToastProvider, useToast } from "./ui";
+
+function SaveSettingsAction({ save }: { save: () => Promise<void> }) {
+  const { toast } = useToast();
+  return (
+    <AsyncAction
+      loadingLabel="正在保存"
+      onAction={async () => {
+        await save();
+        toast({ tone: "success", description: "设置已保存。" });
+      }}
+      onActionError={() => {
+        toast({ tone: "danger", description: "保存失败，请重试。" });
+      }}
+    >保存设置</AsyncAction>
+  );
+}
+
+export function SettingsExample({ save }: { save: () => Promise<void> }) {
+  return <ToastProvider><SaveSettingsAction save={save} /></ToastProvider>;
+}
+// 已有应用级 ToastProvider 时，直接组合 SaveSettingsAction，避免再套独立 Provider。
+```
+
 ## 数量上限、排队与去重
 
 | 配置 | 默认值 | 行为 |
@@ -23,6 +81,16 @@ import { ToastProvider } from "./ui";
   <Page />
 </ToastProvider>
 ```
+
+## Automatic table error notifications
+
+`DataTable state="error"` 自动发送一条 danger 轻提示，标题和说明来自 `errorTitle`、`errorDescription` 或组件本地化默认文案；调用方不需要再调用 `toast()`。这条提示持续五秒，可点击 × 关闭，不附带重试操作。表格框架内保留简短错误状态与唯一重试入口，因此提示消失后仍能理解失败原因并重试；表格上方不再自动出现大块 Alert。
+
+同一次失败只通知一次。父组件重渲染、内联回调或新建说明 JSX 不应重复发送；离开错误状态后再次失败，或一次重试结束仍失败，才视为新失败阶段。调用方应使用实际请求状态驱动 `retrying`，每个表格分别维护自己的请求范围。不要为同一个表格请求再叠加外部 Alert、ErrorState 或手动 Toast；其它业务范围的反馈仍按各自场景选择。
+
+DataTable 优先复用最近的上层 `ToastProvider`，因此建议应用根部只放一个共享 Provider，使多个表格与其它动作共享默认最多三条提示及等待队列。单独使用 DataTable 而没有上层 Provider 时，它提供内部兜底，不要求修改原有调用。多个独立兜底的数量分别管理；需要整页统一上限时使用共享 Provider，而不是给每个表格单独套一个。
+
+这是组件自动通知的能力，不改变 `useToast()` 的直接使用合同：业务代码调用 `useToast()` 仍须位于明确的 `ToastProvider` 内。Toast 关闭只影响短暂反馈，不代表请求已恢复；持续状态由表格保留。可直接使用的代码见[表格请求错误](data-workflows.md#table-request-failures)。
 
 ## 关闭时间与显示选项
 

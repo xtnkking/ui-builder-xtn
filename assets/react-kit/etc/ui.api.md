@@ -2116,7 +2116,7 @@ export interface FamilyLoginPageProps {
     onCreateAccount?: () => void;
     legal?: ReactNode;
 }
-export declare function FamilyLoginPage({ companyName, companyMark, products, initialProductId, onProductChange, onSubmit, forgotPasswordHref, onForgotPassword, createAccountHref, onCreateAccount, legal, }: FamilyLoginPageProps): import("react").JSX.Element;
+export declare function FamilyLoginPage(rawProps: FamilyLoginPageProps): import("react").JSX.Element;
 ```
 
 ## `./patterns/member-management-page`

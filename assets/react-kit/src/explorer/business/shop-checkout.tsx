@@ -1,7 +1,7 @@
 import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import { ArrowRight, ShoppingBag, Trash2, Truck } from "lucide-react";
 import {
-  Alert, Button, Card, DescriptionList, DetailPage, EmptyState, Field, Form,
+  Button, Card, DescriptionList, DetailPage, EmptyState, Field, Form,
   IconButton, Inline, Input, Media, NumberInput, OverflowText, Select, Stack,
   Tag, Textarea, useToast, type TextControlHandle,
 } from "../../ui";
@@ -43,7 +43,6 @@ export function ShopCartPage({ onBrowse, onCheckout }: { onBrowse: () => void; o
   const { products, cart, setCartQuantity } = useCommerce();
   const { toast } = useToast();
   const id = useId();
-  const [error, setError] = useState("");
   const lines = cart.flatMap((line) => {
     const product = products.find((item) => item.id === line.productId);
     return product ? [{ ...line, product }] : [];
@@ -52,15 +51,17 @@ export function ShopCartPage({ onBrowse, onCheckout }: { onBrowse: () => void; o
   const totals = calculateTotals(subtotal);
   const count = lines.reduce((sum, line) => sum + line.quantity, 0);
   const update = (productId: string, quantity: number) => {
-    try { setCartQuantity(productId, quantity); setError(""); }
-    catch (failure) { setError(failure instanceof Error ? failure.message : "数量更新失败，请重试。"); }
+    try { setCartQuantity(productId, quantity); return true; }
+    catch (failure) {
+      toast({ tone: "danger", description: failure instanceof Error ? failure.message : "数量更新失败，请重试。" });
+      return false;
+    }
   };
 
   return <div className="shop-checkout">
     <DetailPage title="购物车" description={count ? `${lines.length} 款好物，共 ${count} 件` : "把喜欢的好物放进购物车。"}
       onBack={onBrowse} backLabel="继续选购" actions={<Button variant="ghost" onClick={onBrowse}>继续选购</Button>}
       sections={[{ id: `${id}-cart-lines`, content: <Stack gap="medium">
-        {error ? <Alert tone="danger">{error}</Alert> : null}
         {lines.length ? lines.map(({ product, quantity }) => <Card key={product.id} padding="medium">
           <div className="shop-checkout__cart-line">
             <div className="shop-checkout__cart-image"><Media src={product.image} alt={product.name} aspectRatio="1" objectFit="contain" /></div>
@@ -71,8 +72,7 @@ export function ShopCartPage({ onBrowse, onCheckout }: { onBrowse: () => void; o
               <span className="shop-checkout__muted">可售库存 {product.stock} 件</span>
             </div>
             <div className="shop-checkout__cart-remove"><IconButton aria-label={`移除${product.name}`} icon={<Trash2 />} onClick={() => {
-              update(product.id, 0);
-              toast({ tone: "info", description: `已移除${product.name}` });
+              if (update(product.id, 0)) toast({ tone: "info", description: `已移除${product.name}` });
             }} /></div>
             <div className="shop-checkout__cart-quantity"><Field label="数量" htmlFor={`${id}-${product.id}-quantity`}>
               <NumberInput id={`${id}-${product.id}-quantity`} ariaLabel={`${product.name}数量`} value={quantity} min={1} max={product.stock} step={1}
@@ -116,7 +116,6 @@ export function ShopCheckoutPage({ onBrowse, onCart, onOrderCreated }: {
   const [applyingCoupon, setApplyingCoupon] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState<{ receiver?: string; phone?: string; address?: string }>({});
-  const [submitError, setSubmitError] = useState("");
   const submitLock = useRef(false);
   const couponLock = useRef(false);
   const receiverControl = useRef<TextControlHandle>(null);
@@ -154,7 +153,6 @@ export function ShopCheckoutPage({ onBrowse, onCart, onOrderCreated }: {
     if (!/^\+?[\d ()-]+$/.test(cleanPhone) || phoneDigits.length < 7 || phoneDigits.length > 15) nextErrors.phone = "请填写有效的联系电话，支持国家区号。";
     if (address.trim().length < 8) nextErrors.address = "请填写省市区、街道和门牌号，至少 8 个字。";
     setErrors(nextErrors);
-    setSubmitError("");
     if (Object.keys(nextErrors).length) {
       if (nextErrors.receiver) receiverControl.current?.focus();
       else if (nextErrors.phone) phoneControl.current?.focus();
@@ -170,7 +168,7 @@ export function ShopCheckoutPage({ onBrowse, onCart, onOrderCreated }: {
       toast({ title: "订单已创建", description: "商品库存已预留，请继续完成付款。", tone: "success" });
       onOrderCreated(order.id);
     } catch (failure) {
-      setSubmitError(failure instanceof Error ? failure.message : "订单提交失败，购物车已保留，请重试。");
+      toast({ tone: "danger", title: "提交未完成", description: failure instanceof Error ? failure.message : "订单提交失败，购物车已保留，请重试。" });
     } finally { submitLock.current = false; setSubmitting(false); }
   }
 
@@ -223,7 +221,6 @@ export function ShopCheckoutPage({ onBrowse, onCart, onOrderCreated }: {
       <Card heading="订单金额" padding="medium" footer={<Button form={`${id}-form`} type="submit" variant="primary" icon={<ArrowRight />} loading={submitting} loadingLabel="提交订单" disabled={applyingCoupon}>提交订单</Button>}>
         <Totals subtotal={totals.subtotal} shipping={totals.shipping} discount={totals.discount} total={totals.total} />
       </Card>
-      {submitError ? <Alert tone="danger" title="提交未完成">{submitError}</Alert> : null}
       <p className="shop-checkout__muted">提交后预留库存，未付款时可取消。此商城为本地交互演示，不会发送真实订单或扣款。</p>
     </Stack>} /></div>;
 }

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 3,
-  "kitVersion": "0.3.3",
+  "kitVersion": "0.3.4",
   "generatedFrom": [
     "assets/react-kit/component-manifest.json",
     "assets/react-kit/registry.json",
@@ -126,9 +126,11 @@
     "assets/react-kit/tests/browser/composite-form-contracts.spec.ts",
     "assets/react-kit/tests/browser/country-tag.spec.ts",
     "assets/react-kit/tests/browser/d2-drag-upload.spec.ts",
+    "assets/react-kit/tests/browser/data-table-toast.spec.ts",
     "assets/react-kit/tests/browser/detail-floating.spec.ts",
     "assets/react-kit/tests/browser/explorer-audit-findings.spec.ts",
     "assets/react-kit/tests/browser/explorer-responsive-followup.spec.ts",
+    "assets/react-kit/tests/browser/feedback-results-toast.spec.ts",
     "assets/react-kit/tests/browser/infinite-scroll-composition.spec.ts",
     "assets/react-kit/tests/browser/legacy-regressions.spec.ts",
     "assets/react-kit/tests/browser/lightbox-interaction.spec.ts",
@@ -167,11 +169,13 @@
     "assets/react-kit/tests/components/button-contracts.test.tsx",
     "assets/react-kit/tests/components/calendar-date-contracts.test.tsx",
     "assets/react-kit/tests/components/carousel-behavior.test.tsx",
+    "assets/react-kit/tests/components/component-toast-defaults.test.tsx",
     "assets/react-kit/tests/components/context-menu-contracts.test.tsx",
     "assets/react-kit/tests/components/core-contracts.test.tsx",
     "assets/react-kit/tests/components/d2-drag-upload-composition.test.tsx",
     "assets/react-kit/tests/components/data-extra-contracts.test.tsx",
     "assets/react-kit/tests/components/data-table-contracts.test.tsx",
+    "assets/react-kit/tests/components/data-table-toast.test.tsx",
     "assets/react-kit/tests/components/disclosure-contracts.test.tsx",
     "assets/react-kit/tests/components/display-contracts.test.tsx",
     "assets/react-kit/tests/components/feedback-contracts.test.tsx",
@@ -1924,7 +1928,8 @@
       ],
       "unit": [],
       "browser": [
-        "assets/react-kit/tests/browser/auth-query-layout.spec.ts"
+        "assets/react-kit/tests/browser/auth-query-layout.spec.ts",
+        "assets/react-kit/tests/browser/feedback-results-toast.spec.ts"
       ],
       "keyboard": [
         "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
@@ -2656,11 +2661,11 @@
         },
         "migration": {
           "status": "none",
-          "reason": "No migration is required for the current public export."
+          "reason": "No prop migration is required. Since v0.3.4 Banner owns a persistent floating Toast and no page space; sticky no longer changes geometry. Content updates preserve notification identity; unmount removes it. See references/toast-contract.md for the changed presentation contract."
         },
         "keyboard": {
           "mode": "none",
-          "reason": "This export has no independent keyboard interaction."
+          "reason": "Banner owns no independent keyboard algorithm; notification dismissal delegates to ToastProvider and optional actions use their supplied canonical controls. The focused Banner browser story exercises those commands."
         },
         "aria": {
           "mode": "owned",
@@ -2757,10 +2762,12 @@
         "assets/react-kit/src/explorer/cases/feedback/banner.case.tsx"
       ],
       "unit": [
+        "assets/react-kit/tests/components/component-toast-defaults.test.tsx",
         "assets/react-kit/tests/components/feedback-contracts.test.tsx"
       ],
       "browser": [
-        "assets/react-kit/tests/browser/explorer-responsive-followup.spec.ts"
+        "assets/react-kit/tests/browser/explorer-responsive-followup.spec.ts",
+        "assets/react-kit/tests/browser/feedback-results-toast.spec.ts"
       ],
       "keyboard": [],
       "a11y": [
@@ -6247,11 +6254,13 @@
         "assets/react-kit/src/explorer/cases/overlay/dialog.case.tsx"
       ],
       "unit": [
+        "assets/react-kit/tests/components/component-toast-defaults.test.tsx",
         "assets/react-kit/tests/components/layer-kernel-contracts.test.tsx",
         "assets/react-kit/tests/components/modal-dismissal-hydration-contracts.test.tsx",
         "assets/react-kit/tests/components/modal-overlay-contracts.test.tsx"
       ],
       "browser": [
+        "assets/react-kit/tests/browser/feedback-results-toast.spec.ts",
         "assets/react-kit/tests/browser/legacy-regressions.spec.ts",
         "assets/react-kit/tests/browser/modal-layer-kernel.spec.ts",
         "assets/react-kit/tests/browser/motion-enhancement.spec.ts"
@@ -6876,9 +6885,11 @@
       "unit": [
         "assets/react-kit/tests/components/core-contracts.test.tsx",
         "assets/react-kit/tests/components/data-table-contracts.test.tsx",
+        "assets/react-kit/tests/components/data-table-toast.test.tsx",
         "assets/react-kit/tests/components/page-composition-ownership.test.tsx"
       ],
       "browser": [
+        "assets/react-kit/tests/browser/data-table-toast.spec.ts",
         "assets/react-kit/tests/browser/legacy-regressions.spec.ts"
       ],
       "keyboard": [
@@ -9418,6 +9429,7 @@
         "assets/react-kit/src/explorer/cases/pattern/authentication.case.tsx"
       ],
       "unit": [
+        "assets/react-kit/tests/components/component-toast-defaults.test.tsx",
         "assets/react-kit/tests/components/locale-contracts.test.tsx"
       ],
       "browser": [],
@@ -16415,6 +16427,7 @@
         "assets/react-kit/src/explorer/cases/overlay/popconfirm.case.tsx"
       ],
       "unit": [
+        "assets/react-kit/tests/components/component-toast-defaults.test.tsx",
         "assets/react-kit/tests/components/modal-overlay-contracts.test.tsx"
       ],
       "browser": [
@@ -23601,6 +23614,8 @@
         "assets/react-kit/src/explorer/cases/feedback/toast.case.tsx"
       ],
       "unit": [
+        "assets/react-kit/tests/components/component-toast-defaults.test.tsx",
+        "assets/react-kit/tests/components/data-table-toast.test.tsx",
         "assets/react-kit/tests/components/feedback-contracts.test.tsx",
         "assets/react-kit/tests/components/layer-kernel-contracts.test.tsx",
         "assets/react-kit/tests/components/locale-contracts.test.tsx",
@@ -23608,6 +23623,8 @@
         "assets/react-kit/tests/components/toast-capacity.test.tsx"
       ],
       "browser": [
+        "assets/react-kit/tests/browser/data-table-toast.spec.ts",
+        "assets/react-kit/tests/browser/feedback-results-toast.spec.ts",
         "assets/react-kit/tests/browser/motion-enhancement.spec.ts",
         "assets/react-kit/tests/browser/toast-capacity.spec.ts",
         "assets/react-kit/tests/browser/toast-positions.spec.ts",

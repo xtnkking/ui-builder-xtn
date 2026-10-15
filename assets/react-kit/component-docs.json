@@ -278,7 +278,7 @@
     "Avatar": {"profile":"semantic-static","overrides":{"applicableStates":["default","error","dark","locale"]}},
     "AvatarGroup": {"profile":"semantic-static","overrides":{"applicableStates":["default","empty","dark","locale"]}},
     "Badge": {"profile":"semantic-static","overrides":{"applicableStates":["default","empty","error","longContent","dark","locale"]}},
-    "Banner": {"profile":"semantic-static","overrides":{"applicableStates":["default","error","longContent","dark","locale"]}},
+    "Banner": {"profile":"semantic-static","overrides":{"applicableStates":["default","error","longContent","dark","locale"],"keyboard":{"mode":"none","reason":"Banner owns no independent keyboard algorithm; notification dismissal delegates to ToastProvider and optional actions use their supplied canonical controls. The focused Banner browser story exercises those commands."},"migration":{"status":"none","reason":"No prop migration is required. Since v0.3.4 Banner owns a persistent floating Toast and no page space; sticky no longer changes geometry. Content updates preserve notification identity; unmount removes it. See references/toast-contract.md for the changed presentation contract."}}},
     "BarChart": {"profile":"semantic-static","overrides":{"applicableStates":["default","empty","longContent","dark","locale"]}},
     "BottomNavigation": {"profile":"interactive-stateless","overrides":{"applicableStates":["default","disabled","empty","longContent","keyboard","mobile","dark","locale"],"stateMode":"stateless"}},
     "Box": {"profile": "layout"},

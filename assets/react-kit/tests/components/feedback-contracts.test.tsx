@@ -150,7 +150,7 @@ describe("feedback public contracts", () => {
     expect(screen.getByTestId("empty")).not.toHaveTextContent("Injected child");
     expect(screen.getByTestId("progress")).toHaveTextContent("42%");
     expect(screen.getByTestId("inline")).toHaveTextContent("Saved");
-    expect(screen.getByTestId("banner")).toHaveClass("ui-banner--sticky");
+    expect(screen.getByTestId("banner")).toHaveAttribute("hidden");
     expect(screen.getByTestId("validation")).toHaveTextContent("Email is required");
     expect(screen.getByTestId("error")).toHaveTextContent("Could not load");
     expect(screen.getByTestId("no-results")).toHaveTextContent("No matches");

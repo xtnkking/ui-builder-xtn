@@ -63,13 +63,17 @@ test("official infinite pair owns keyboard, observer, rejection retry, end, and 
   await trigger();
   await expect.poll(cursors).toEqual([2, 4, 6]);
   await page.evaluate(() => window.infiniteFixture.fail());
-  await expect(region.getByRole("alert")).toContainText("服务器暂不可用");
-  await expect(region.getByRole("alert")).toHaveAttribute("data-ui-owner", "Alert");
+  const notice = page.locator(".ui-toast");
+  await expect(notice).toHaveCount(1);
+  await expect(notice).toContainText("服务器暂不可用");
+  await expect(region.locator('[data-ui-owner="Alert"]')).toHaveCount(0);
   await expect(state).toContainText("cursor 6");
   await expect(region.getByRole("listitem")).toHaveCount(6);
   await expect(manual).toBeEnabled();
   await expect(after).toBeFocused();
   await axe();
+  await notice.getByRole("button", { name: /关闭通知/ }).click();
+  await expect(notice).toHaveCount(0);
 
   // Both entrances respect disabled; returning to ready permits manual retry.
   await page.evaluate(() => window.infiniteFixture.setDisabled(true));

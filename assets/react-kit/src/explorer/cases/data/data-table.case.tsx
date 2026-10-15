@@ -1,5 +1,5 @@
 // @ui-coverage {"kind":"example","runner":"explorer","caseId":"data-table/overview","exports":["DataTable","TreeTable"]}
-import { useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { FolderPlus, Plus, Pencil, Trash2 } from "lucide-react";
 import {
   Checkbox,
@@ -16,7 +16,9 @@ import {
   TreeTable,
   VisuallyHidden,
   type DataColumn,
+  type DataTableProps,
   type DataSort,
+  type DataTableState,
   type TreeTableColumn,
   type TreeTableNode,
 } from "../../../ui";
@@ -259,12 +261,57 @@ function EmptyTables() {
   </div>;
 }
 
+export function TableErrorFeedbackExample() {
+  const [rows, setRows] = useState(allRows.slice(0, 3));
+  const [state, setState] = useState<DataTableState>("ready");
+  const [retrying, setRetrying] = useState(false);
+  const pending = useRef(false);
+  const revision = useRef(0);
+  useEffect(() => () => { revision.current += 1; }, []);
+  const simulateFailure = async (retained: boolean) => {
+    if (pending.current) return;
+    pending.current = true;
+    const current = ++revision.current;
+    setRows(retained ? allRows.slice(0, 3) : []);
+    setState("loading");
+    await new Promise<void>((resolve) => window.setTimeout(resolve, 500));
+    if (current !== revision.current) return;
+    setState("error");
+    pending.current = false;
+  };
+  const retry = async () => {
+    if (pending.current) return;
+    pending.current = true;
+    const current = ++revision.current;
+    setRetrying(true);
+    await new Promise<void>((resolve) => window.setTimeout(resolve, 500));
+    if (current !== revision.current) return;
+    setRows(allRows.slice(0, 3));
+    setState("ready");
+    setRetrying(false);
+    pending.current = false;
+  };
+  const tableProps: Omit<DataTableProps<AccountRow>, "state"> = {
+    ariaLabel: "账户错误反馈", columns: stateColumns, rows, rowKey: (row) => row.id,
+    viewportRows: 3, retrying, onRetry: () => void retry(),
+    errorTitle: "账户加载失败", errorDescription: "服务暂时不可用，请稍后重试。",
+    mobileRow: (row) => <Inline gap="small"><strong>{row.name}</strong><span>{row.owner}</span></Inline>,
+    pagination: { page: 1, pageCount: 1, total: rows.length, pageSize: 3, onPageChange: () => undefined },
+  };
+  return <div style={{ display: "grid", gap: 16 }}>
+    <Inline wrap gap="small" aria-label="模拟账户请求">
+      <Button size="small" disabled={state === "loading" || retrying} onClick={() => void simulateFailure(false)}>模拟首次加载失败</Button>
+      <Button size="small" disabled={state === "loading" || retrying} onClick={() => void simulateFailure(true)}>模拟刷新失败</Button>
+    </Inline>
+    {state === "error"
+      ? <DataTable {...tableProps} state="error" />
+      : <DataTable {...tableProps} state={state} />}
+  </div>;
+}
+
 function ErrorTables() {
-  const [recovered, setRecovered] = useState(false);
   return <div style={{ display: "grid", gap: 28 }}>
-    {recovered
-      ? <DataTable ariaLabel="重试后的账户" columns={stateColumns} rows={allRows} rowKey={(row) => row.id} state="ready" viewportRows={3} />
-      : <DataTable ariaLabel="请求失败的账户" columns={stateColumns} rows={[]} rowKey={(row) => row.id} state="error" viewportRows={3} errorTitle="账户加载失败" onRetry={() => setRecovered(true)} />}
+    <TableErrorFeedbackExample />
     <TreeTable ariaLabel="展开失败的目录" nodes={errorTreeNodes} columns={stateTreeColumns} treeColumnId="name" onRequestChildren={async () => { throw new Error("目录加载失败，请重试。"); }} />
   </div>;
 }
@@ -288,7 +335,7 @@ const explorerCase = {
     { state: "uncontrolled", exports: ["TreeTable"], content: <TreeTable ariaLabel="内部管理展开状态的目录" nodes={treeNodes} columns={stateTreeColumns} treeColumnId="name" defaultExpandedIds={["workspace"]} /> },
     { state: "loading", exports: ["DataTable", "TreeTable"], content: <LoadingTables /> },
     { state: "empty", exports: ["DataTable", "TreeTable"], content: <EmptyTables /> },
-    { state: "error", exports: ["DataTable", "TreeTable"], content: <ErrorTables />, instructions: "点击账户重试按钮恢复数据；展开树表的目录分支触发实际拒绝的 Promise，观察分支错误并再次重试。" },
+    { state: "error", exports: ["DataTable", "TreeTable"], content: <ErrorTables />, instructions: "分别模拟首次加载与保留数据的刷新失败：详细错误仅弹出去重轻提示，表格保持高度，在表内重试恢复。树表分支另有独立错误与重试。" },
     { state: "longContent", exports: ["DataTable", "TreeTable"], content: <LongTables /> },
     { state: "keyboard", exports: ["DataTable", "TreeTable"], content: <DataTableExample />, instructions: "使用 Tab 聚焦搜索、勾选、排序、分页和树展开按钮；Enter/Space 操作，聚焦表格滚动区域后用方向键滚动。这是操作入口案例，非自动验收结论。" },
     { state: "mobile", exports: ["DataTable", "TreeTable"], content: <StatePreview state="mobile">{<DataTableExample />}</StatePreview> },

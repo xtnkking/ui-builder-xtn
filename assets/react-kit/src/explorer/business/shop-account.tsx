@@ -1,7 +1,7 @@
 import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import { Heart, MapPin, Plus, ShoppingBag } from "lucide-react";
 import {
-  Alert, Button, Card, Checkbox, ConfirmDialog, DescriptionList, Dialog,
+  Button, Card, Checkbox, ConfirmDialog, DescriptionList, Dialog,
   EmptyState, Field, Form, Inline, Input, PageHeading, Stack, Tag, useToast,
   type TextControlHandle,
 } from "../../ui";
@@ -27,7 +27,6 @@ export function ShopAccountPage({ onOrders, onFavorites, onLogin, onBrowse }: Sh
   const [editorOpen, setEditorOpen] = useState(false);
   const [draft, setDraft] = useState<AddressDraft>(blankAddress);
   const [errors, setErrors] = useState<AddressErrors>({});
-  const [saveError, setSaveError] = useState("");
   const [saving, setSaving] = useState(false);
   const [removeId, setRemoveId] = useState<string | null>(null);
   const savingLock = useRef(false);
@@ -57,14 +56,12 @@ export function ShopAccountPage({ onOrders, onFavorites, onLogin, onBrowse }: Sh
   function openEditor(address?: Address) {
     setDraft(address ? { ...address } : { ...blankAddress, name: account?.name ?? "", isDefault: addresses.length === 0 });
     setErrors({});
-    setSaveError("");
     setEditorOpen(true);
   }
 
   function updateDraft(field: "name" | "phone" | "address", value: string) {
     setDraft((current) => ({ ...current, [field]: value }));
     setErrors((current) => ({ ...current, [field]: undefined }));
-    setSaveError("");
   }
 
   async function submit(event: FormEvent<HTMLFormElement>) {
@@ -83,14 +80,13 @@ export function ShopAccountPage({ onOrders, onFavorites, onLogin, onBrowse }: Sh
     }
     savingLock.current = true;
     setSaving(true);
-    setSaveError("");
     try {
       if (!(await delay())) return;
       saveAddress({ ...draft, name: draft.name.trim(), phone: draft.phone.trim(), address: draft.address.trim() });
       setEditorOpen(false);
       toast({ description: draft.id ? "收货地址已更新" : "收货地址已添加", tone: "success", position: "top-center" });
     } catch (error) {
-      if (mounted.current) setSaveError(error instanceof Error ? error.message : "地址保存失败，请重试。");
+      if (mounted.current) toast({ tone: "danger", title: "地址未保存", description: error instanceof Error ? error.message : "地址保存失败，请重试。输入内容已保留。" });
     } finally {
       savingLock.current = false;
       if (mounted.current) setSaving(false);
@@ -149,7 +145,6 @@ export function ShopAccountPage({ onOrders, onFavorites, onLogin, onBrowse }: Sh
       </section>
       <Dialog open={editorOpen} onOpenChange={(open) => { if (!savingLock.current) setEditorOpen(open); }} closable={!saving} closeOnBackdropClick={false} title={draft.id ? "编辑收货地址" : "新增收货地址"} description="请填写准确的收货人与联系电话。" width="small">
         <Form noValidate busy={saving} onSubmit={submit}>
-          {saveError ? <Alert tone="danger" title="地址未保存">{saveError}</Alert> : null}
           <Field label="收货人" htmlFor={`${id}-name`} required error={errors.name}>
             <Input id={`${id}-name`} name="recipient" value={draft.name} autoComplete="name" maxLength={40} disabled={saving} controlRef={nameRef} placeholder="请输入收货人姓名" onChange={(event) => updateDraft("name", event.currentTarget.value)} />
           </Field>

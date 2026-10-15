@@ -1,13 +1,12 @@
 // @ui-coverage {"kind":"example","runner":"explorer","caseId":"result/overview","exports":["EmptyState","ErrorState","NoResults","RetryButton","AsyncAction"]}
 import { StatePreview } from "../state-preview";
-import { useState } from "react";
-import { AsyncAction, EmptyState, ErrorState, Inline, InlineMessage, NoResults, RetryButton, Stack } from "../../../ui";
+import { AsyncAction, EmptyState, ErrorState, Inline, NoResults, RetryButton, Stack, useToast } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 async function wait() { await new Promise<void>((resolve) => setTimeout(resolve, 1200)); }
 function AsyncFailure() {
-  const [error, setError] = useState("");
-  return <Stack><Inline><AsyncAction onAction={async () => { throw new Error("保存失败，请检查网络。"); }} onActionError={(failure) => setError(failure instanceof Error ? failure.message : "保存失败")}>触发保存失败</AsyncAction></Inline>{error ? <InlineMessage tone="danger">{error}</InlineMessage> : null}</Stack>;
+  const { toast } = useToast();
+  return <Inline><AsyncAction onAction={async () => { throw new Error("保存失败，请检查网络。"); }} onActionError={(failure) => toast({ tone: "danger", description: failure instanceof Error ? failure.message : "保存失败" })}>触发保存失败</AsyncAction></Inline>;
 }
 const explorerCase = {
   id: "result/overview",

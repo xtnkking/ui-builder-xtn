@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { Button, Stack } from "../../src/ui";
+import { Button, Stack, ToastProvider } from "../../src/ui";
 import { InfiniteScrollExample, type InfinitePageExample } from "../../src/explorer/cases/navigation/infinite-scroll.case";
 import "../../src/ui/styles.css";
 
@@ -54,4 +54,4 @@ function Fixture() {
   </Stack></main>;
 }
 
-createRoot(document.getElementById("root")!).render(<Fixture />);
+createRoot(document.getElementById("root")!).render(<ToastProvider><Fixture /></ToastProvider>);

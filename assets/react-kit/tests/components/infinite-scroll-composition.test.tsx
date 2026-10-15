@@ -1,9 +1,13 @@
 // @ui-coverage {"kind":"unit","runner":"components","exports":["InfiniteScroll","LoadMore"]}
-import { useState } from "react";
-import { act, render, screen } from "@testing-library/react";
+import { useState, type ReactElement, type ReactNode } from "react";
+import { act, render as renderUI, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { InfiniteScroll, LoadMore } from "../../src/ui";
+import { InfiniteScroll, LoadMore, ToastProvider } from "../../src/ui";
 import { InfiniteScrollExample, type InfinitePageExample } from "../../src/explorer/cases/navigation/infinite-scroll.case";
+
+function render(ui: ReactElement) {
+  return renderUI(ui, { wrapper: ({ children }: { children: ReactNode }) => <ToastProvider>{children}</ToastProvider> });
+}
 
 function deferred<T>() {
   let resolve!: (value: T | PromiseLike<T>) => void;
@@ -107,11 +111,15 @@ describe("InfiniteScroll and LoadMore request composition", () => {
       expect(request).toHaveBeenLastCalledWith(2);
       await act(async () => { failed.reject(new Error("服务器暂不可用")); });
       expect(screen.getByRole("alert")).toHaveTextContent("服务器暂不可用");
-      expect(screen.getByRole("alert")).toHaveAttribute("data-ui-owner", "Alert");
+      expect(screen.getByRole("alert")).toHaveClass("ui-toast");
+      expect(screen.getAllByRole("alert")).toHaveLength(1);
+      expect(document.querySelector('[data-ui-owner="Alert"]')).not.toBeInTheDocument();
       expect(screen.getAllByRole("listitem")).toHaveLength(2);
       expect(screen.getByRole("status", { name: "加载状态" })).toHaveTextContent("cursor 2");
       const manual = screen.getByRole("button", { name: "手动加载下一页" });
       expect(manual).toBeEnabled();
+      await act(async () => { screen.getByRole("button", { name: /关闭通知/ }).click(); });
+      await waitFor(() => expect(screen.queryByRole("alert")).not.toBeInTheDocument());
       await act(async () => {
         intersect();
         manual.dispatchEvent(new MouseEvent("click", { bubbles: true }));
