@@ -1399,6 +1399,8 @@ input[type="password"]::-ms-reveal {
   isolation: isolate;
   display: inline-flex;
   gap: 3px;
+  width: fit-content;
+  min-width: 0;
   max-width: 100%;
   padding: 3px;
   overflow-x: auto;

@@ -51,6 +51,10 @@ Use `FilterField` with `FilterBar` for mixed-length query controls. Fields wrap 
 
 Keep query loading labels equal to the short visible command when longer text is unnecessary. Loading must not widen the button, move adjacent fields or permit duplicate submission. See [filter widths](data-workflows.md#filter-field-sizing) and [search feedback](data-workflows.md#search-feedback).
 
+## Segmented choices
+
+`SegmentedControl` defaults to content width, including when it is a direct child of a column flex or grid layout. Its background hugs the option group instead of stretching across unused space. Use `fill` to deliberately fill the container with equal-width options, or `fill="mobile"` to fill only at viewport widths up to 640px. All modes remain bounded by their container and retain long-label truncation. Do not add application CSS to fix the background width; use the public `fill` choice. Compare both parent layouts at `#/components/segmented` → “宽度与父布局”.
+
 ## Tables and paging
 
 DataTable defaults to a fixed viewport of five standard row-height units, with and without pagination. Sparse and empty results retain the surface; more records scroll inside it. Every fixed capacity uses the same short-screen limit, whether implicit, numeric or supplied by `DataTableProvider`. A numeric `viewportRows` chooses another explicit capacity outside a provider; `viewportRows="auto"` deliberately chooses content height outside a provider. Capacity is not the exact visible record count when custom cells wrap. Never derive it from `rows.length`, page size or request state.

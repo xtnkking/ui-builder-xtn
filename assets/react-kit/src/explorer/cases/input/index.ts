@@ -15,7 +15,7 @@ import otpCase from "./otp.case";
 import radioCase from "./radio.case";
 import ratingCase from "./rating.case";
 import searchInputCase from "./search-input.case";
-import segmentedCase from "./segmented.case";
+import segmentedCase, { segmentedSizingCase } from "./segmented.case";
 import selectCase from "./select.case";
 import sliderCase from "./slider.case";
 import switchCase from "./switch.case";
@@ -43,7 +43,7 @@ export const inputExplorerCases: ExplorerCases = {
   radio: [radioCase],
   rating: [ratingCase],
   "search-input": [searchInputCase],
-  segmented: [segmentedCase],
+  segmented: [segmentedCase, segmentedSizingCase],
   select: [selectCase],
   slider: [sliderCase],
   switch: [switchCase],
