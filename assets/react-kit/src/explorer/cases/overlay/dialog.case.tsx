@@ -1,13 +1,17 @@
 // @ui-coverage {"kind":"example","runner":"explorer","caseId":"dialog/overview","exports":["Dialog","ConfirmDialog"]}
-import { useState } from "react";
-import { Button, ConfirmDialog, Dialog, Field, Input, Inline, Stack } from "../../../ui";
+import { useId, useState } from "react";
+import { Button, ConfirmDialog, Dialog, Field, Form, Grid, Input, Inline, NumberInput, PasswordInput, Select, Textarea } from "../../../ui";
 import { StatePreview } from "../state-preview";
 import type { ExplorerCase } from "../types";
 
 function DialogExample() {
+  const id = useId();
+  const formId = `explorer-dialog-form-${id}`;
   const [dialogOpen, setDialogOpen] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [name, setName] = useState("Northstar 项目");
+  const [port, setPort] = useState<number | "">(80);
+  const [protocol, setProtocol] = useState("http");
   return (
     <>
       <Inline gap="medium" wrap>
@@ -19,14 +23,33 @@ function DialogExample() {
         onOpenChange={setDialogOpen}
         closeOnBackdropClick={false}
         title="编辑项目"
-        description="点击遮罩不会关闭；关闭按钮和 Escape 保持可用。"
-        footer={<Inline justify="end"><Button onClick={() => setDialogOpen(false)}>取消</Button><Button variant="primary" onClick={() => setDialogOpen(false)}>保存</Button></Inline>}
+        description="短字段随弹窗宽度并排或换行；点击遮罩不会关闭，关闭按钮和 Escape 保持可用。"
+        footer={<Inline justify="end"><Button onClick={() => setDialogOpen(false)}>取消</Button><Button type="submit" form={formId} variant="primary">保存</Button></Inline>}
       >
-        <Stack gap="medium">
-          <Field label="项目名称" htmlFor="explorer-dialog-name">
-            <Input id="explorer-dialog-name" value={name} onChange={(event) => setName(event.currentTarget.value)} />
+        <Form id={formId} onSubmit={(event) => { event.preventDefault(); setDialogOpen(false); }}>
+          <Field label="项目名称" htmlFor={`${id}-name`} required>
+            <Input id={`${id}-name`} name="name" value={name} onChange={(event) => setName(event.currentTarget.value)} />
           </Field>
-        </Stack>
+          <Grid minItemWidth={200} gap="medium">
+            <Field label="端口" htmlFor={`${id}-port`} required>
+              <NumberInput id={`${id}-port`} name="port" ariaLabel="端口" value={port} onValueChange={setPort} min={1} max={65535} />
+            </Field>
+            <Field label="协议" htmlFor={`${id}-protocol`}>
+              <Select id={`${id}-protocol`} name="protocol" ariaLabel="协议" value={protocol} onValueChange={setProtocol} options={[{ value: "http", label: "HTTP" }, { value: "https", label: "HTTPS" }, { value: "socks5", label: "SOCKS5" }]} />
+            </Field>
+          </Grid>
+          <Grid minItemWidth={200} gap="medium">
+            <Field label="认证用户名" htmlFor={`${id}-username`}>
+              <Input id={`${id}-username`} name="username" autoComplete="username" />
+            </Field>
+            <Field label="认证密码" htmlFor={`${id}-password`}>
+              <PasswordInput id={`${id}-password`} name="password" autoComplete="current-password" />
+            </Field>
+          </Grid>
+          <Field label="备注" htmlFor={`${id}-notes`}>
+            <Textarea id={`${id}-notes`} name="notes" rows={3} maxLength={500} />
+          </Field>
+        </Form>
       </Dialog>
       <ConfirmDialog
         open={confirmOpen}
@@ -83,7 +106,7 @@ function EnglishDialogs() {
 const explorerCase: ExplorerCase = {
   id: "dialog/overview",
   label: "对话框与确认弹窗",
-  summary: "覆盖受控开关、不可点击遮罩关闭、表单编辑、危险确认和异步提交边界。",
+  summary: "展示响应式并排字段、必填校验、固定底部表单提交，以及遮罩关闭策略、危险确认和异步提交边界。",
   states: ["default", "controlled", "loading", "error", "longContent", "keyboard", "overlay", "dark", "locale"],
   content: <DialogExample />,
   stateExamples: [
@@ -97,12 +120,51 @@ const explorerCase: ExplorerCase = {
     { state: "dark", exports: ["Dialog", "ConfirmDialog"], content: <StatePreview state="dark"><DialogExample /></StatePreview> },
     { state: "locale", exports: ["Dialog", "ConfirmDialog"], content: <StatePreview state="locale"><EnglishDialogs /></StatePreview> },
   ],
-  code: `import { ConfirmDialog, Dialog } from "./ui";
+  code: `import { useId, useState } from "react";
+import { Button, Dialog, Field, Form, Grid, Input, Inline, NumberInput, PasswordInput, Select, Textarea } from "./ui";
 
-<Dialog open={open} onOpenChange={setOpen} closeOnBackdropClick={false} title="编辑项目">
-  {form}
-</Dialog>
-<ConfirmDialog open={confirming} onOpenChange={setConfirming} title="删除项目" onConfirm={remove} />`,
+export function ProjectDialog() {
+  const id = useId();
+  const formId = id + "-form";
+  const [open, setOpen] = useState(false);
+  const [name, setName] = useState("Northstar 项目");
+  const [port, setPort] = useState<number | "">(80);
+  const [protocol, setProtocol] = useState("http");
+  return <>
+    <Button variant="primary" onClick={() => setOpen(true)}>编辑项目</Button>
+    <Dialog open={open} onOpenChange={setOpen} closeOnBackdropClick={false} title="编辑项目"
+      footer={<Inline justify="end">
+        <Button onClick={() => setOpen(false)}>取消</Button>
+        <Button type="submit" form={formId} variant="primary">保存</Button>
+      </Inline>}>
+      <Form id={formId} onSubmit={(event) => { event.preventDefault(); setOpen(false); }}>
+        <Field label="项目名称" htmlFor={id + "-name"} required>
+          <Input id={id + "-name"} name="name" value={name} onChange={(event) => setName(event.currentTarget.value)} />
+        </Field>
+        <Grid minItemWidth={200} gap="medium">
+          <Field label="端口" htmlFor={id + "-port"} required>
+            <NumberInput id={id + "-port"} name="port" ariaLabel="端口" value={port} onValueChange={setPort} min={1} max={65535} />
+          </Field>
+          <Field label="协议" htmlFor={id + "-protocol"}>
+            <Select id={id + "-protocol"} name="protocol" ariaLabel="协议" value={protocol} onValueChange={setProtocol}
+              options={[{ value: "http", label: "HTTP" }, { value: "https", label: "HTTPS" }, { value: "socks5", label: "SOCKS5" }]} />
+          </Field>
+        </Grid>
+        <Grid minItemWidth={200} gap="medium">
+          <Field label="认证用户名" htmlFor={id + "-username"}>
+            <Input id={id + "-username"} name="username" autoComplete="username" />
+          </Field>
+          <Field label="认证密码" htmlFor={id + "-password"}>
+            <PasswordInput id={id + "-password"} name="password" autoComplete="current-password" />
+          </Field>
+        </Grid>
+        <Field label="备注" htmlFor={id + "-notes"}>
+          <Textarea id={id + "-notes"} name="notes" rows={3} maxLength={500} />
+        </Field>
+      </Form>
+    </Dialog>
+  </>;
+}`,
 };
 
 export default explorerCase;

@@ -85,14 +85,14 @@ test("short 320px screens bound default table and mobile-card height while keepi
   await preview.screenshot({ path: test.info().outputPath("short-table-mobile-320.png"), animations: "disabled" });
 });
 
-test("explicit numeric table capacity stays exact on short screens and auto height follows result content", async ({ page }) => {
+test("explicit numeric table capacity shares the short-screen limit and auto height follows result content", async ({ page }) => {
   const { preview, table } = await dimensionsCase(page, 320, 400);
   const scroller = table.locator(".ui-data-table__scroller");
   expect(await height(scroller)).toBeCloseTo(180, 0);
   await choose(page, preview, "表格高度方式", "固定 3 行单位");
-  expect(await height(scroller)).toBeCloseTo(216, 0);
+  expect(await height(scroller)).toBeCloseTo(180, 0);
   await choose(page, preview, "表格结果状态", "20 条记录");
-  expect(await height(scroller)).toBeCloseTo(216, 0);
+  expect(await height(scroller)).toBeCloseTo(180, 0);
   await choose(page, preview, "表格高度方式", "随内容高度");
   const contentHeight = await height(scroller);
   expect(contentHeight).toBeGreaterThan(1000);

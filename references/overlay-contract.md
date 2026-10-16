@@ -63,6 +63,10 @@ Dialog、ConfirmDialog、Drawer、Lightbox 与 GuidedTour 关闭后保留视觉�
 
 ## 3. 关闭策略
 
+### 弹窗表单与操作区
+
+Dialog／Drawer 已将标题、可滚动正文和 `footer` 分开布局。保存、取消放入 `footer`，通过 `Button type="submit" form={formId}` 提交正文的唯一 `Form id`，而不是放在长正文末尾或另套完整页面模式。字段并排、窄容器换行和完整示例见[弹窗表单契约](form-contract.md#forms-inside-dialogs-and-drawers)。组件不会根据业务字段名称自动重排子节点。
+
 ### Drawer 宽度与全屏（v0.3.5）
 
 `width` 默认 `"medium"`（460px），`"large"` 为 620px。需要更宽时直接使用官方参数：正数按 px 处理，正数的 `px`、`%`、`vw` 字符串也受支持。百分比相对于浮层可用内容宽度，vw 相对于视口；最终均不超过浮层可用宽度，inset 模式会保留原有外侧留白。不接受任意 CSS 表达式、负数、零或非有限数；非法运行时值回退 medium。

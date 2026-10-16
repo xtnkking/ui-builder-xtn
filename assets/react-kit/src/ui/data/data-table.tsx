@@ -1,4 +1,6 @@
 import {
+  createContext,
+  useContext,
   useEffect,
   useLayoutEffect,
   useRef,
@@ -50,7 +52,7 @@ export type DataTableProps<T> = PublicControlProps<Omit<HTMLAttributes<HTMLDivEl
   onSort?: (sort: DataSort) => void;
   loadingSortColumnId?: string;
   loadingRows?: number;
-  /** Fixed viewport size in standard row-height units. All tables default to five units, bounded on short screens; a number chooses an explicit capacity, and "auto" follows content height. Fixed viewports are keyboard-scrollable and reset vertically for new results. */
+  /** Fixed viewport size in standard row-height units. All tables default to five units, bounded on short screens; a number chooses an explicit capacity, and "auto" follows content height when there is no DataTableProvider policy. Provider policy takes precedence over this prop. Fixed viewports are keyboard-scrollable and reset vertically for new results. */
   viewportRows?: number | "auto";
   ariaLabel: string;
   emptyTitle?: ReactNode;
@@ -63,6 +65,12 @@ export type DataTableProps<T> = PublicControlProps<Omit<HTMLAttributes<HTMLDivEl
   mobileRow?: (row: T) => ReactNode;
   pagination?: PaginationProps;
 };
+
+export interface DataTableProviderProps {
+  children: ReactNode;
+  /** Shared fixed viewport capacity for every table in this scope, including tables requesting "auto". Defaults to five standard row-height units and is bounded on short screens. */
+  viewportRows?: number;
+}
 
 interface ColumnMetrics<T> {
   column: DataColumn<T>;
@@ -84,6 +92,7 @@ const DEFAULT_VIEWPORT_ROWS = 5;
 const TABLE_HEADER_HEIGHT = 42;
 const TABLE_ROW_HEIGHT = 58;
 const MOBILE_ROW_HEIGHT = 76;
+const DataTableViewportContext = createContext<number | undefined>(undefined);
 const useClientLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
 function normalizedColumnWidth(value: number | undefined): number | undefined {
@@ -101,6 +110,11 @@ function normalizedViewportRows(value: DataTableProps<unknown>["viewportRows"]):
   if (value === "auto") return undefined;
   if (typeof value !== "number" || !Number.isFinite(value)) return DEFAULT_VIEWPORT_ROWS;
   return Math.min(MAX_LOADING_ROWS, Math.max(1, Math.trunc(value)));
+}
+
+export function DataTableProvider({ children, viewportRows = DEFAULT_VIEWPORT_ROWS }: DataTableProviderProps) {
+  const capacity = normalizedViewportRows(viewportRows) ?? DEFAULT_VIEWPORT_ROWS;
+  return <DataTableViewportContext.Provider value={capacity}>{children}</DataTableViewportContext.Provider>;
 }
 
 function columnLayout<T>(columns: DataColumn<T>[], availableWidth: number): ColumnLayout<T> {
@@ -188,6 +202,7 @@ export function DataTable<T>(rawProps: DataTableProps<T>) {
 }
 
 function DataTableContent<T>({ rawProps }: { rawProps: DataTableProps<T> }) {
+  const sharedViewportRows = useContext(DataTableViewportContext);
   const { message } = useUILocale();
   const { toast, dismiss } = useToast();
   const safeProps = sanitizeFixedControlProps(rawProps, ["children"]);
@@ -242,8 +257,9 @@ function DataTableContent<T>({ rawProps }: { rawProps: DataTableProps<T> }) {
   const activeRetrying = state === "error" && Boolean(onRetry) && (Boolean(retrying) || localRetrying);
   const hasErrorFooter = state === "error" && !pagination && (rows.length > 0 || Boolean(onRetry));
   const busy = loading || activeRetrying || activeLoadingSortColumnId !== undefined;
-  const fixedViewportRows = normalizedViewportRows(viewportRows);
-  const defaultViewport = viewportRows === undefined || (viewportRows !== "auto" && !Number.isFinite(viewportRows));
+  const fixedViewportRows = sharedViewportRows ?? normalizedViewportRows(viewportRows);
+  const defaultViewport = sharedViewportRows === undefined
+    && (viewportRows === undefined || (viewportRows !== "auto" && !Number.isFinite(viewportRows)));
   const viewportHasSlack = fixedViewportRows !== undefined
     && showRows
     && rows.length < fixedViewportRows;

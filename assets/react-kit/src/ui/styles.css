@@ -705,6 +705,13 @@ fieldset.ui-field > legend {
   background: var(--ui-bg);
 }
 
+/* Modal surfaces already supply the contrast background. Keep the required
+   marker on that surface instead of painting a page-colored rectangle. */
+.ui-dialog .ui-label__required,
+.ui-drawer .ui-label__required {
+  background: transparent;
+}
+
 .ui-field__hint,
 .ui-field__error {
   min-width: 0;
@@ -1851,6 +1858,17 @@ input[type="password"]::-ms-reveal {
 }
 
 @container ui-pagination (max-width: 600px) {
+  /* Keep table footer height independent of result-total text length. */
+  .ui-data-table__pagination .ui-pagination__summary {
+    flex-basis: 100%;
+    width: 100%;
+  }
+
+  .ui-data-table__pagination .ui-pagination__controls {
+    width: 100%;
+    justify-content: space-between;
+  }
+
   .ui-pagination__controls {
     --_ui-pagination-control-size: 44px;
   }
@@ -2865,12 +2883,7 @@ input[type="password"]::-ms-reveal {
 }
 
 .ui-data-table__frame--fixed-viewport {
-  --_ui-data-table-desktop-height: var(--ui-data-table-desktop-viewport-height);
-  --_ui-data-table-mobile-height: var(--ui-data-table-mobile-viewport-height);
-}
-
-.ui-data-table__frame--default-viewport {
-  /* Keep the default surface useful on short screens without changing explicit capacities. */
+  /* Every fixed capacity shares the same short-screen bound, including project policy. */
   --_ui-data-table-default-limit: max(158px, calc(100dvh - 220px));
   --_ui-data-table-desktop-height: min(var(--ui-data-table-desktop-viewport-height), var(--_ui-data-table-default-limit));
   --_ui-data-table-mobile-height: min(var(--ui-data-table-mobile-viewport-height), var(--_ui-data-table-default-limit));

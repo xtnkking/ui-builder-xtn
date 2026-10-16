@@ -37,6 +37,14 @@ import { Box, Button, Field, Form, Grid, NumberInput } from "./ui";
 
 `SettingsPage` leaves outer page-shell padding to the application's existing shell. For a standalone embed in a bordered container, the official example wraps it in public `Box style={{ padding: "clamp(16px, 3%, 24px)" }}` to provide 16–24px of inset according to the actual containing width. If the host already supplies padding, reuse that inset without adding another padded wrapper.
 
+## Modal forms
+
+Size the form as a group for its panel, rather than selecting a different preferred width for every vertically stacked field. The ordinary 44px control height and existing Form/Field gaps apply inside a Dialog; a larger browser zoom scales their appearance and does not imply a different CSS height.
+
+Related short fields can share `Grid minItemWidth={200} gap="medium"` in the default 520px Dialog: each fits a roughly 228px track when the 472px body is available. The pair becomes single-column below 416px of body width, including a narrow embedded/viewport layout. Leave the Field width unset within these tracks so visible control edges align; an additional 240px Field bound would make the pair's sizing rules disagree. Keep long names, addresses and notes full-width in the same Form. Use `width="large"` only when the content actually needs a larger panel, not simply to suppress all vertical scrolling.
+
+Place persistent commands in `Dialog.footer` or `Drawer.footer`, connected to the body's unique Form id with `Button type="submit" form={formId}`. The header/footer stay visible while long content scrolls in the body; scrolling is appropriate on a short screen. Do not hide necessary content, reduce text size or create nested scrollbars to fit everything. The complete native validation, Enter and external submit composition is in the [modal form contract](form-contract.md#forms-inside-dialogs-and-drawers) and `#/components/dialog`.
+
 ## Filters and actions
 
 Use `FilterField` with `FilterBar` for mixed-length query controls. Fields wrap with the actions without enlarging to occupy unused desktop space. FilterBar actions use the same corner radius as fields. Default compact desktop height is 38px; comfortable density, narrow containers, mobile viewports and coarse pointers retain 44px controls. Outside FilterBar, ordinary fields remain 44px and Buttons remain 38px; use `size="field"` when aligning a Button with a field.
@@ -45,7 +53,9 @@ Keep query loading labels equal to the short visible command when longer text is
 
 ## Tables and paging
 
-DataTable defaults to a fixed viewport of five standard row-height units, with and without pagination. Sparse and empty results retain the surface; more records scroll inside it. Default capacity is bounded on short screens. A numeric `viewportRows` chooses another explicit capacity; `viewportRows="auto"` chooses content height. Capacity is not the exact visible record count when custom cells wrap. Never derive it from `rows.length` or change it on each request.
+DataTable defaults to a fixed viewport of five standard row-height units, with and without pagination. Sparse and empty results retain the surface; more records scroll inside it. Every fixed capacity uses the same short-screen limit, whether implicit, numeric or supplied by `DataTableProvider`. A numeric `viewportRows` chooses another explicit capacity outside a provider; `viewportRows="auto"` deliberately chooses content height outside a provider. Capacity is not the exact visible record count when custom cells wrap. Never derive it from `rows.length`, page size or request state.
+
+For comparable list pages, place one `DataTableProvider` outside route switching and choose the capacity once. The provider takes precedence over a table's local capacity, including `"auto"`, so a copied `viewportRows={8}` does not make one page taller than its siblings. Use a nested provider only for an explicitly different workspace, not as an arbitrary per-page styling choice. Desktop fixed height is `42 + 58 × capacity` CSS pixels before the shared short-screen limit; mobile cards use `76 × capacity`. The pager adds its own shared height, so keep pagination present consistently. This is a stable table viewport, not a promise that it fills the remaining browser window or that different page headers align automatically. See the [project height composition](data-workflows.md#project-table-height-policy).
 
 Keep pagination in `DataTable.pagination` during loading, empty and error states. The same official Pagination owns numbered and unknown-total layouts, loading, page-size selection and responsive geometry. Do not reconstruct a pager from ordinary Buttons/Select or add a second one outside the table.
 

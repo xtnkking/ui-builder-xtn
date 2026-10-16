@@ -56,7 +56,7 @@ The pattern owns validation focus, password visibility, pending submission, dupl
 
 ## List and CRUD pages
 
-Place `FilterBar` and `DataTable` inside `ListManagementPage` or `SearchFilterPage`. Their default `layoutWidth="readable"` aligns heading, filters, table, and footer; use `layoutWidth="wide"` only for a table that genuinely needs the width. Keep table pagination in `DataTable.pagination`, not the page footer. Detailed request and height behavior is in the [data workflow contract](data-workflows.md).
+Place `FilterBar` and `DataTable` inside `ListManagementPage` or `SearchFilterPage`. Their default `layoutWidth="readable"` aligns heading, filters, table, and footer; use `layoutWidth="wide"` only for a table that genuinely needs the width. Keep table pagination in `DataTable.pagination`, not the page footer. Put comparable list routes under one application-shell `DataTableProvider` so they share a fixed capacity, rather than selecting a different height per page or response. Detailed request and height behavior is in the [data workflow contract](data-workflows.md#project-table-height-policy).
 
 For a table request error, keep `DataTable` mounted with `state="error"`. The table owns its automatic short Toast and persistent in-frame status/retry; `MemberManagementPage` uses that same mechanism. Do not add another Alert, ErrorState, manual Toast or error-summary line around it for the same request. A shared application `ToastProvider` coordinates notifications from the page's tables and other operations; the table has a fallback for standalone use. A service-health failure is a distinct scope and may still require its own appropriate feedback. See [table request failures](data-workflows.md#table-request-failures).
 

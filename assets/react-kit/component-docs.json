@@ -301,6 +301,7 @@
     "ContextMenu": {"profile":"interactive-dual","overrides":{"applicableStates":["default","disabled","empty","longContent","keyboard","overlay","dark","locale"],"stateMode":"stateless"}},
     "CreateEditPage": {"profile":"composed","overrides":{"applicableStates":["default","disabled","loading","longContent","keyboard","mobile","overlay","dark","locale"]}},
     "DataTable": {"profile": "interactive-controlled", "overrides": {"applicableStates": ["default", "controlled", "loading", "empty", "error", "longContent", "keyboard", "mobile", "overlay", "dark", "locale"]}},
+    "DataTableProvider": {"profile": "locale-provider", "overrides": {"applicableStates": ["default"], "migration": {"status": "none", "reason": "Optional project-level fixed table capacity. Existing standalone table calls remain supported; all fixed capacities now share the short-screen limit. See references/data-workflows.md#project-table-height-policy."}}},
     "DateField": {"profile":"interactive-dual","overrides":{"applicableStates":["default","disabled","readOnly","controlled","uncontrolled","validation","longContent","keyboard","overlay","dark","locale"],"stateMode":"controlled-uncontrolled"}},
     "DateRangeField": {"profile":"interactive-dual","overrides":{"applicableStates":["default","disabled","readOnly","controlled","uncontrolled","validation","longContent","keyboard","overlay","dark","locale"],"stateMode":"controlled-uncontrolled"}},
     "DEFAULT_TIMEZONE_OPTIONS": {"profile":"constant","overrides":{"applicableStates":["usage"],"stateMode":"constant"}},

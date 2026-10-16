@@ -1,6 +1,7 @@
 import { createRef } from "react";
 import {
   DataTable,
+  DataTableProvider,
   type DataColumn,
   type DataTableProps,
 } from "../../src/ui";
@@ -36,6 +37,15 @@ const inferredRowUsage = (
   />
 );
 void inferredRowUsage;
+
+const projectHeight = <DataTableProvider viewportRows={5}>{inferredRowUsage}</DataTableProvider>;
+// @ts-expect-error project policy always owns a fixed numeric capacity
+const contentHeightProject = <DataTableProvider viewportRows="auto">{inferredRowUsage}</DataTableProvider>;
+// @ts-expect-error the provider adds no styled DOM wrapper
+const styledHeightProject = <DataTableProvider style={{ height: 300 }}>{inferredRowUsage}</DataTableProvider>;
+void projectHeight;
+void contentHeightProject;
+void styledHeightProject;
 
 // @ts-expect-error fixed data controls do not expose className
 const tableClassName = <DataTable ariaLabel="Accounts" columns={columns} rows={rows} rowKey={(row) => row.id} className="foreign" />;

@@ -102,6 +102,38 @@ Use `form` to associate a control rendered outside the form element:
 
 The referenced id must identify an `HTMLFormElement` in the same document. Submit, reset, validity, and `FormData` then operate on that external owner.
 
+## Forms Inside Dialogs And Drawers
+
+Use the overlay's `footer` slot for persistent save/cancel actions and a `Form` in its body. Connect the external save Button with `type="submit" form={formId}` to the Form's unique `id`; handle saving once in `Form.onSubmit`, so click, Enter and native validation follow the same path. Set cancel to `type="button"`. During an asynchronous save, use the Button's loading state, block duplicate requests and deliberately choose whether dismissing the overlay remains allowed.
+
+The header and footer remain outside the scrolling body. Putting actions at the bottom of a tall body makes them disappear until the user scrolls; `Dialog` cannot infer that an arbitrary child is intended as its footer. Do not nest a complete create/edit page pattern just to obtain a footer, or add another fixed-height/scrolling wrapper inside the Form.
+
+Choose the form layout for the available panel width. Keep an address, long name or notes on its own row. Pair related short controls with public `Grid minItemWidth={200} gap="medium"` when each control remains readable; the pair becomes one column below 416px of actual content width. Here 200px is an example's design choice, not a universal minimum. Let fields fill their grid tracks instead of applying unrelated `short`/`medium`/`long` widths to every field in a single Stack. For an intentionally single-column form, keep a common field edge or bound the whole group. See [modal form sizing](layout-sizing.md#modal-forms) and the complete compiled form at `#/components/dialog`.
+
+```tsx
+const formId = useId();
+
+<Dialog open={open} onOpenChange={setOpen} title="编辑连接"
+  footer={<Inline justify="end">
+    <Button type="button" onClick={() => setOpen(false)}>取消</Button>
+    <Button type="submit" form={formId} variant="primary" loading={saving}>保存</Button>
+  </Inline>}>
+  <Form id={formId} onSubmit={handleSubmit}>
+    <Field label="连接地址" htmlFor={`${formId}-host`} required>
+      <Input id={`${formId}-host`} name="host" required />
+    </Field>
+    <Grid minItemWidth={200} gap="medium">
+      {portField}
+      {protocolField}
+    </Grid>
+    {credentialFields}
+    {notesField}
+  </Form>
+</Dialog>
+```
+
+Import `useId` from React and the named public controls from `./ui`. The placeholders represent business fields; the Explorer case provides a complete compiling implementation. `handleSubmit` prevents default navigation, validates business rules and owns the actual request; it must not close the overlay before saving succeeds. The mock Explorer form demonstrates native required validation and form submission without calling a backend.
+
 ## Reset
 
 A native form reset is a state transition, not a DOM-only visual reset.

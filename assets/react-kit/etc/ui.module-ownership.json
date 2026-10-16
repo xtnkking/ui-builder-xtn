@@ -2719,6 +2719,17 @@
           "api": [
             "references/component-api.md"
           ],
+          "aria": [],
+          "examples": [
+            "assets/react-kit/src/explorer/cases/data/data-table.case.tsx"
+          ],
+          "keyboard": [],
+          "name": "DataTableProvider"
+        },
+        {
+          "api": [
+            "references/component-api.md"
+          ],
           "aria": [
             "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
           ],
@@ -3651,7 +3662,7 @@
       ]
     }
   ],
-  "kitVersion": "0.3.10",
+  "kitVersion": "0.3.11",
   "modules": [
     {
       "dependencies": [

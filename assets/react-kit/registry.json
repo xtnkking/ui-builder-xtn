@@ -1,6 +1,6 @@
 {
   "name": "ui",
-  "version": "0.3.10",
+  "version": "0.3.11",
   "stack": [
     "react",
     "typescript",
@@ -46,6 +46,7 @@
     "ContextMenu",
     "CreateEditPage",
     "DataTable",
+    "DataTableProvider",
     "DateField",
     "DateRangeField",
     "DEFAULT_TIMEZONE_OPTIONS",
@@ -304,6 +305,7 @@
       "StatusPage"
     ],
     "non-visual": [
+      "DataTableProvider",
       "DEFAULT_TIMEZONE_OPTIONS",
       "LocaleProvider",
       "useCommandPaletteShortcut",
@@ -349,6 +351,7 @@
       "ContextMenu",
       "CreateEditPage",
       "DataTable",
+      "DataTableProvider",
       "DateField",
       "DateRangeField",
       "DEFAULT_TIMEZONE_OPTIONS",

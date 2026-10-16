@@ -6,7 +6,7 @@
 
 它不是一份只靠提示词约束的视觉规范。ui-builder-xtn 源码、公开导出、组件清单、安装器和来源校验器组成同一个闭环：使用者提出功能后，页面中的控件必须直接使用本仓库提供的组件代码。
 
-最新正式版本为 **v0.3.10**。可从 [main 下载最新源码](https://github.com/xtnkking/ui-builder-xtn/archive/refs/heads/main.zip)，或进入 [Latest Release](https://github.com/xtnkking/ui-builder-xtn/releases/latest) 下载完整 Skill ZIP 与校验文件；本次正式交付的两个入口包含相同代码。更新内容见 [CHANGELOG.md](CHANGELOG.md)。
+最新正式版本为 **v0.3.11**。可从 [main 下载最新源码](https://github.com/xtnkking/ui-builder-xtn/archive/refs/heads/main.zip)，或进入 [Latest Release](https://github.com/xtnkking/ui-builder-xtn/releases/latest) 下载完整 Skill ZIP 与校验文件；本次正式交付的两个入口包含相同代码。更新内容见 [CHANGELOG.md](CHANGELOG.md)。
 
 更新仓库或下载新版不会自动更新已安装的 Skill，也不会升级已生成项目中的组件。先替换本机 Skill，再按[已有项目升级步骤](references/integration.md#updating-an-installed-kit)更新项目。当前筛选栏桌面默认为 38px 紧凑高度，窄屏／触屏为 44px；抽屉动效默认内置，无需业务额外添加。
 

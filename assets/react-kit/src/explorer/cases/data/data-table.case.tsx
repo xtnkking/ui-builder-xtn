@@ -1,10 +1,11 @@
-// @ui-coverage {"kind":"example","runner":"explorer","caseId":"data-table/overview","exports":["DataTable","TreeTable","TableCellText"]}
+// @ui-coverage {"kind":"example","runner":"explorer","caseId":"data-table/overview","exports":["DataTable","DataTableProvider","TreeTable","TableCellText"]}
 import { useEffect, useId, useRef, useState } from "react";
 import { FolderPlus, Plus, Pencil, Trash2 } from "lucide-react";
 import {
   Checkbox,
   Button,
   DataTable,
+  DataTableProvider,
   Dialog,
   DropdownMenu,
   Field,
@@ -206,6 +207,7 @@ function DataTableExample() {
     { id: "status", header: "状态", cell: (row) => <StatusIndicator tone={row.status === "运行中" ? "success" : "warning"} label={row.status} />, width: 140 },
   ];
   return (
+    <DataTableProvider viewportRows={3}>
     <div style={{ display: "grid", gap: 28 }}>
       <FilterBar ariaLabel="账户筛选" onSubmit={(event) => { event.preventDefault(); setAppliedQuery(query.trim()); setPage(1); }} actions={<Button size="field" type="submit">搜索</Button>}>
         <Field label="账户、负责人或状态" htmlFor="explorer-table-search"><SearchInput id="explorer-table-search" value={query} onChange={(event) => setQuery(event.currentTarget.value)} onClear={() => setQuery("")} /></Field>
@@ -224,6 +226,7 @@ function DataTableExample() {
       />
       <TreeTableActionsExample />
     </div>
+    </DataTableProvider>
   );
 }
 
@@ -336,7 +339,7 @@ const explorerCase = {
   states: ["default", "controlled", "uncontrolled", "loading", "empty", "error", "longContent", "keyboard", "mobile", "overlay", "dark", "locale", "usage"],
   content: <DataTableExample />,
   stateExamples: [
-    { state: "default", exports: ["DataTable", "TreeTable", "TableCellText"], content: <DataTableExample /> },
+    { state: "default", exports: ["DataTable", "DataTableProvider", "TreeTable", "TableCellText"], content: <DataTableExample /> },
     { state: "controlled", exports: ["DataTable", "TreeTable"], content: <DataTableExample /> },
     { state: "uncontrolled", exports: ["TreeTable"], content: <TreeTable ariaLabel="内部管理展开状态的目录" nodes={treeNodes} columns={stateTreeColumns} treeColumnId="name" defaultExpandedIds={["workspace"]} /> },
     { state: "loading", exports: ["DataTable", "TreeTable"], content: <LoadingTables /> },

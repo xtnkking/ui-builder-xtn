@@ -387,7 +387,27 @@ The runnable **操作列组合** case (`data-table/actions`) is available at `#/
 
 Pass the typed `pagination` object directly to `DataTable`; this keeps the pager inside the same rounded frame. Do not render a second `Pagination` in the page footer.
 
-Tables use a stable viewport of five standard row-height units by default, whether paginated or unpaginated; the implicit default is bounded on short screens. Keep `pagination` present during loading, empty, and zero-row error states so sparse pages and changing page sizes do not move the pager. Use a numeric `viewportRows` for another explicit fixed capacity, or `viewportRows="auto"` only when following content height is intentional. Never derive capacity from `rows.length`; taller custom cells scroll without being clipped into standard rows.
+Tables use a stable viewport of five standard row-height units by default, whether paginated or unpaginated; all fixed capacities share the same short-screen limit. Keep `pagination` present during loading, empty, and zero-row error states so sparse pages and changing page sizes do not move the pager. Outside a project provider, use a numeric `viewportRows` for another explicit fixed capacity, or `viewportRows="auto"` only when following content height is intentional. Never derive capacity from `rows.length`, page size or request state; taller custom cells scroll without being clipped into standard rows.
+
+### Project table-height policy
+
+Stable height within one table and consistent height across pages are separate responsibilities. For comparable management lists, place one public `DataTableProvider` in the application shell, outside route switching. Select its `viewportRows` once for the project; omitting it uses five standard row-height units. The provider owns fixed height and takes precedence over each descendant table's `viewportRows`, including `"auto"`. A local preference left behind by a copied example therefore cannot change one list's capacity. Values are normalized to whole units from 1 to 100; invalid non-finite values use five. A nested provider deliberately establishes another scope for a genuinely different workspace.
+
+```tsx
+import { DataTableProvider } from "./ui";
+
+// Keep this provider mounted around the product's existing router outlet.
+// The proxy and phone pages each compose DataTable with built-in pagination.
+<DataTableProvider viewportRows={5}>
+  {activePage === "proxies" ? <ProxyListPage /> : <PhoneListPage />}
+</DataTableProvider>;
+```
+
+Do not use returned record counts, `pageSize`, loading skeleton counts or the current route to choose this capacity. One record, twenty records, an empty response, loading and errors keep the same viewport; excess rows scroll inside it. Preserve the table and its `pagination` object across those states. Use the same mobile presentation across comparable lists: desktop tables and mobile cards have different standard row units. Different headers, filter wrapping or the presence of a pager can still change total page geometry; keep the surrounding page composition consistent rather than asking DataTable to position the whole page.
+
+Implicit, explicit and provider capacities share the limit `min(configuredHeight, max(158px, 100dvh - 220px))`. This responds to screen height without depending on data. It does not calculate space below arbitrary toolbars or fill the remaining parent height. Outside a provider, `viewportRows="auto"` remains available for an intentionally content-sized table; do not choose it for ordinary management lists that require stable height.
+
+For an existing application, first update its installed canonical source through the Skill installer, then add the provider to its page shell and remove conflicting per-page sizing choices. Updating the Skill alone cannot rewrite previously generated business pages. The runnable **项目统一表格高度** example at `#/components/data-table` compares sparse proxy data with a populated phone list and exercises request states under one provider.
 
 ### Project pagination consistency
 

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 3,
-  "kitVersion": "0.3.10",
+  "kitVersion": "0.3.11",
   "generatedFrom": [
     "assets/react-kit/component-manifest.json",
     "assets/react-kit/registry.json",
@@ -163,12 +163,14 @@
     "assets/react-kit/tests/browser/m5-tree-table.spec.ts",
     "assets/react-kit/tests/browser/m5-virtual-list.spec.ts",
     "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts",
+    "assets/react-kit/tests/browser/modal-form-layout.spec.ts",
     "assets/react-kit/tests/browser/modal-layer-kernel.spec.ts",
     "assets/react-kit/tests/browser/motion-content.spec.ts",
     "assets/react-kit/tests/browser/motion-enhancement.spec.ts",
     "assets/react-kit/tests/browser/search-feedback.spec.ts",
     "assets/react-kit/tests/browser/table-actions.spec.ts",
     "assets/react-kit/tests/browser/table-dimensions.spec.ts",
+    "assets/react-kit/tests/browser/table-height-policy.spec.ts",
     "assets/react-kit/tests/browser/table-typography.spec.ts",
     "assets/react-kit/tests/browser/theme-contracts.spec.ts",
     "assets/react-kit/tests/browser/theme-presets.spec.ts",
@@ -188,6 +190,7 @@
     "assets/react-kit/tests/components/d2-drag-upload-composition.test.tsx",
     "assets/react-kit/tests/components/data-extra-contracts.test.tsx",
     "assets/react-kit/tests/components/data-table-contracts.test.tsx",
+    "assets/react-kit/tests/components/data-table-height-policy.test.tsx",
     "assets/react-kit/tests/components/data-table-toast.test.tsx",
     "assets/react-kit/tests/components/disclosure-contracts.test.tsx",
     "assets/react-kit/tests/components/display-contracts.test.tsx",
@@ -236,26 +239,26 @@
     "assets/react-kit/tests/visual/drawer-edge.visual.spec.ts"
   ],
   "summary": {
-    "exportCount": 144,
+    "exportCount": 145,
     "classificationCounts": {
       "fixed-control": 112,
       "layout": 13,
       "theme-root": 1,
       "pattern": 13,
-      "non-visual": 5
+      "non-visual": 6
     },
     "stabilityCounts": {
-      "stable": 143,
+      "stable": 144,
       "experimental": 0,
       "deprecated": 1
     },
     "evidenceCounts": {
-      "api": 144,
-      "owner": 144,
-      "source": 144,
-      "example": 144,
-      "unit": 122,
-      "browser": 74,
+      "api": 145,
+      "owner": 145,
+      "source": 145,
+      "example": 145,
+      "unit": 123,
+      "browser": 76,
       "keyboard": 100,
       "a11y": 120
     },
@@ -6908,6 +6911,7 @@
       "unit": [
         "assets/react-kit/tests/components/core-contracts.test.tsx",
         "assets/react-kit/tests/components/data-table-contracts.test.tsx",
+        "assets/react-kit/tests/components/data-table-height-policy.test.tsx",
         "assets/react-kit/tests/components/data-table-toast.test.tsx",
         "assets/react-kit/tests/components/page-composition-ownership.test.tsx",
         "assets/react-kit/tests/components/pagination-cursor.test.tsx",
@@ -6920,6 +6924,7 @@
         "assets/react-kit/tests/browser/search-feedback.spec.ts",
         "assets/react-kit/tests/browser/table-actions.spec.ts",
         "assets/react-kit/tests/browser/table-dimensions.spec.ts",
+        "assets/react-kit/tests/browser/table-height-policy.spec.ts",
         "assets/react-kit/tests/browser/table-typography.spec.ts"
       ],
       "keyboard": [
@@ -6928,6 +6933,102 @@
       "a11y": [
         "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts"
       ]
+    },
+    {
+      "name": "DataTableProvider",
+      "classification": "non-visual",
+      "stability": "stable",
+      "api": [
+        "assets/react-kit/etc/ui.api.md"
+      ],
+      "owner": {
+        "manifestEntry": "data-table",
+        "markers": []
+      },
+      "source": [
+        "src/ui/data/data-extra.tsx",
+        "src/ui/data/data-table.tsx",
+        "src/ui/data/table-cell-text.tsx",
+        "src/ui/styles.css",
+        "src/ui/styles/extended.css"
+      ],
+      "documentation": {
+        "interaction": "non-visual",
+        "stateMode": "provider",
+        "applicableStates": [
+          "default"
+        ],
+        "example": {
+          "status": "documented",
+          "id": "data-table/overview",
+          "refs": [
+            "assets/react-kit/src/explorer/cases/data/data-table.case.tsx"
+          ]
+        },
+        "apiPage": {
+          "status": "documented",
+          "id": "export-data-table-provider",
+          "refs": [
+            "references/component-api.md"
+          ]
+        },
+        "migration": {
+          "status": "none",
+          "reason": "Optional project-level fixed table capacity. Existing standalone table calls remain supported; all fixed capacities now share the short-screen limit. See references/data-workflows.md#project-table-height-policy."
+        },
+        "keyboard": {
+          "mode": "none",
+          "reason": "This context provider has no independent keyboard interaction."
+        },
+        "aria": {
+          "mode": "none",
+          "reason": "This context provider adds no DOM node or ARIA semantics."
+        },
+        "family": "data-table",
+        "category": "data",
+        "defaultsSource": {
+          "kind": "typescript",
+          "export": "DataTableProvider",
+          "files": [
+            "src/ui/data/data-extra.tsx",
+            "src/ui/data/data-table.tsx",
+            "src/ui/data/table-cell-text.tsx"
+          ]
+        },
+        "semanticTokens": {
+          "status": "not-applicable",
+          "reason": "Non-visual exports do not own rendered semantic tokens."
+        }
+      },
+      "stateCoverage": {
+        "applicableStates": [
+          "default"
+        ],
+        "sourceDemonstratedStates": [
+          "default"
+        ],
+        "fixtures": [
+          {
+            "state": "default",
+            "file": "assets/react-kit/src/explorer/cases/data/data-table.case.tsx",
+            "exampleIndex": 0,
+            "verification": "runnable-source-fixture"
+          }
+        ],
+        "verificationKind": "structural-source-fixtures",
+        "behavioralVerification": false
+      },
+      "example": [
+        "assets/react-kit/src/explorer/cases/data/data-table.case.tsx"
+      ],
+      "unit": [
+        "assets/react-kit/tests/components/data-table-height-policy.test.tsx"
+      ],
+      "browser": [
+        "assets/react-kit/tests/browser/table-height-policy.spec.ts"
+      ],
+      "keyboard": [],
+      "a11y": []
     },
     {
       "name": "DateField",
@@ -8003,6 +8104,7 @@
       "browser": [
         "assets/react-kit/tests/browser/dimension-overlays.spec.ts",
         "assets/react-kit/tests/browser/legacy-regressions.spec.ts",
+        "assets/react-kit/tests/browser/modal-form-layout.spec.ts",
         "assets/react-kit/tests/browser/modal-layer-kernel.spec.ts",
         "assets/react-kit/tests/browser/motion-enhancement.spec.ts"
       ],
@@ -9641,7 +9743,8 @@
       "browser": [
         "assets/react-kit/tests/browser/explorer-responsive-followup.spec.ts",
         "assets/react-kit/tests/browser/form-settings-sizing.spec.ts",
-        "assets/react-kit/tests/browser/legacy-regressions.spec.ts"
+        "assets/react-kit/tests/browser/legacy-regressions.spec.ts",
+        "assets/react-kit/tests/browser/modal-form-layout.spec.ts"
       ],
       "keyboard": [],
       "a11y": [
@@ -10566,7 +10669,8 @@
       ],
       "browser": [
         "assets/react-kit/tests/browser/composite-form-contracts.spec.ts",
-        "assets/react-kit/tests/browser/form-settings-sizing.spec.ts"
+        "assets/react-kit/tests/browser/form-settings-sizing.spec.ts",
+        "assets/react-kit/tests/browser/modal-form-layout.spec.ts"
       ],
       "keyboard": [
         "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
@@ -10904,7 +11008,9 @@
         "assets/react-kit/src/explorer/cases/foundation/responsive.case.tsx"
       ],
       "unit": [],
-      "browser": [],
+      "browser": [
+        "assets/react-kit/tests/browser/modal-form-layout.spec.ts"
+      ],
       "keyboard": [],
       "a11y": []
     },

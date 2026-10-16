@@ -656,10 +656,6 @@
       "file": "src/ui/styles.css"
     },
     {
-      "selector": ".ui-data-table__frame--default-viewport",
-      "file": "src/ui/styles.css"
-    },
-    {
       "selector": ".ui-data-table__frame--error-footer",
       "file": "src/ui/styles.css"
     },
@@ -2677,7 +2673,7 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 2874
+          "line": 2887
         }
       ]
     },
@@ -2688,12 +2684,7 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 2868
-        },
-        {
-          "file": "src/ui/styles.css",
-          "layer": "ui.components",
-          "line": 2875
+          "line": 2888
         }
       ]
     },
@@ -2714,7 +2705,7 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 2896
+          "line": 2909
         }
       ]
     },
@@ -2725,12 +2716,7 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 2869
-        },
-        {
-          "file": "src/ui/styles.css",
-          "layer": "ui.components",
-          "line": 2876
+          "line": 2889
         }
       ]
     },
@@ -2894,12 +2880,12 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 742
+          "line": 749
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 785
+          "line": 792
         }
       ]
     },
@@ -2910,12 +2896,12 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 744
+          "line": 751
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 838
+          "line": 845
         }
       ]
     },
@@ -2926,12 +2912,12 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 743
+          "line": 750
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 786
+          "line": 793
         }
       ]
     },
@@ -3197,17 +3183,17 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 1743
+          "line": 1750
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 1855
+          "line": 1873
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 1889
+          "line": 1907
         }
       ]
     },
@@ -3754,12 +3740,12 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 2083
+          "line": 2101
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 2106
+          "line": 2124
         }
       ]
     },
@@ -3884,12 +3870,12 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 2082
+          "line": 2100
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 3773
+          "line": 3786
         }
       ]
     },
@@ -3926,7 +3912,7 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 2136
+          "line": 2154
         }
       ]
     },
@@ -3937,12 +3923,12 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 2132
+          "line": 2150
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 2138
+          "line": 2156
         }
       ]
     },
@@ -4222,7 +4208,7 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 1748
+          "line": 1755
         },
         {
           "file": "src/ui/styles/layout-actions-display.css",
@@ -5226,5 +5212,5 @@
       ]
     }
   ],
-  "selectorCount": 1253
+  "selectorCount": 1255
 }
