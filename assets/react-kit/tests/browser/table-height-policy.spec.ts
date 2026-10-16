@@ -107,3 +107,64 @@ test("@project-height project policy applies the same short-screen cap and conta
     await preview.screenshot({ path: test.info().outputPath(`project-table-height-${width}-${height}.png`), animations: "disabled" });
   }
 });
+
+test("@table-alignment fractional table widths fit without false scrolling and pagers stay compact with footer insets", async ({ page }) => {
+  for (const width of [1280, 2048, 320]) {
+    const { preview, proxy, phones } = await projectHeightCase(page, width, 991);
+    for (const table of [proxy, phones]) {
+      if (width > 320) {
+        await expect.poll(() => viewport(table).evaluate(async (node) => {
+          const contentWidth = await new Promise<number>((resolve) => {
+            const observer = new ResizeObserver(([entry]) => {
+              observer.disconnect();
+              resolve(entry.contentRect.width);
+            });
+            observer.observe(node);
+          });
+          return node.querySelector("table")!.getBoundingClientRect().width - contentWidth;
+        })).toBeLessThanOrEqual(0.02);
+        await viewport(table).evaluate((node) => { node.scrollLeft = 100; });
+        expect(await viewport(table).evaluate((node) => node.scrollLeft)).toBe(0);
+      } else {
+        await viewport(table).evaluate((node) => { node.scrollLeft = 100; });
+        expect(await viewport(table).evaluate((node) => node.scrollLeft)).toBeGreaterThan(0);
+      }
+      const geometry = await table.locator(".ui-data-table__pagination").evaluate((node) => {
+        const footer = node.getBoundingClientRect();
+        const controls = node.querySelector(".ui-pagination__controls")!.getBoundingClientRect();
+        const summary = node.querySelector(".ui-pagination__summary")!.getBoundingClientRect();
+        const children = Array.from(node.querySelector(".ui-pagination__controls")!.children)
+          .map((item) => item.getBoundingClientRect()).filter((rect) => rect.width > 0 && rect.height > 0);
+        return {
+          bottomInset: footer.bottom - controls.bottom,
+          topInset: controls.top - footer.top,
+          summaryCenter: summary.top + summary.height / 2,
+          controlsCenter: controls.top + controls.height / 2,
+          footerHeight: footer.height,
+          children: children.map((rect) => ({ x: rect.x, y: rect.y, right: rect.right, height: rect.height })),
+          footer: { left: footer.left, right: footer.right },
+        };
+      });
+      expect(geometry.bottomInset).toBeGreaterThanOrEqual(8);
+      expect(geometry.topInset).toBeGreaterThanOrEqual(8);
+      for (const control of geometry.children) {
+        expect(control.x).toBeGreaterThanOrEqual(geometry.footer.left);
+        expect(control.right).toBeLessThanOrEqual(geometry.footer.right);
+        expect(control.height).toBe(44);
+      }
+      if (width > 320) {
+        expect(geometry.summaryCenter).toBeCloseTo(geometry.controlsCenter, 1);
+        expect(geometry.footerHeight).toBeLessThanOrEqual(66);
+        for (let i = 1; i < geometry.children.length; i += 1) {
+          const previous = geometry.children[i - 1];
+          const current = geometry.children[i];
+          expect(current.y).toBeCloseTo(previous.y, 1);
+          expect(current.x - previous.right).toBeCloseTo(6, 1);
+        }
+      }
+    }
+    await sameTableGeometry(proxy, phones, 332);
+    await noPageOverflow(page);
+    await preview.screenshot({ path: test.info().outputPath(`table-alignment-${width}.png`), animations: "disabled" });
+  }
+});

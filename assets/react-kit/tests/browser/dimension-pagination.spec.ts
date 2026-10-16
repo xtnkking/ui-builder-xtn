@@ -3,6 +3,98 @@ import { expect, test, type Locator, type Page } from "@playwright/test";
 
 test.use({ viewport: { width: 1440, height: 1100 } });
 
+test("@locale-pagination locale examples give both languages equal responsive space without clipping page text", async ({ page }) => {
+  await page.goto("/#/components/locale");
+  for (const width of [2048, 320]) {
+    await page.setViewportSize({ width, height: 1100 });
+    for (const state of ["总览", "使用方式", "多语言"]) {
+      await page.getByRole("tab", { name: state, exact: true }).click();
+      const preview = page.getByRole("tabpanel", { name: state, exact: true }).locator(".demo-explorer-preview");
+      const chinese = preview.locator('[data-locale-example="zh-CN"]');
+      const english = preview.locator('[data-locale-example="en-US"]');
+      const zh = await bounds(chinese);
+      const en = await bounds(english);
+      expect(zh.width).toBeCloseTo(en.width, 1);
+      if (width === 2048) {
+        expect(zh.width).toBeGreaterThanOrEqual(280);
+        expect(zh.y).toBeCloseTo(en.y, 1);
+      } else {
+        expect(zh.x).toBeCloseTo(en.x, 1);
+        expect(en.y).toBeGreaterThan(zh.y + zh.height);
+      }
+      for (const column of [chinese, english]) {
+        const nav = column.getByRole("navigation");
+        const navBox = await bounds(nav);
+        const text = nav.locator(".ui-pagination__mobile-page");
+        await expect(text).toHaveText(column === chinese ? "2 / 8 页" : "Page 2 of 8");
+        expect(await text.evaluate((node) => node.scrollWidth - node.clientWidth)).toBeLessThanOrEqual(0);
+        const label = await bounds(nav.locator(".ui-pagination__mobile-label"));
+        const previous = await bounds(nav.locator(".ui-pagination__controls > .ui-icon-button").first());
+        const next = await bounds(nav.locator(".ui-pagination__controls > .ui-icon-button").last());
+        expect(label.x).toBeGreaterThanOrEqual(previous.x + previous.width);
+        expect(label.x + label.width).toBeLessThanOrEqual(next.x);
+        expect(previous.x).toBeGreaterThanOrEqual(navBox.x);
+        expect(next.x + next.width).toBeLessThanOrEqual(navBox.x + navBox.width + 1);
+      }
+      await preview.screenshot({ path: test.info().outputPath(`locale-pagination-${state}-${width}.png`), animations: "disabled" });
+    }
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
+  }
+});
+
+test("@pagination-label-spacing compact page text and loading glyph share the true center without width changes", async ({ page }) => {
+  async function centered(label: Locator, loading = false) {
+    await expect(label).toBeVisible();
+    const geometry = await label.evaluate((node) => {
+      const box = node.getBoundingClientRect();
+      const text = node.querySelector(".ui-pagination__mobile-page")!;
+      const range = document.createRange();
+      range.selectNodeContents(text);
+      const ink = range.getBoundingClientRect();
+      const spinner = node.querySelector(".ui-pagination__mobile-loading svg")?.getBoundingClientRect();
+      return { width: box.width, height: box.height, textOffset: ink.x + ink.width / 2 - box.x - box.width / 2,
+        spinnerOffset: spinner ? spinner.x + spinner.width / 2 - box.x - box.width / 2 : null,
+        textOpacity: getComputedStyle(text).opacity, overflow: text.scrollWidth - text.clientWidth };
+    });
+    expect(Math.abs(geometry.textOffset)).toBeLessThanOrEqual(0.5);
+    expect(geometry.height).toBe(44);
+    expect(geometry.overflow).toBeLessThanOrEqual(0);
+    if (loading) {
+      expect(geometry.textOpacity).toBe("0");
+      expect(geometry.spinnerOffset).not.toBeNull();
+      expect(Math.abs(geometry.spinnerOffset!)).toBeLessThanOrEqual(0.5);
+    } else {
+      expect(geometry.textOpacity).toBe("1");
+    }
+    return geometry;
+  }
+
+  await page.goto("/#/components/data-table");
+  await page.getByRole("tab", { name: "项目统一表格高度预览", exact: true }).click();
+  const tables = page.getByRole("tabpanel", { name: "项目统一表格高度预览", exact: true })
+    .getByRole("tabpanel", { name: "总览", exact: true }).locator(".demo-explorer-preview");
+  const labels = tables.locator(".ui-pagination__mobile-label");
+  await expect(labels).toHaveCount(2);
+  for (const label of await labels.all()) await centered(label);
+  await tables.screenshot({ path: test.info().outputPath("table-page-label-centered.png"), animations: "disabled" });
+
+  let idleWidth = 0;
+  for (const state of ["默认", "加载中"]) {
+    const preview = await previewFor(page, state);
+    await preview.evaluate((node) => { node.style.width = "560px"; node.style.maxWidth = "100%"; });
+    const label = preview.locator(".ui-pagination__mobile-label").first();
+    const geometry = await centered(label, state === "加载中");
+    if (state === "默认") idleWidth = geometry.width;
+    else expect(geometry.width).toBeCloseTo(idleWidth, 1);
+  }
+  await page.setViewportSize({ width: 320, height: 1100 });
+  const loadingPreview = page.getByRole("tabpanel", { name: "加载中", exact: true }).locator(".demo-explorer-preview");
+  await centered(loadingPreview.locator(".ui-pagination__mobile-label").first(), true);
+  const cursorPreview = await previewFor(page, "受控");
+  for (const label of await cursorPreview.locator(".ui-pagination__cursor-label").all()) await centered(label);
+  await cursorPreview.screenshot({ path: test.info().outputPath("cursor-page-label-320.png"), animations: "disabled" });
+});
+
 async function previewFor(page: Page, state: string) {
   await page.goto("/#/components/pagination");
   await page.getByRole("tab", { name: state, exact: true }).click();

@@ -1,6 +1,6 @@
 // @ui-coverage {"kind":"example","runner":"explorer","caseId":"locale/overview","exports":["LocaleProvider","useUILocale"]}
 import { StatePreview } from "../state-preview";
-import { Field, Inline, LocaleProvider, Pagination, Stack, Tag, useUILocale } from "../../../ui";
+import { Field, Grid, Inline, LocaleProvider, Pagination, Stack, Tag, useUILocale } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 function LocaleSummary({ label }: { label: string }) {
@@ -32,35 +32,35 @@ const explorerCase = {
   stateExamples: [
     { state: "longContent", exports: ["LocaleProvider", "useUILocale"], content: <Field group label="Long localized dates, large currency amounts, and complete accessible descriptions for cross-region financial reports"><LocaleProvider locale="en-US" timeZone="UTC"><LongLocaleContent /></LocaleProvider></Field> },
     { state: "usage", exports: ["LocaleProvider","useUILocale"], content: (
-    <Inline gap="large" align="start" wrap>
+    <Grid minItemWidth={280} gap="large">
       <LocaleProvider locale="zh-CN" timeZone="Asia/Shanghai">
         <LocaleSummary label="默认中文" />
       </LocaleProvider>
       <LocaleProvider locale="en-US" timeZone="America/New_York">
         <LocaleSummary label="Long English labels" />
       </LocaleProvider>
-    </Inline>
+    </Grid>
   ) },
     { state: "locale", exports: ["LocaleProvider","useUILocale"], content: <StatePreview state="locale">{(
-    <Inline gap="large" align="start" wrap>
+    <Grid minItemWidth={280} gap="large">
       <LocaleProvider locale="zh-CN" timeZone="Asia/Shanghai">
         <LocaleSummary label="默认中文" />
       </LocaleProvider>
       <LocaleProvider locale="en-US" timeZone="America/New_York">
         <LocaleSummary label="Long English labels" />
       </LocaleProvider>
-    </Inline>
+    </Grid>
   )}</StatePreview> },
   ],
   content: (
-    <Inline gap="large" align="start" wrap>
+    <Grid minItemWidth={280} gap="large">
       <LocaleProvider locale="zh-CN" timeZone="Asia/Shanghai">
         <LocaleSummary label="默认中文" />
       </LocaleProvider>
       <LocaleProvider locale="en-US" timeZone="America/New_York">
         <LocaleSummary label="Long English labels" />
       </LocaleProvider>
-    </Inline>
+    </Grid>
   ),
   code: `import { LocaleProvider, useUILocale } from "./ui";
 

@@ -1823,10 +1823,9 @@ input[type="password"]::-ms-reveal {
 }
 
 .ui-pagination__mobile-status {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  place-items: center;
   min-width: 0;
   max-width: 100%;
   height: 100%;
@@ -1842,8 +1841,8 @@ input[type="password"]::-ms-reveal {
 
 .ui-pagination__mobile-loading {
   display: grid;
+  grid-area: 1 / 1;
   place-items: center;
-  flex: 0 0 14px;
   width: 14px;
   height: 14px;
 }
@@ -1851,24 +1850,20 @@ input[type="password"]::-ms-reveal {
 .ui-pagination__mobile-loading svg { width: 14px; height: 14px; }
 
 .ui-pagination__mobile-page {
+  grid-area: 1 / 1;
+  justify-self: stretch;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-align: center;
   white-space: nowrap;
 }
 
+.ui-pagination__mobile-loading:has(svg) + .ui-pagination__mobile-page {
+  opacity: 0;
+}
+
 @container ui-pagination (max-width: 600px) {
-  /* Keep table footer height independent of result-total text length. */
-  .ui-data-table__pagination .ui-pagination__summary {
-    flex-basis: 100%;
-    width: 100%;
-  }
-
-  .ui-data-table__pagination .ui-pagination__controls {
-    width: 100%;
-    justify-content: space-between;
-  }
-
   .ui-pagination__controls {
     --_ui-pagination-control-size: 44px;
   }
@@ -2995,14 +2990,45 @@ input[type="password"]::-ms-reveal {
 
 .ui-data-table__pagination .ui-pagination {
   width: 100%;
+  flex-direction: row;
+  align-items: center;
+  padding: 10px 0;
+  row-gap: 8px;
   border-top: 0;
 }
 
 .ui-data-table__pagination .ui-pagination__summary {
-  display: flex;
-  align-items: center;
+  display: block;
+  flex: 1 1 80px;
+  min-width: min(80px, 100%);
   min-height: 32px;
+  line-height: 32px;
+}
+
+.ui-data-table__pagination .ui-pagination__summary:has(.ui-data-table__error-status) {
   overflow: visible;
+}
+
+.ui-data-table__pagination .ui-pagination__summary > .ui-data-table__error-status {
+  display: flex;
+}
+
+.ui-data-table__pagination .ui-pagination__controls {
+  flex: 0 0 auto;
+  width: auto;
+  justify-content: flex-end;
+}
+
+@container ui-pagination (max-width: 380px) {
+  /* Fixed tracks keep summary length and request states from changing height. */
+  .ui-data-table__pagination .ui-pagination__summary {
+    flex-basis: 100%;
+    width: 100%;
+  }
+
+  .ui-data-table__pagination .ui-pagination__controls {
+    width: 100%;
+  }
 }
 
 .ui-data-table table {
@@ -3725,7 +3751,7 @@ input[type="password"]::-ms-reveal {
 
   .ui-pagination__controls {
     width: 100%;
-    justify-content: space-between;
+    justify-content: flex-end;
   }
 
   .ui-pagination__pages {

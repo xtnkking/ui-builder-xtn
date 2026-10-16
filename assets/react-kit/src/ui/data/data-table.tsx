@@ -390,8 +390,8 @@ function DataTableContent<T>({ rawProps }: { rawProps: DataTableProps<T> }) {
     const scroller = scrollerRef.current;
     if (!scroller) return;
     const mobileList = mobileListRef.current;
-    const measure = () => {
-      const nextWidth = scroller.clientWidth;
+    const measure = (contentWidth?: number) => {
+      const nextWidth = contentWidth ?? scroller.clientWidth;
       setAvailableWidth((currentWidth) => currentWidth === nextWidth ? currentWidth : nextWidth);
       if (!loading && state !== "error") {
         const scrollerHeight = scroller.getBoundingClientRect().height;
@@ -402,10 +402,17 @@ function DataTableContent<T>({ rawProps }: { rawProps: DataTableProps<T> }) {
     };
     measure();
     if (typeof ResizeObserver !== "function") {
-      window.addEventListener("resize", measure);
-      return () => window.removeEventListener("resize", measure);
+      const onResize = () => measure();
+      window.addEventListener("resize", onResize);
+      return () => window.removeEventListener("resize", onResize);
     }
-    const observer = new ResizeObserver(measure);
+    let contentWidth = scroller.clientWidth;
+    const observer = new ResizeObserver((entries) => {
+      const entry = entries.find((item) => item.target === scroller);
+      // clientWidth rounds up fractional containers, creating a spurious scrollbar.
+      if (entry) contentWidth = entry.contentRect.width;
+      measure(contentWidth);
+    });
     observer.observe(scroller);
     if (mobileList) observer.observe(mobileList);
     return () => observer.disconnect();

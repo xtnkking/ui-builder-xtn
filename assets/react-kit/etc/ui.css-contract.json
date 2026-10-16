@@ -2673,7 +2673,7 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 2887
+          "line": 2882
         }
       ]
     },
@@ -2684,7 +2684,7 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 2888
+          "line": 2883
         }
       ]
     },
@@ -2705,7 +2705,7 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 2909
+          "line": 2904
         }
       ]
     },
@@ -2716,7 +2716,7 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 2889
+          "line": 2884
         }
       ]
     },
@@ -3188,12 +3188,12 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 1873
+          "line": 1868
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 1907
+          "line": 1902
         }
       ]
     },
@@ -3740,12 +3740,12 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 2101
+          "line": 2096
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 2124
+          "line": 2119
         }
       ]
     },
@@ -3870,12 +3870,12 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 2100
+          "line": 2095
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 3786
+          "line": 3812
         }
       ]
     },
@@ -3912,7 +3912,7 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 2154
+          "line": 2149
         }
       ]
     },
@@ -3923,12 +3923,12 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 2150
+          "line": 2145
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 2156
+          "line": 2151
         }
       ]
     },
@@ -5212,5 +5212,5 @@
       ]
     }
   ],
-  "selectorCount": 1255
+  "selectorCount": 1259
 }

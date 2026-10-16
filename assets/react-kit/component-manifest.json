@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "kitVersion": "0.3.11",
+  "kitVersion": "0.3.12",
   "entries": [
     {
       "id": "color",
@@ -2196,7 +2196,7 @@
   "sourceIntegrity": {
     "action/actions.tsx": "adef59df7bf0b03e8a372a34daec393d80ccf14ccbd4e64948a49c6523e47f22",
     "data/data-extra.tsx": "8e834b0b0beafa84b5afe9561b72cb162b0bb99f713c127bba81bfe268bf6897",
-    "data/data-table.tsx": "9c205408ea9568e424db6b4d3818a8108b405d8f33b7ba3b45d15ce0cdd90f1a",
+    "data/data-table.tsx": "dd0c71148a2277b0d5b8178e0faee690dbf337edb7e07bc3209af7237b394574",
     "data/table-cell-text.tsx": "2138eac4ec44a245e7dbf60bbd85d398ad1d993e59d29fe5743f0a8be845b3d8",
     "display/display.tsx": "2ab0b1a8546fca3e4d20d0cf559015cd546d05bcffac81f3f004c7ec7951452c",
     "feedback/feedback-extra.tsx": "356829eb2c518b8818fa50048fb8259d04390d5b1eed3d0f6817c5e097b2a552",
@@ -2242,6 +2242,6 @@
     "styles/inputs-extra.css": "08363c0aa71c2717b6df640b3579eef93f661d9d1a06aebc51384ba877dab0d4",
     "styles/layout-actions-display.css": "f0d928914ee192101af98adb3c1f0176df749c633807c59cfbcbcbcf17be837f",
     "styles/themes.css": "ca5e9233d631ad3f28fb4afdebf6268050f4f2a7b273df69eb702f6aeeec1462",
-    "styles.css": "2e383686a7d6196119c6b425c24c9d10120c5ae417e0b4f61d22227711c9f47e"
+    "styles.css": "b3bb45ba7bf75e8b28021b054db36803065702ae7e4300aec8a570ab51c1f98d"
   }
 }
