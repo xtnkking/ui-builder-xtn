@@ -255,7 +255,7 @@ export function FilterField(rawProps: FilterFieldProps) {
   );
 }
 
-const FILTER_CONTROL_ANCHOR = ".ui-input-shell, .ui-input:not(.ui-input--embedded), .ui-textarea, .ui-select, .ui-combobox__trigger";
+const FILTER_CONTROL_ANCHOR = ".ui-input-shell, .ui-input:not(.ui-input--embedded), .ui-textarea-shell, .ui-select, .ui-combobox__trigger";
 
 /** Align actual controls within each flex row without counting Field helper text. */
 function useFilterBarAlignment(

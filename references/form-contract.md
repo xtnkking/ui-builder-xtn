@@ -19,6 +19,8 @@ import {
 
 Native inputs such as `Input`, `Textarea`, and `DateField` use browser form behavior directly. Composite controls such as `Select`, `MultiSelect`, `TagInput`, `TreeSelect`, `Rating`, and `Slider` use the kit's internal form-association protocol. Consumers must not add hidden inputs or duplicate serialization.
 
+`Textarea` owns its rounded clipping frame and keeps scrolling and vertical drag-resizing on the native text control inside it. Focus, error and disabled borders belong to that same frame, so native scrollbar tracks and resize grips cannot replace the rounded edge. Use `rows` for the initial text area size; long content scrolls within it. Business code does not need a clipping wrapper or control-style overrides. The editor compositions reuse this internal frame without adding a second border.
+
 ## Values And FormData
 
 For geometry, `Field width="short" | "medium" | "long"` uses bounded 240/360/560px preferences; a positive finite number selects another width, while omission retains full width. Form direct Buttons keep content width. Use [layout and sizing](layout-sizing.md) for responsive settings forms without stretching short values or actions.

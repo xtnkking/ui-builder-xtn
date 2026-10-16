@@ -4,7 +4,7 @@ const evidenceRoot = process.env.UI_DIMENSIONS_EVIDENCE_DIR ?? "./test-results/d
 
 export default defineConfig({
   testDir: "./tests/browser",
-  testMatch: ["dimension-controls.spec.ts", "form-settings-sizing.spec.ts", "dimension-pagination.spec.ts", "table-dimensions.spec.ts", "dimension-overlays.spec.ts"],
+  testMatch: ["dimension-controls.spec.ts", "form-settings-sizing.spec.ts", "dimension-pagination.spec.ts", "table-dimensions.spec.ts", "dimension-overlays.spec.ts", "textarea-corners.spec.ts"],
   outputDir: `${evidenceRoot}/browser-artifacts`,
   workers: 1,
   retries: 0,

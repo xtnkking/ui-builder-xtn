@@ -4,6 +4,8 @@ import { Field, Textarea } from "../../../ui";
 import { StatePreview } from "../state-preview";
 import type { ExplorerCase } from "../types";
 
+const longNotes = "本次变更涉及多个区域的访问权限、通知偏好和审核流程。请记录每项变更的责任人、影响范围、回滚条件与审批记录。\n".repeat(60);
+
 function TextareaExample() {
   const [value, setValue] = useState("记录本次变更的原因、影响范围和回滚方式。");
   return (
@@ -31,10 +33,10 @@ const explorerCase = {
     { state: "controlled", exports: ["Textarea"], content: <TextareaExample /> },
     { state: "uncontrolled", exports: ["Textarea"], content: <Textarea aria-label="非受控说明" defaultValue="编辑此值由控件内部管理。" /> },
     { state: "validation", exports: ["Textarea"], content: <Field label="校验失败的说明" htmlFor="explorer-invalid-textarea" error="请补充变更原因。"><Textarea id="explorer-invalid-textarea" aria-label="校验失败的说明" aria-invalid="true" defaultValue="" /></Field> },
-    { state: "longContent", exports: ["Textarea"], content: <Textarea aria-label="长说明" rows={4} defaultValue="本次变更涉及多个区域的访问权限、通知偏好和审核流程。请记录每项变更的责任人、影响范围、回滚条件与审批记录，验证多行内容溢出后的滚动、选择和编辑行为。" /> },
+    { state: "longContent", exports: ["Textarea"], content: <Textarea aria-label="长说明" rows={4} defaultValue={longNotes} /> },
     { state: "keyboard", exports: ["Textarea"], instructions: "Tab 聚焦后输入并选择文本；再次按 Tab 离开，多行编辑不会拦截 Tab。", content: <TextareaExample /> },
-    { state: "overlay", exports: ["Textarea"], content: <StatePreview state="overlay">{<Textarea aria-label="浮层内的说明" defaultValue="测试编辑与焦点返回。" />}</StatePreview> },
-    { state: "dark", exports: ["Textarea"], content: <StatePreview state="dark">{<Textarea aria-label="深色说明" defaultValue="深色模式下的文本与占位内容。" />}</StatePreview> },
+    { state: "overlay", exports: ["Textarea"], content: <StatePreview state="overlay">{<Textarea aria-label="浮层内的说明" rows={8} defaultValue={longNotes} />}</StatePreview> },
+    { state: "dark", exports: ["Textarea"], content: <StatePreview state="dark">{<Textarea aria-label="深色说明" rows={4} defaultValue={longNotes} />}</StatePreview> },
     { state: "locale", exports: ["Textarea"], content: <StatePreview state="locale">{<Textarea aria-label="Change notes" defaultValue="Review permissions, notification settings, and rollback conditions." />}</StatePreview> },
   ],
   code: `<Textarea rows={4} value={value} onChange={(event) => setValue(event.currentTarget.value)} />`,

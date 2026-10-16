@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "kitVersion": "0.3.12",
+  "kitVersion": "0.3.13",
   "entries": [
     {
       "id": "color",
@@ -2194,7 +2194,7 @@
     ]
   },
   "sourceIntegrity": {
-    "action/actions.tsx": "adef59df7bf0b03e8a372a34daec393d80ccf14ccbd4e64948a49c6523e47f22",
+    "action/actions.tsx": "b35dfa52bea921932d643a0cbd9d287e9972d74e871316f835c058682dae39da",
     "data/data-extra.tsx": "8e834b0b0beafa84b5afe9561b72cb162b0bb99f713c127bba81bfe268bf6897",
     "data/data-table.tsx": "dd0c71148a2277b0d5b8178e0faee690dbf337edb7e07bc3209af7237b394574",
     "data/table-cell-text.tsx": "2138eac4ec44a245e7dbf60bbd85d398ad1d993e59d29fe5743f0a8be845b3d8",
@@ -2207,7 +2207,7 @@
     "foundation/primitives.tsx": "2863b4baaf2e816ecc83e90d4a5523aef64a0598935b2769bea453288ccd4131",
     "index.ts": "93558e2a003459cea430ecf5878b5e5721efc4fcb3cf15fbfe776d47257bb4d8",
     "input/date-field.tsx": "bbe5295393a454d0b0f020feabd43d61cfc3aa85edcf9fb473f4712e3297c4ea",
-    "input/forms.tsx": "2df5a86f15c0e5c2cf5b79edfb0496ecc594159d10be89deed05b7672f09ed51",
+    "input/forms.tsx": "6d35a5b7f10a020b08326da303e26f84d26b59346a8091b20d2f7e2595b22cd4",
     "input/inputs-extra.tsx": "e01dfc3074d5a7a5e8534ff21539b451ab0cfdb2eb5a1c4251cd91fe3505fd18",
     "input/value-controls.tsx": "d4eaf4a3ea98261638d117ad66f71995ec456d6dcc22b7c64c28866d3334ec20",
     "internal/button-slots.tsx": "d95649f2f0f9d31526c473ad958bb8c38741918bc07913ac04316496407e037a",
@@ -2239,9 +2239,9 @@
     "patterns/member-management-page.tsx": "9351fd4822c6d1b9eb5c87883cb1499623a9ada260f586349d270fb81ca14cd6",
     "patterns/standard-pages.tsx": "74121e9c662c8d3d40eb8c95922caa123822c0dcb628c5c8bc0fe6bf55413400",
     "styles/extended.css": "8518461306b456d10e90513adc24ff031feb4f8d74f088f4eb4ebf5cacaae5ae",
-    "styles/inputs-extra.css": "08363c0aa71c2717b6df640b3579eef93f661d9d1a06aebc51384ba877dab0d4",
+    "styles/inputs-extra.css": "8aea3b4cbc2c001d423394f6451ed34309218d528c058b8788f2c90a987e84f2",
     "styles/layout-actions-display.css": "f0d928914ee192101af98adb3c1f0176df749c633807c59cfbcbcbcf17be837f",
     "styles/themes.css": "ca5e9233d631ad3f28fb4afdebf6268050f4f2a7b273df69eb702f6aeeec1462",
-    "styles.css": "b3bb45ba7bf75e8b28021b054db36803065702ae7e4300aec8a570ab51c1f98d"
+    "styles.css": "07eae98400e39982c25f9cbd2d7c21123c9415632a84a4d235a122364ac15f9e"
   }
 }

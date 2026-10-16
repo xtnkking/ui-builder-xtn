@@ -725,7 +725,7 @@ fieldset.ui-field > legend {
 }
 
 .ui-input,
-.ui-textarea,
+.ui-textarea-shell,
 .ui-select,
 .ui-combobox__trigger {
   width: 100%;
@@ -752,21 +752,41 @@ fieldset.ui-field > legend {
   padding: 0 14px;
 }
 
+.ui-textarea-shell {
+  display: grid;
+  overflow: hidden;
+}
+
+.ui-textarea-shell[hidden] {
+  display: none;
+}
+
 .ui-textarea {
-  min-height: 104px;
+  display: block;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  min-height: 102px;
+  margin: 0;
   padding: 10px 12px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  outline: none;
   overflow-x: hidden;
   overflow-y: auto;
   resize: vertical;
 }
 
-:where(.ui-input, .ui-textarea, .ui-select, .ui-combobox__trigger):hover:not(:disabled):not([aria-disabled="true"]),
+:where(.ui-input, .ui-select, .ui-combobox__trigger):hover:not(:disabled):not([aria-disabled="true"]),
+.ui-textarea-shell:hover:where(:not(:has(.ui-textarea:disabled, .ui-textarea[aria-disabled="true"]))):where(:not(:focus-within)),
 .ui-input-shell:hover:where(:not(:has(.ui-input:disabled))):where(:not(:has(.ui-input[aria-disabled="true"]))):where(:not(.is-invalid)):where(:not(:focus-within)) {
   border-color: var(--_ui-control-hover-border);
 }
 
 .ui-input:focus,
-.ui-textarea:focus,
+.ui-textarea-shell:focus-within,
 .ui-select:focus,
 .ui-combobox__trigger:focus-visible,
 .ui-input-shell:focus-within {
@@ -778,6 +798,7 @@ fieldset.ui-field > legend {
 .ui-input[aria-disabled="true"],
 .ui-textarea:disabled,
 .ui-textarea[aria-disabled="true"],
+.ui-textarea-shell:has(.ui-textarea:disabled, .ui-textarea[aria-disabled="true"]),
 .ui-select:disabled,
 .ui-combobox__trigger:disabled,
 .ui-select[aria-disabled="true"],
@@ -813,7 +834,7 @@ fieldset.ui-field > legend {
 }
 
 .ui-input[aria-invalid="true"],
-.ui-textarea[aria-invalid="true"],
+.ui-textarea-shell:has(.ui-textarea[aria-invalid="true"]),
 .ui-select[aria-invalid="true"],
 .ui-combobox__trigger[aria-invalid="true"],
 .ui-input-shell.is-invalid {
@@ -822,8 +843,8 @@ fieldset.ui-field > legend {
 
 .ui-input[aria-invalid="true"]:hover,
 .ui-input[aria-invalid="true"]:focus,
-.ui-textarea[aria-invalid="true"]:hover,
-.ui-textarea[aria-invalid="true"]:focus,
+.ui-textarea-shell:has(.ui-textarea[aria-invalid="true"]):hover,
+.ui-textarea-shell:has(.ui-textarea[aria-invalid="true"]):focus-within,
 .ui-select[aria-invalid="true"]:hover,
 .ui-select[aria-invalid="true"]:focus,
 .ui-combobox__trigger[aria-invalid="true"]:hover,
@@ -834,7 +855,7 @@ fieldset.ui-field > legend {
 }
 
 .ui-input:not(.ui-input--embedded)[aria-invalid="true"]:focus-visible,
-.ui-textarea[aria-invalid="true"]:focus-visible,
+.ui-textarea-shell:has(.ui-textarea[aria-invalid="true"]:focus-visible),
 .ui-select[aria-invalid="true"]:focus-visible,
 .ui-combobox__trigger[aria-invalid="true"]:focus-visible,
 .ui-input-shell.is-invalid:has(.ui-input:focus-visible) {
@@ -3876,7 +3897,7 @@ input[type="password"]::-ms-reveal {
 
   .ui-button,
   .ui-input,
-  .ui-textarea,
+  .ui-textarea-shell,
   .ui-select,
   .ui-combobox__trigger,
   .ui-switch__track,
@@ -3892,7 +3913,7 @@ input[type="password"]::-ms-reveal {
   .ui-data-table__mobile[tabindex="0"]:focus-visible,
   .ui-data-table__empty-scroller[tabindex="0"]:focus-visible,
   .ui-input:focus,
-  .ui-textarea:focus,
+  .ui-textarea-shell:focus-within,
   .ui-select:focus,
   .ui-input-shell:focus-within {
     outline: 2px solid Highlight;

@@ -291,11 +291,16 @@
   background: var(--ui-surface-subtle);
 }
 
-.ui-rich-text > .ui-textarea,
-.ui-code-editor > .ui-textarea {
+.ui-rich-text > .ui-textarea-shell,
+.ui-code-editor > .ui-textarea-shell {
   border: 0;
   border-radius: 0;
   box-shadow: none;
+}
+
+.ui-rich-text > .ui-textarea-shell > .ui-textarea,
+.ui-code-editor > .ui-textarea-shell > .ui-textarea {
+  min-height: 104px;
 }
 
 .ui-code-editor__meta {

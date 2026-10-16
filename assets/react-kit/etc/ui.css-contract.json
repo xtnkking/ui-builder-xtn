@@ -1964,6 +1964,10 @@
       "file": "src/ui/styles.css"
     },
     {
+      "selector": ".ui-textarea-shell",
+      "file": "src/ui/styles.css"
+    },
+    {
       "selector": ".ui-timeline",
       "file": "src/ui/styles/layout-actions-display.css"
     },
@@ -2673,7 +2677,7 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 2882
+          "line": 2903
         }
       ]
     },
@@ -2684,7 +2688,7 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 2883
+          "line": 2904
         }
       ]
     },
@@ -2705,7 +2709,7 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 2904
+          "line": 2925
         }
       ]
     },
@@ -2716,7 +2720,7 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 2884
+          "line": 2905
         }
       ]
     },
@@ -2885,7 +2889,7 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 792
+          "line": 813
         }
       ]
     },
@@ -2901,7 +2905,7 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 845
+          "line": 866
         }
       ]
     },
@@ -2917,7 +2921,7 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 793
+          "line": 814
         }
       ]
     },
@@ -3183,17 +3187,17 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 1750
+          "line": 1771
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 1868
+          "line": 1889
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 1902
+          "line": 1923
         }
       ]
     },
@@ -3740,12 +3744,12 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 2096
+          "line": 2117
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 2119
+          "line": 2140
         }
       ]
     },
@@ -3870,12 +3874,12 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 2095
+          "line": 2116
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 3812
+          "line": 3833
         }
       ]
     },
@@ -3912,7 +3916,7 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 2149
+          "line": 2170
         }
       ]
     },
@@ -3923,12 +3927,12 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 2145
+          "line": 2166
         },
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 2151
+          "line": 2172
         }
       ]
     },
@@ -4208,7 +4212,7 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 1755
+          "line": 1776
         },
         {
           "file": "src/ui/styles/layout-actions-display.css",
@@ -5212,5 +5216,5 @@
       ]
     }
   ],
-  "selectorCount": 1259
+  "selectorCount": 1262
 }

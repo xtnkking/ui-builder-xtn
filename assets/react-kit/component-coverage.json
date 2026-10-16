@@ -1,6 +1,6 @@
 {
   "schemaVersion": 3,
-  "kitVersion": "0.3.12",
+  "kitVersion": "0.3.13",
   "generatedFrom": [
     "assets/react-kit/component-manifest.json",
     "assets/react-kit/registry.json",
@@ -172,6 +172,7 @@
     "assets/react-kit/tests/browser/table-dimensions.spec.ts",
     "assets/react-kit/tests/browser/table-height-policy.spec.ts",
     "assets/react-kit/tests/browser/table-typography.spec.ts",
+    "assets/react-kit/tests/browser/textarea-corners.spec.ts",
     "assets/react-kit/tests/browser/theme-contracts.spec.ts",
     "assets/react-kit/tests/browser/theme-presets.spec.ts",
     "assets/react-kit/tests/browser/toast-capacity.spec.ts",
@@ -258,7 +259,7 @@
       "source": 145,
       "example": 145,
       "unit": 123,
-      "browser": 76,
+      "browser": 77,
       "keyboard": 100,
       "a11y": 120
     },
@@ -5255,7 +5256,8 @@
         "assets/react-kit/tests/components/m5-code-editor-contracts.test.tsx"
       ],
       "browser": [
-        "assets/react-kit/tests/browser/m5-code-editor.spec.ts"
+        "assets/react-kit/tests/browser/m5-code-editor.spec.ts",
+        "assets/react-kit/tests/browser/textarea-corners.spec.ts"
       ],
       "keyboard": [
         "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
@@ -14065,7 +14067,8 @@
         "assets/react-kit/tests/components/m5-markdown-editor-contracts.test.tsx"
       ],
       "browser": [
-        "assets/react-kit/tests/browser/m5-markdown-editor.spec.ts"
+        "assets/react-kit/tests/browser/m5-markdown-editor.spec.ts",
+        "assets/react-kit/tests/browser/textarea-corners.spec.ts"
       ],
       "keyboard": [
         "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
@@ -18558,7 +18561,8 @@
         "assets/react-kit/tests/components/m5-markdown-editor-contracts.test.tsx"
       ],
       "browser": [
-        "assets/react-kit/tests/browser/m5-markdown-editor.spec.ts"
+        "assets/react-kit/tests/browser/m5-markdown-editor.spec.ts",
+        "assets/react-kit/tests/browser/textarea-corners.spec.ts"
       ],
       "keyboard": [
         "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
@@ -23391,7 +23395,9 @@
       "unit": [
         "assets/react-kit/tests/components/form-control-contracts.test.tsx"
       ],
-      "browser": [],
+      "browser": [
+        "assets/react-kit/tests/browser/textarea-corners.spec.ts"
+      ],
       "keyboard": [
         "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
       ],

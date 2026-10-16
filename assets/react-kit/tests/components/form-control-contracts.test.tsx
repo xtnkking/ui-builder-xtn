@@ -84,6 +84,7 @@ describe("form control public and private composition contracts", () => {
     const textareaProps = {
       ...forcedEscapeProps("notes-input"),
       name: "notes",
+      hidden: true,
       defaultValue: "Draft",
       "aria-label": "Notes",
     };
@@ -93,6 +94,8 @@ describe("form control public and private composition contracts", () => {
     expect(textarea).toHaveClass("ui-textarea");
     expect(textarea).toHaveAttribute("data-track", "preserved");
     expect(textarea).toHaveValue("Draft");
+    expect(textarea).toHaveAttribute("hidden");
+    expect(textarea.parentElement).toHaveAttribute("hidden");
   });
 
   it("keeps private owner and class mappings for composed text controls", () => {

@@ -644,46 +644,48 @@ export function Textarea(rawProps: TextareaProps) {
   const fieldControl = useFieldControl(id, ariaDescribedBy, ariaInvalid, required);
   const interactionDisabled = isAriaTrue(ariaDisabled);
   return (
-    <textarea
-      {...props}
-      ref={mergedRef}
-      id={fieldControl.id}
-      name={controllerField?.name ?? name}
-      value={controllerField ? controllerField.value : value}
-      defaultValue={defaultValue}
-      required={Boolean(fieldControl.required)}
-      readOnly={Boolean(readOnly || interactionDisabled)}
-      className={cx("ui-textarea", slotConfig?.className)}
-      aria-disabled={ariaDisabled}
-      aria-describedby={fieldControl.describedBy}
-      aria-invalid={fieldControl.invalid}
-      data-ui-owner={owner}
-      onChange={(event) => {
-        if (interactionDisabled) {
-          event.preventDefault();
-          event.stopPropagation();
-          return;
-        }
-        (controllerField?.onChange ?? onChange)?.(event);
-      }}
-      onBlur={controllerField?.onBlur ?? onBlur}
-      onClick={(event) => {
-        if (interactionDisabled) {
-          event.preventDefault();
-          event.stopPropagation();
-          return;
-        }
-        onClick?.(event);
-      }}
-      onKeyDown={(event) => {
-        if (interactionDisabled && event.key !== "Tab") {
-          event.preventDefault();
-          event.stopPropagation();
-          return;
-        }
-        onKeyDown?.(event);
-      }}
-    />
+    <div className="ui-textarea-shell" hidden={props.hidden}>
+      <textarea
+        {...props}
+        ref={mergedRef}
+        id={fieldControl.id}
+        name={controllerField?.name ?? name}
+        value={controllerField ? controllerField.value : value}
+        defaultValue={defaultValue}
+        required={Boolean(fieldControl.required)}
+        readOnly={Boolean(readOnly || interactionDisabled)}
+        className={cx("ui-textarea", slotConfig?.className)}
+        aria-disabled={ariaDisabled}
+        aria-describedby={fieldControl.describedBy}
+        aria-invalid={fieldControl.invalid}
+        data-ui-owner={owner}
+        onChange={(event) => {
+          if (interactionDisabled) {
+            event.preventDefault();
+            event.stopPropagation();
+            return;
+          }
+          (controllerField?.onChange ?? onChange)?.(event);
+        }}
+        onBlur={controllerField?.onBlur ?? onBlur}
+        onClick={(event) => {
+          if (interactionDisabled) {
+            event.preventDefault();
+            event.stopPropagation();
+            return;
+          }
+          onClick?.(event);
+        }}
+        onKeyDown={(event) => {
+          if (interactionDisabled && event.key !== "Tab") {
+            event.preventDefault();
+            event.stopPropagation();
+            return;
+          }
+          onKeyDown?.(event);
+        }}
+      />
+    </div>
   );
 }
 
