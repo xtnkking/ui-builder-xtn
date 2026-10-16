@@ -132,3 +132,73 @@ test("cursor table footer keeps page and size request dimensions stable with 44p
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
   await section.screenshot({ path: test.info().outputPath("cursor-table-320.png"), animations: "disabled" });
 });
+
+test("numbered and cursor table pagination share project styling across desktop narrow and dark contexts", async ({ page }) => {
+  await page.goto("/#/components/pagination");
+  await page.getByRole("tab", { name: "统一分页风格预览", exact: true }).click();
+  const casePanel = page.getByRole("tabpanel", { name: "统一分页风格预览", exact: true });
+
+  for (const dark of [false, true]) {
+    await casePanel.getByRole("tab", { name: dark ? "深色模式" : "默认", exact: true }).click();
+    const statePanel = casePanel.getByRole("tabpanel", { name: dark ? "深色模式" : "默认", exact: true });
+    const pair = statePanel.getByRole("region", { name: "分页样式对照", exact: true });
+    const numbered = pair.getByRole("region", { name: "已知总数列表", exact: true }).getByRole("navigation", { name: "数据分页", exact: true });
+    const cursor = pair.getByRole("region", { name: "未知总数列表", exact: true }).getByRole("navigation", { name: "数据分页", exact: true });
+
+    for (const width of [1440, 320]) {
+      await page.setViewportSize({ width, height: 1100 });
+      const numberedCurrent = numbered.locator('.ui-pagination__pages [aria-current="page"]:visible, .ui-pagination__mobile-label:visible');
+      const cursorCurrent = cursor.locator('[aria-current="page"]');
+      await expect(numberedCurrent).toHaveCount(1);
+      await expect(cursorCurrent).toHaveText("第 1 页");
+      expect(await cursorCurrent.evaluate((node) => ({ tag: node.tagName, tabIndex: (node as HTMLElement).tabIndex })))
+        .toEqual({ tag: "SPAN", tabIndex: -1 });
+      await expect(cursor.getByRole("button")).toHaveCount(2);
+      await expect(cursor).not.toContainText("结果");
+      await expect(cursor).not.toContainText("/");
+
+      const appearance = async (node: Locator) => node.evaluate((element) => {
+        const style = getComputedStyle(element);
+        return { height: style.height, fontFamily: style.fontFamily, fontSize: style.fontSize,
+          fontWeight: style.fontWeight, lineHeight: style.lineHeight, radius: style.borderRadius,
+          background: style.backgroundColor, color: style.color, borderColor: style.borderTopColor,
+          borderWidth: style.borderTopWidth };
+      });
+      expect(await appearance(cursorCurrent)).toEqual(await appearance(numberedCurrent));
+      const targetHeight = width === 320 ? 44 : 36;
+      for (const nav of [numbered, cursor]) {
+        const navBox = await bounds(nav);
+        const current = nav === numbered ? numberedCurrent : cursorCurrent;
+        const currentBox = await bounds(current);
+        expect(currentBox.height).toBe(targetHeight);
+        expect(currentBox.width).toBeGreaterThanOrEqual(targetHeight);
+        const previous = nav.getByRole("button", { name: "上一页", exact: true });
+        const next = nav.getByRole("button", { name: "下一页", exact: true });
+        for (const control of [previous, current, next, nav.getByRole("combobox")]) {
+          const box = await bounds(control);
+          expect(box.height).toBe(targetHeight);
+          expect(box.x).toBeGreaterThanOrEqual(navBox.x - 1);
+          expect(box.x + box.width).toBeLessThanOrEqual(navBox.x + navBox.width + 1);
+        }
+        const previousBox = await bounds(previous);
+        const nextBox = await bounds(next);
+        expect(currentBox.y + currentBox.height / 2).toBeCloseTo(previousBox.y + previousBox.height / 2, 0);
+        expect(currentBox.y + currentBox.height / 2).toBeCloseTo(nextBox.y + nextBox.height / 2, 0);
+      }
+      expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
+      await pair.screenshot({ path: test.info().outputPath(`pagination-consistency-${dark ? "dark" : "light"}-${width}.png`), animations: "disabled" });
+    }
+  }
+
+  await casePanel.getByRole("tab", { name: "长内容", exact: true }).click();
+  const longCursor = casePanel.getByRole("tabpanel", { name: "长内容", exact: true })
+    .getByRole("region", { name: "未知总数列表", exact: true }).getByRole("navigation", { name: "数据分页", exact: true });
+  const longCurrent = longCursor.locator('[aria-current="page"]');
+  await expect(longCurrent).toHaveAttribute("title", /123[\s,\d]*345/);
+  const longBox = await bounds(longCurrent);
+  const longNavBox = await bounds(longCursor);
+  expect(longBox.x).toBeGreaterThanOrEqual(longNavBox.x - 1);
+  expect(longBox.x + longBox.width).toBeLessThanOrEqual(longNavBox.x + longNavBox.width + 1);
+  await expect(longCursor.getByRole("button", { name: "下一页", exact: true })).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
+});

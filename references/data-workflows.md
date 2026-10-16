@@ -389,6 +389,12 @@ Pass the typed `pagination` object directly to `DataTable`; this keeps the pager
 
 Tables use a stable viewport of five standard row-height units by default, whether paginated or unpaginated; the implicit default is bounded on short screens. Keep `pagination` present during loading, empty, and zero-row error states so sparse pages and changing page sizes do not move the pager. Use a numeric `viewportRows` for another explicit fixed capacity, or `viewportRows="auto"` only when following content height is intentional. Never derive capacity from `rows.length`; taller custom cells scroll without being clipped into standard rows.
 
+### Project pagination consistency
+
+Use one official pagination design throughout an application: `DataTable.pagination` owns table paging; other paged lists use `Pagination` from the same installed kit and application theme. Keep the same control heights, typography, corner radius, spacing, page-size control and highlighted current-page treatment across pages. Do not add an alternative pager, rebuild controls, or apply page-specific CSS to make individual pages look different. Loading and responsive compact layouts remain adaptations of this shared design.
+
+Choose the mode from the actual API contract. When endpoints supply real totals and numbered page access, use the same numbered composition across those lists. Use cursor mode only where the API supplies adjacent-page availability without a real page count; do not infer that capability from the current response length or switch modes because a page has few results. Its highlighted “第 N 页” is a non-interactive status, not a page-jump button; retaining this semantic difference does not require a different visual style. Never fabricate totals to force a cursor endpoint into numbered paging.
+
 For known page counts, keep the ordinary `page`, `pageCount` and `onPageChange` props. For cursor/unknown-total APIs, use the same in-frame component with `mode="cursor"`, `page`, `hasPreviousPage`, `hasNextPage`, and `onPageChange`; this mode has no `pageCount` or `total`, numbered jumps or invented total. For example:
 
 ```tsx

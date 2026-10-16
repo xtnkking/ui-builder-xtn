@@ -1755,15 +1755,24 @@ input[type="password"]::-ms-reveal {
   height: var(--_ui-pagination-control-size);
 }
 
+.ui-page-button,
+.ui-pagination__mobile-label {
+  box-sizing: border-box;
+  min-width: var(--_ui-pagination-control-size);
+  height: var(--_ui-pagination-control-size);
+  border: 1px solid var(--ui-border-strong);
+  border-radius: 9px;
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+}
+
 .ui-page-button {
   display: grid;
   place-items: center;
   width: var(--_ui-pagination-control-size);
-  height: var(--_ui-pagination-control-size);
   padding: 0;
   overflow: hidden;
-  border: 1px solid var(--ui-border-strong);
-  border-radius: 9px;
   background: var(--ui-surface);
   color: var(--ui-text);
   cursor: pointer;
@@ -1783,7 +1792,8 @@ input[type="password"]::-ms-reveal {
   height: 16px;
 }
 
-.ui-page-button[aria-current="page"] {
+.ui-page-button[aria-current="page"],
+.ui-pagination__mobile-label {
   border-color: var(--ui-primary);
   background: var(--ui-primary);
   color: var(--ui-on-primary);
@@ -1798,26 +1808,29 @@ input[type="password"]::-ms-reveal {
 
 .ui-pagination__mobile-label {
   display: none;
-  min-width: 0;
   max-width: 16ch;
+  padding: 0 10px;
   overflow: hidden;
-  color: var(--ui-muted);
-  font-size: 12px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .ui-pagination__mobile-status {
-  display: inline-flex;
+  display: flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
   min-width: 0;
   max-width: 100%;
-  vertical-align: middle;
+  height: 100%;
 }
 
 .ui-pagination__cursor-label {
   display: block;
+}
+
+.ui-pagination__cursor-label .ui-pagination__mobile-loading {
+  display: none;
 }
 
 .ui-pagination__mobile-loading {
@@ -3712,7 +3725,7 @@ input[type="password"]::-ms-reveal {
   }
 
   .ui-pagination__mobile-label {
-    display: inline;
+    display: block;
   }
 
   .ui-alert {

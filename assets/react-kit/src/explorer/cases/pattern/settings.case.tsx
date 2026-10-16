@@ -1,7 +1,7 @@
 // @ui-coverage {"kind":"example","runner":"explorer","caseId":"settings/overview","exports":["SettingsPage"]}
 import { StatePreview } from "../state-preview";
 import { useEffect, useId, useRef, useState } from "react";
-import { Button, Field, Form, Grid, Input, NumberInput, SettingsPage, Switch, Textarea, ToastProvider, useToast } from "../../../ui";
+import { Box, Button, Field, Form, Grid, Input, NumberInput, SettingsPage, Switch, Textarea, ToastProvider, useToast } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 function TaskLimitsExample({ longContent = false }: { longContent?: boolean }) {
@@ -32,18 +32,20 @@ function TaskLimitsExample({ longContent = false }: { longContent?: boolean }) {
     setSaving(false);
     toast({ description: "任务限制已保存", tone: "success", dedupeKey: "save-task-limits" });
   }}>
-    <Grid minItemWidth={260}>
-      {fields.map((field) => <Field
-        key={field.name}
-        label={longContent ? `${field.label}：适用于当前工作区全部自动处理任务` : field.label}
-        htmlFor={`${id}-${field.name}`}
-        width="short"
-        required
-        hint={longContent ? `${field.hint}修改后将在下一次任务启动时生效；已开始的任务继续使用原设置。` : field.hint}
-      >
-        <NumberInput id={`${id}-${field.name}`} name={field.name} value={limits[field.name]} onValueChange={(value) => setLimits((current) => ({ ...current, [field.name]: value }))} min={1} max={field.max} disabled={saving} />
-      </Field>)}
-    </Grid>
+    <Box style={{ width: "100%", maxWidth: 504 }}>
+      <Grid minItemWidth={240} gap="large">
+        {fields.map((field) => <Field
+          key={field.name}
+          label={longContent ? `${field.label}：适用于当前工作区全部自动处理任务` : field.label}
+          htmlFor={`${id}-${field.name}`}
+          width="short"
+          required
+          hint={longContent ? `${field.hint}修改后将在下一次任务启动时生效；已开始的任务继续使用原设置。` : field.hint}
+        >
+          <NumberInput id={`${id}-${field.name}`} name={field.name} value={limits[field.name]} onValueChange={(value) => setLimits((current) => ({ ...current, [field.name]: value }))} min={1} max={field.max} disabled={saving} />
+        </Field>)}
+      </Grid>
+    </Box>
     <Button type="submit" variant="primary" size="field" loading={saving} loadingLabel="正在保存">保存设置</Button>
   </Form>;
 }
@@ -82,7 +84,7 @@ export function SettingsExample({ longContent = false }: { longContent?: boolean
 const explorerCase: ExplorerCase = {
   id: "settings/overview",
   label: "设置页面",
-  summary: "内容区默认限宽；短数值字段自适应分列，保存按钮保持内容宽度。",
+  summary: "短数值字段在限宽分组内紧凑排列，列间距 24px；空间不足自动单列，保存按钮保持内容宽度。",
   states: ["default", "disabled", "controlled", "empty", "longContent", "keyboard", "mobile", "overlay", "dark", "locale"],
   stateExamples: [
     { state: "disabled", exports: ["SettingsPage"], instructions: "账单导航项由 section.disabled 禁用；其他设置分类仍可切换。", content: <SettingsExample /> },
@@ -98,16 +100,18 @@ const explorerCase: ExplorerCase = {
   ],
   content: <SettingsExample />,
   previewLayout: "page",
-  code: `import { Button, Field, Form, Grid, NumberInput, SettingsPage } from "./ui";
+  code: `import { Box, Button, Field, Form, Grid, NumberInput, SettingsPage } from "./ui";
 
 <SettingsPage title="工作区设置" sections={sections} currentId={section} onCurrentChange={setSection} />
 // 在设置分类的 content 中：
 <Form busy={saving} onSubmit={save}>
-  <Grid minItemWidth={260}>
-    <Field label="失败重试次数" htmlFor="retries" width="short" hint="最多 10 次。">
-      <NumberInput id="retries" value={retries} onValueChange={setRetries} min={1} max={10} />
-    </Field>
-  </Grid>
+  <Box style={{ width: "100%", maxWidth: 504 }}>
+    <Grid minItemWidth={240} gap="large">
+      <Field label="失败重试次数" htmlFor="retries" width="short" hint="最多 10 次。">
+        <NumberInput id="retries" value={retries} onValueChange={setRetries} min={1} max={10} />
+      </Field>
+    </Grid>
+  </Box>
   <Button type="submit" variant="primary" loading={saving}>保存设置</Button>
 </Form>`,
 };

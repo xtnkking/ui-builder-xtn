@@ -8,20 +8,24 @@ Choose width from the expected value, label, control chrome and local container.
 
 `Field width="short"`, `"medium"`, and `"long"` prefer 240, 360 and 560 CSS pixels. A positive finite number selects another preference. The field is bounded by its container; omitting width preserves ordinary full-width fields. `FilterField` remains the filter-bar composition with separate 140/240/320px baselines and bounded placeholder measurement. Long instructions belong in labels/hints, not indefinitely expanding placeholders.
 
+Bound the field group as well as each short control. `Grid minItemWidth` sets a track's lower bound; its `1fr` tracks still grow to share the available width. Putting 240px fields at the start of unbounded tracks leaves extra space between the visible controls. For a compact pair, use a public `Box` with `width: "100%"` and `maxWidth: 504`, then `Grid minItemWidth={240} gap="large"`: two 240px fields plus the 24px gap fill 504px, and a narrower container switches to one column. Keep this bound local to the short-field group; medium/long fields and textareas need their own appropriate widths.
+
 ```tsx
-import { Button, Field, Form, Grid, NumberInput } from "./ui";
+import { Box, Button, Field, Form, Grid, NumberInput } from "./ui";
 
 <Form onSubmit={saveSettings}>
-  <Grid minItemWidth={260} gap="large">
-    <Field htmlFor="poll-interval" label="有任务时拉取间隔（秒）" width="short">
-      <NumberInput id="poll-interval" ariaLabel="有任务时拉取间隔" value={interval}
-        min={0.1} step={0.1} onValueChange={setInterval} />
-    </Field>
-    <Field htmlFor="backlog-threshold" label="积压暂停阈值（条）" width="short">
-      <NumberInput id="backlog-threshold" ariaLabel="积压暂停阈值" value={threshold}
-        min={1} onValueChange={setThreshold} />
-    </Field>
-  </Grid>
+  <Box style={{ width: "100%", maxWidth: 504 }}>
+    <Grid minItemWidth={240} gap="large">
+      <Field htmlFor="poll-interval" label="有任务时拉取间隔（秒）" width="short">
+        <NumberInput id="poll-interval" ariaLabel="有任务时拉取间隔" value={interval}
+          min={0.1} step={0.1} onValueChange={setInterval} />
+      </Field>
+      <Field htmlFor="backlog-threshold" label="积压暂停阈值（条）" width="short">
+        <NumberInput id="backlog-threshold" ariaLabel="积压暂停阈值" value={threshold}
+          min={1} onValueChange={setThreshold} />
+      </Field>
+    </Grid>
+  </Box>
   <Button type="submit" variant="primary" loading={saving}
     loadingLabel="保存全部设置">保存全部设置</Button>
 </Form>
@@ -42,6 +46,8 @@ Keep query loading labels equal to the short visible command when longer text is
 DataTable defaults to a fixed viewport of five standard row-height units, with and without pagination. Sparse and empty results retain the surface; more records scroll inside it. Default capacity is bounded on short screens. A numeric `viewportRows` chooses another explicit capacity; `viewportRows="auto"` chooses content height. Capacity is not the exact visible record count when custom cells wrap. Never derive it from `rows.length` or change it on each request.
 
 Keep pagination in `DataTable.pagination` during loading, empty and error states. The same official Pagination owns numbered and unknown-total layouts, loading, page-size selection and responsive geometry. Do not reconstruct a pager from ordinary Buttons/Select or add a second one outside the table.
+
+Use one pagination design across the application. Table and other list pagers share the application theme, control heights, typography, corners, spacing, page-size control and highlighted current-page treatment. Cursor mode displays the same current-page treatment as a non-interactive “第 N 页” status; numbered mode exposes real page-jump buttons. Responsive compact layouts are component-owned adaptations of this design. Do not introduce page-specific pager styles or application CSS overrides; choose the mode from the API's capabilities using the [project consistency rules](data-workflows.md#project-pagination-consistency).
 
 - For known page counts, pass `pageCount` and the controlled page callbacks. Numeric buttons may collapse in a narrow container without changing paging semantics.
 - For cursor APIs, use `mode="cursor"`, the actual `hasPreviousPage`/`hasNextPage`, and a controlled page ordinal. Do not invent totals or offer random page jumps. The application owns cursor history, requests and history resets when filters or page size change.

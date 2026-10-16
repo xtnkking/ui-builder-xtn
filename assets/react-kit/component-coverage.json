@@ -1,6 +1,6 @@
 {
   "schemaVersion": 3,
-  "kitVersion": "0.3.8",
+  "kitVersion": "0.3.9",
   "generatedFrom": [
     "assets/react-kit/component-manifest.json",
     "assets/react-kit/registry.json",
@@ -102,6 +102,7 @@
     "assets/react-kit/src/explorer/cases/navigation/infinite-scroll.case.tsx",
     "assets/react-kit/src/explorer/cases/navigation/load-more.case.tsx",
     "assets/react-kit/src/explorer/cases/navigation/menu.case.tsx",
+    "assets/react-kit/src/explorer/cases/navigation/pagination-consistency.example.tsx",
     "assets/react-kit/src/explorer/cases/navigation/pagination.case.tsx",
     "assets/react-kit/src/explorer/cases/navigation/stepper.case.tsx",
     "assets/react-kit/src/explorer/cases/navigation/tabs.case.tsx",

@@ -38,15 +38,21 @@ test("numeric settings keep short controls and a compact save button across six 
       expect(control.x).toBeGreaterThanOrEqual(available.x - 1);
       expect(control.x + control.width).toBeLessThanOrEqual(available.x + available.width + 1);
     }
-    if (available.width >= 536) {
+    if (available.width >= 504) {
       expect(controls[1].y).toBeCloseTo(controls[0].y, 0);
       expect(controls[2].y).toBeGreaterThan(controls[0].y);
       expect(controls[3].y).toBeCloseTo(controls[2].y, 0);
+      // Measure the visible controls, not just Grid's declared gap: free space
+      // inside a stretched track previously left a gap of roughly170px here.
+      expect(controls[1].x - controls[0].x - controls[0].width).toBeCloseTo(24, 0);
+      expect(controls[3].x - controls[2].x - controls[2].width).toBeCloseTo(24, 0);
     } else {
       for (let index = 1; index < controls.length; index += 1) {
         expect(controls[index].y).toBeGreaterThan(controls[index - 1].y);
+        expect(controls[index].x).toBeCloseTo(controls[0].x, 0);
       }
     }
+    expect(controls[0].x).toBeCloseTo(available.x, 0);
     const button = await bounds(save);
     expect(button.width).toBeLessThanOrEqual(180);
     expect(button.height).toBeCloseTo(44, 0);

@@ -7,6 +7,7 @@ import infiniteScrollCase from "./infinite-scroll.case";
 import loadMoreCase from "./load-more.case";
 import menuCase from "./menu.case";
 import paginationCase from "./pagination.case";
+import paginationConsistencyCase from "./pagination-consistency.example";
 import stepperCase from "./stepper.case";
 import tabsCase from "./tabs.case";
 
@@ -18,7 +19,7 @@ export const navigationExplorerCases: ExplorerCases = {
   "infinite-scroll": [infiniteScrollCase],
   "load-more": [loadMoreCase],
   menu: [menuCase],
-  pagination: [paginationCase],
+  pagination: [paginationCase, paginationConsistencyCase],
   stepper: [stepperCase],
   tabs: [tabsCase],
 };
