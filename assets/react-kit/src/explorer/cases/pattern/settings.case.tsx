@@ -71,25 +71,25 @@ export function SettingsExample({ longContent = false }: { longContent?: boolean
         { id: "billing", label: "账单", title: "账单", content: <p>由组织管理员管理。</p>, disabled: true },
       ];
   return (
-    <ToastProvider>{longContent ? <SettingsPage
+    <ToastProvider><Box style={{ padding: "clamp(16px, 3%, 24px)" }}>{longContent ? <SettingsPage
       title="工作区设置"
       description="这些限制适用于当前工作区全部自动处理任务。修改后将在下一次任务启动时生效；已开始的任务继续使用原设置，请结合实际任务规模和服务容量调整。"
       currentId={section}
       onCurrentChange={setSection}
       sections={sections}
-    /> : <SettingsPage title="工作区设置" currentId={section} onCurrentChange={setSection} sections={sections} />}</ToastProvider>
+    /> : <SettingsPage title="工作区设置" currentId={section} onCurrentChange={setSection} sections={sections} />}</Box></ToastProvider>
   );
 }
 
 const explorerCase: ExplorerCase = {
   id: "settings/overview",
   label: "设置页面",
-  summary: "短数值字段在限宽分组内紧凑排列，列间距 24px；空间不足自动单列，保存按钮保持内容宽度。",
+  summary: "页壳保留自适应留白；短数值字段紧凑分列，列间距 24px，窄容器自动单列。",
   states: ["default", "disabled", "controlled", "empty", "longContent", "keyboard", "mobile", "overlay", "dark", "locale"],
   stateExamples: [
     { state: "disabled", exports: ["SettingsPage"], instructions: "账单导航项由 section.disabled 禁用；其他设置分类仍可切换。", content: <SettingsExample /> },
     { state: "controlled", exports: ["SettingsPage"], content: <SettingsExample /> },
-    { state: "empty", exports: ["SettingsPage"], content: <SettingsPage title="没有设置分类" sections={[]} currentId="" onCurrentChange={() => undefined} /> },
+    { state: "empty", exports: ["SettingsPage"], content: <Box style={{ padding: "clamp(16px, 3%, 24px)" }}><SettingsPage title="没有设置分类" sections={[]} currentId="" onCurrentChange={() => undefined} /></Box> },
     { state: "longContent", exports: ["SettingsPage"], content: <SettingsExample longContent /> },
     { state: "default", exports: ["SettingsPage"], content: <SettingsExample /> },
     { state: "keyboard", exports: ["SettingsPage"], content: <SettingsExample />, instructions: "用 Tab 访问本例可用控件，使用 Enter、Space 和组件文档中的方向键操作。此项为人工操作案例，不是自动行为验收证书。" },
@@ -102,7 +102,10 @@ const explorerCase: ExplorerCase = {
   previewLayout: "page",
   code: `import { Box, Button, Field, Form, Grid, NumberInput, SettingsPage } from "./ui";
 
-<SettingsPage title="工作区设置" sections={sections} currentId={section} onCurrentChange={setSection} />
+// 独立嵌入容器需要页壳留白；应用宿主已有内边距时无需重复添加。
+<Box style={{ padding: "clamp(16px, 3%, 24px)" }}>
+  <SettingsPage title="工作区设置" sections={sections} currentId={section} onCurrentChange={setSection} />
+</Box>
 // 在设置分类的 content 中：
 <Form busy={saving} onSubmit={save}>
   <Box style={{ width: "100%", maxWidth: 504 }}>

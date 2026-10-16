@@ -29,6 +29,18 @@ test("numeric settings keep short controls and a compact save button across six 
   await expect(fields).toHaveCount(4);
   for (const width of [2560, 1440, 1024, 736, 360, 320]) {
     await page.setViewportSize({ width, height: 1000 });
+    const frame = await bounds(preview);
+    const pageBox = await bounds(settings);
+    const heading = await bounds(settings.getByRole("heading", { name: "工作区设置", exact: true }));
+    // Include the complete framed page: a compact field gap alone does not
+    // catch a title touching the top/left border or a footer touching bottom.
+    const shell = settings.locator("..");
+    const inset = await shell.evaluate((node) => parseFloat(getComputedStyle(node).paddingLeft));
+    expect(inset).toBeGreaterThanOrEqual(16);
+    expect(inset).toBeLessThanOrEqual(24);
+    expect(heading.x - frame.x).toBeGreaterThanOrEqual(inset);
+    expect(heading.y - frame.y).toBeGreaterThanOrEqual(inset);
+    expect(frame.y + frame.height - pageBox.y - pageBox.height).toBeGreaterThanOrEqual(inset);
     const available = await bounds(content);
     expect(available.width).toBeLessThanOrEqual(800);
     const controls = await Promise.all((await fields.all()).map(bounds));
@@ -60,6 +72,9 @@ test("numeric settings keep short controls and a compact save button across six 
     if (width === 2560 || width === 320) {
       await preview.screenshot({ path: test.info().outputPath(`settings-${width}.png`), animations: "disabled" });
     }
+    if (width === 1440) {
+      await page.screenshot({ path: test.info().outputPath("settings-explorer-desktop.png"), fullPage: true, animations: "disabled" });
+    }
   }
 
   const before = await bounds(save);
@@ -85,6 +100,8 @@ test("long labels wrap in a narrow settings container and ordinary form fields p
   await longPreview.evaluate((node) => { node.style.width = "320px"; node.style.maxWidth = "100%"; });
   const settings = longPreview.locator('[data-ui-owner="SettingsPage"]');
   const content = settings.locator(".ui-settings-page__content");
+  const shellInset = await settings.locator("..").evaluate((node) => parseFloat(getComputedStyle(node).paddingLeft));
+  expect(shellInset).toBeCloseTo(16, 0);
   const navigation = settings.getByRole("navigation", { name: "设置分类", exact: true });
   const available = await bounds(content);
   const navBox = await bounds(navigation);

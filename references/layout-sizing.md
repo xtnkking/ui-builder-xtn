@@ -35,6 +35,8 @@ import { Box, Button, Field, Form, Grid, NumberInput } from "./ui";
 
 `SettingsPage layoutWidth="readable"` is the default and bounds its content section to 800px. Select `layoutWidth="wide"` for content that needs the space. Navigation/content respond to the actual container, including a narrow embedded panel on a wide monitor. The runnable service-settings form is at `#/patterns/settings`.
 
+`SettingsPage` leaves outer page-shell padding to the application's existing shell. For a standalone embed in a bordered container, the official example wraps it in public `Box style={{ padding: "clamp(16px, 3%, 24px)" }}` to provide 16–24px of inset according to the actual containing width. If the host already supplies padding, reuse that inset without adding another padded wrapper.
+
 ## Filters and actions
 
 Use `FilterField` with `FilterBar` for mixed-length query controls. Fields wrap with the actions without enlarging to occupy unused desktop space. FilterBar actions use the same corner radius as fields. Default compact desktop height is 38px; comfortable density, narrow containers, mobile viewports and coarse pointers retain 44px controls. Outside FilterBar, ordinary fields remain 44px and Buttons remain 38px; use `size="field"` when aligning a Button with a field.

@@ -4,7 +4,9 @@ This document records both current-main maintenance delivery and the historical 
 
 ## Current-main synchronized releases
 
-Version `0.3.9` delivers shared numbered/cursor pagination visuals and compact short-field settings layouts with a 24px visible gap. The version cut retains the three pagination and two settings browser cases under their actual source hashes, and adds version metadata, package identity and public-install checks without repeating behavior suites or the historical M8 workflow.
+Version `0.3.10` adds responsive 16–24px outer spacing to the settings page preview and documents page-shell padding ownership. It retains the two passing settings browser cases and build under their actual source hashes, and adds version metadata, package identity and public-install checks without repeating behavior suites or the historical M8 workflow. Canonical component runtime, API and CSS remain unchanged from `0.3.9`.
+
+Version `0.3.9` delivered shared numbered/cursor pagination visuals and compact short-field settings layouts with a 24px visible gap. Its retained evidence includes three pagination and two settings browser cases.
 
 Version `0.3.8` delivered reviewed search-feedback guidance, measured filter placeholder widths, consistent table/form/settings dimensions, cursor pagination and bounded narrow-screen controls. Its retained evidence includes separate ButtonGroup focus and narrow-pager repairs.
 
@@ -150,7 +152,7 @@ All candidate/source deltas, command captures, installed source, raw behavior/ax
 
 ## Version policy
 
-The immutable historical compatibility and M8 migration baseline remains the annotated `v0.2.19` source. The current-main `releaseTarget` is `0.3.9`; the isolated M7/M8 line described below targeted `0.3.1`. Public historical tags and their acceptance records remain unchanged. The compatibility report's `breaking` classification describes comparison from `0.2.19`; it does not imply a new breaking change relative to `0.3.1`. The additive theme API and maintenance changes use the repository's pre-1.0 patch policy. A new comparison must not silently replace the historical baseline.
+The immutable historical compatibility and M8 migration baseline remains the annotated `v0.2.19` source. The current-main `releaseTarget` is `0.3.10`; the isolated M7/M8 line described below targeted `0.3.1`. Public historical tags and their acceptance records remain unchanged. The compatibility report's `breaking` classification describes comparison from `0.2.19`; it does not imply a new breaking change relative to `0.3.1`. The additive theme API and maintenance changes use the repository's pre-1.0 patch policy. A new comparison must not silently replace the historical baseline.
 
 - Before `1.0.0`, a breaking public API change requires the next minor line and an additive public API change requires at least a patch. At or after `1.0.0`, breaking changes require a major and additive changes require a minor.
 - This cycle prepares `<releaseTarget>-rc.N`, currently `0.3.1-rc.N`, where `N` is a positive integer without leading zeroes, and permits the same-line stable version only through the verified promotion contract. Beta, arbitrary prerelease labels, build metadata, downgrades, other release lines, and reused versions fail.
