@@ -39,11 +39,21 @@ const inferredRowUsage = (
 void inferredRowUsage;
 
 const projectHeight = <DataTableProvider viewportRows={5}>{inferredRowUsage}</DataTableProvider>;
+const projectFillHeight = <DataTableProvider heightMode="fill" viewportRows={5}>{inferredRowUsage}</DataTableProvider>;
+const standaloneFillHeight = <DataTable ariaLabel="Accounts" columns={columns} rows={rows} rowKey={(row) => row.id} heightMode="fill" viewportRows="auto" />;
+// @ts-expect-error fill consumes the parent layout; viewport sizing expressions are not height modes
+const invalidProjectHeightMode = <DataTableProvider heightMode="viewport">{inferredRowUsage}</DataTableProvider>;
+// @ts-expect-error custom geometry strings are not supported table height modes
+const invalidTableHeightMode = <DataTable ariaLabel="Accounts" columns={columns} rows={rows} rowKey={(row) => row.id} heightMode="calc(100dvh - 24px)" />;
 // @ts-expect-error project policy always owns a fixed numeric capacity
 const contentHeightProject = <DataTableProvider viewportRows="auto">{inferredRowUsage}</DataTableProvider>;
 // @ts-expect-error the provider adds no styled DOM wrapper
 const styledHeightProject = <DataTableProvider style={{ height: 300 }}>{inferredRowUsage}</DataTableProvider>;
 void projectHeight;
+void projectFillHeight;
+void standaloneFillHeight;
+void invalidProjectHeightMode;
+void invalidTableHeightMode;
 void contentHeightProject;
 void styledHeightProject;
 

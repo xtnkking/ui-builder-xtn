@@ -1711,7 +1711,9 @@ export type DataTableProps<T> = PublicControlProps<Omit<HTMLAttributes<HTMLDivEl
     onSort?: (sort: DataSort) => void;
     loadingSortColumnId?: string;
     loadingRows?: number;
-    /** Fixed viewport size in standard row-height units. All tables default to five units, bounded on short screens; a number chooses an explicit capacity, and "auto" follows content height when there is no DataTableProvider policy. Provider policy takes precedence over this prop. Fixed viewports are keyboard-scrollable and reset vertically for new results. */
+    /** "rows" keeps the configured capacity. "fill" fills a bounded layout region, including pagination; without a bounded parent, viewportRows supplies a stable whole-frame fallback. Provider policy takes precedence. */
+    heightMode?: "rows" | "fill";
+    /** In "rows" mode, the viewport defaults to five standard row-height units, bounded on short screens; "auto" follows content outside a Provider. In "fill" mode, this capacity supplies only an unbounded-parent whole-frame fallback ("auto" falls back to five). Provider policy takes precedence. Bounded viewports are keyboard-scrollable and reset vertically for new results. */
     viewportRows?: number | "auto";
     ariaLabel: string;
     emptyTitle?: ReactNode;
@@ -1726,10 +1728,12 @@ export type DataTableProps<T> = PublicControlProps<Omit<HTMLAttributes<HTMLDivEl
 };
 export interface DataTableProviderProps {
     children: ReactNode;
-    /** Shared fixed viewport capacity for every table in this scope, including tables requesting "auto". Defaults to five standard row-height units and is bounded on short screens. */
+    /** Shared layout strategy. "fill" fills each table's bounded parent; "rows" retains the configured viewport capacity. Nested providers start an independent policy. */
+    heightMode?: "rows" | "fill";
+    /** Shared capacity for every table in this scope, including tables requesting "auto". Defaults to five standard row-height units. "rows" bounds the viewport on short screens; "fill" uses the allocated region and retains this capacity only as an unbounded-parent fallback. */
     viewportRows?: number;
 }
-export declare function DataTableProvider({ children, viewportRows }: DataTableProviderProps): import("react").JSX.Element;
+export declare function DataTableProvider({ children, viewportRows, heightMode }: DataTableProviderProps): import("react").JSX.Element;
 export declare function DataTable<T>(rawProps: DataTableProps<T>): import("react").JSX.Element;
 ```
 

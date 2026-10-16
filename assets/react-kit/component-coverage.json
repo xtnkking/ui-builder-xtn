@@ -1,6 +1,6 @@
 {
   "schemaVersion": 3,
-  "kitVersion": "0.3.13",
+  "kitVersion": "0.3.14",
   "generatedFrom": [
     "assets/react-kit/component-manifest.json",
     "assets/react-kit/registry.json",
@@ -43,6 +43,7 @@
     "assets/react-kit/src/explorer/cases/data/statistic.case.tsx",
     "assets/react-kit/src/explorer/cases/data/status.case.tsx",
     "assets/react-kit/src/explorer/cases/data/table-dimensions.example.tsx",
+    "assets/react-kit/src/explorer/cases/data/table-fill-height.example.tsx",
     "assets/react-kit/src/explorer/cases/data/tag.case.tsx",
     "assets/react-kit/src/explorer/cases/data/timeline.case.tsx",
     "assets/react-kit/src/explorer/cases/data/tree.case.tsx",
@@ -6976,7 +6977,7 @@
         },
         "migration": {
           "status": "none",
-          "reason": "Optional project-level fixed table capacity. Existing standalone table calls remain supported; all fixed capacities now share the short-screen limit. See references/data-workflows.md#project-table-height-policy."
+          "reason": "Optional shared table-height strategy: default rows preserves fixed capacity; heightMode=fill uses the bounded remaining layout slot, including pagination. Existing calls remain supported. See references/data-workflows.md#project-table-height-policy."
         },
         "keyboard": {
           "mode": "none",

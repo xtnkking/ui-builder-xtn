@@ -14,21 +14,21 @@
   },
   "current": {
     "packageName": "ui",
-    "version": "0.3.13",
-    "apiDigest": "cf511168e99ece2b7bb9a12c1e4e03047ac79e6e483a9c0addf121682d09a070",
-    "compatibilityDigest": "b79c4366fdc919df524d967816e083400a829ceb341c5bdb5157d56c2b5e77bc",
+    "version": "0.3.14",
+    "apiDigest": "f26f3bccb2cde721dc8eeb44579660e3f357eca17044e82c9d2b8178353083e9",
+    "compatibilityDigest": "675749581d228718290f1e9fc86b2b3fdd781aad8826872cb62f21ec831ead11",
     "runtimeExports": 145,
     "typeOnlyExports": 235,
     "publicSignatures": 380
   },
   "classification": "breaking",
   "versionPolicy": {
-    "releaseTarget": "0.3.13",
-    "packageVersion": "0.3.13",
+    "releaseTarget": "0.3.14",
+    "packageVersion": "0.3.14",
     "valid": true,
     "requiredBump": "minor",
     "minimumVersion": "0.3.0",
-    "message": "Breaking API changes are covered by version 0.3.13."
+    "message": "Breaking API changes are covered by version 0.3.14."
   },
   "changes": {
     "runtimeExports": {
@@ -562,14 +562,14 @@
           "baselineKind": "runtime",
           "currentKind": "runtime",
           "baselineHash": "4fd2bbd3f8be01e254407b98b24f9b1625f5c6c867a37edd2ea5f721961d744b",
-          "currentHash": "7d6a24539c78d1955db5c23996a0e781afee03cc77d4f1e1be657869c8dd8b5f"
+          "currentHash": "9465ecf410e5ce70141c8fec2d1d2ea799b1b4346ad655ddf83d2117f50bb121"
         },
         {
           "id": "DataTableProps",
           "baselineKind": "type",
           "currentKind": "type",
           "baselineHash": "ac6c109067563f6d0f7e8d155d952c1e0601d6342d10353e91c13257f489e530",
-          "currentHash": "a421e6a1bff50000f72838d8f256232f491497bcab77463b7a3d25779f58f880"
+          "currentHash": "04398fc73b4d839372c431d412ee09d73c0e5632fc0b66ab058174cc2ec63024"
         },
         {
           "id": "DateField",

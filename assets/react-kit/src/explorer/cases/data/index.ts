@@ -24,6 +24,7 @@ import tag from "./tag.case";
 import tableActions from "./table-actions.example";
 import tableCellText from "./table-cell-text.example";
 import tableDimensions, { tableHeightPolicyCase } from "./table-dimensions.example";
+import tableFillHeight from "./table-fill-height.example";
 import timeline from "./timeline.case";
 import tree from "./tree.case";
 
@@ -38,7 +39,7 @@ export const dataExplorerCases = {
   chart: [chart],
   "code-block": [codeBlock],
   collapse: [collapse],
-  "data-table": [dataTable, projectMembers, tableCellText, tableActions, tableDimensions, tableHeightPolicyCase],
+  "data-table": [dataTable, projectMembers, tableCellText, tableActions, tableDimensions, tableHeightPolicyCase, tableFillHeight],
   description: [description],
   gallery: [gallery],
   list: [list],

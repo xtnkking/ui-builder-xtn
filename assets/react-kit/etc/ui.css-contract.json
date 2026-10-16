@@ -660,6 +660,10 @@
       "file": "src/ui/styles.css"
     },
     {
+      "selector": ".ui-data-table__frame--fill",
+      "file": "src/ui/styles.css"
+    },
+    {
       "selector": ".ui-data-table__frame--fixed-viewport",
       "file": "src/ui/styles.css"
     },
@@ -701,6 +705,10 @@
     },
     {
       "selector": ".ui-data-table__sort-label",
+      "file": "src/ui/styles.css"
+    },
+    {
+      "selector": ".ui-data-table--fill",
       "file": "src/ui/styles.css"
     },
     {
@@ -2689,6 +2697,11 @@
           "file": "src/ui/styles.css",
           "layer": "ui.components",
           "line": 2904
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.components",
+          "line": 3017
         }
       ]
     },
@@ -2721,6 +2734,11 @@
           "file": "src/ui/styles.css",
           "layer": "ui.components",
           "line": 2905
+        },
+        {
+          "file": "src/ui/styles.css",
+          "layer": "ui.components",
+          "line": 3018
         }
       ]
     },
@@ -3879,7 +3897,7 @@
         {
           "file": "src/ui/styles.css",
           "layer": "ui.components",
-          "line": 3833
+          "line": 3868
         }
       ]
     },
@@ -5216,5 +5234,5 @@
       ]
     }
   ],
-  "selectorCount": 1262
+  "selectorCount": 1267
 }

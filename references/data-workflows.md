@@ -391,7 +391,9 @@ Tables use a stable viewport of five standard row-height units by default, wheth
 
 ### Project table-height policy
 
-Stable height within one table and consistent height across pages are separate responsibilities. For comparable management lists, place one public `DataTableProvider` in the application shell, outside route switching. Select its `viewportRows` once for the project; omitting it uses five standard row-height units. The provider owns fixed height and takes precedence over each descendant table's `viewportRows`, including `"auto"`. A local preference left behind by a copied example therefore cannot change one list's capacity. Values are normalized to whole units from 1 to 100; invalid non-finite values use five. A nested provider deliberately establishes another scope for a genuinely different workspace.
+Stable height within one table and consistent layout across pages are separate responsibilities. For comparable management lists, place one public `DataTableProvider` in the application shell, outside route switching. Choose its `heightMode` once: `"rows"` (default) for fixed capacity, or `"fill"` for full-page lists that should occupy the available space. The provider owns both mode and capacity and takes precedence over each descendant table's local `heightMode` and `viewportRows`, including `"auto"`. A copied example therefore cannot silently change one list's layout. A nested provider deliberately establishes another scope for a genuinely different workspace.
+
+In rows mode, select `viewportRows` once for the project; omitting it uses five standard row-height units. Values are normalized to whole units from 1 to 100; invalid non-finite values use five.
 
 ```tsx
 import { DataTableProvider } from "./ui";
@@ -405,9 +407,56 @@ import { DataTableProvider } from "./ui";
 
 Do not use returned record counts, `pageSize`, loading skeleton counts or the current route to choose this capacity. One record, twenty records, an empty response, loading and errors keep the same viewport; excess rows scroll inside it. Preserve the table and its `pagination` object across those states. Use the same mobile presentation across comparable lists: desktop tables and mobile cards have different standard row units. Different headers, filter wrapping or the presence of a pager can still change total page geometry; keep the surrounding page composition consistent rather than asking DataTable to position the whole page.
 
-Implicit, explicit and provider capacities share the limit `min(configuredHeight, max(158px, 100dvh - 220px))`. This responds to screen height without depending on data. It does not calculate space below arbitrary toolbars or fill the remaining parent height. Outside a provider, `viewportRows="auto"` remains available for an intentionally content-sized table; do not choose it for ordinary management lists that require stable height.
+In rows mode, implicit, explicit and provider capacities share the limit `min(configuredHeight, max(158px, 100dvh - 220px))`. This responds to short screens without depending on data and only limits the configured capacity. Outside a provider, `viewportRows="auto"` remains available for an intentionally content-sized table; do not choose it for ordinary management lists that require stable height.
 
-For an existing application, first update its installed canonical source through the Skill installer, then add the provider to its page shell and remove conflicting per-page sizing choices. Updating the Skill alone cannot rewrite previously generated business pages. The runnable **项目统一表格高度** example at `#/components/data-table` compares sparse proxy data with a populated phone list and exercises request states under one provider.
+#### Fill the remaining page space
+
+For a full-page management list, use `heightMode="fill"`. The table's **whole frame, including pagination and retry footer**, fills its bounded parent slot. Data, empty, loading and error presentations occupy that same slot. The data region scrolls; the sticky table header and pagination remain available. This mode does not apply the rows-mode `100dvh - 220px` limit or guess an offset from window coordinates.
+
+Give the outer application shell a definite height, let the header and filters use their actual height, and allocate `minmax(0, 1fr)` to the table. Carry `minHeight: 0` through intermediate grid/flex containers so a long table can shrink inside its slot. Put the shared bottom inset on the page container; do not subtract it again from the table. These are non-interactive layout containers, not protected-control styling overrides.
+
+```tsx
+import type { ReactNode } from "react";
+import { DataTable, DataTableProvider, FilterBar } from "./ui";
+
+// Mount the provider outside route switching. AppNavigation is product-owned
+// composition of official navigation exports, not a second component system.
+function ProductLayout({ children }: { children: ReactNode }) {
+  return (
+    <DataTableProvider heightMode="fill">
+      <div style={{ height: "100dvh", display: "grid", gridTemplateRows: "auto minmax(0, 1fr)" }}>
+        <AppNavigation />
+        <main style={{ minWidth: 0, minHeight: 0 }}>{children}</main>
+      </div>
+    </DataTableProvider>
+  );
+}
+
+function ResourcePage() {
+  return (
+    <section style={{
+      height: "100%", boxSizing: "border-box", minWidth: 0, minHeight: 0,
+      display: "grid", gridTemplateRows: "auto auto minmax(0, 1fr)",
+      gap: 16, padding: "16px 24px 24px",
+    }}>
+      <header><h1 style={{ margin: 0 }}>代理池</h1></header>
+      <FilterBar ariaLabel="代理池查询" actions={queryActions} onSubmit={handleQuery}>
+        {filterFields}
+      </FilterBar>
+      <DataTable ariaLabel="代理资源" columns={columns} rows={rows}
+        rowKey={(row) => row.id} state={state} pagination={pagination} />
+    </section>
+  );
+}
+```
+
+Product-owned `filterFields`, `queryActions`, `handleQuery`, columns and request state follow the earlier workflow examples and compose public exports. The final 24px of page padding is the distance from the **table's pagination bottom** to the available page bottom. When filters wrap or a toolbar appears, the table gets less space while its bottom edge stays aligned. Two pages with different headers can have different table heights under the same rule; record counts and request states must not change either page's allocation.
+
+For a standalone table, `heightMode="fill"` works without a provider. When the parent has no definite available height, the frame uses the numeric `viewportRows` budget (five units by default) as a stable fallback rather than expanding for all returned rows. This fallback budget includes pagination, so it is not a promise of N visible records. A `"auto"` capacity cannot make fill follow content. An expanding container must still have a meaningful available size: give cramped headers/toolbars a reachable page-scroll layout or an explicitly different nested rows policy rather than hiding commands outside a tiny slot.
+
+Fill also supports mobile cards, dynamic viewport height and parent resizing without a JavaScript window-resize measurement. Prefer page scrolling or a deliberately bounded workspace on a phone; account for the safe-area inset in the outer page padding when the product extends to device edges. When filters/toolbars could consume the whole page, use a deliberate minimum table track (for example `minmax(260px, 1fr)`) and let the page's `minHeight: "min-content"` exceed the available slot so outer scrolling keeps controls reachable. This is a page-layout fallback for cramped space; the table itself still fills the space allocated to it. Keep keyboard navigation and pagination reachable when the soft keyboard reduces available space.
+
+For an existing application, first update its installed canonical source through the Skill installer, then add the provider and bounded page composition and remove conflicting per-page sizing choices. Updating the Skill alone cannot rewrite previously generated business pages. At `#/components/data-table`, **项目统一表格高度** compares fixed capacities; **页面自适应表格** demonstrates fill with changing results, request states, filters, parent heights and mobile cards.
 
 ### Project pagination consistency
 

@@ -25,6 +25,77 @@ function expectCapacity(testId: string, desktop: string, mobile: string) {
 }
 
 describe("DataTable project height policy", () => {
+  it("applies the project fill policy across request states and keeps pagination inside the allocated frame", () => {
+    render(
+      <DataTableProvider heightMode="fill" viewportRows={7}>
+        <DataTable data-testid="fill-sparse" ariaLabel="填充少量" columns={columns} rows={rows.slice(0, 1)} rowKey={rowKey}
+          heightMode="rows" viewportRows="auto" pagination={{ page: 1, pageCount: 1, pageSize: 20, onPageChange: vi.fn() }} />
+        <DataTable data-testid="fill-many" ariaLabel="填充多量" columns={columns} rows={rows} rowKey={rowKey}
+          mobileRow={(row) => row.name} viewportRows={20} />
+        <DataTable data-testid="fill-loading" ariaLabel="填充加载" columns={columns} rows={[]} rowKey={rowKey} state="loading" />
+        <DataTable data-testid="fill-empty" ariaLabel="填充空态" columns={columns} rows={[]} rowKey={rowKey} state="empty" />
+        <DataTable data-testid="fill-error" ariaLabel="填充失败" columns={columns} rows={[]} rowKey={rowKey}
+          state="error" onRetry={vi.fn()} />
+      </DataTableProvider>,
+    );
+
+    for (const id of ["fill-sparse", "fill-many", "fill-loading", "fill-empty", "fill-error"]) {
+      expect(screen.getByTestId(id)).toHaveClass("ui-data-table--fill");
+      expect(screen.getByTestId(id)).not.toHaveAttribute("heightMode");
+      expect(frame(id)).toHaveClass("ui-data-table__frame--fill");
+      expectCapacity(id, "448px", "532px");
+    }
+    expect(frame("fill-sparse").querySelector(".ui-data-table__pagination")?.parentElement).toBe(frame("fill-sparse"));
+    expect(frame("fill-error").querySelector(".ui-data-table__error-footer")?.parentElement).toBe(frame("fill-error"));
+    expect(screen.getByRole("region", { name: "填充多量滚动区域" })).toHaveAttribute("tabindex", "0");
+    expect(screen.getByRole("list", { name: "填充多量移动版" })).toHaveAttribute("tabindex", "0");
+    expect(frame("fill-empty").querySelector(".ui-data-table__empty-scroller")).toHaveAttribute("tabindex", "0");
+  });
+
+  it("isolates fill strategies at nested boundaries and uses a stable capacity fallback for standalone fill", () => {
+    render(
+      <DataTableProvider heightMode="fill" viewportRows={8}>
+        <DataTable data-testid="fill-outer" ariaLabel="填充外层" columns={columns} rows={rows} rowKey={rowKey} />
+        <DataTableProvider viewportRows={3}>
+          <DataTable data-testid="rows-inner" ariaLabel="容量内层" columns={columns} rows={rows} rowKey={rowKey} heightMode="fill" />
+        </DataTableProvider>
+        <DataTable data-testid="fill-outer-after" ariaLabel="填充外层恢复" columns={columns} rows={rows} rowKey={rowKey} />
+      </DataTableProvider>,
+    );
+    expect(screen.getByTestId("fill-outer")).toHaveClass("ui-data-table--fill");
+    expect(screen.getByTestId("fill-outer-after")).toHaveClass("ui-data-table--fill");
+    expect(screen.getByTestId("rows-inner")).not.toHaveClass("ui-data-table--fill");
+    expectCapacity("rows-inner", "216px", "228px");
+
+    render(
+      <DataTable data-testid="standalone-fill" ariaLabel="独立填充" columns={columns} rows={[]}
+        rowKey={rowKey} heightMode="fill" viewportRows="auto" />,
+    );
+    expect(screen.getByTestId("standalone-fill")).toHaveClass("ui-data-table--fill");
+    expectCapacity("standalone-fill", "332px", "380px");
+  });
+
+  it("changes an existing project layout strategy without remounting its table or retaining stale scroll", () => {
+    const scope = (heightMode: "rows" | "fill") => (
+      <DataTableProvider heightMode={heightMode} viewportRows={6}>
+        <DataTable data-testid="dynamic-mode" ariaLabel="动态布局" columns={columns} rows={rows} rowKey={rowKey} />
+      </DataTableProvider>
+    );
+    const view = render(scope("rows"));
+    const originalRoot = screen.getByTestId("dynamic-mode");
+    const scroller = originalRoot.querySelector<HTMLElement>(".ui-data-table__scroller")!;
+    scroller.scrollTop = 180;
+    view.rerender(scope("fill"));
+    expect(screen.getByTestId("dynamic-mode")).toBe(originalRoot);
+    expect(originalRoot).toHaveClass("ui-data-table--fill");
+    expect(scroller.scrollTop).toBe(0);
+    expectCapacity("dynamic-mode", "390px", "456px");
+    scroller.scrollTop = 180;
+    view.rerender(scope("rows"));
+    expect(originalRoot).not.toHaveClass("ui-data-table--fill");
+    expect(scroller.scrollTop).toBe(0);
+  });
+
   it("keeps one capacity across sparse, many, loading, empty and error results despite local auto or numeric requests", () => {
     render(
       <DataTableProvider viewportRows={7}>
