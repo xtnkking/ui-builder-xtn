@@ -6,6 +6,8 @@ import filterBarCase from "./filter-bar.case";
 import filterSizingCase from "./filter-sizing.example";
 import searchFeedbackCase from "./search-feedback.example";
 import iconButtonCase from "./icon-button.case";
+import iconButtonGalleryCase from "./icon-button-gallery.example";
+import iconButtonStatesCase from "./icon-button-states.example";
 import linkCase from "./link.case";
 import sortableCase from "./sortable.case";
 import splitButtonCase from "./split-button.case";
@@ -18,7 +20,7 @@ export const actionExplorerCases = {
   clipboard: [clipboardCase],
   drag: [dragCase],
   "filter-bar": [filterBarCase, filterSizingCase, searchFeedbackCase],
-  "icon-button": [iconButtonCase],
+  "icon-button": [iconButtonCase, iconButtonGalleryCase, iconButtonStatesCase],
   link: [linkCase],
   sortable: [sortableCase],
   "split-button": [splitButtonCase],

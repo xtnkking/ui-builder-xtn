@@ -26,19 +26,32 @@ async function expectCompactActions(table: Locator) {
   const heights = await rows.evaluateAll((elements) => elements.map((element) => element.getBoundingClientRect().height));
   for (const height of heights) expect(height).toBeCloseTo(58, 0);
   for (const name of ["代理 A", "代理 B", "只读代理"]) {
+    const check = await iconGeometry(table.getByRole("button", { name: `检测${name}`, exact: true }));
     const edit = await iconGeometry(table.getByRole("button", { name: `编辑${name}`, exact: true }));
     const remove = await iconGeometry(table.getByRole("button", { name: `删除${name}`, exact: true }));
     expect(remove.y).toBeCloseTo(edit.y, 0);
+    expect(check.y).toBeCloseTo(edit.y, 0);
+    expect(edit.x - check.x - check.width).toBeGreaterThanOrEqual(0);
+    expect(edit.x - check.x - check.width).toBeLessThanOrEqual(8);
     expect(remove.x).toBeGreaterThan(edit.x + edit.width);
     expect(remove.x - edit.x - edit.width).toBeLessThanOrEqual(8);
   }
 }
 
-test("table actions keep two compact icons on one row with keyboard tooltips and disabled permissions", async ({ page }) => {
+test("table actions keep three compact icons with keyboard tooltips, loading and disabled permissions", async ({ page }) => {
   const { preview, table } = await actionCase(page);
   await expectCompactActions(table);
   await expect(table.getByRole("button", { name: "编辑只读代理", exact: true })).toBeDisabled();
   await expect(table.getByRole("button", { name: "删除只读代理", exact: true })).toBeDisabled();
+  await expect(table.getByRole("button", { name: "检测只读代理", exact: true })).toBeEnabled();
+  const check = table.getByRole("button", { name: "检测代理 A", exact: true });
+  await check.focus();
+  await expect(page.getByRole("tooltip", { name: "检测连接", exact: true })).toBeVisible();
+  await page.keyboard.press("Enter");
+  await expect(check).toHaveAttribute("aria-busy", "true");
+  await page.keyboard.press("Enter");
+  await expect(check).not.toHaveAttribute("aria-busy", "true");
+  await expect(page.locator(".ui-toast").filter({ hasText: "连接检查完成" })).toHaveCount(1);
   const edit = table.getByRole("button", { name: "编辑代理 A", exact: true });
   const remove = table.getByRole("button", { name: "删除代理 A", exact: true });
   await edit.focus();
@@ -63,7 +76,7 @@ test("overflow actions use a keyboard menu and edit or confirmed delete updates 
   await menuButton.focus();
   await page.keyboard.press("ArrowDown");
   const menu = page.getByRole("menu", { name: "更多操作：代理 A", exact: true });
-  await expect(menu.getByRole("menuitem")).toHaveCount(4);
+  await expect(menu.getByRole("menuitem")).toHaveCount(5);
   await expect(menu.getByRole("menuitem", { name: "编辑", exact: true })).toBeFocused();
   await page.keyboard.press("Enter");
   const editor = page.getByRole("dialog", { name: "编辑代理", exact: true });

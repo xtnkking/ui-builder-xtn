@@ -1,6 +1,6 @@
 {
   "schemaVersion": 3,
-  "kitVersion": "0.3.15",
+  "kitVersion": "0.3.16",
   "generatedFrom": [
     "assets/react-kit/component-manifest.json",
     "assets/react-kit/registry.json",
@@ -16,6 +16,8 @@
     "assets/react-kit/src/explorer/cases/actions/clipboard.case.tsx",
     "assets/react-kit/src/explorer/cases/actions/drag.case.tsx",
     "assets/react-kit/src/explorer/cases/actions/filter-bar.case.tsx",
+    "assets/react-kit/src/explorer/cases/actions/icon-button-gallery.example.tsx",
+    "assets/react-kit/src/explorer/cases/actions/icon-button-states.example.tsx",
     "assets/react-kit/src/explorer/cases/actions/icon-button.case.tsx",
     "assets/react-kit/src/explorer/cases/actions/link.case.tsx",
     "assets/react-kit/src/explorer/cases/actions/sortable.case.tsx",

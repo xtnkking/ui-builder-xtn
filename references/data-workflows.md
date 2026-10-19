@@ -231,7 +231,8 @@ Column and row identities are data contracts: every `column.id` and `rowKey` res
 For multiple text levels in one cell, use this real public component from the installed barrel:
 
 ```tsx
-import { Button, DataTable, TableCellText, Tag, type DataColumn } from "./ui";
+import { Eye } from "lucide-react";
+import { DataTable, IconButton, TableCellText, Tag, Tooltip, type DataColumn } from "./ui";
 
 type Task = {
   id: string;
@@ -262,7 +263,10 @@ export function TaskTable({ tasks, onDetails }: {
     { id: "result", header: "结果／最近记录错误", minWidth: 180,
       cell: (task) => <TableCellText secondary="未记录错误">{task.result}</TableCellText> },
     { id: "actions", header: "操作", width: 100, pin: "end",
-      cell: (task) => <Button size="small" variant="ghost" onClick={() => onDetails(task.id)}>详情</Button> },
+      cell: (task) => <Tooltip content="查看详情">
+        <IconButton icon={<Eye />} aria-label={`查看任务${task.id}详情`}
+          onClick={() => onDetails(task.id)} />
+      </Tooltip> },
   ];
   return <DataTable ariaLabel="任务列表" columns={columns} rows={tasks} rowKey={(task) => task.id} />;
 }
@@ -286,17 +290,30 @@ The Explorer's **表格正文排版** case at `#/components/data-table` includes
 
 ## Table operation columns
 
-For familiar row commands such as edit and delete, use the official `IconButton` with a `Tooltip`, and place the commands on one line with `Inline gap="small" wrap={false}`. Each icon needs its own row-specific `aria-label`; a tooltip is supporting copy, not a replacement for that name. The current IconButton is 36×36px and has no public `size` prop. Do not invent a smaller size, assume it grows to 44px, or override its CSS. Use a small text `Button` for business commands whose icon would be unclear, such as “检查连接”.
+Prefer official `IconButton` for familiar row commands, including connection checks, and use the same treatment throughout an operation column. Do not mix a text “检测” or “检查连接” with edit/delete icons by default. Put two or three common commands on one line with `Inline gap="small" wrap={false}`, a concise Chinese `Tooltip` for each command and its own row-specific `aria-label`. A tooltip supports the icon; it does not replace the accessible name. Translate the visible explanation and accessible name together when the application deliberately uses another locale.
 
-Give the two-icon column an explicit `width: 120` to include both controls, the gap, cell padding and focus space. `pin: "end"` is optional when the right-hand actions should stay visible during horizontal scrolling. Do not stack the buttons or reduce their hit areas to fit a narrower column. On mobile, use the official horizontal viewport or compose the same controls in `mobileRow` with enough space; do not squeeze the desktop table's type or buttons.
+Use these Lucide mappings consistently within the product rather than changing icons between comparable pages:
+
+| Row command | Lucide icon | Chinese Tooltip example |
+| --- | --- | --- |
+| Check connection / health | `Activity` | 检测连接 |
+| View details | `Eye` | 查看详情 |
+| Edit | `Pencil` | 编辑 |
+| Copy | `Copy` | 复制地址 |
+| Refresh / synchronize | `RefreshCw` | 刷新状态 / 同步资源 |
+| Delete | `Trash2` | 删除 |
+
+Use `variant="ghost"` for ordinary row commands and `variant="danger"` for deletion. The current IconButton is 36×36px and has no public `size` prop. Suggested column widths are `width: 120` for two icons and `width: 164` for three: 36px controls, 8px gaps and 40px combined cell padding leave a small focus allowance. These are composition budgets, not automatic table inference. Increase the column for additional visible content; do not shrink buttons or override CSS. `pin: "end"` is optional when actions should stay visible during horizontal scrolling. On mobile, use the official horizontal viewport or compose the same controls in `mobileRow` with enough space. Keep long explanations in the official Tooltip rather than widening every row or reducing click targets.
+
+This preference applies to repeated row operations. Page primary actions such as “新增代理”, filter submission, form submission and commands whose meaning requires a persistent visible explanation can retain text. When a row command really needs text, choose a consistent text treatment or an appropriate overflow menu for that column; do not let individual cells invent different styles for the same command.
 
 This complete typed example reuses existing public exports. The page owns the selected delete target and one confirmation dialog outside the row renderer; callers own permissions, request state and business callbacks:
 
 ```tsx
-import { useState } from "react";
-import { Pencil, Trash2 } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Activity, Pencil, Trash2 } from "lucide-react";
 import {
-  ConfirmDialog, DataTable, IconButton, Inline, Tooltip, type DataColumn,
+  ConfirmDialog, DataTable, IconButton, Inline, Tooltip, useToast, type DataColumn,
 } from "./ui";
 
 type ProxyRow = {
@@ -304,34 +321,65 @@ type ProxyRow = {
   name: string;
   address: string;
   readOnly?: boolean;
-  pendingAction?: "edit" | "delete";
+  pendingAction?: "check" | "edit" | "delete";
 };
 type ProxyTableProps = {
   rows: ProxyRow[];
-  permissions: { edit: boolean; delete: boolean };
+  permissions: { check: boolean; edit: boolean; delete: boolean };
+  onCheck: (row: ProxyRow) => Promise<void>;
   onEdit: (row: ProxyRow) => void;
   onDelete: (proxyId: string) => Promise<void>;
 };
 
-export function ProxyTable({ rows, permissions, onEdit, onDelete }: ProxyTableProps) {
+// Mount this page under the application's shared ToastProvider.
+export function ProxyTable({ rows, permissions, onCheck, onEdit, onDelete }: ProxyTableProps) {
   const [deleteTarget, setDeleteTarget] = useState<ProxyRow | null>(null);
+  const [checkingId, setCheckingId] = useState<string | null>(null);
+  const checkRequest = useRef<object | null>(null);
+  const { toast } = useToast();
+  useEffect(() => () => { checkRequest.current = null; }, []);
+  async function checkConnection(row: ProxyRow) {
+    if (!permissions.check || row.pendingAction || checkRequest.current || deleteTarget) return;
+    const request = {};
+    checkRequest.current = request; // Synchronous lock before React commits loading.
+    setCheckingId(row.id);
+    try {
+      await onCheck(row); // Reject on failure; update actual result data in this owner/callback.
+      if (checkRequest.current !== request) return;
+      toast({ tone: "success", description: `${row.name}检测完成` });
+    } catch {
+      if (checkRequest.current !== request) return;
+      toast({ tone: "danger", description: `${row.name}检测失败，请重试。` });
+    } finally {
+      if (checkRequest.current === request) {
+        checkRequest.current = null;
+        setCheckingId(null);
+      }
+    }
+  }
   const columns: DataColumn<ProxyRow>[] = [
     { id: "name", header: "代理名称", minWidth: 180, cell: (row) => row.name },
     { id: "address", header: "连接地址", minWidth: 220, cell: (row) => row.address },
   ];
-  if (permissions.edit || permissions.delete) columns.push({
-    id: "actions", header: "操作", width: 120, pin: "end",
+  if (permissions.check || permissions.edit || permissions.delete) columns.push({
+    id: "actions", header: "操作", width: 164, pin: "end",
     cell: (row) => <Inline gap="small" wrap={false}>
+      {permissions.check && <Tooltip content="检测连接">
+        <IconButton icon={<Activity />} variant="ghost" aria-label={`检测${row.name}的连接`}
+          loading={checkingId === row.id || row.pendingAction === "check"}
+          disabled={Boolean(row.pendingAction) || checkingId !== null || deleteTarget !== null}
+          onClick={() => void checkConnection(row)} />
+      </Tooltip>}
       {permissions.edit && <Tooltip content={row.readOnly ? "只读，无法编辑" : "编辑"}>
         <IconButton icon={<Pencil />} variant="ghost" aria-label={`编辑${row.name}`}
           loading={row.pendingAction === "edit"}
-          disabled={row.readOnly || row.pendingAction === "delete"}
+          disabled={row.readOnly || Boolean(row.pendingAction) || checkingId !== null || deleteTarget !== null}
           onClick={() => onEdit(row)} />
       </Tooltip>}
       {permissions.delete && <Tooltip content={row.readOnly ? "只读，无法删除" : "删除"}>
         <IconButton icon={<Trash2 />} variant="danger" aria-label={`删除${row.name}`}
           loading={row.pendingAction === "delete"}
-          disabled={row.readOnly || row.pendingAction === "edit"}
+          disabled={row.readOnly || Boolean(row.pendingAction) || checkingId !== null || deleteTarget !== null}
           onClick={() => setDeleteTarget(row)} />
       </Tooltip>}
     </Inline>,
@@ -349,6 +397,8 @@ export function ProxyTable({ rows, permissions, onEdit, onDelete }: ProxyTablePr
 ```
 
 Omit commands the caller has no permission to perform; omit the whole operation column when no commands are available for that scope. Keep temporarily unavailable commands in place with `disabled`, and bind `loading` only to their actual request. Do not reserve empty icon placeholders. If availability differs per row, render only that row's permitted commands and use concise non-interactive text for a row with none. Treat permissions as display decisions, not a replacement for backend authorization.
+
+The connection check awaits its real Promise and uses one synchronous request identity to block duplicate checks before the loading state renders; this sample deliberately runs one check at a time. Its identity is cleared on unmount so a late result cannot notify or update state. Bind `pendingAction` to actual external row requests, including `"check"`; do not simulate busy state on click alone. Read-only rows may still be checked when permission allows, while edit/delete remain disabled. The page owns the sole check-result Toast; if the supplied callback already owns feedback, remove this sample's corresponding notification rather than showing both.
 
 The delete callback must reject on failure so ConfirmDialog retains the target and supplies its own error Toast; it owns confirmation loading and blocks repeated confirmation. Do not swallow the failure and accidentally close the dialog, add an above-table Alert, or send a second failure Toast. Keep the dialog outside `cell` so row re-renders do not create one modal per row. Edit dialogs or other asynchronous commands should likewise be owned by the page and expose their actual pending state through `pendingAction`.
 
@@ -379,9 +429,9 @@ function moreActionColumn(
 }
 ```
 
-Add the returned column only when it is defined, instead of the two-icon column; bind `onRequestDelete` to the page's `setDeleteTarget`. The helper filters unauthorized commands before passing `items`; omit the menu when no commands remain. Do not duplicate the same commands in both a menu and an always-visible icon group. Copy/export results may use one official Toast from the page owner. A less common command can instead use `<Button size="small" variant="ghost" loading={checking} loadingLabel="检查连接" onClick={checkConnection}>检查连接</Button>`; reserve enough column width for that complete label.
+Add the returned column only when it is defined, instead of the visible icon column; bind `onRequestDelete` to the page's `setDeleteTarget`. The helper filters unauthorized commands before passing `items`; omit the menu when no commands remain. It can also hold only secondary commands alongside a small set of common icons; budget width for both and never duplicate a command in both places. Keep the existing DropdownMenu trigger rather than inventing a custom icon-trigger API. Copy/export results may use one official Toast from the page owner. Connection checks use `Activity` under the default row-action policy above; a necessary text exception should be a deliberate, consistently applied column design.
 
-The runnable **操作列组合** case (`data-table/actions`) is available at `#/components/data-table`. Its [complete companion source](../assets/react-kit/src/explorer/cases/data/table-actions.example.tsx) demonstrates edit, confirmed delete, pending and read-only states, overflow commands, a small text business action, keyboard use, dark theme and narrow screens. It composes existing controls; no new table API or replacement controls are required.
+The runnable **操作列组合** case (`data-table/actions`) at `#/components/data-table` and its [complete companion source](../assets/react-kit/src/explorer/cases/data/table-actions.example.tsx) demonstrate consistent row icons, confirmed delete, pending and read-only states, overflow commands, keyboard use, dark theme and narrow screens. The gallery at `#/components/icon-button` provides richer action-icon choices and their Chinese explanations. These compose existing controls; no new table API or replacement controls are required.
 
 ## Height and pagination
 
@@ -485,8 +535,9 @@ A fixed viewport is a named keyboard region even when the current page is sparse
 `TreeTableRowContext<T>` contains `node: TreeTableNode<T>` and a **one-based** `level` (root = 1). Both `renderBranchFooter` and `TreeTableColumn.cell(value, context)` receive it. Use `context.node.id` to address the row or parent; business values need not repeat their node IDs. Existing one-argument cell renderers remain valid. A rightmost operation column is an ordinary column whose cell composes official actions; TreeTable does not automatically pin that column.
 
 ```tsx
+import { Pencil } from "lucide-react";
 import {
-  Button, Inline, TreeTable,
+  Button, IconButton, Inline, Tooltip, TreeTable,
   type TreeTableColumn, type TreeTableNode,
 } from "./ui";
 
@@ -504,7 +555,10 @@ export function FolderTable({ nodes, pendingNodeId, onAddRoot, onAddChild, onEdi
     {
       id: "actions", header: "操作", width: 120,
       cell: (_value, { node }) => (
-        <Button size="small" variant="ghost" onClick={() => onEdit(node.id)}>编辑</Button>
+        <Tooltip content="编辑">
+          <IconButton icon={<Pencil />} aria-label={`编辑${_value.name}`}
+            onClick={() => onEdit(node.id)} />
+        </Tooltip>
       ),
     },
   ];
