@@ -13,6 +13,7 @@ import {
 import { useUIPortalTokens } from "./portal-tokens";
 import { InternalFilterActionBoundary } from "./button-slots";
 import { consumeLayerActivation, recordLayerActivation } from "./layer-activation";
+import { floatingBranchContainers } from "./floating-branch";
 import { getTabStops, isVisibleElement } from "./utils";
 
 const useClientLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
@@ -149,16 +150,11 @@ function layerContainers(state: LayerDocumentState, entry: LayerEntry): HTMLElem
     discovered.add(candidate.panel);
     containers.push(candidate.panel);
   });
-  for (let index = 0; index < containers.length; index += 1) {
-    containers[index].querySelectorAll<HTMLElement>("[aria-controls]").forEach((controller) => {
-      controller.getAttribute("aria-controls")?.trim().split(/\s+/).forEach((controlledId) => {
-        const floatingRoot = state.document.getElementById(controlledId)?.closest<HTMLElement>("[data-ui-floating-root='true']");
-        if (!floatingRoot || discovered.has(floatingRoot)) return;
-        discovered.add(floatingRoot);
-        containers.push(floatingRoot);
-      });
-    });
-  }
+  floatingBranchContainers(containers).forEach((container) => {
+    if (discovered.has(container)) return;
+    discovered.add(container);
+    containers.push(container);
+  });
   state.document.querySelectorAll<HTMLElement>(".ui-toast-viewport").forEach((viewport) => {
     if (!discovered.has(viewport)) containers.push(viewport);
   });

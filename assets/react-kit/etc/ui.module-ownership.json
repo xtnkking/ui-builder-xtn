@@ -3662,7 +3662,7 @@
       ]
     }
   ],
-  "kitVersion": "0.3.16",
+  "kitVersion": "0.3.17",
   "modules": [
     {
       "dependencies": [
@@ -3772,6 +3772,7 @@
     },
     {
       "dependencies": [
+        "action",
         "data",
         "display",
         "feedback",
@@ -3803,6 +3804,7 @@
         "src/ui/internal/controllable-state.ts",
         "src/ui/internal/field-context.ts",
         "src/ui/internal/fixed-control-props.ts",
+        "src/ui/internal/floating-branch.ts",
         "src/ui/internal/floating-position.ts",
         "src/ui/internal/input-slots.tsx",
         "src/ui/internal/layer-activation.ts",

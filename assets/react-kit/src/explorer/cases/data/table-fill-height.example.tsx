@@ -1,5 +1,6 @@
 // @ui-coverage {"kind":"example","runner":"explorer","caseId":"data-table/fill-height","exports":["DataTableProvider","DataTable"]}
 import { useState } from "react";
+import { Search } from "lucide-react";
 import {
   Button,
   Checkbox,
@@ -106,7 +107,7 @@ export function TableFillHeightExample() {
         </header>
         <FilterBar ariaLabel="自适应资源筛选" onSubmit={(event) => {
           event.preventDefault(); setApplied(draft); setPage(1);
-        }} actions={<><Button type="submit" size="field" variant="primary">查询</Button><Button type="button" size="field" onClick={reset}>重置</Button></>}>
+        }} actions={<><Button type="submit" size="field" variant="primary" icon={<Search aria-hidden="true" />}>查询</Button><Button type="button" size="field" variant="secondary" onClick={reset}>重置</Button></>}>
           <FilterField><SearchInput aria-label="资源名称或编号" placeholder="名称或编号" value={draft.query}
             onChange={(event) => updateDraft("query", event.currentTarget.value)} onClear={() => updateDraft("query", "")} /></FilterField>
           <FilterField width="short"><Select ariaLabel="资源状态" value={draft.status} onValueChange={(value) => updateDraft("status", value)} options={[
@@ -151,6 +152,7 @@ const explorerCase = {
   stateExamples: [{ state: "default", exports: ["DataTableProvider", "DataTable"], content: <TableFillHeightExample />,
     instructions: "切换 1 条、多条、加载、空、首次错误、保留数据错误与长内容；切换父容器高度、展开筛选/工具栏并改变窗口大小。分页与底部保留 24px，只有数据区滚动。窄屏可切换移动卡片与横向表格。" }],
   code: `import { useState } from "react";
+import { Search } from "lucide-react";
 import {
   Button, DataTable, DataTableProvider, FilterBar, FilterField,
   SearchInput, type DataColumn,
@@ -177,7 +179,7 @@ function ResourcePage() {
     <header><h1>资源管理</h1></header>
     <FilterBar ariaLabel="资源筛选" onSubmit={(event) => {
       event.preventDefault(); setQuery(draft.trim()); setPage(1);
-    }} actions={<Button type="submit" size="field" variant="primary">查询</Button>}>
+    }} actions={<Button type="submit" size="field" variant="primary" icon={<Search aria-hidden="true" />}>查询</Button>}>
       <FilterField><SearchInput aria-label="资源名称" value={draft}
         onChange={(event) => setDraft(event.currentTarget.value)}
         onClear={() => setDraft("")} /></FilterField>

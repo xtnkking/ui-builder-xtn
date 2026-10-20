@@ -60,6 +60,7 @@ interface IconButtonSlotConfig {
 
 const DEFAULT_ICON_BUTTON_SLOT: IconButtonSlotConfig = {};
 const ICON_BUTTON_SLOT_CONFIG: Record<InternalIconButtonSlotName, IconButtonSlotConfig> = {
+  "dropdown-trigger": {},
   "lightbox-close": { className: "ui-lightbox__close" },
   "lightbox-previous": { className: "ui-lightbox__previous" },
   "lightbox-next": { className: "ui-lightbox__next" },
@@ -107,7 +108,7 @@ export function Button(rawProps: ButtonProps) {
       ref={mergedRef}
       {...props}
       type={type}
-      className={cx("ui-button", `ui-button--${variant}`, `ui-button--${size}`, slotClassName)}
+      className={cx("ui-button", `ui-button--${variant}`, `ui-button--${size}`, filterAction && "ui-button--filter-action", slotClassName)}
       disabled={disabled}
       aria-disabled={loading || explicitlyAriaDisabled || undefined}
       aria-busy={loading || undefined}
@@ -170,8 +171,12 @@ export function IconButton(rawProps: IconButtonProps) {
     ...props
   } = safeProps;
   const internalSlot = useInternalIconButtonSlot();
-  const slotConfig = internalSlot ? ICON_BUTTON_SLOT_CONFIG[internalSlot] : DEFAULT_ICON_BUTTON_SLOT;
-  const elementRef = useRef<HTMLButtonElement>(null);
+  const slotConfig = internalSlot ? ICON_BUTTON_SLOT_CONFIG[internalSlot.name] : DEFAULT_ICON_BUTTON_SLOT;
+  const elementRef = useRef<HTMLButtonElement | null>(null);
+  const mergedRef = useCallback((element: HTMLButtonElement | null) => {
+    elementRef.current = element;
+    assignElementRef(internalSlot?.elementRef, element);
+  }, [internalSlot?.elementRef]);
   useImperativeHandle(controlRef, () => ({
     focus(options?: FocusOptions) {
       elementRef.current?.focus(options);
@@ -181,7 +186,7 @@ export function IconButton(rawProps: IconButtonProps) {
   const interactionDisabled = Boolean(disabled || loading || explicitlyAriaDisabled);
   return (
     <button
-      ref={elementRef}
+      ref={mergedRef}
       {...props}
       type={type}
       className={cx("ui-icon-button", `ui-icon-button--${variant}`, slotConfig.className)}

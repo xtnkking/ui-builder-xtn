@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
+import { Search } from "lucide-react";
 import { Button, FilterBar, FilterField, SearchInput, Select } from "../../../ui";
 import { StatePreview } from "../state-preview";
 import type { ExplorerCase } from "../types";
@@ -68,7 +69,7 @@ function TaskFilterExample({ english = false, longContent = false }: { english?:
   return <FilterBar
     ariaLabel={english ? "Task archive filters" : "任务档案多字段筛选"}
     onSubmit={applyFilters}
-    actions={<><Button type="submit" size="field" variant="primary" loading={loading} loadingLabel={english ? "Search" : "查询"}>{english ? "Search" : "查询"}</Button><Button type="button" size="field" disabled={loading} onClick={reset}>{english ? "Reset" : "重置"}</Button></>}
+    actions={<><Button type="submit" size="field" variant="primary" icon={<Search aria-hidden="true" />} loading={loading} loadingLabel={english ? "Search" : "查询"}>{english ? "Search" : "查询"}</Button><Button type="button" size="field" variant="secondary" disabled={loading} onClick={reset}>{english ? "Reset" : "重置"}</Button></>}
     status={resultStatus}
   >
     <FilterField width={220}><SearchInput aria-label={english ? "Task ID" : "任务编号"} placeholder={english ? "Task ID" : "输入任务编号"} value={draft.task} onChange={(event) => update("task", event.currentTarget.value)} onClear={() => update("task", "")} /></FilterField>
@@ -98,8 +99,10 @@ const explorerCase = {
     { state: "locale", exports: ["FilterField"], content: <StatePreview state="locale"><TaskFilterExample english /></StatePreview> },
   ],
   content: <div style={{ padding: 20 }}><TaskFilterExample /></div>,
-  code: `<FilterBar ariaLabel="任务档案筛选" onSubmit={applyFilters}
-  actions={<><Button type="submit" size="field" variant="primary" loading={querying}>查询</Button><Button type="button" size="field" disabled={querying} onClick={resetFilters}>重置</Button></>}>
+  code: `import { Search } from "lucide-react";
+
+<FilterBar ariaLabel="任务档案筛选" onSubmit={applyFilters}
+  actions={<><Button type="submit" size="field" variant="primary" icon={<Search aria-hidden="true" />} loading={querying} loadingLabel="查询">查询</Button><Button type="button" size="field" variant="secondary" disabled={querying} onClick={resetFilters}>重置</Button></>}>
   <FilterField width={220}><SearchInput aria-label="任务编号" value={draft.task} onChange={changeTask} /></FilterField>
   <FilterField width="short"><Select ariaLabel="任务状态" value={draft.status} onValueChange={changeStatus} options={statuses} /></FilterField>
   <FilterField width={180}><SearchInput aria-label="任务类型" value={draft.type} onChange={changeType} /></FilterField>

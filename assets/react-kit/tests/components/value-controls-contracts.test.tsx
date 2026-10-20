@@ -52,6 +52,33 @@ function expectDevelopmentError(run: () => void, message: RegExp) {
 }
 
 describe("value control public contracts", () => {
+  it("keeps one Field-owned date-range error associated with both inputs", () => {
+    const view = render(
+      <Field label="日期范围" group error="结束日期不能早于开始日期。">
+        <DateRangeField defaultValue={{ start: "2026-10-09", end: "2026-10-01" }} invalid rangeError={null} />
+      </Field>,
+    );
+    const error = screen.getByRole("alert");
+    expect(error).toHaveTextContent("结束日期不能早于开始日期。");
+    expect(screen.getAllByRole("alert")).toHaveLength(1);
+    const inputs = document.querySelectorAll('[data-ui-owner="DateRangeField"] input');
+    expect(inputs).toHaveLength(2);
+    for (const input of inputs) {
+      expect(input).toHaveAttribute("aria-invalid", "true");
+      expect(input).toHaveAttribute("aria-describedby", error.id);
+      expect(document.getElementById(error.id)).toBe(error);
+    }
+    view.rerender(
+      <Field label="日期范围" group error="结束日期不能早于开始日期。">
+        <DateRangeField defaultValue={{ start: "2026-10-09", end: "2026-10-01" }} invalid rangeError={false} />
+      </Field>,
+    );
+    expect(screen.getAllByRole("alert")).toHaveLength(1);
+    view.rerender(<DateRangeField defaultValue={{ start: "2026-10-09", end: "2026-10-01" }} />);
+    expect(screen.getAllByRole("alert")).toHaveLength(1);
+    expect(screen.getByRole("alert")).not.toBeEmptyDOMElement();
+  });
+
   it("filters escape props at every fixed root while preserving reviewed semantics", () => {
     const onMouseEnter = vi.fn();
     const common = { ...forcedEscapes, "data-track": "preserved", onMouseEnter };

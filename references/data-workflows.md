@@ -80,6 +80,8 @@ import { DataTable, ToastProvider } from "./ui";
 
 Pair query commands with fields using `Button size="field"`. `FilterBar` defaults to compact 38px desktop fields/actions with tighter button padding; `density="comfortable"` uses 44px. Narrow containers, mobile viewports and coarse-pointer devices retain 44px targets. Standalone field-aligned buttons remain 44px. For a compact two-character action, pass `loadingLabel="查询"` or `loadingLabel="搜索"` to match its visible label; use the same localized action in other languages. The official spinner then appears beside that label without reserving extra width for the generic processing text, and idle/loading dimensions stay identical. The `FilterBar` Explorer's default example demonstrates an explicit, duplicate-blocked 800ms request while preserving the last applied results; the action's loading state belongs to Button.
 
+Same-purpose explicit queries in one application use the same treatment: default to primary + Lucide Search icon + short text, followed by a secondary reset. Use FilterBar for list filters; Fragment and Inline actions keep the same geometry. A deliberate product alternative should apply throughout the same scope. Reuse one page-width choice for comparable routes as shown in [project consistency](layout-sizing.md#project-consistency).
+
 ## Search feedback
 
 `FilterBar` submits the form and `Button` displays the supplied loading state; neither component knows whether the business query succeeded. Compose result feedback at the owner that awaits the actual request, rather than adding a click-only success handler.
@@ -119,6 +121,7 @@ This complete typed composition keeps draft values separate from the last succes
 
 ```tsx
 import { useEffect, useRef, useState } from "react";
+import { Search } from "lucide-react";
 import { Button, FilterBar, FilterField, SearchInput, Select, useToast } from "./ui";
 
 type TaskQuery = {
@@ -180,7 +183,7 @@ export function TaskFilters({ onQuery, notifyOnSuccess = false }: {
     onSubmit={(event) => { event.preventDefault(); void apply({ ...draft }, "submit"); }}
     status={pending ? "正在查询…" : query ? "筛选条件已应用" : undefined}
     actions={<>
-      <Button type="submit" size="field" loading={pending} loadingLabel="查询">查询</Button>
+      <Button type="submit" size="field" variant="primary" icon={<Search aria-hidden="true" />} loading={pending} loadingLabel="查询">查询</Button>
       <Button type="button" size="field" variant="secondary" disabled={pending} onClick={reset}>重置</Button>
     </>}>
     <FilterField width="medium">
@@ -214,6 +217,8 @@ export function TaskFilters({ onQuery, notifyOnSuccess = false }: {
 If `onQuery` drives `DataTable state="error"`, let that table own its automatic error Toast and remove the catch notification above so the same request has one failure owner; keep the catch to consume the rejected request, leaving data/error/retry updates with that owner. The `onQuery` promise must still reject on failure so the optional success notification cannot run. The runnable [mixed-width filter example](../assets/react-kit/src/explorer/cases/actions/filter-sizing.example.tsx) at `#/components/filter-bar` includes the same five field purposes, actual query/reset behavior, accessible control names and narrow-container layouts; use the separate [search feedback example](../assets/react-kit/src/explorer/cases/actions/search-feedback.example.tsx) for the complete DataTable-owned failure composition. The primary FilterBar example separately demonstrates labeled `Field` controls and helper-text alignment. Reuse the public exports and request ownership, replacing the example service with the product API.
 
 ## DataTable configuration
+
+Keep page width separate from column width. DataTable's outer surface fills its parent in ready, empty and error states. If every column specifies a numeric `width`, the inner table uses their sum; this can intentionally leave unused space inside a wider frame. To fill the available width, leave `width` unset on at least one name/description column and set its `minWidth`; that flexible column receives remaining space. Keep short status/date/action columns bounded. Do not change the page container width based on the current data or column count.
 
 Column and row identities are data contracts: every `column.id` and `rowKey` result must be stable, unique, and non-empty. Developers configure visibility, width, and pinning; end users do not receive freeze controls unless the product explicitly requires them.
 
@@ -290,7 +295,7 @@ The Explorer's **表格正文排版** case at `#/components/data-table` includes
 
 ## Table operation columns
 
-Prefer official `IconButton` for familiar row commands, including connection checks, and use the same treatment throughout an operation column. Do not mix a text “检测” or “检查连接” with edit/delete icons by default. Put two or three common commands on one line with `Inline gap="small" wrap={false}`, a concise Chinese `Tooltip` for each command and its own row-specific `aria-label`. A tooltip supports the icon; it does not replace the accessible name. Translate the visible explanation and accessible name together when the application deliberately uses another locale.
+Prefer official `IconButton` for familiar row commands, including connection checks, and use the same treatment throughout an operation column. Do not mix a text “检测” or “检查连接” with edit/delete icons, or append a text “更多” capsule to an icon group by default. Put two or three common commands on one line with `Inline gap="small" wrap={false}`, a concise Chinese `Tooltip` for each command and its own row-specific `aria-label`. For overflow commands in that column, use `DropdownMenu triggerAppearance="icon"`. A tooltip supports the icon; it does not replace the accessible name. Translate the visible explanation and accessible name together when the application deliberately uses another locale.
 
 Use these Lucide mappings consistently within the product rather than changing icons between comparable pages:
 
@@ -402,7 +407,7 @@ The connection check awaits its real Promise and uses one synchronous request id
 
 The delete callback must reject on failure so ConfirmDialog retains the target and supplies its own error Toast; it owns confirmation loading and blocks repeated confirmation. Do not swallow the failure and accidentally close the dialog, add an above-table Alert, or send a second failure Toast. Keep the dialog outside `cell` so row re-renders do not create one modal per row. Edit dialogs or other asynchronous commands should likewise be owned by the page and expose their actual pending state through `pendingAction`.
 
-For a larger set, use one official `DropdownMenu` in place of the icon cluster. It owns its trigger; it does not accept a custom `trigger` prop. Pass an `ariaLabel` that identifies the row, stable unique item IDs, per-command permissions/disabled state, and `danger: true` for deletion. For example, these callbacks can be supplied by the same page owner:
+For a larger set, use one official `DropdownMenu triggerAppearance="icon"` in place of the icon cluster. Its default ellipsis uses the official ghost IconButton geometry without visible trigger text or a trailing chevron; `label` supplies the hover/focus tooltip, and `ariaLabel` identifies the row. The optional `icon` prop replaces the ellipsis when a different icon has a clear meaning. The menu still owns its trigger, keyboard handling and focus restoration; it does not accept a custom `trigger` prop. Pass stable unique item IDs, per-command permissions/disabled state, and `danger: true` for deletion. For example, these callbacks can be supplied by the same page owner:
 
 ```tsx
 import type { ComponentProps } from "react";
@@ -415,7 +420,7 @@ function moreActionColumn(
   onRequestDelete: (row: ProxyRow) => void,
 ): DataColumn<ProxyRow> | undefined {
   if (!permissions.edit && !permissions.copy && !permissions.delete) return undefined;
-  return { id: "actions", header: "操作", width: 120, pin: "end", cell: (row) => {
+  return { id: "actions", header: "操作", width: 72, pin: "end", cell: (row) => {
     const items: ComponentProps<typeof DropdownMenu>["items"] = [];
     const busy = Boolean(row.pendingAction);
     if (permissions.edit) items.push({ id: "edit", label: "编辑",
@@ -424,14 +429,17 @@ function moreActionColumn(
       disabled: busy, onSelect: () => onCopy(row.address) });
     if (permissions.delete) items.push({ id: "delete", label: "删除", danger: true,
       disabled: row.readOnly || busy, onSelect: () => onRequestDelete(row) });
-    return <DropdownMenu label="更多" ariaLabel={`更多操作：${row.name}`} align="end" items={items} />;
+    return <DropdownMenu triggerAppearance="icon" label="更多操作"
+      ariaLabel={`更多操作：${row.name}`} align="end" items={items} />;
   } };
 }
 ```
 
-Add the returned column only when it is defined, instead of the visible icon column; bind `onRequestDelete` to the page's `setDeleteTarget`. The helper filters unauthorized commands before passing `items`; omit the menu when no commands remain. It can also hold only secondary commands alongside a small set of common icons; budget width for both and never duplicate a command in both places. Keep the existing DropdownMenu trigger rather than inventing a custom icon-trigger API. Copy/export results may use one official Toast from the page owner. Connection checks use `Activity` under the default row-action policy above; a necessary text exception should be a deliberate, consistently applied column design.
+Add the returned column only when it is defined, instead of the visible icon column; bind `onRequestDelete` to the page's `setDeleteTarget`. The helper filters unauthorized commands before passing `items`; omit the menu when no commands remain. It can also hold only secondary commands alongside a small set of common icons: keep `triggerAppearance="icon"`, budget 164px for two common IconButtons plus the menu entry, and never duplicate a command in both places. The runnable long-content case uses detection/edit as common icons and copy/view/delete only in its overflow menu. Keep the official trigger rather than recreating it with wrappers or CSS. Copy/export results may use one official Toast from the page owner. Connection checks use `Activity` under the default row-action policy above; a necessary text exception should be a deliberate, consistently applied column design.
 
-The runnable **操作列组合** case (`data-table/actions`) at `#/components/data-table` and its [complete companion source](../assets/react-kit/src/explorer/cases/data/table-actions.example.tsx) demonstrate consistent row icons, confirmed delete, pending and read-only states, overflow commands, keyboard use, dark theme and narrow screens. The gallery at `#/components/icon-button` provides richer action-icon choices and their Chinese explanations. These compose existing controls; no new table API or replacement controls are required.
+Ordinary page menus retain the default `triggerAppearance="button"`, with their visible label and down chevron. Choose that text presentation for a deliberate all-text operation column as well. `DataTable` does not insert or select commands automatically; the business composition chooses one coherent presentation. Do not pass an IconButton through `label` or invent a custom trigger to imitate the icon mode.
+
+The runnable **操作列组合** case (`data-table/actions`) at `#/components/data-table` and its [complete companion source](../assets/react-kit/src/explorer/cases/data/table-actions.example.tsx) demonstrate consistent row icons, confirmed delete, pending and read-only states, overflow commands, keyboard use, dark theme and narrow screens. Its default case keeps three common icons; long-content, phone and dark cases show two common icons plus the ellipsis menu. The gallery at `#/components/icon-button` provides richer action-icon choices and their Chinese explanations. These compose official controls; no new table API or replacement controls are required.
 
 ## Height and pagination
 

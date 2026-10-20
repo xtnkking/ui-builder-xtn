@@ -1,6 +1,6 @@
 // @ui-coverage {"kind":"example","runner":"explorer","caseId":"data-table/overview","exports":["DataTable","DataTableProvider","TreeTable","TableCellText"]}
 import { useEffect, useId, useRef, useState } from "react";
-import { FolderPlus, Plus, Pencil, Trash2 } from "lucide-react";
+import { FolderPlus, Plus, Pencil, Search, Trash2 } from "lucide-react";
 import {
   Checkbox,
   Button,
@@ -209,7 +209,7 @@ function DataTableExample() {
   return (
     <DataTableProvider viewportRows={3}>
     <div style={{ display: "grid", gap: 28 }}>
-      <FilterBar ariaLabel="账户筛选" onSubmit={(event) => { event.preventDefault(); setAppliedQuery(query.trim()); setPage(1); }} actions={<Button size="field" type="submit">搜索</Button>}>
+      <FilterBar ariaLabel="账户筛选" onSubmit={(event) => { event.preventDefault(); setAppliedQuery(query.trim()); setPage(1); }} actions={<Button size="field" type="submit" variant="primary" icon={<Search aria-hidden="true" />}>搜索</Button>}>
         <Field label="账户、负责人或状态" htmlFor="explorer-table-search"><SearchInput id="explorer-table-search" value={query} onChange={(event) => setQuery(event.currentTarget.value)} onClear={() => setQuery("")} /></Field>
       </FilterBar>
       <DataTable

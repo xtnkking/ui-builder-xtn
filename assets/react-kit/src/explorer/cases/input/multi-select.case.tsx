@@ -1,14 +1,15 @@
 // @ui-coverage {"kind":"example","runner":"explorer","caseId":"multi-select/overview","exports":["MultiSelect"]}
 import { StatePreview } from "../state-preview";
 import { useState } from "react";
+import { Download, Globe2, Pencil } from "lucide-react";
 import { Field, MultiSelect } from "../../../ui";
 import type { ExplorerCase } from "../types";
 
 const permissions = [
   { value: "read", label: "查看数据", description: "查看所有项目数据" },
-  { value: "write", label: "编辑数据", description: "新建和修改记录" },
+  { value: "write", label: "编辑数据", description: "新建和修改记录", leading: <Pencil /> },
   { value: "delete", label: "删除数据", description: "高风险权限", disabled: true },
-  { value: "export", label: "导出报表", description: "生成 CSV 与 PDF" },
+  { value: "export", label: "导出报表", description: "生成 CSV 与 PDF", leading: <Download /> },
 ];
 
 function MultiSelectExample() {
@@ -35,7 +36,7 @@ const explorerCase = {
   states: ["default", "disabled", "controlled", "uncontrolled", "validation", "longContent", "keyboard", "overlay", "dark", "locale"] as const,
   stateExamples: [
     { state: "validation", exports: ["MultiSelect"], content: <Field label="必选权限" htmlFor="explorer-multi-invalid" error="请至少选择一项权限。"><MultiSelect id="explorer-multi-invalid" ariaLabel="必选权限" defaultValue={[]} options={permissions} required /></Field> },
-    { state: "longContent", exports: ["MultiSelect"], content: <MultiSelect ariaLabel="长权限名称" defaultValue={["international"]} options={[{ value: "international", label: "Manage international subscription platform security policies, cross-region settlement and enterprise member access" }, ...permissions]} /> },
+    { state: "longContent", exports: ["MultiSelect"], content: <MultiSelect ariaLabel="长权限名称" defaultValue={["international"]} options={[{ value: "international", label: "Manage international subscription platform security policies, cross-region settlement and enterprise member access", leading: <Globe2 /> }, ...permissions]} />, instructions: "展开后比较带图标与不带图标的选项：复选框和图标保持完整，长名称在剩余宽度内省略。" },
     { state: "default", exports: ["MultiSelect"], content: <Field label="权限" htmlFor="explorer-multi-default-state"><MultiSelect id="explorer-multi-default-state" ariaLabel="权限" defaultValue={["read"]} options={permissions} /></Field> },
     { state: "disabled", exports: ["MultiSelect"], content: <Field label="禁用权限" htmlFor="explorer-multi-disabled"><MultiSelect id="explorer-multi-disabled" ariaLabel="禁用权限" defaultValue={["read", "write"]} options={permissions} disabled /></Field> },
     { state: "controlled", exports: ["MultiSelect"], content: <ControlledMultiSelectExample /> },

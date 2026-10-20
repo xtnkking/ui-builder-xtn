@@ -1,5 +1,5 @@
 import { useEffect, useId, useRef, useState } from "react";
-import { CheckCheck, CreditCard, PackageCheck, ShoppingBag, Truck, X } from "lucide-react";
+import { CheckCheck, CreditCard, PackageCheck, Search, ShoppingBag, Truck, X } from "lucide-react";
 import {
   Button, Card, ConfirmDialog, DescriptionList, DetailPage, Dialog,
   EmptyState, Field, FilterBar, Inline, Link, Media, OverflowText, Pagination,
@@ -170,8 +170,8 @@ export function ShopOrdersPage({ orderId, onBrowse, onOrder }: {
           {selected.couponCode ? <Card heading="使用优惠"><Tag tone="success">{selected.couponCode}</Tag></Card> : null}
           <p className="shop-orders__muted">此商城使用本地演示数据，付款不产生真实扣款。离开页面后可继续查看本次订单；刷新页面会恢复初始数据。</p>
         </Stack>} />
-    </> : <SearchFilterPage title="订单详情"><Card><EmptyState title="没有找到这笔订单" description="订单可能已随演示数据重置，返回订单列表查看现有订单。" action={<Link href="#/examples/shop/orders">返回我的订单</Link>} /></Card></SearchFilterPage>
-      : <SearchFilterPage title="我的订单" description="查看订单状态与配送进度。" actions={<Button variant="ghost" onClick={onBrowse}>继续选购</Button>}
+    </> : <SearchFilterPage title="订单详情" layoutWidth="readable"><Card><EmptyState title="没有找到这笔订单" description="订单可能已随演示数据重置，返回订单列表查看现有订单。" action={<Link href="#/examples/shop/orders">返回我的订单</Link>} /></Card></SearchFilterPage>
+      : <SearchFilterPage title="我的订单" layoutWidth="readable" description="查看订单状态与配送进度。" actions={<Button variant="ghost" onClick={onBrowse}>继续选购</Button>}
         filters={<FilterBar ariaLabel="查找我的订单" onSubmit={(event) => {
           event.preventDefault();
           if (queryLock.current) return;
@@ -181,7 +181,7 @@ export function ShopOrdersPage({ orderId, onBrowse, onOrder }: {
             if (!completed) return;
             setSearch(next); setPage(1); setSearching(false); queryLock.current = false;
           });
-        }} actions={<Button type="submit" size="field" variant="primary" loading={searching} loadingLabel="搜索">搜索</Button>}>
+        }} actions={<Button type="submit" size="field" variant="primary" icon={<Search aria-hidden="true" />} loading={searching} loadingLabel="搜索">搜索</Button>}>
           <SearchInput aria-label="搜索我的订单" placeholder="订单编号或商品名称" value={searchDraft} onChange={(event) => setSearchDraft(event.currentTarget.value)} onClear={() => setSearchDraft("")} />
         </FilterBar>}>
         <Tabs ariaLabel="订单状态" value={status} onValueChange={(value) => { setStatus(value); setPage(1); }} items={[

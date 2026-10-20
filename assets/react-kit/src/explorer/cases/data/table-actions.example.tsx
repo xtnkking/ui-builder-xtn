@@ -119,18 +119,27 @@ function TableActionsExample({ more = false }: { more?: boolean }) {
     { id: "protocol", header: "协议", width: 80, cell: () => "HTTP" },
     { id: "status", header: "状态", width: 100, cell: () => <Tag size="small" tone="success">已启用</Tag> },
     {
-      id: "actions", header: "操作", width: more ? 120 : 164, pin: "end",
-      cell: (row) => more ? <DropdownMenu
-        label="更多"
-        ariaLabel={`更多操作：${row.name}`}
-        items={[
-          { id: "edit", label: "编辑", icon: <Pencil />, disabled: row.readOnly || busyId !== null, onSelect: () => startEdit(row) },
-          { id: "copy", label: "复制地址", icon: <Copy />, disabled: busyId !== null, onSelect: () => void copyAddress(row) },
-          { id: "view", label: "查看记录", icon: <Eye />, disabled: busyId !== null, onSelect: () => setViewing(row) },
-          { id: "check", label: "检测连接", icon: <Activity />, disabled: busyId !== null, onSelect: () => checkConnection(row) },
-          { id: "delete", label: "删除", icon: <Trash2 />, danger: true, disabled: row.readOnly || busyId !== null, onSelect: () => startDelete(row) },
-        ]}
-      /> : <Inline gap="small" wrap={false} role="group" aria-label={`${row.name}的操作`}>
+      id: "actions", header: "操作", width: 164, pin: "end",
+      cell: (row) => more ? <Inline gap="small" wrap={false} role="group" aria-label={`${row.name}的操作`}>
+        <Tooltip content="检测连接">
+          <IconButton icon={<Activity />} aria-label={`检测${row.name}`} loading={busyId === row.id && busyAction === "check"}
+            disabled={busyId !== null && (busyId !== row.id || busyAction !== "check")} onClick={() => void checkConnection(row)} />
+        </Tooltip>
+        <Tooltip content="编辑" disabled={row.readOnly}>
+          <IconButton icon={<Pencil />} aria-label={`编辑${row.name}`} disabled={row.readOnly || busyId !== null} onClick={() => startEdit(row)} />
+        </Tooltip>
+        <DropdownMenu
+          triggerAppearance="icon"
+          label="更多操作"
+          ariaLabel={`更多操作：${row.name}`}
+          align="end"
+          items={[
+            { id: "copy", label: "复制地址", icon: <Copy />, disabled: busyId !== null, onSelect: () => void copyAddress(row) },
+            { id: "view", label: "查看记录", icon: <Eye />, disabled: busyId !== null, onSelect: () => setViewing(row) },
+            { id: "delete", label: "删除", icon: <Trash2 />, danger: true, disabled: row.readOnly || busyId !== null, onSelect: () => startDelete(row) },
+          ]}
+        />
+      </Inline> : <Inline gap="small" wrap={false} role="group" aria-label={`${row.name}的操作`}>
         <Tooltip content="检测连接">
           <IconButton icon={<Activity />} aria-label={`检测${row.name}`} loading={busyId === row.id && busyAction === "check"}
             disabled={busyId !== null && (busyId !== row.id || busyAction !== "check")} onClick={() => void checkConnection(row)} />
@@ -146,7 +155,7 @@ function TableActionsExample({ more = false }: { more?: boolean }) {
   ];
   return <div style={{ display: "grid", gap: 20, minWidth: 0 }}>
     <DataTable ariaLabel="代理操作示例" columns={columns} rows={rows} rowKey={(row) => row.id} viewportRows={3} state={rows.length ? "ready" : "empty"} />
-    <p style={{ margin: 0 }}>{more ? "次要或较多操作统一收进更多菜单；每项仍有中文名称与图标。" : "检测、编辑、删除统一使用图标按钮，悬停或键盘聚焦时显示中文提示。检测时仅当前按钮显示加载状态，避免重复请求。"}</p>
+    <p style={{ margin: 0 }}>{more ? "检测、编辑和更多统一为图标入口；复制、查看和删除只出现在更多菜单中。悬停或键盘聚焦省略号显示中文提示，菜单内保留文字说明。" : "检测、编辑、删除统一使用图标按钮，悬停或键盘聚焦时显示中文提示。检测时仅当前按钮显示加载状态，避免重复请求。"}</p>
     <Dialog open={editing !== null} onOpenChange={(open) => { if (!open && !pending.current) setEditing(null); }}
       title="编辑代理" width="small" closable={busyId === null} closeOnBackdropClick={false}
       footer={<><Button disabled={busyId !== null} onClick={() => setEditing(null)}>取消</Button><Button type="submit" form={formId} variant="primary" loading={busyId === editing?.id} loadingLabel="保存修改" disabled={!draftName.trim()}>保存修改</Button></>}
@@ -168,15 +177,15 @@ function TableActionsExample({ more = false }: { more?: boolean }) {
 const explorerCase = {
   id: "data-table/actions",
   label: "操作列组合",
-  summary: "检测、编辑、删除等两至三个常用操作优先使用同一组横向图标按钮，较多或次要操作统一收进更多菜单。同一列不默认混用文字与图标；中文提示、固定列宽、只读状态、异步锁和删除确认由业务组合提供。",
+  summary: "两至三个常用操作优先使用横向图标按钮；需要更多命令时用同尺寸的省略号图标菜单，避免插入文字胶囊。中文提示、固定列宽、只读状态、异步锁和删除确认由业务组合提供。",
   states: ["default", "longContent", "keyboard", "mobile", "dark"],
   content: <TableActionsExample />,
   stateExamples: [
     { state: "default", exports: ["DataTable", "IconButton", "Tooltip", "Inline", "ConfirmDialog"], content: <TableActionsExample />, instructions: "检测显示真实加载状态并在完成后发送一次轻提示；编辑实际更新名称，删除须确认后才移除记录。只读代理仍可检测。" },
-    { state: "longContent", exports: ["DataTable", "DropdownMenu", "ConfirmDialog"], content: <TableActionsExample more />, instructions: "长地址在自己的列宽内省略，操作列固定在右侧。五项操作使用一个更多菜单；只读记录禁用编辑和删除，仍可检测、复制地址和查看记录。" },
+    { state: "longContent", exports: ["DataTable", "IconButton", "Tooltip", "Inline", "DropdownMenu", "ConfirmDialog"], content: <TableActionsExample more />, instructions: "长地址在自己的列宽内省略，164px 操作列固定在右侧。检测、编辑和省略号更多保持一行，菜单仅含复制、查看和删除，没有重复命令；只读记录仍可检测、复制和查看。" },
     { state: "keyboard", exports: ["DataTable", "IconButton", "Tooltip", "ConfirmDialog"], content: <TableActionsExample />, instructions: "Tab 聚焦图标即显示中文说明，Enter/Space 操作；编辑和删除弹窗支持取消，异步保存时锁定提交。更多菜单的方向键示例见长内容预览。" },
-    { state: "mobile", exports: ["DataTable", "IconButton", "Inline"], content: <StatePreview state="mobile"><TableActionsExample /></StatePreview>, instructions: "窄屏只在表格内横向滚动，操作列保持可见；不缩小图标点击区域、不把三个操作挤成上下两行。" },
-    { state: "dark", exports: ["DataTable", "IconButton", "Tooltip", "ConfirmDialog"], content: <StatePreview state="dark"><TableActionsExample /></StatePreview> },
+    { state: "mobile", exports: ["DataTable", "IconButton", "Inline", "DropdownMenu"], content: <StatePreview state="mobile"><TableActionsExample more /></StatePreview>, instructions: "窄屏只在表格内横向滚动，检测、编辑和省略号更多保持可见；不缩小点击区域、不把三个入口挤成上下两行。" },
+    { state: "dark", exports: ["DataTable", "IconButton", "Tooltip", "DropdownMenu", "ConfirmDialog"], content: <StatePreview state="dark"><TableActionsExample more /></StatePreview> },
   ],
   code: `const columns: DataColumn<Row>[] = [
   { id: "name", header: "名称", minWidth: 240, cell: (row) => row.name },
@@ -192,15 +201,22 @@ const explorerCase = {
         <IconButton icon={<Pencil />} aria-label={"编辑" + row.name}
           disabled={row.readOnly || pending} onClick={() => edit(row)} />
       </Tooltip>
-      <Tooltip content="删除" disabled={row.readOnly}>
-        <IconButton icon={<Trash2 />} variant="danger" aria-label={"删除" + row.name}
-          disabled={row.readOnly || pending} onClick={() => setDeleting(row)} />
-      </Tooltip>
+      <DropdownMenu triggerAppearance="icon" label="更多操作"
+        ariaLabel={"更多操作：" + row.name} align="end" items={[
+          { id: "copy", label: "复制地址", icon: <Copy />, disabled: pending,
+            onSelect: () => copyAddress(row) },
+          { id: "view", label: "查看记录", icon: <Eye />, disabled: pending,
+            onSelect: () => view(row) },
+          { id: "delete", label: "删除", icon: <Trash2 />, danger: true,
+            disabled: row.readOnly || pending, onSelect: () => setDeleting(row) },
+        ]} />
     </Inline>
   ) },
 ];
 // 默认 IconButton 是 36×36px；两按钮建议 120px，三按钮建议 164px。
-// 检测、编辑、删除统一图标；更多或次要操作用 DropdownMenu，不另加触发器。
+// 默认预览展示检测、编辑、删除三个图标；此处展示两项常用操作＋图标更多。
+// triggerAppearance="icon" 默认省略号，不显示文字胶囊或下箭头；label提供中文提示。
+// 普通页面菜单保留默认文字 triggerAppearance="button"，不另加自定义触发器。
 // 删除由一处 ConfirmDialog 确认，成功后用共享 Toast 反馈。
 // 完整文件包含检测加载、编辑表单、异步锁、只读状态、实际删除与更多菜单。`,
 } satisfies ExplorerCase;

@@ -1,11 +1,12 @@
 // @ui-coverage {"kind":"example","runner":"explorer","caseId":"popover/overview","exports":["Popover"]}
 import { useState } from "react";
-import { Button, Popover, Stack } from "../../../ui";
+import { Button, MultiSelect, Popover, Select, Stack } from "../../../ui";
 import { StatePreview } from "../state-preview";
 import type { ExplorerCase } from "../types";
 
 function PopoverExample() {
   const [open, setOpen] = useState(false);
+  const [region, setRegion] = useState("cn");
   return (
     <Popover
       triggerLabel="查看筛选摘要"
@@ -16,7 +17,9 @@ function PopoverExample() {
     >
       <Stack gap="small">
         <strong>当前筛选</strong>
-        <span>状态：启用，地区：中国大陆</span>
+        <span>在摘要中调整地区，选项选择不会关闭外层浮层。</span>
+        <Select ariaLabel="摘要地区" value={region} onValueChange={setRegion} options={[{ value: "cn", label: "中国大陆" }, { value: "gb", label: "英国" }]} />
+        <MultiSelect ariaLabel="摘要成员" options={[{ value: "lin", label: "林夏" }, { value: "chen", label: "陈安" }]} />
         <Button size="small" onClick={() => setOpen(false)}>完成</Button>
       </Stack>
     </Popover>
@@ -38,7 +41,7 @@ const explorerCase: ExplorerCase = {
       <Popover triggerLabel="查看详细筛选说明" ariaLabel="详细筛选说明">当前筛选将查询全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置，请确认所有筛选条件均符合团队的实际使用要求。</Popover>
       <Popover matchTriggerWidth triggerLabel="查看全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置" ariaLabel="与触发器等宽的详细筛选说明">浮层至少与触发器等宽，但不会超过当前可见区域；缩小窗口或打开移动端键盘后，完整说明仍可在浮层中阅读。</Popover>
     </Stack> },
-    { state: "keyboard", exports: ["Popover"], instructions: "用 Tab 聚焦摘要按钮，Enter 打开；在浮层中用 Tab 聚焦完成，Esc 关闭并返回触发按钮。", content: <PopoverExample /> },
+    { state: "keyboard", exports: ["Popover"], instructions: "打开摘要后选择地区或成员；点击子层选项保持摘要打开，Esc 先关闭选项，再按 Esc 关闭摘要并返回触发按钮。", content: <PopoverExample /> },
     { state: "overlay", exports: ["Popover"], content: <StatePreview state="overlay"><PopoverExample /></StatePreview> },
     { state: "dark", exports: ["Popover"], content: <StatePreview state="dark"><PopoverExample /></StatePreview> },
     { state: "locale", exports: ["Popover"], content: <StatePreview state="locale"><Popover triggerLabel="Filter summary" ariaLabel="Active filters">Status: Active; Region: United States</Popover></StatePreview> },

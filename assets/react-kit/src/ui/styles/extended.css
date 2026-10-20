@@ -152,7 +152,7 @@
 .ui-tree__row > button:not(.ui-icon-button) > span:last-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ui-tree__spacer { flex: 0 0 36px; width: 36px; }
 
-.ui-tree-table { width: 100%; min-width: 0; overflow: hidden; border: 1px solid var(--ui-border); border-radius: var(--ui-radius-surface); background: var(--ui-surface); }
+.ui-tree-table { width: 100%; min-width: 0; overflow: hidden; border: 1px solid var(--ui-border-strong); border-radius: var(--ui-radius-table); background: var(--ui-surface); }
 .ui-tree-table__viewport { min-width: 0; overflow: auto; }
 .ui-tree-table__viewport:focus-visible { outline: 2px solid var(--ui-focus-ring); outline-offset: -2px; }
 .ui-tree-table__toolbar, .ui-tree-table__footer { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; min-width: 0; padding: 12px 16px; overflow-wrap: anywhere; }
@@ -288,8 +288,10 @@
 .ui-tour { position: fixed; z-index: 140; inset: 0; display: grid; place-items: center; padding: 20px; overflow: hidden; }
 .ui-tour__scrim { position: absolute; inset: 0; background: var(--_ui-tour-backdrop); }
 .ui-tour__spotlight { position: fixed; border: 2px solid var(--ui-focus-ring); border-radius: var(--ui-radius-surface); box-shadow: 0 0 0 100vmax var(--_ui-tour-backdrop); pointer-events: none; }
-.ui-tour__card { position: relative; display: grid; gap: 10px; width: min(380px, 100%); padding: 18px; border-radius: var(--ui-radius-surface); background: var(--ui-surface); box-shadow: var(--ui-shadow-overlay); color: var(--ui-text); }
+.ui-tour__card { position: relative; display: grid; grid-template-rows: minmax(0, 1fr) auto; gap: 10px; width: min(380px, 100%); max-height: calc(100dvh - 40px); min-height: 0; padding: 18px; overflow: hidden; border-radius: var(--ui-radius-surface); background: var(--ui-surface); box-shadow: var(--ui-shadow-overlay); color: var(--ui-text); }
 .ui-tour__card[data-placement] { position: fixed; }
+.ui-tour__body { display: grid; align-content: start; gap: 10px; min-height: 0; min-width: 0; overflow: auto; overscroll-behavior: contain; overflow-wrap: anywhere; }
+.ui-tour__body:focus-visible { outline: 2px solid var(--ui-focus-ring); outline-offset: -2px; }
 .ui-tour__card h2 { margin: 0; font-size: 18px; overflow-wrap: anywhere; }
 .ui-tour__count { color: var(--ui-primary); font-size: 12px; font-weight: 700; }
 .ui-tour__card footer { display: flex; justify-content: space-between; gap: 8px; margin-top: 4px; }

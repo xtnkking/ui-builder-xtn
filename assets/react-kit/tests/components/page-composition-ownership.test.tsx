@@ -57,6 +57,35 @@ describe("page composition ownership", () => {
     expect(screen.getAllByRole("button", { name: "重试" })).toHaveLength(1);
   });
 
+  it("keeps draft reset separate from an explicitly submitted member query", async () => {
+    const user = userEvent.setup();
+    const fetchMembers = vi.fn().mockResolvedValue(result);
+    render(<MemberManagementPage fetchMembers={fetchMembers} layoutWidth="wide" />);
+    await screen.findByText("首次加载完成");
+
+    const filters = screen.getByRole("form", { name: "筛选条件" });
+    const search = within(filters).getByRole("searchbox", { name: "搜索姓名或邮箱" });
+    const query = within(filters).getByRole("button", { name: "查询", exact: true });
+    const reset = within(filters).getByRole("button", { name: "重置", exact: true });
+    const actions = within(filters).getAllByRole("button");
+    expect(actions.indexOf(query)).toBeLessThan(actions.indexOf(reset));
+
+    await user.type(search, "待重置");
+    expect(screen.getByText("条件已修改，点击查询后更新数据")).toBeInTheDocument();
+    expect(fetchMembers).toHaveBeenCalledTimes(1);
+    await user.click(reset);
+    expect(search).toHaveValue("");
+    expect(fetchMembers).toHaveBeenCalledTimes(1);
+
+    await user.type(search, "林夏{Enter}");
+    expect(fetchMembers).toHaveBeenCalledTimes(2);
+    expect(fetchMembers).toHaveBeenLastCalledWith(
+      expect.objectContaining({ search: "林夏", page: 1 }),
+      expect.any(AbortSignal),
+    );
+    expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
+  });
+
   it("keeps the concrete service and list requests independent with one heading and one total", async () => {
     const user = userEvent.setup();
     render(<ScopedListExample />);

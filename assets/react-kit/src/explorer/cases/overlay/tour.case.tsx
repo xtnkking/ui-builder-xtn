@@ -49,7 +49,7 @@ const explorerCase: ExplorerCase = {
     { state: "default", exports: ["GuidedTour"], content: <GuidedTourExample /> },
     { state: "controlled", exports: ["GuidedTour"], instructions: "打开引导，下一步改变受控 currentId；没有目标的第二步使用居中回退。", content: <GuidedTourExample /> },
     { state: "empty", exports: ["GuidedTour"], instructions: "steps 为空时没有活动步骤，组件不显示引导面板；页面自行提供说明。", content: <><GuidedTour open onOpenChange={() => undefined} currentId="" onCurrentChange={() => undefined} steps={[]} /><p>当前没有引导步骤，引导面板保持不可见。</p></> },
-    { state: "longContent", exports: ["GuidedTour"], content: <LongGuidedTourExample /> },
+    { state: "longContent", exports: ["GuidedTour"], instructions: "缩小窗口高度后，完整说明在卡片正文内滚动，上一页／下一步保持可见；可用 Tab 聚焦正文并用方向键滚动。", content: <LongGuidedTourExample /> },
     { state: "keyboard", exports: ["GuidedTour"], instructions: "用 Tab 和 Enter 开始引导；在当前卡片内用 Tab 切换上一页、下一页或完成，Esc 退出并返回开始按钮。", content: <GuidedTourExample /> },
     { state: "overlay", exports: ["GuidedTour"], instructions: "在外层弹窗内开始引导；Esc 先退出引导，外层弹窗保持打开。", content: <StatePreview state="overlay"><GuidedTourExample /></StatePreview> },
     { state: "dark", exports: ["GuidedTour"], content: <StatePreview state="dark"><GuidedTourExample /></StatePreview> },

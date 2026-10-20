@@ -1,5 +1,5 @@
 // @ui-coverage {"kind":"example","runner":"explorer","caseId":"hover-card/overview","exports":["HoverCard"]}
-import { Avatar, HoverCard, Inline, Stack, Tag } from "../../../ui";
+import { Avatar, Button, HoverCard, Inline, MultiSelect, Stack, Tag } from "../../../ui";
 import { useState } from "react";
 import { StatePreview } from "../state-preview";
 import type { ExplorerCase } from "../types";
@@ -21,7 +21,7 @@ function HoverCardExample() {
 
 function ControlledHoverCardExample() {
   const [open, setOpen] = useState(false);
-  return <><HoverCard triggerLabel="查看受控资料卡" ariaLabel="受控资料卡" open={open} onOpenChange={setOpen}><strong>林夏</strong><p>客户成功 · lin.xia@example.com</p></HoverCard><p role="status">资料卡：{open ? "已打开" : "已关闭"}</p></>;
+  return <><HoverCard triggerLabel="查看受控资料卡" ariaLabel="受控资料卡" open={open} onOpenChange={setOpen}><Stack gap="small"><strong>林夏</strong><span>客户成功 · lin.xia@example.com</span><MultiSelect ariaLabel="成员团队" options={[{ value: "support", label: "客户支持" }, { value: "success", label: "客户成功" }]} /><Button size="small" onClick={() => setOpen(false)}>完成查看</Button></Stack></HoverCard><p role="status">资料卡：{open ? "已打开" : "已关闭"}</p></>;
 }
 
 const explorerCase: ExplorerCase = {
@@ -36,7 +36,7 @@ const explorerCase: ExplorerCase = {
     { state: "controlled", exports: ["HoverCard"], content: <ControlledHoverCardExample /> },
     { state: "uncontrolled", exports: ["HoverCard"], content: <HoverCard defaultOpen={false} triggerLabel="查看非受控资料卡" ariaLabel="非受控资料卡"><strong>林夏</strong><p>客户成功 · lin.xia@example.com</p></HoverCard> },
     { state: "longContent", exports: ["HoverCard"], content: <HoverCard triggerLabel="查看完整资料" ariaLabel="完整成员资料">此成员负责全部产品的客户支持、账户安全、数据访问权限、通知偏好和操作审计管理，需要在团队成员列表中持续保持完整的联系方式。</HoverCard> },
-    { state: "keyboard", exports: ["HoverCard"], instructions: "用 Tab 聚焦资料按钮以打开资料卡，按 Esc 关闭；再次聚焦可重新打开，Tab 移出时关闭。", content: <ControlledHoverCardExample /> },
+    { state: "keyboard", exports: ["HoverCard"], instructions: "聚焦资料按钮打开卡片；焦点进入卡片或团队选项时保持打开，移至外部后关闭。Esc 先关闭团队选项，再关闭资料卡并回焦。", content: <ControlledHoverCardExample /> },
     { state: "overlay", exports: ["HoverCard"], content: <StatePreview state="overlay"><HoverCardExample /></StatePreview> },
     { state: "dark", exports: ["HoverCard"], content: <StatePreview state="dark"><HoverCardExample /></StatePreview> },
     { state: "locale", exports: ["HoverCard"], content: <StatePreview state="locale"><HoverCard triggerLabel="View Alex's profile" ariaLabel="Alex's profile"><strong>Alex</strong><p>Customer success · alex@example.com</p></HoverCard></StatePreview> },

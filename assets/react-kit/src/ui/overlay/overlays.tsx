@@ -14,12 +14,12 @@ import {
   type ReactNode,
 } from "react";
 import { createPortal } from "react-dom";
-import { ChevronDown, X } from "lucide-react";
+import { ChevronDown, Ellipsis, X } from "lucide-react";
 import type { ControlledOpenProps, PublicControlProps } from "../foundation/contracts";
 import { useControllableState } from "../internal/controllable-state";
 import { useMotionPresence, useNonModalMotion } from "../internal/motion";
 import { floatingPortalTarget, usePopoverPosition } from "../internal/floating-position";
-import { InternalButtonSlot } from "../internal/button-slots";
+import { InternalButtonSlot, InternalIconButtonSlot } from "../internal/button-slots";
 import { sanitizeFixedControlProps } from "../internal/fixed-control-props";
 import {
   LayerParentProvider,
@@ -271,6 +271,8 @@ export type DropdownMenuProps = PublicControlProps<{
   ariaLabel: string;
   items: MenuItem[];
   icon?: ReactNode;
+  /** Icon mode uses the official ghost IconButton; label remains its tooltip. */
+  triggerAppearance?: "button" | "icon";
   align?: "start" | "end";
 }>;
 
@@ -280,7 +282,7 @@ const DROPDOWN_MENU_SLOT_CLASS = {
 
 export function DropdownMenu(rawProps: DropdownMenuProps) {
   const safeProps = sanitizeFixedControlProps(rawProps);
-  const { label, ariaLabel, items, icon, align = "end" } = safeProps;
+  const { label, ariaLabel, items, icon, triggerAppearance = "button", align = "end" } = safeProps;
   assertUniqueIdentities("DropdownMenu", "item.id", items.map((item) => item.id));
   const id = useId();
   const [open, setOpen] = useState(false);
@@ -293,6 +295,7 @@ export function DropdownMenu(rawProps: DropdownMenuProps) {
   const openingEdgeRef = useRef<"first" | "last">("first");
   const internalSlot = useInternalDropdownMenuSlot();
   const slotClassName = internalSlot ? DROPDOWN_MENU_SLOT_CLASS[internalSlot] : undefined;
+  const iconTrigger = triggerAppearance === "icon" && !internalSlot;
   const hasItemIcons = items.some((item) => item.icon != null);
   const hasEnabledItems = items.some((item) => !item.disabled);
   const motion = useNonModalMotion(open && portalTarget !== null, menuRef, triggerRef);
@@ -407,7 +410,21 @@ export function DropdownMenu(rawProps: DropdownMenuProps) {
   return (
     <div ref={rootRef} className={cx("ui-dropdown", slotClassName)} data-ui-owner="DropdownMenu" onKeyDown={handleKeyDown}>
       <InternalOverlaySlotBoundary>
-        <InternalButtonSlot name="dropdown-trigger" elementRef={triggerRef}>
+        {iconTrigger ? (
+          <Tooltip content={label} disabled={open || !hasEnabledItems}>
+            <InternalIconButtonSlot name="dropdown-trigger" elementRef={triggerRef}>
+              <IconButton
+                icon={icon ?? <Ellipsis aria-hidden="true" />}
+                aria-label={ariaLabel}
+                aria-haspopup="menu"
+                aria-expanded={open}
+                aria-controls={open ? id : undefined}
+                disabled={!hasEnabledItems}
+                onClick={() => open ? closeMenu() : openMenu()}
+              />
+            </InternalIconButtonSlot>
+          </Tooltip>
+        ) : <InternalButtonSlot name="dropdown-trigger" elementRef={triggerRef}>
           <Button
             icon={icon}
             trailingIcon={<ChevronDown aria-hidden="true" />}
@@ -425,7 +442,7 @@ export function DropdownMenu(rawProps: DropdownMenuProps) {
               {label}
             </span>
           </Button>
-        </InternalButtonSlot>
+        </InternalButtonSlot>}
         {motion.present && portalTarget ? createPortal(
           <div
             ref={menuRef}

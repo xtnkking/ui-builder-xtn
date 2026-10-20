@@ -4,6 +4,7 @@ import createEditCase from "./create-edit.case";
 import detailCase from "./detail.case";
 import importExportCase from "./import-export.case";
 import listFilterCase from "./list-filter.case";
+import projectConsistencyCase from "./project-consistency.example";
 import masterDetailCase from "./master-detail.case";
 import settingsCase from "./settings.case";
 import statusPageCase from "./status-page.case";
@@ -14,7 +15,7 @@ export const patternExplorerCases: ExplorerCases = {
   "create-edit": [createEditCase],
   detail: [detailCase],
   "import-export": [importExportCase],
-  "list-filter": [listFilterCase],
+  "list-filter": [listFilterCase, projectConsistencyCase],
   "master-detail": [masterDetailCase],
   settings: [settingsCase],
   "status-page": [statusPageCase],

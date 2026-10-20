@@ -14,6 +14,7 @@ export type InternalButtonSlotName =
   | "dropdown-trigger";
 
 export type InternalIconButtonSlotName =
+  | "dropdown-trigger"
   | "lightbox-close"
   | "lightbox-previous"
   | "lightbox-next";
@@ -24,7 +25,12 @@ interface InternalButtonSlotValue {
 }
 
 const ButtonSlotContext = createContext<InternalButtonSlotValue | null>(null);
-const IconButtonSlotContext = createContext<InternalIconButtonSlotName | null>(null);
+interface InternalIconButtonSlotValue {
+  name: InternalIconButtonSlotName;
+  elementRef?: Ref<HTMLButtonElement>;
+}
+
+const IconButtonSlotContext = createContext<InternalIconButtonSlotValue | null>(null);
 const FilterActionContext = createContext(false);
 
 /** Query actions keep their own short label during loading without consumer boilerplate. */
@@ -55,21 +61,22 @@ export function InternalButtonSlot(props: InternalButtonSlotProps) {
   return <ButtonSlotContext.Provider value={value}>{props.children}</ButtonSlotContext.Provider>;
 }
 
-export function InternalIconButtonSlot({
-  name,
-  children,
-}: {
-  name: InternalIconButtonSlotName;
-  children: ReactElement;
-}) {
-  return <IconButtonSlotContext.Provider value={name}>{children}</IconButtonSlotContext.Provider>;
+type InternalIconButtonSlotProps =
+  | { name: "dropdown-trigger"; elementRef: Ref<HTMLButtonElement>; children: ReactElement }
+  | { name: Exclude<InternalIconButtonSlotName, "dropdown-trigger">; elementRef?: never; children: ReactElement };
+
+export function InternalIconButtonSlot(props: InternalIconButtonSlotProps) {
+  const value: InternalIconButtonSlotValue = props.name === "dropdown-trigger"
+    ? { name: props.name, elementRef: props.elementRef }
+    : { name: props.name };
+  return <IconButtonSlotContext.Provider value={value}>{props.children}</IconButtonSlotContext.Provider>;
 }
 
 export function useInternalButtonSlot(): InternalButtonSlotValue | null {
   return useContext(ButtonSlotContext);
 }
 
-export function useInternalIconButtonSlot(): InternalIconButtonSlotName | null {
+export function useInternalIconButtonSlot(): InternalIconButtonSlotValue | null {
   return useContext(IconButtonSlotContext);
 }
 

@@ -406,7 +406,7 @@ export function DateRangeField(rawProps: DateRangeFieldProps) {
       <label htmlFor={startId}><span>{startLabel}</span><DateField id={startId} precision={precision} value={currentValue.start} name={startName ?? (name ? `${name}.start` : undefined)} form={form} min={min} max={currentValue.end || max} required={required} disabled={disabled} readOnly={readOnly} aria-invalid={resolvedInvalid || undefined} controlRef={startControlRef} onChange={(event) => setCurrentValue({ ...currentValue, start: event.target.value })} /></label>
       <span className="ui-date-range__separator" aria-hidden="true">{message("dateRange.separator")}</span>
       <label htmlFor={endId}><span>{endLabel}</span><DateField id={endId} precision={precision} value={currentValue.end} name={endName ?? (name ? `${name}.end` : undefined)} form={form} min={currentValue.start || min} max={max} required={required} disabled={disabled} readOnly={readOnly} aria-invalid={resolvedInvalid || undefined} controlRef={endControlRef} onChange={(event) => setCurrentValue({ ...currentValue, end: event.target.value })} /></label>
-      {orderInvalid ? <span className="ui-date-range__error" role="alert">{rangeError}</span> : null}
+      {orderInvalid && rangeError != null && rangeError !== false ? <span className="ui-date-range__error" role="alert">{rangeError}</span> : null}
     </div>
   );
 }

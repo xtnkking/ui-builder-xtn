@@ -368,15 +368,14 @@
 }
 
 .ui-extra-option {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) 18px;
+  display: flex;
   align-items: center;
   gap: 9px;
   width: 100%;
   min-height: 42px;
   padding: 7px 9px;
   border: 0;
-  border-radius: 6px;
+  border-radius: max(6px, calc(var(--ui-radius-surface) - 7px));
   background: transparent;
   color: var(--ui-text);
   cursor: pointer;
@@ -393,6 +392,7 @@
 }
 
 .ui-extra-option > svg:last-child {
+  flex: 0 0 16px;
   width: 16px;
   height: 16px;
   opacity: 0;
@@ -409,6 +409,7 @@
 
 .ui-extra-option__leading {
   display: inline-flex;
+  flex: 0 0 22px;
   width: 22px;
   height: 22px;
   align-items: center;
@@ -424,6 +425,7 @@
 
 .ui-extra-option__copy {
   display: grid;
+  flex: 1 1 auto;
   min-width: 0;
 }
 
@@ -488,6 +490,10 @@
 .ui-multi-select__popover.ui-portal {
   grid-template-rows: auto minmax(0, 1fr) auto;
   overflow: hidden;
+}
+
+.ui-tree-select__tree.ui-portal {
+  width: min(var(--ui-floating-anchor-width, 1px), var(--ui-floating-max-width, calc(100vw - 24px)));
 }
 
 .ui-async-select__popover.ui-portal[data-positioned="true"],
@@ -568,6 +574,7 @@
 
 .ui-multi-select__check {
   display: inline-flex;
+  flex: 0 0 18px;
   width: 18px;
   height: 18px;
   align-items: center;
@@ -643,7 +650,7 @@
 
 .ui-cascader {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr));
   gap: 8px;
   min-width: 0;
 }
@@ -662,12 +669,11 @@
 .ui-tree-select__tree [role="treeitem"]:focus-visible > .ui-tree-select__row {
   outline: 2px solid var(--ui-focus-ring);
   outline-offset: -2px;
-  border-radius: 6px;
 }
 
 .ui-tree-select__row {
   min-width: 0;
-  border-radius: 6px;
+  border-radius: max(6px, calc(var(--ui-radius-surface) - 6px));
   cursor: pointer;
 }
 

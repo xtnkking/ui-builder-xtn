@@ -15,6 +15,8 @@ import { useUILocale, type UILocaleContext } from "../foundation/locale";
 import type { PaginationPageTrigger } from "../navigation/navigation";
 import { Drawer, OverflowText } from "../overlay/overlays";
 import { Button, IconButton, Tag, type TagTone } from "../foundation/primitives";
+import { FilterBar, FilterField } from "../action/actions";
+import { ListManagementPage } from "./standard-pages";
 
 export interface MemberRecord {
   id: string;
@@ -51,6 +53,7 @@ export interface MemberManagementPageProps {
   statuses?: string[];
   initialPageSize?: number;
   pageSizeOptions?: number[];
+  layoutWidth?: "readable" | "wide";
   onInvite?: () => void;
   onOpenMember?: (member: MemberRecord) => void;
   onEditMember?: (member: MemberRecord) => void;
@@ -200,6 +203,7 @@ export function MemberManagementPage({
   statuses = DEFAULT_STATUSES,
   initialPageSize = DEFAULT_PAGE_SIZE,
   pageSizeOptions = [5, 10, 20, 50],
+  layoutWidth = "readable",
   onInvite,
   onOpenMember,
   onEditMember,
@@ -427,68 +431,80 @@ export function MemberManagementPage({
 
   return (
     <section
-      className="ui-data-page ui-root"
+      className="ui-root"
       aria-labelledby={titleId}
       aria-busy={requesting || undefined}
       data-request-action={requesting ? requestAction : undefined}
       data-ui-owner="MemberManagementPage"
     >
-      <header className="ui-page-header">
-        <div>
-          <h1 id={titleId} title={resolvedTitle}>{resolvedTitle}</h1>
-        </div>
-        {onInvite ? (
+      <ListManagementPage
+        title={<span id={titleId} title={resolvedTitle}>{resolvedTitle}</span>}
+        layoutWidth={layoutWidth}
+        actions={onInvite ? (
           <Button variant="primary" icon={<UserPlus aria-hidden="true" />} onClick={onInvite}>{message("member.invite")}</Button>
-        ) : null}
-      </header>
-
-      <form className="ui-query-toolbar" onSubmit={handleFormSubmit}>
-        <SearchInput
-          aria-label={message("member.search")}
-          placeholder={message("member.search")}
-          value={draft.search}
-          readOnly={requesting}
-          aria-disabled={requesting || undefined}
-          onChange={(event) => setDraft((current) => ({ ...current, search: event.target.value }))}
-          onClear={() => setDraft((current) => ({ ...current, search: "" }))}
-        />
-        <Select
-          ariaLabel={message("member.filterRole")}
-          value={draft.role}
-          aria-disabled={requesting || undefined}
-          options={roleOptions}
-          onValueChange={(role) => setDraft((current) => ({ ...current, role }))}
-        />
-        <Select
-          ariaLabel={message("member.filterStatus")}
-          value={draft.status}
-          aria-disabled={requesting || undefined}
-          options={statusOptions}
-          onValueChange={(status) => setDraft((current) => ({ ...current, status }))}
-        />
-        <div className="ui-query-toolbar__actions">
-          <Button
-            size="field"
-            disabled={sameFilters(draft, emptyFilters)}
-            aria-disabled={requesting || undefined}
-            onClick={() => setDraft(emptyFilters)}
+        ) : undefined}
+        filters={(
+          <FilterBar
+            ariaLabel={message("page.filters")}
+            onSubmit={handleFormSubmit}
+            actions={(
+              <>
+                <Button
+                  size="field"
+                  type="submit"
+                  variant="primary"
+                  icon={<Search aria-hidden="true" />}
+                  loading={requesting && requestAction === "query"}
+                  loadingLabel={message("member.query")}
+                  aria-disabled={requesting || undefined}
+                  data-pending={pending || undefined}
+                >
+                  {message("member.query")}
+                </Button>
+                <Button
+                  size="field"
+                  variant="secondary"
+                  disabled={sameFilters(draft, emptyFilters)}
+                  aria-disabled={requesting || undefined}
+                  onClick={() => setDraft(emptyFilters)}
+                >
+                  {message("member.reset")}
+                </Button>
+              </>
+            )}
           >
-            {message("member.reset")}
-          </Button>
-          <Button
-            size="field"
-            type="submit"
-            variant="primary"
-            icon={<Search aria-hidden="true" />}
-            loading={requesting && requestAction === "query"}
-            loadingLabel={message("member.query")}
-            aria-disabled={requesting || undefined}
-            data-pending={pending || undefined}
-          >
-            {message("member.query")}
-          </Button>
-        </div>
-      </form>
+            <FilterField width="medium">
+              <SearchInput
+                aria-label={message("member.search")}
+                placeholder={message("member.search")}
+                value={draft.search}
+                readOnly={requesting}
+                aria-disabled={requesting || undefined}
+                onChange={(event) => setDraft((current) => ({ ...current, search: event.target.value }))}
+                onClear={() => setDraft((current) => ({ ...current, search: "" }))}
+              />
+            </FilterField>
+            <FilterField width="short">
+              <Select
+                ariaLabel={message("member.filterRole")}
+                value={draft.role}
+                aria-disabled={requesting || undefined}
+                options={roleOptions}
+                onValueChange={(role) => setDraft((current) => ({ ...current, role }))}
+              />
+            </FilterField>
+            <FilterField width="short">
+              <Select
+                ariaLabel={message("member.filterStatus")}
+                value={draft.status}
+                aria-disabled={requesting || undefined}
+                options={statusOptions}
+                onValueChange={(status) => setDraft((current) => ({ ...current, status }))}
+              />
+            </FilterField>
+          </FilterBar>
+        )}
+      >
 
       <div className="ui-query-state" aria-live="polite">
         <span className={pending ? "is-pending" : undefined}>
@@ -575,6 +591,8 @@ export function MemberManagementPage({
           },
         }}
       />
+
+      </ListManagementPage>
 
       <Drawer
         open={Boolean(selectedMember)}

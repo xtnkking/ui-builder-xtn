@@ -9,6 +9,8 @@ import {
   Dialog,
   Drawer,
   Field,
+  FilterBar,
+  FilterField,
   Form,
   Inline,
   Input,
@@ -161,7 +163,17 @@ export function ThemePreview() {
                 <div className="theme-preview-workspace-heading"><div><p className="theme-preview-eyebrow">{section === "projects" ? "PROJECTS / 团队项目" : "WORKSPACE / 工作概览"}</p><h2>{section === "projects" ? "让协作井然有序" : "把好想法，一起变成现实。"}</h2><p>欢迎回来，林晓。今天也从一件喜欢的事开始。</p></div><div className="theme-preview-workspace-actions"><Button icon={<Settings2 aria-hidden="true" />} onClick={() => setDrawerOpen(true)}>空间设置</Button><Button variant="primary" icon={<Plus aria-hidden="true" />} onClick={() => { setMessage(""); setDialogOpen(true); }}>新建项目</Button></div></div>
                 <div className="theme-preview-stats"><Card padding="medium"><div className="theme-preview-stat"><span>进行中的项目</span><strong>{projects.filter((project) => project.status !== "done").length.toString().padStart(2, "0")}</strong><small>保持专注，稳步向前</small></div></Card><Card padding="medium"><div className="theme-preview-stat"><span>本周完成任务</span><strong>24<small>项</small></strong><small>比上周多完成 6 项</small></div></Card><Card padding="medium"><div className="theme-preview-stat"><span>团队协作效率</span><strong>96<small>%</small></strong><small>让每一次协作更顺畅</small></div></Card></div>
                 <div className="theme-preview-content-grid">
-                  <div className="theme-preview-projects"><div className="theme-preview-section-heading"><h3>最近的项目</h3><span>{visibleProjects.length} 个项目</span></div><Form onSubmit={queryProjects}><div className="theme-preview-query"><div className="theme-preview-search-field"><SearchInput aria-label="搜索示例项目" placeholder="搜索项目" value={query} onChange={(event) => setQuery(event.currentTarget.value)} onClear={() => setQuery("")} /></div><div className="theme-preview-status-field"><Select ariaLabel="筛选示例项目状态" value={status} onValueChange={setStatus} options={[{ value: "all", label: "全部状态" }, { value: "active", label: "进行中" }, { value: "review", label: "待评审" }, { value: "done", label: "已完成" }]} /></div><Button type="submit" size="field" icon={<Search aria-hidden="true" />}>查询</Button></div></Form><DataTable ariaLabel="示例团队项目" rows={visibleProjects} columns={projectColumns} rowKey={(project) => project.id} emptyTitle="没有找到相关项目" emptyDescription="试试其他关键词，或调整状态筛选。" mobileRow={(project) => <div className="theme-preview-mobile-project"><div className="theme-preview-project-name"><OverflowText>{project.name}</OverflowText><span className="theme-preview-muted">{project.owner} · {project.updated}</span></div><Tag tone={statusTones[project.status]}>{statusLabels[project.status]}</Tag></div>} /><p className="theme-preview-status" role="status">{message || "项目更新会自动同步给团队成员。"}</p></div>
+                  <div className="theme-preview-projects">
+                    <div className="theme-preview-section-heading"><h3>最近的项目</h3><span>{visibleProjects.length} 个项目</span></div>
+                    <div className="theme-preview-filters">
+                      <FilterBar ariaLabel="示例项目筛选" onSubmit={queryProjects} actions={<Button type="submit" size="field" variant="primary" icon={<Search aria-hidden="true" />}>查询</Button>}>
+                        <FilterField width="medium"><SearchInput aria-label="搜索示例项目" placeholder="搜索项目" value={query} onChange={(event) => setQuery(event.currentTarget.value)} onClear={() => setQuery("")} /></FilterField>
+                        <FilterField width="short"><Select ariaLabel="筛选示例项目状态" value={status} onValueChange={setStatus} options={[{ value: "all", label: "全部状态" }, { value: "active", label: "进行中" }, { value: "review", label: "待评审" }, { value: "done", label: "已完成" }]} /></FilterField>
+                      </FilterBar>
+                    </div>
+                    <DataTable ariaLabel="示例团队项目" rows={visibleProjects} columns={projectColumns} rowKey={(project) => project.id} emptyTitle="没有找到相关项目" emptyDescription="试试其他关键词，或调整状态筛选。" mobileRow={(project) => <div className="theme-preview-mobile-project"><div className="theme-preview-project-name"><OverflowText>{project.name}</OverflowText><span className="theme-preview-muted">{project.owner} · {project.updated}</span></div><Tag tone={statusTones[project.status]}>{statusLabels[project.status]}</Tag></div>} />
+                    <p className="theme-preview-status" role="status">{message || "项目更新会自动同步给团队成员。"}</p>
+                  </div>
                   <aside className="theme-preview-side-card"><Card heading="为灵感留一点空间" description="少一点打扰，多一点专注。" variant="subtle"><Stack gap="large"><div className="theme-preview-note"><span className="theme-preview-note-eyebrow">本周的一点小提醒</span><p>先做一件小事。<br />好想法会在行动里生长。</p><span>栖云 · 团队笔记</span></div><Switch label="项目更新通知" checked={notifications} onChange={(event) => setNotifications(event.currentTarget.checked)} /><Button variant="ghost" size="small" trailingIcon={<ArrowUpRight aria-hidden="true" />} onClick={() => setDrawerOpen(true)}>管理我的偏好</Button></Stack></Card></aside>
                 </div>
               </div>

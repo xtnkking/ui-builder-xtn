@@ -51,6 +51,26 @@ Use `FilterField` with `FilterBar` for mixed-length query controls. Fields wrap 
 
 Keep query loading labels equal to the short visible command when longer text is unnecessary. Loading must not widen the button, move adjacent fields or permit duplicate submission. See [filter widths](data-workflows.md#filter-field-sizing) and [search feedback](data-workflows.md#search-feedback).
 
+## Project consistency
+
+Decide the visual treatment once for each repeated business role in the application. The default explicit list query uses `Button variant="primary" size="field"`, a Lucide `Search` icon and short visible text, followed by a `variant="secondary"` reset. Use `FilterBar` for these controls; its private action context keeps the same corners and padding through Fragment or official Inline wrappers. MemberManagementPage uses that same composition. A product may deliberately select another query treatment, but all comparable query entry points in that scope must use it. Primary creation/save, destructive actions and compact row actions retain their own semantics.
+
+Choose the width of comparable list routes from the application layout, then reuse it. `ListManagementPage`, `SearchFilterPage` and `MemberManagementPage` accept the same `layoutWidth="readable" | "wide"`; the default is readable (1160px maximum, centered), and wide fills the available shell. Keep one shared choice in application configuration rather than switching each route according to returned records or column count. The application shell owns shared horizontal padding, including for MemberManagementPage. Distinct authentication forms, settings and editing surfaces can retain their suitable readable widths.
+
+```tsx
+import { ListManagementPage, SearchFilterPage, MemberManagementPage } from "./ui";
+
+const projectListWidth = "wide" as const;
+
+<ListManagementPage title="服务器" layoutWidth={projectListWidth} filters={serverFilters}>{serverTable}</ListManagementPage>;
+<SearchFilterPage title="任务中心" layoutWidth={projectListWidth} filters={taskFilters}>{taskTable}</SearchFilterPage>;
+<MemberManagementPage layoutWidth={projectListWidth} fetchMembers={fetchMembers} />;
+```
+
+The page container chooses the content boundary; DataTable fills that boundary; its columns choose how the inner table uses the space. Give a name/description column `minWidth` without `width` when it should receive remaining room, keeping short values and operations bounded. When every column has an explicit width, the inner table deliberately uses their sum and can leave blank space inside its full-width frame. TreeTable shares DataTable's frame border and table-radius tokens.
+
+Before handoff, compare at least the affected routes at the same viewport and shell width: heading/filter/table left and right edges, query color/icon/height/corners, loading stability and empty results. Inspect the actual narrow container too. The runnable “同站列表一致性” example at `#/patterns/list-filter` compares three list pages with one shared width, direct/Inline query actions, column policies and themes. Provenance validation checks source ownership; it cannot decide which business actions or routes should share a treatment.
+
 ## Segmented choices
 
 `SegmentedControl` defaults to content width, including when it is a direct child of a column flex or grid layout. Its background hugs the option group instead of stretching across unused space. Use `fill` to deliberately fill the container with equal-width options, or `fill="mobile"` to fill only at viewport widths up to 640px. All modes remain bounded by their container and retain long-label truncation. Do not add application CSS to fix the background width; use the public `fill` choice. Compare both parent layouts at `#/components/segmented` → “宽度与父布局”.

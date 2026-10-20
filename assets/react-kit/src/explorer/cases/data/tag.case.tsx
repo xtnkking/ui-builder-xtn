@@ -34,7 +34,7 @@ function TagExample({ english = false }: { english?: boolean }) {
         <Tag tone="blue" leading={<span aria-hidden="true">US</span>}>+1</Tag>
         <Tag tone="blue" leading={<Flag />}>GB +44</Tag>
         <Tag tone="warning" leading={<Clock3 />}>3 天后过期</Tag>
-        {visible ? <Tag tone="warning" onRemove={() => setVisible(false)} removeLabel="移除即将过期标签">即将过期</Tag> : <Button variant="ghost" size="small" onClick={() => setVisible(true)}>恢复标签</Button>}
+        {visible ? <Tag size="small" tone="warning" onRemove={() => setVisible(false)} removeLabel="移除即将过期标签">即将过期</Tag> : <Button variant="ghost" size="small" onClick={() => setVisible(true)}>恢复标签</Button>}
       </Inline>
       <CountryTagExample english={english} />
     </div>
@@ -46,7 +46,7 @@ function LongTagExample() {
   return <Inline gap="small" wrap>
     <Tag size="small">此标签包含全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置，请确认所有关联配置均符合团队的实际使用要求。</Tag>
     <Tag tone="blue" leading={<Flag />}>跨区域企业工作区身份认证与安全策略审核的完整业务标签</Tag>
-    {visible ? <Tag tone="warning" onRemove={() => setVisible(false)}>即将过期的企业订阅标签，包含跨地区结算与访问权限审核的完整业务说明</Tag> : <Button size="small" onClick={() => setVisible(true)}>恢复长标签</Button>}
+    {visible ? <Tag size="small" tone="warning" onRemove={() => setVisible(false)}>即将过期的企业订阅标签，包含跨地区结算与访问权限审核的完整业务说明</Tag> : <Button size="small" onClick={() => setVisible(true)}>恢复长标签</Button>}
     <Tag tone="blue" country={{ code: "GB", name: "英国跨区域企业工作区身份认证、访问权限与安全策略审核国家名称", callingCode: "+44" }} />
     <Tag tone="blue" country={{ code: "AS", name: "美属萨摩亚跨区域企业工作区的国家及地区完整名称", callingCode: "+1684" }} />
   </Inline>;

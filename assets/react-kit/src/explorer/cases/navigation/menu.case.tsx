@@ -13,6 +13,7 @@ function MenuExample() {
   return <Stack gap="large" align="start">
     <Menu ariaLabel="导航菜单" items={menuItems} />
     <DropdownMenu label="更多操作" ariaLabel="下拉菜单" items={menuItems} />
+    <DropdownMenu triggerAppearance="icon" label="更多操作" ariaLabel="图标更多操作" items={menuItems} />
     <ContextMenu ariaLabel="记录菜单" items={menuItems}><p>右键或 Shift+F10 打开菜单。</p></ContextMenu>
   </Stack>;
 }
@@ -20,6 +21,7 @@ function EmptyMenuExample() {
   return <Stack gap="large" align="start">
     <Menu ariaLabel="空导航" items={[]} />
     <DropdownMenu label="空操作组" ariaLabel="空下拉菜单" items={[]} />
+    <DropdownMenu triggerAppearance="icon" label="没有可用操作" ariaLabel="空图标菜单" items={[]} />
     <ContextMenu ariaLabel="空右键菜单" items={[]}><p>没有可用操作。</p></ContextMenu>
   </Stack>;
 }
@@ -38,11 +40,11 @@ function LocaleMenuExample() {
   </Stack>;
 }
 const explorerCase = {
-  id: "menu/overview", label: "导航、下拉与右键菜单", summary: "逐项演示菜单数据；DropdownMenu 与 ContextMenu 内部维护开关，没有 open/defaultOpen 或表单校验接口。",
+  id: "menu/overview", label: "导航、下拉与右键菜单", summary: "演示文字与省略号图标两类下拉入口；图标入口保留中文提示，菜单仍使用完整文字命令。DropdownMenu 与 ContextMenu 内部维护开关，没有 open/defaultOpen 或表单校验接口。",
   states: ["default", "disabled", "empty", "longContent", "keyboard", "overlay", "dark", "locale"],
   content: <MenuExample />,
   stateExamples: [
-    { state: "default", exports: ["Menu", "DropdownMenu", "ContextMenu"], content: <MenuExample /> },
+    { state: "default", exports: ["Menu", "DropdownMenu", "ContextMenu"], instructions: "文字入口用于普通页面命令；省略号图标入口用于紧凑操作区，悬停或键盘聚焦显示“更多操作”提示。", content: <MenuExample /> },
     { state: "disabled", exports: ["Menu", "DropdownMenu", "ContextMenu"], instructions: "打开菜单后“归档”不可激活；其他项保持可用。", content: <MenuExample /> },
     { state: "empty", exports: ["Menu", "DropdownMenu", "ContextMenu"], instructions: "空数组不会自动生成空态消息；下拉和右键触发入口仍由各组件维护。", content: <EmptyMenuExample /> },
     { state: "longContent", exports: ["Menu", "DropdownMenu", "ContextMenu"], content: <LongMenuExample /> },
@@ -51,6 +53,6 @@ const explorerCase = {
     { state: "dark", exports: ["Menu", "DropdownMenu", "ContextMenu"], content: <StatePreview state="dark"><MenuExample /></StatePreview> },
     { state: "locale", exports: ["Menu", "DropdownMenu", "ContextMenu"], content: <StatePreview state="locale"><LocaleMenuExample /></StatePreview> },
   ],
-  code: '<Menu items={navigationItems} ariaLabel="导航" />\n<DropdownMenu label="更多操作" items={menuItems} ariaLabel="更多操作" />\n<ContextMenu items={menuItems} ariaLabel="右键操作"><Record /></ContextMenu>',
+  code: '<Menu items={navigationItems} ariaLabel="导航" />\n<DropdownMenu label="更多操作" items={menuItems} ariaLabel="更多操作" />\n<DropdownMenu triggerAppearance="icon" label="更多操作" items={menuItems} ariaLabel="更多操作：代理 A" />\n<ContextMenu items={menuItems} ariaLabel="右键操作"><Record /></ContextMenu>',
 } satisfies ExplorerCase;
 export default explorerCase;

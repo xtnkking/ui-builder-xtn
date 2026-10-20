@@ -109,7 +109,7 @@ function CasePreviewExample({ example, family }: { example: ExplorerCase; family
     ) : null,
   }))];
   return (
-    <section className="demo-explorer-case">
+    <section className="demo-explorer-case" data-explorer-case={example.id}>
       <div className="demo-explorer-case__summary">
         <h2>{example.label}</h2>
         <p>{example.summary}</p>

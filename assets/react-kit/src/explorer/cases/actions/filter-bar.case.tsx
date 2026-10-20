@@ -1,5 +1,6 @@
 // @ui-coverage {"kind":"example","runner":"explorer","caseId":"filter-bar/overview","exports":["FilterBar","FilterField"]}
 import { useId, useRef, useState, type FormEvent } from "react";
+import { Search } from "lucide-react";
 import { StatePreview } from "../state-preview";
 import { Button, Field, FilterBar, FilterField, SearchInput, Select, Tag } from "../../../ui";
 import type { ExplorerCase } from "../types";
@@ -26,7 +27,7 @@ function FilterBarExample({ longContent = false, simulateRequest = false, densit
       setLoading(false);
     }
   };
-  return <FilterBar ariaLabel={longContent ? "完整成员筛选说明" : "成员筛选"} density={density} onSubmit={applyQuery} actions={<Button type="submit" size="field" variant="primary" loading={loading}>查询</Button>} activeFilters={query ? <Tag tone="blue">关键词：{query}</Tag> : null} status={`${loading ? "正在查询；" : ""}共 ${results.length} 条结果；${results.join("；") || "没有匹配成员"}`}>
+  return <FilterBar ariaLabel={longContent ? "完整成员筛选说明" : "成员筛选"} density={density} onSubmit={applyQuery} actions={<Button type="submit" size="field" variant="primary" icon={<Search aria-hidden="true" />} loading={loading} loadingLabel="查询">查询</Button>} activeFilters={query ? <Tag tone="blue">关键词：{query}</Tag> : null} status={`${loading ? "正在查询；" : ""}共 ${results.length} 条结果；${results.join("；") || "没有匹配成员"}`}>
     <FilterField width="long">
       <SearchInput aria-label="搜索成员" placeholder="姓名或邮箱" value={draft} onChange={(event) => setDraft(event.currentTarget.value)} />
       {longContent ? <span>此筛选覆盖全部产品中的角色配置、数据访问权限、通知偏好和账户安全设置，请确认所有关联配置均符合团队的实际使用要求。</span> : null}
@@ -38,7 +39,7 @@ function EnglishFilterBarExample() {
   const [draft, setDraft] = useState("");
   const [query, setQuery] = useState("");
   const results = members.filter((member) => member.toLocaleLowerCase().includes(query.toLocaleLowerCase()));
-  return <FilterBar ariaLabel="Member filters" onSubmit={(event) => { event.preventDefault(); setQuery(draft.trim()); }} actions={<Button type="submit" size="field" variant="primary" loadingLabel="Search">Search</Button>} activeFilters={query ? <Tag>Keyword: {query}</Tag> : null} status={`${results.length} results`}><FilterField width="long"><SearchInput aria-label="Search members" placeholder="Name or email" value={draft} onChange={(event) => setDraft(event.currentTarget.value)} /></FilterField></FilterBar>;
+  return <FilterBar ariaLabel="Member filters" onSubmit={(event) => { event.preventDefault(); setQuery(draft.trim()); }} actions={<Button type="submit" size="field" variant="primary" icon={<Search aria-hidden="true" />} loadingLabel="Search">Search</Button>} activeFilters={query ? <Tag>Keyword: {query}</Tag> : null} status={`${results.length} results`}><FilterField width="long"><SearchInput aria-label="Search members" placeholder="Name or email" value={draft} onChange={(event) => setDraft(event.currentTarget.value)} /></FilterField></FilterBar>;
 }
 
 function FieldFilterBarExample() {
@@ -55,7 +56,7 @@ function FieldFilterBarExample() {
   return <FilterBar
     ariaLabel="带提示的成员筛选"
     onSubmit={(event) => { event.preventDefault(); setApplied({ query: draft.trim(), authentication }); }}
-    actions={<Button type="submit" size="field" variant="primary" loadingLabel="应用筛选">应用筛选</Button>}
+    actions={<Button type="submit" size="field" variant="primary" icon={<Search aria-hidden="true" />} loadingLabel="应用筛选">应用筛选</Button>}
     status={applied ? `已应用筛选：${applied.query || "全部成员"}；${selectedLabel}` : "输入仅更新草稿，点击应用筛选或按 Enter 后应用。"}
   >
     <Field label="成员姓名或邮箱（支持跨区域团队成员与外部协作者的完整名称）" htmlFor={`${id}-name`} hint="仅编辑查询草稿，点击应用筛选或按 Enter 后更新结果；支持完整成员姓名与邮箱，长提示自然换行。">
@@ -82,7 +83,9 @@ const explorerCase = {
     { state: "locale", exports: ["FilterBar", "FilterField"], content: <StatePreview state="locale"><EnglishFilterBarExample /></StatePreview> },
   ],
   content: <div style={{ display: "grid", gap: 24 }}><FilterBarExample simulateRequest /><FieldFilterBarExample /></div>,
-  code: `<FilterBar ariaLabel="成员筛选" onSubmit={applyFilters} actions={<Button type="submit" size="field" variant="primary" loading={querying} loadingLabel="查询">查询</Button>}>
+  code: `import { Search } from "lucide-react";
+
+<FilterBar ariaLabel="成员筛选" onSubmit={applyFilters} actions={<Button type="submit" size="field" variant="primary" icon={<Search aria-hidden="true" />} loading={querying} loadingLabel="查询">查询</Button>}>
   <FilterField width="long"><SearchInput aria-label="搜索成员" value={draft} onChange={changeDraft} /></FilterField>
 </FilterBar>`,
 } satisfies ExplorerCase;

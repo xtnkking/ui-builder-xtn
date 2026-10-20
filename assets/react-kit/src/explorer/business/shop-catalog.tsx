@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useId, useRef, useState, type FormEvent } from "react";
 import {
   ArrowRight, CheckCircle2, Heart, Headphones, Leaf, Maximize2, PackageCheck,
-  RotateCcw, ShieldCheck, ShoppingBag, ShoppingCart, Star, Truck,
+  RotateCcw, Search, ShieldCheck, ShoppingBag, ShoppingCart, Star, Truck,
 } from "lucide-react";
 import {
   Accordion, Breadcrumbs, Button, Card, Checkbox, DescriptionList,
@@ -199,7 +199,7 @@ export function ShopCatalogPage({ initialCategory = "all", initialSearch = "", f
       <header className="shop-catalog__heading"><div><span className="shop-overline-text">{favoritesOnly ? "留给喜欢的好物" : "认真挑选，轻松使用"}</span><h1>{favoritesOnly ? "我的收藏" : applied.category === "all" ? "全部好物" : applied.category}</h1><p>{favoritesOnly ? "那些想再看一眼的设计，都替你留在这里。" : categoryCopy[applied.category]?.copy ?? "为桌面、出行和日常生活，找到刚刚好的陪伴。"}</p></div><Tag tone="blue">{products.length} 件精选好物</Tag></header>
       <div className="shop-catalog__filters">
         <FilterBar ariaLabel="商品搜索与筛选" onSubmit={submit}
-          actions={<Inline><Button type="submit" size="field" variant="primary" loading={querying} loadingLabel="搜索">搜索</Button><Button size="field" variant="ghost" disabled={querying} onClick={clear}>重置</Button></Inline>}
+          actions={<Inline><Button type="submit" size="field" variant="primary" icon={<Search aria-hidden="true" />} loading={querying} loadingLabel="搜索">搜索</Button><Button size="field" variant="secondary" disabled={querying} onClick={clear}>重置</Button></Inline>}
           activeFilters={<Inline>{applied.keyword ? <Tag tone="blue">{`关键词：${applied.keyword}`}</Tag> : null}{applied.category !== "all" ? <Tag>{applied.category}</Tag> : null}{applied.inStock ? <Tag tone="success">仅看有货</Tag> : null}</Inline>}
         >
           <SearchInput aria-label="搜索好物" placeholder="商品名称、用途或关键词" value={draft.keyword} onChange={(event) => { const keyword = event.currentTarget.value; setDraft((current) => ({ ...current, keyword })); }} onClear={() => setDraft((current) => ({ ...current, keyword: "" }))} />

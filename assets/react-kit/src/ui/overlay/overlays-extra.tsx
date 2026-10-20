@@ -20,6 +20,7 @@ import { useContentMotion } from "../internal/content-motion";
 import { useMotionPresence, useNonModalMotion } from "../internal/motion";
 import { InternalToastBoundary, useInternalOwnedToast } from "../internal/toast-boundary";
 import { floatingPortalTarget, floatingViewportBounds } from "../internal/floating-position";
+import { floatingBranchContainers, floatingBranchContains } from "../internal/floating-branch";
 import { InternalIconButtonSlot } from "../internal/button-slots";
 import { sanitizeFixedControlProps } from "../internal/fixed-control-props";
 import {
@@ -177,20 +178,51 @@ function PopoverRoot(rawProps: PopoverRootProps) {
   const panelRef = useRef<HTMLDivElement>(null);
   const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
   const closeTimerRef = useRef<number | null>(null);
+  const closeTimerWindowRef = useRef<Window | null>(null);
+  const pointerWithinRef = useRef(false);
+  const suppressFocusOpenRef = useRef(false);
   const isOpen = !disabled && openState;
   const motion = useNonModalMotion(isOpen && portalTarget !== null, panelRef, triggerRef, "standard");
   const setOpen = (next: boolean, restoreFocus = false) => {
     if (disabled) return;
+    if (!next) {
+      suppressFocusOpenRef.current = true;
+      pointerWithinRef.current = false;
+    }
     setOpenState(next);
-    if (!next && restoreFocus) queueMicrotask(() => triggerRef.current?.focus({ preventScroll: true }));
+    if (!next) queueMicrotask(() => {
+      if (restoreFocus) triggerRef.current?.focus({ preventScroll: true });
+      suppressFocusOpenRef.current = false;
+    });
   };
   const cancelClose = () => {
-    if (closeTimerRef.current !== null) window.clearTimeout(closeTimerRef.current);
+    if (closeTimerRef.current !== null) closeTimerWindowRef.current?.clearTimeout(closeTimerRef.current);
     closeTimerRef.current = null;
+    closeTimerWindowRef.current = null;
   };
+  const ownsTarget = (target: EventTarget | null) => floatingBranchContains(
+    [sourceRef.current, panelRef.current].filter((element): element is HTMLElement => element !== null),
+    target,
+  );
   const scheduleClose = () => {
     cancelClose();
-    closeTimerRef.current = window.setTimeout(() => setOpen(false), 120);
+    const ownerDocument = sourceRef.current?.ownerDocument;
+    const ownerWindow = ownerDocument?.defaultView;
+    if (!ownerDocument || !ownerWindow) return;
+    closeTimerWindowRef.current = ownerWindow;
+    closeTimerRef.current = ownerWindow.setTimeout(() => {
+      closeTimerRef.current = null;
+      closeTimerWindowRef.current = null;
+      if (!pointerWithinRef.current && !ownsTarget(ownerDocument.activeElement)) setOpen(false);
+    }, 120);
+  };
+  const closeOnEscape = (event: Pick<KeyboardEvent, "key" | "defaultPrevented" | "preventDefault" | "stopPropagation">) => {
+    if (event.key !== "Escape" || event.defaultPrevented || !isOpen) return;
+    // Child menus own the first Escape, including portals outside this panel's DOM.
+    if (panelRef.current && floatingBranchContainers([panelRef.current]).length > 1) return;
+    event.preventDefault();
+    event.stopPropagation();
+    setOpen(false, true);
   };
   useFloatingPosition(motion.present && portalTarget !== null, triggerRef, panelRef, placement, align);
   useUIPortalTokens(motion.present && portalTarget !== null, sourceRef, panelRef);
@@ -199,33 +231,37 @@ function PopoverRoot(rawProps: PopoverRootProps) {
 
   useEffect(() => {
     if (!isOpen) return;
+    const ownerDocument = sourceRef.current?.ownerDocument;
+    if (!ownerDocument) return;
     const closeOnPointer = (event: PointerEvent) => {
-      const target = event.target as Node;
-      if (!triggerRef.current?.contains(target) && !panelRef.current?.contains(target)) setOpen(false);
+      if (!ownsTarget(event.target)) setOpen(false);
     };
-    const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        event.preventDefault();
-        setOpen(false, true);
-      }
+    const handleFocusIn = (event: FocusEvent) => {
+      if (resolvedInteraction !== "hover") return;
+      if (ownsTarget(event.target)) cancelClose();
+      else scheduleClose();
     };
-    document.addEventListener("pointerdown", closeOnPointer);
-    document.addEventListener("keydown", closeOnEscape);
+    const handleFocusOut = (event: FocusEvent) => {
+      if (resolvedInteraction === "hover" && ownsTarget(event.target) && !ownsTarget(event.relatedTarget)) scheduleClose();
+    };
+    ownerDocument.addEventListener("pointerdown", closeOnPointer);
+    ownerDocument.addEventListener("keydown", closeOnEscape);
+    ownerDocument.addEventListener("focusin", handleFocusIn);
+    ownerDocument.addEventListener("focusout", handleFocusOut);
     return () => {
-      document.removeEventListener("pointerdown", closeOnPointer);
-      document.removeEventListener("keydown", closeOnEscape);
+      ownerDocument.removeEventListener("pointerdown", closeOnPointer);
+      ownerDocument.removeEventListener("keydown", closeOnEscape);
+      ownerDocument.removeEventListener("focusin", handleFocusIn);
+      ownerDocument.removeEventListener("focusout", handleFocusOut);
     };
-  }, [isOpen]);
+  }, [isOpen, resolvedInteraction]);
 
   useEffect(() => () => cancelClose(), []);
 
   const hoverHandlers = resolvedInteraction === "hover" ? {
-    onMouseEnter: () => { cancelClose(); setOpen(true); },
-    onMouseLeave: scheduleClose,
-    onFocus: () => { cancelClose(); setOpen(true); },
-    onBlur: (event: React.FocusEvent<HTMLButtonElement>) => {
-      if (!panelRef.current?.contains(event.relatedTarget as Node | null)) scheduleClose();
-    },
+    onMouseEnter: () => { pointerWithinRef.current = true; cancelClose(); setOpen(true); },
+    onMouseLeave: () => { pointerWithinRef.current = false; scheduleClose(); },
+    onFocus: () => { cancelClose(); if (!suppressFocusOpenRef.current) setOpen(true); },
   } : {};
 
   return (
@@ -241,15 +277,7 @@ function PopoverRoot(rawProps: PopoverRootProps) {
           aria-controls={isOpen ? id : undefined}
           disabled={disabled}
           onClick={resolvedInteraction === "click" ? () => setOpen(!isOpen) : undefined}
-          onKeyDown={(event) => {
-            if (event.key === "Escape") {
-              if (isOpen) {
-                event.preventDefault();
-                event.stopPropagation();
-                setOpen(false, true);
-              }
-            }
-          }}
+          onKeyDown={closeOnEscape}
           {...hoverHandlers}
         >
           {triggerLabel}
@@ -265,15 +293,9 @@ function PopoverRoot(rawProps: PopoverRootProps) {
             role="dialog"
             aria-label={ariaLabel}
             style={matchTriggerWidth ? { minWidth: "min(var(--ui-floating-anchor-width, 220px), var(--ui-floating-max-width, calc(100vw - 24px)))" } : undefined}
-            onKeyDown={(event) => {
-              if (event.key === "Escape") {
-                event.preventDefault();
-                event.stopPropagation();
-                setOpen(false, true);
-              }
-            }}
-            onMouseEnter={resolvedInteraction === "hover" ? cancelClose : undefined}
-            onMouseLeave={resolvedInteraction === "hover" ? scheduleClose : undefined}
+            onKeyDown={closeOnEscape}
+            onMouseEnter={resolvedInteraction === "hover" ? () => { pointerWithinRef.current = true; cancelClose(); } : undefined}
+            onMouseLeave={resolvedInteraction === "hover" ? () => { pointerWithinRef.current = false; scheduleClose(); } : undefined}
           >
             {children}
           </div>,
@@ -1168,9 +1190,11 @@ export function GuidedTour(rawProps: GuidedTourProps) {
               style={targetLayout?.cardStyle}
               data-placement={targetLayout?.placement}
             >
-              <div className="ui-tour__count" aria-live="polite" aria-atomic="true">{index + 1} / {steps.length}</div>
-              <h2>{step.title}</h2>
-              <div>{step.description}</div>
+              <div className="ui-tour__body" tabIndex={0} role="region" aria-label={message("tour.label")}>
+                <div className="ui-tour__count" aria-live="polite" aria-atomic="true">{index + 1} / {steps.length}</div>
+                <h2>{step.title}</h2>
+                <div>{step.description}</div>
+              </div>
               <footer>
                 <Button disabled={index === 0} onClick={() => setCurrentId(steps[index - 1].id)}>{previousLabel}</Button>
                 <Button variant="primary" onClick={() => index === steps.length - 1 ? setOpen(false) : setCurrentId(steps[index + 1].id)}>{index === steps.length - 1 ? finishLabel : nextLabel}</Button>

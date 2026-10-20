@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Search } from "lucide-react";
 import { Button, Card, FilterBar, Grid, Inline, SearchInput, Stack, Tag } from "../../../ui";
 import { StatePreview } from "../state-preview";
 import type { ExplorerCase } from "../types";
@@ -13,7 +14,7 @@ function DensityExample() {
         <Stack gap="small"><span className="demo-foundation-caption">medium · 38px</span><Button>普通操作</Button></Stack>
         <Stack gap="small"><span className="demo-foundation-caption">field · 44px</span><Button size="field" variant="primary">与字段对齐</Button></Stack>
       </Inline>
-      <FilterBar ariaLabel="密度规范搜索演示" onSubmit={(event) => { event.preventDefault(); setApplied(query); }} actions={<Button type="submit" size="field" variant="primary">搜索</Button>}>
+      <FilterBar ariaLabel="密度规范搜索演示" onSubmit={(event) => { event.preventDefault(); setApplied(query); }} actions={<Button type="submit" size="field" variant="primary" icon={<Search aria-hidden="true" />}>搜索</Button>}>
         <SearchInput aria-label="搜索示例名称" value={query} onChange={(event) => setQuery(event.currentTarget.value)} placeholder="搜索框与按钮等高" />
       </FilterBar>
       <span role="status" className="demo-foundation-caption">当前提交：{applied || "尚未输入关键词"}（本例只更新本地展示）</span>

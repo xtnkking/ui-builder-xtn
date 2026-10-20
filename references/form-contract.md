@@ -50,6 +50,8 @@ Do not give a native field and a composite control the same `name` unless repeat
 
 ## Required And Validation
 
+When `Field error` owns a date-range error, pass `rangeError={null}` to `DateRangeField` so the same message is not rendered twice. Both date inputs inherit the Field error association. Standalone DateRangeField keeps its default order-error message; `null` or `false` explicitly suppresses that internal message without suppressing invalid state.
+
 `required` is functional, not only visual. An empty required composite control participates in `checkValidity()`, `reportValidity()`, normal submit, and `requestSubmit()`. Invalid submission is prevented and focus moves to the component's visible interaction owner. A component remains validatable even when it has no `name`.
 
 `form.submit()` intentionally keeps native browser semantics and bypasses constraint validation. Do not use it when validation is required; use `requestSubmit()` or a submit button.

@@ -72,7 +72,7 @@ test("authentication illustration responds to its container and long content sta
   await capture(longAuth, "long-auth-320");
 });
 
-test("query controls use compact aligned capsules and keep explicit draft submission", async ({ page }) => {
+test("query controls use compact aligned primary actions and keep explicit draft submission", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   const preview = await previewFor(page, "filter-bar");
   const input = preview.getByRole("searchbox", { name: "搜索成员", exact: true });
@@ -82,8 +82,11 @@ test("query controls use compact aligned capsules and keep explicit draft submis
   expect(field.width).toBe(320);
   expect(field.height).toBe(38);
   expect(button.height).toBe(38);
+  await expect(action).toHaveClass(/ui-button--primary/);
+  await expect(action.locator(".ui-button__icon svg")).toHaveCount(1);
+  // Search icon, label and control padding share a content-sized action; no full-row stretching.
   expect(button.width).toBeGreaterThanOrEqual(74);
-  expect(button.width).toBeLessThanOrEqual(80);
+  expect(button.width).toBeLessThanOrEqual(96);
   expect(Math.abs(button.y - field.y)).toBeLessThanOrEqual(1);
   expect(button.x - field.x - field.width).toBeGreaterThanOrEqual(10);
   expect(button.x - field.x - field.width).toBeLessThanOrEqual(12);
@@ -101,15 +104,17 @@ test("query controls use compact aligned capsules and keep explicit draft submis
   const listPreview = await previewFor(page, "list-filter");
   await listPreview.getByRole("tab", { name: "列表管理", exact: true }).click();
   const listAction = listPreview.getByRole("button", { name: "查询", exact: true });
-  expect((await bounds(listAction)).width).toBeLessThanOrEqual(88);
+  expect((await bounds(listAction)).width).toBeLessThanOrEqual(96);
   expect((await bounds(listAction)).height).toBe(38);
+  await expect(listAction).toHaveClass(/ui-button--primary/);
+  await expect(listAction.locator(".ui-button__icon svg")).toHaveCount(1);
   await noOverflow(page);
   const keyboardPreview = await previewFor(page, "filter-bar", "键盘操作");
   const keyboardInput = keyboardPreview.getByRole("searchbox", { name: "搜索成员", exact: true });
   const keyboardAction = keyboardPreview.getByRole("button", { name: "查询", exact: true });
   expect((await bounds(keyboardInput.locator(".."))).height).toBe(38);
   expect((await bounds(keyboardAction)).height).toBe(38);
-  expect((await bounds(keyboardAction)).width).toBeLessThanOrEqual(80);
+  expect((await bounds(keyboardAction)).width).toBeLessThanOrEqual(96);
   await keyboardInput.fill("lin");
   await keyboardInput.press("Tab");
   await expect(keyboardAction).toBeFocused();

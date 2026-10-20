@@ -1568,6 +1568,8 @@ export type DropdownMenuProps = PublicControlProps<{
     ariaLabel: string;
     items: MenuItem[];
     icon?: ReactNode;
+    /** Icon mode uses the official ghost IconButton; label remains its tooltip. */
+    triggerAppearance?: "button" | "icon";
     align?: "start" | "end";
 }>;
 export declare function DropdownMenu(rawProps: DropdownMenuProps): import("react").JSX.Element;
@@ -2201,11 +2203,12 @@ export interface MemberManagementPageProps {
     statuses?: string[];
     initialPageSize?: number;
     pageSizeOptions?: number[];
+    layoutWidth?: "readable" | "wide";
     onInvite?: () => void;
     onOpenMember?: (member: MemberRecord) => void;
     onEditMember?: (member: MemberRecord) => void;
 }
-export declare function MemberManagementPage({ fetchMembers, title, roles, statuses, initialPageSize, pageSizeOptions, onInvite, onOpenMember, onEditMember, }: MemberManagementPageProps): import("react").JSX.Element;
+export declare function MemberManagementPage({ fetchMembers, title, roles, statuses, initialPageSize, pageSizeOptions, layoutWidth, onInvite, onOpenMember, onEditMember, }: MemberManagementPageProps): import("react").JSX.Element;
 ```
 
 ## `./patterns/standard-pages`

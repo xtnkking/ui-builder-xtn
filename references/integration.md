@@ -132,12 +132,16 @@ import { Button, DataTable, Drawer, FilterBar, SearchInput, Select } from "./ui"
 
 Buttons that share a row with input controls must declare `size="field"`. In `FilterBar`, fields and actions default to a compact 38px desktop height with tighter action padding; `density="comfortable"` restores 44px. Narrow containers up to 520px, mobile viewports up to 640px, and coarse-pointer devices keep 44px targets. Outside FilterBar, the field height remains 44px. Keep the query command as a submit button so Enter and click use the same form path; `handleQuery` must call `event.preventDefault()` before starting the application request, and the button must use the bundled loading state while that request is in flight.
 
+For repeated list queries, use primary + Lucide Search + short text consistently, with a secondary reset after the query. Reuse a product-requested alternative throughout its scope. Official layout wrappers in `FilterBar.actions` preserve the action geometry. Also reuse one list-page width and outer inset across comparable routes; see [project consistency](layout-sizing.md#project-consistency).
+
 ```tsx
+import { Search } from "lucide-react";
+
 <FilterBar
   ariaLabel="成员筛选"
   onSubmit={handleQuery}
   actions={(
-    <Button size="field" type="submit" variant="primary" loading={querying} loadingLabel="查询">
+    <Button size="field" type="submit" variant="primary" icon={<Search aria-hidden="true" />} loading={querying} loadingLabel="查询">
       查询
     </Button>
   )}
@@ -197,11 +201,11 @@ For operational lists, use `ListManagementPage` or `SearchFilterPage` with DataT
 
 DataTable defaults to a stable viewport of five standard row-height units with or without pagination, bounded on short screens. Keep the pagination object present during loading, empty and zero-row error states. Use numeric `viewportRows` for an explicit capacity or `"auto"` for deliberate content height, never `rows.length`. Taller custom cells scroll without being clipped into standard rows. Fixed viewports reset vertical position for new results while preserving horizontal column context; scrollable surfaces retain their named keyboard entry.
 
-Pass `DataTable.pagination` to attach the official numbered or cursor pager inside the rounded frame; do not reconstruct one or put another in the page footer. Use cursor mode for unknown totals without inventing a page count. Readable page width aligns the heading, filters and table; `layoutWidth="wide"` is for genuinely dense tables, and explicit column widths avoid distributing excessive space among short values. See [layout and sizing](layout-sizing.md) for fields, settings, status tags and pagination.
+Pass `DataTable.pagination` to attach the official numbered or cursor pager inside the rounded frame; do not reconstruct one or put another in the page footer. Use cursor mode for unknown totals without inventing a page count. Choose readable or wide once for comparable list routes and reuse it, including MemberManagementPage; the shared shell owns the outer inset. Short columns can have explicit widths while a name/description column uses `minWidth` to absorb remaining space. See [layout and sizing](layout-sizing.md) for project consistency, fields, status tags and pagination.
 
 The machine-readable authority is `assets/react-kit/component-manifest.json`:
 
-- The current manifest classifies 142 runtime exports as 137 visual components or patterns and 5 non-visual APIs across 119 families. The generated catalog and coverage report identify the current aliases and evidence owners.
+- The generated catalog, Registry and coverage report identify the current export/family inventory, aliases and evidence owners; read them rather than maintaining a second count here.
 - Every `component` or `pattern` family maps to real source files and at least one registered public runtime export.
 - Every rendered component family declares a source ownership marker that exists in those source files.
 - Foundation entries map to real CSS or TypeScript artifacts even when they have no runtime component.

@@ -76,9 +76,10 @@ test("overflow actions use a keyboard menu and edit or confirmed delete updates 
   await menuButton.focus();
   await page.keyboard.press("ArrowDown");
   const menu = page.getByRole("menu", { name: "更多操作：代理 A", exact: true });
-  await expect(menu.getByRole("menuitem")).toHaveCount(5);
-  await expect(menu.getByRole("menuitem", { name: "编辑", exact: true })).toBeFocused();
-  await page.keyboard.press("Enter");
+  await expect(menu.getByRole("menuitem")).toHaveCount(3);
+  await expect(menu.getByRole("menuitem", { name: "复制地址", exact: true })).toBeFocused();
+  await page.keyboard.press("Escape");
+  await table.getByRole("button", { name: "编辑代理 A", exact: true }).click();
   const editor = page.getByRole("dialog", { name: "编辑代理", exact: true });
   await expect(editor).toBeVisible();
   const renamed = "代理 A（已编辑）";

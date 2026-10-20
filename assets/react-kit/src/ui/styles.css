@@ -1615,6 +1615,13 @@ input[type="password"]::-ms-reveal {
   cursor: pointer;
 }
 
+.ui-tag--small .ui-tag__remove {
+  width: 24px;
+  height: 24px;
+  flex-basis: 24px;
+  margin-inline-end: -6px;
+}
+
 .ui-tag__remove:hover {
   background: var(--_ui-interactive-hover-bg);
 }
@@ -3351,65 +3358,6 @@ input[type="password"]::-ms-reveal {
   white-space: nowrap;
 }
 
-.ui-data-page {
-  width: 100%;
-  min-width: 0;
-  max-width: 1160px;
-  margin-inline: auto;
-  padding: 26px;
-  background: var(--ui-surface);
-}
-
-.ui-page-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 18px;
-  min-width: 0;
-  margin-bottom: 20px;
-}
-
-.ui-page-header > div {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-  min-width: 0;
-}
-
-.ui-page-header h1 {
-  display: -webkit-box;
-  min-width: 0;
-  margin: 0;
-  overflow: hidden;
-  font-size: 22px;
-  overflow-wrap: anywhere;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-}
-
-.ui-page-header > div > span {
-  color: var(--ui-muted);
-  font-size: 12px;
-}
-
-.ui-query-toolbar {
-  display: grid;
-  grid-template-columns: minmax(280px, 520px) 140px 140px auto;
-  align-items: center;
-  justify-content: start;
-  gap: 10px;
-}
-
-.ui-query-toolbar__actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-}
-
-.ui-query-toolbar__actions .ui-button--primary {
-  min-width: 92px;
-}
-
 .ui-query-state {
   display: grid;
   align-content: center;
@@ -3680,22 +3628,6 @@ input[type="password"]::-ms-reveal {
   text-align: center;
 }
 
-@media (max-width: 1180px) {
-  .ui-query-toolbar {
-    grid-template-columns: minmax(220px, 520px) 140px 140px;
-  }
-
-  .ui-query-toolbar__actions {
-    grid-column: 1 / -1;
-  }
-}
-
-@media (max-width: 960px) {
-  .ui-query-toolbar {
-    grid-template-columns: minmax(220px, 1fr) 140px 140px;
-  }
-}
-
 @media (max-width: 760px) {
   .ui-auth {
     grid-template-columns: 1fr;
@@ -3740,33 +3672,6 @@ input[type="password"]::-ms-reveal {
   .ui-segmented--mobile-fill button {
     flex: 1 1 0;
     padding-inline: 8px;
-  }
-
-  .ui-data-page {
-    padding: 20px 16px;
-  }
-
-  .ui-page-header {
-    align-items: center;
-  }
-
-  .ui-page-header > div {
-    display: grid;
-    gap: 0;
-  }
-
-  .ui-query-toolbar {
-    grid-template-columns: 1fr;
-  }
-
-  .ui-query-toolbar__actions {
-    display: grid;
-    grid-column: auto;
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .ui-query-toolbar__actions .ui-button {
-    width: 100%;
   }
 
   .ui-applied-tags {

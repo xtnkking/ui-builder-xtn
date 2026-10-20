@@ -156,6 +156,99 @@ describe("button public and private composition contracts", () => {
     expect(trigger).toHaveFocus();
   });
 
+  it("renders an icon DropdownMenu with one labelled icon and a focus tooltip instead of visible button text", async () => {
+    const user = userEvent.setup();
+    render(<DropdownMenu triggerAppearance="icon" label="更多操作" ariaLabel="更多操作：代理 A"
+      items={[{ id: "view", label: "查看记录", onSelect: () => undefined }]} />);
+    const trigger = screen.getByRole("button", { name: "更多操作：代理 A" });
+
+    expect(trigger).toHaveClass("ui-icon-button", "ui-icon-button--ghost");
+    expect(trigger).toHaveAttribute("data-ui-owner", "IconButton");
+    expect(trigger).toHaveAttribute("aria-haspopup", "menu");
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+    expect(trigger).not.toHaveAttribute("aria-controls");
+    expect(trigger).toHaveTextContent(/^$/);
+    expect(trigger.querySelectorAll("svg")).toHaveLength(1);
+    expect(trigger.querySelector(".lucide-ellipsis")).not.toBeNull();
+    expect(trigger.querySelector(".lucide-chevron-down")).toBeNull();
+
+    await user.tab();
+    expect(trigger).toHaveFocus();
+    expect(await screen.findByRole("tooltip", { name: "更多操作" })).toBeVisible();
+    expect(trigger).toHaveAccessibleDescription("更多操作");
+    await user.keyboard("{ArrowDown}");
+    const menu = await screen.findByRole("menu", { name: "更多操作：代理 A" });
+    expect(trigger).toHaveAttribute("aria-controls", menu.id);
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
+    expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
+  });
+
+  it("keeps icon DropdownMenu keyboard navigation, disabled skipping, Escape return, Tab exit and single selection", async () => {
+    const user = userEvent.setup();
+    const onView = vi.fn();
+    const onDelete = vi.fn();
+    render(<>
+      <DropdownMenu triggerAppearance="icon" label="更多操作" ariaLabel="代理操作" items={[
+        { id: "view", label: "查看记录", onSelect: onView },
+        { id: "edit", label: "编辑", disabled: true, onSelect: vi.fn() },
+        { id: "delete", label: "删除", onSelect: onDelete },
+      ]} />
+      <Button>下一项</Button>
+    </>);
+    const trigger = screen.getByRole("button", { name: "代理操作" });
+    await user.tab();
+    await user.keyboard("{ArrowDown}");
+    const view = await screen.findByRole("menuitem", { name: "查看记录" });
+    const remove = screen.getByRole("menuitem", { name: "删除" });
+    await waitFor(() => expect(view).toHaveFocus());
+    await user.keyboard("{ArrowDown}");
+    expect(remove).toHaveFocus();
+    await user.keyboard("{Home}");
+    expect(view).toHaveFocus();
+    await user.keyboard("{End}");
+    expect(remove).toHaveFocus();
+    await user.keyboard("{Escape}");
+    expect(trigger).toHaveFocus();
+    await waitFor(() => expect(screen.queryByRole("menu")).not.toBeInTheDocument());
+
+    await user.keyboard("{ArrowUp}");
+    await waitFor(() => expect(screen.getByRole("menuitem", { name: "删除" })).toHaveFocus());
+    await user.keyboard("{Enter}");
+    expect(onDelete).toHaveBeenCalledTimes(1);
+    expect(onView).not.toHaveBeenCalled();
+    expect(trigger).toHaveFocus();
+    await waitFor(() => expect(screen.queryByRole("menu")).not.toBeInTheDocument());
+
+    await user.keyboard("{ArrowDown}");
+    await waitFor(() => expect(screen.getByRole("menuitem", { name: "查看记录" })).toHaveFocus());
+    await user.tab();
+    expect(screen.getByRole("button", { name: "下一项" })).toHaveFocus();
+    await waitFor(() => expect(screen.queryByRole("menu")).not.toBeInTheDocument());
+    expect(onDelete).toHaveBeenCalledTimes(1);
+  });
+
+  it("disables empty or fully disabled icon menus and closes when their last enabled command disappears", async () => {
+    const user = userEvent.setup();
+    const onSelect = vi.fn();
+    const { rerender } = render(<DropdownMenu triggerAppearance="icon" label="更多操作" ariaLabel="代理操作" items={[]} />);
+    const trigger = screen.getByRole("button", { name: "代理操作" });
+    expect(trigger).toBeDisabled();
+    await user.click(trigger);
+    expect(screen.queryByRole("menu")).not.toBeInTheDocument();
+
+    rerender(<DropdownMenu triggerAppearance="icon" label="更多操作" ariaLabel="代理操作"
+      items={[{ id: "view", label: "查看记录", onSelect }]} />);
+    await user.click(trigger);
+    expect(await screen.findByRole("menuitem", { name: "查看记录" })).toBeEnabled();
+    rerender(<DropdownMenu triggerAppearance="icon" label="更多操作" ariaLabel="代理操作"
+      items={[{ id: "view", label: "查看记录", disabled: true, onSelect }]} />);
+    expect(trigger).toBeDisabled();
+    await waitFor(() => expect(screen.queryByRole("menu")).not.toBeInTheDocument());
+    fireEvent.keyDown(trigger, { key: "ArrowDown" });
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+    expect(onSelect).not.toHaveBeenCalled();
+  });
+
   it("keeps Lightbox positioning classes on the three icon buttons", () => {
     render(
       <Lightbox

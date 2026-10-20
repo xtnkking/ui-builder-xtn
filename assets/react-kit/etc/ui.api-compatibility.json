@@ -14,21 +14,21 @@
   },
   "current": {
     "packageName": "ui",
-    "version": "0.3.16",
-    "apiDigest": "f26f3bccb2cde721dc8eeb44579660e3f357eca17044e82c9d2b8178353083e9",
-    "compatibilityDigest": "675749581d228718290f1e9fc86b2b3fdd781aad8826872cb62f21ec831ead11",
+    "version": "0.3.17",
+    "apiDigest": "c7ee44b6dc6554508787e0c0753600d97fb742d0b50498a949212a2e07032f9a",
+    "compatibilityDigest": "480d582a7884834aa3416575654c9c5610aa2c6a940640e3e0a6db96c1805833",
     "runtimeExports": 145,
     "typeOnlyExports": 235,
     "publicSignatures": 380
   },
   "classification": "breaking",
   "versionPolicy": {
-    "releaseTarget": "0.3.16",
-    "packageVersion": "0.3.16",
+    "releaseTarget": "0.3.17",
+    "packageVersion": "0.3.17",
     "valid": true,
     "requiredBump": "minor",
     "minimumVersion": "0.3.0",
-    "message": "Breaking API changes are covered by version 0.3.16."
+    "message": "Breaking API changes are covered by version 0.3.17."
   },
   "changes": {
     "runtimeExports": {
@@ -660,14 +660,14 @@
           "baselineKind": "runtime",
           "currentKind": "runtime",
           "baselineHash": "1ea6aa772cdd94afd14f8ccd508cbfd623ada2e904998127a02583186ce18160",
-          "currentHash": "76795a309f8cfc9552abed9f339b83dd0d606c0799ff9ffa3cf28dc3761b30b6"
+          "currentHash": "59470e36d5498ee76adca167f962a17a16f71c3e0b4aa37bdedd75ccfece669d"
         },
         {
           "id": "DropdownMenuProps",
           "baselineKind": "type",
           "currentKind": "type",
           "baselineHash": "1350f8f957fcd99276baa3eccb6fd1cfec0ff6c2bc444ad5449f938d4fccd8c5",
-          "currentHash": "dcbfeb834d83f873d773c6cd8b2d4abd317eddcb91e67faa60179b04add30798"
+          "currentHash": "f421a969467da1790dda995656def15afb2879340e51895760c5c1ea632fd1c2"
         },
         {
           "id": "EmptyState",
@@ -983,6 +983,20 @@
           "currentKind": "type",
           "baselineHash": "2733609fe3f170e6710460adf5e567a5e6fa159fdebd453e7349b2fa3891d084",
           "currentHash": "0da5c2815d39a3d7908b73c79070c90819972d3e07858fff8f0ea40cb1184cdb"
+        },
+        {
+          "id": "MemberManagementPage",
+          "baselineKind": "runtime",
+          "currentKind": "runtime",
+          "baselineHash": "1deef206ef28b524b785e71198b233867b296241e67d2a6e480bc0d6a3168124",
+          "currentHash": "f6670abbf84bb0aae8f61dfed113f91d7a619f9cf0e4a2f92f013a141c40866e"
+        },
+        {
+          "id": "MemberManagementPageProps",
+          "baselineKind": "type",
+          "currentKind": "type",
+          "baselineHash": "951f3e98a3a88dc2c4e330704296d4bfe32938dce4f0030e5d26b77d47a49659",
+          "currentHash": "afe1b96320e2b7e5393d543d29e90c38ef1f2dfee4c22d1c61d972c2366f853a"
         },
         {
           "id": "Menu",

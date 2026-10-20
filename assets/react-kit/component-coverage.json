@@ -1,6 +1,6 @@
 {
   "schemaVersion": 3,
-  "kitVersion": "0.3.16",
+  "kitVersion": "0.3.17",
   "generatedFrom": [
     "assets/react-kit/component-manifest.json",
     "assets/react-kit/registry.json",
@@ -123,11 +123,13 @@
     "assets/react-kit/src/explorer/cases/pattern/import-export.case.tsx",
     "assets/react-kit/src/explorer/cases/pattern/list-filter.case.tsx",
     "assets/react-kit/src/explorer/cases/pattern/master-detail.case.tsx",
+    "assets/react-kit/src/explorer/cases/pattern/project-consistency.example.tsx",
     "assets/react-kit/src/explorer/cases/pattern/settings.case.tsx",
     "assets/react-kit/src/explorer/cases/pattern/status-page.case.tsx",
     "assets/react-kit/src/explorer/cases/pattern/wizard.case.tsx",
     "assets/react-kit/tests/a11y/m6-export-ownership.spec.ts",
     "assets/react-kit/tests/browser/auth-query-layout.spec.ts",
+    "assets/react-kit/tests/browser/component-detail.spec.ts",
     "assets/react-kit/tests/browser/composite-form-contracts.spec.ts",
     "assets/react-kit/tests/browser/country-tag.spec.ts",
     "assets/react-kit/tests/browser/d2-drag-upload.spec.ts",
@@ -137,6 +139,7 @@
     "assets/react-kit/tests/browser/dimension-overlays.spec.ts",
     "assets/react-kit/tests/browser/dimension-pagination.spec.ts",
     "assets/react-kit/tests/browser/drawer-width.spec.ts",
+    "assets/react-kit/tests/browser/dropdown-icon-trigger.spec.ts",
     "assets/react-kit/tests/browser/explorer-audit-findings.spec.ts",
     "assets/react-kit/tests/browser/explorer-responsive-followup.spec.ts",
     "assets/react-kit/tests/browser/feedback-results-toast.spec.ts",
@@ -170,6 +173,7 @@
     "assets/react-kit/tests/browser/modal-layer-kernel.spec.ts",
     "assets/react-kit/tests/browser/motion-content.spec.ts",
     "assets/react-kit/tests/browser/motion-enhancement.spec.ts",
+    "assets/react-kit/tests/browser/project-style-consistency.spec.ts",
     "assets/react-kit/tests/browser/search-feedback.spec.ts",
     "assets/react-kit/tests/browser/table-actions.spec.ts",
     "assets/react-kit/tests/browser/table-dimensions.spec.ts",
@@ -262,7 +266,7 @@
       "source": 145,
       "example": 145,
       "unit": 123,
-      "browser": 77,
+      "browser": 80,
       "keyboard": 100,
       "a11y": 120
     },
@@ -1589,6 +1593,7 @@
         "assets/react-kit/tests/components/motion-inputs.test.tsx"
       ],
       "browser": [
+        "assets/react-kit/tests/browser/component-detail.spec.ts",
         "assets/react-kit/tests/browser/legacy-regressions.spec.ts",
         "assets/react-kit/tests/browser/m5-async-select.spec.ts",
         "assets/react-kit/tests/browser/motion-enhancement.spec.ts"
@@ -2180,6 +2185,7 @@
         "assets/react-kit/tests/components/motion-inputs.test.tsx"
       ],
       "browser": [
+        "assets/react-kit/tests/browser/component-detail.spec.ts",
         "assets/react-kit/tests/browser/legacy-regressions.spec.ts",
         "assets/react-kit/tests/browser/motion-enhancement.spec.ts"
       ],
@@ -3631,7 +3637,8 @@
         "assets/react-kit/tests/components/core-contracts.test.tsx"
       ],
       "browser": [
-        "assets/react-kit/tests/browser/auth-query-layout.spec.ts"
+        "assets/react-kit/tests/browser/auth-query-layout.spec.ts",
+        "assets/react-kit/tests/browser/project-style-consistency.spec.ts"
       ],
       "keyboard": [
         "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
@@ -4515,6 +4522,7 @@
         "assets/react-kit/tests/components/m5-cascader-contracts.test.tsx"
       ],
       "browser": [
+        "assets/react-kit/tests/browser/component-detail.spec.ts",
         "assets/react-kit/tests/browser/explorer-audit-findings.spec.ts",
         "assets/react-kit/tests/browser/m5-cascader.spec.ts"
       ],
@@ -6288,6 +6296,7 @@
         "assets/react-kit/tests/components/modal-overlay-contracts.test.tsx"
       ],
       "browser": [
+        "assets/react-kit/tests/browser/dropdown-icon-trigger.spec.ts",
         "assets/react-kit/tests/browser/feedback-results-toast.spec.ts",
         "assets/react-kit/tests/browser/legacy-regressions.spec.ts",
         "assets/react-kit/tests/browser/modal-layer-kernel.spec.ts",
@@ -6925,7 +6934,9 @@
       "browser": [
         "assets/react-kit/tests/browser/data-table-toast.spec.ts",
         "assets/react-kit/tests/browser/dimension-pagination.spec.ts",
+        "assets/react-kit/tests/browser/dropdown-icon-trigger.spec.ts",
         "assets/react-kit/tests/browser/legacy-regressions.spec.ts",
+        "assets/react-kit/tests/browser/project-style-consistency.spec.ts",
         "assets/react-kit/tests/browser/search-feedback.spec.ts",
         "assets/react-kit/tests/browser/table-actions.spec.ts",
         "assets/react-kit/tests/browser/table-dimensions.spec.ts",
@@ -7483,6 +7494,7 @@
         "assets/react-kit/tests/components/value-controls-contracts.test.tsx"
       ],
       "browser": [
+        "assets/react-kit/tests/browser/component-detail.spec.ts",
         "assets/react-kit/tests/browser/explorer-audit-findings.spec.ts"
       ],
       "keyboard": [
@@ -8821,6 +8833,7 @@
         "assets/react-kit/tests/components/overlay-contracts.test.tsx"
       ],
       "browser": [
+        "assets/react-kit/tests/browser/dropdown-icon-trigger.spec.ts",
         "assets/react-kit/tests/browser/legacy-regressions.spec.ts",
         "assets/react-kit/tests/browser/motion-enhancement.spec.ts",
         "assets/react-kit/tests/browser/table-actions.spec.ts"
@@ -9746,6 +9759,7 @@
         "assets/react-kit/tests/components/form-sizing.test.tsx"
       ],
       "browser": [
+        "assets/react-kit/tests/browser/component-detail.spec.ts",
         "assets/react-kit/tests/browser/explorer-responsive-followup.spec.ts",
         "assets/react-kit/tests/browser/form-settings-sizing.spec.ts",
         "assets/react-kit/tests/browser/legacy-regressions.spec.ts",
@@ -10157,6 +10171,7 @@
         "assets/react-kit/tests/browser/filter-hint-sizing.spec.ts",
         "assets/react-kit/tests/browser/filter-sizing.spec.ts",
         "assets/react-kit/tests/browser/legacy-regressions.spec.ts",
+        "assets/react-kit/tests/browser/project-style-consistency.spec.ts",
         "assets/react-kit/tests/browser/search-feedback.spec.ts"
       ],
       "keyboard": [
@@ -11195,9 +11210,11 @@
       "unit": [
         "assets/react-kit/tests/components/layer-kernel-contracts.test.tsx",
         "assets/react-kit/tests/components/modal-overlay-contracts.test.tsx",
+        "assets/react-kit/tests/components/overlay-contracts.test.tsx",
         "assets/react-kit/tests/components/portal-theme-contracts.test.tsx"
       ],
       "browser": [
+        "assets/react-kit/tests/browser/component-detail.spec.ts",
         "assets/react-kit/tests/browser/m4-overlay-extensions.spec.ts",
         "assets/react-kit/tests/browser/motion-enhancement.spec.ts"
       ],
@@ -11398,6 +11415,7 @@
         "assets/react-kit/tests/components/overlay-contracts.test.tsx"
       ],
       "browser": [
+        "assets/react-kit/tests/browser/component-detail.spec.ts",
         "assets/react-kit/tests/browser/m4-overlay-extensions.spec.ts"
       ],
       "keyboard": [
@@ -11575,6 +11593,7 @@
       ],
       "browser": [
         "assets/react-kit/tests/browser/dimension-controls.spec.ts",
+        "assets/react-kit/tests/browser/dropdown-icon-trigger.spec.ts",
         "assets/react-kit/tests/browser/table-actions.spec.ts"
       ],
       "keyboard": [
@@ -13560,7 +13579,9 @@
       "unit": [
         "assets/react-kit/tests/components/page-composition-ownership.test.tsx"
       ],
-      "browser": [],
+      "browser": [
+        "assets/react-kit/tests/browser/project-style-consistency.spec.ts"
+      ],
       "keyboard": [
         "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
       ],
@@ -14612,7 +14633,9 @@
         "assets/react-kit/tests/components/locale-contracts.test.tsx",
         "assets/react-kit/tests/components/page-composition-ownership.test.tsx"
       ],
-      "browser": [],
+      "browser": [
+        "assets/react-kit/tests/browser/project-style-consistency.spec.ts"
+      ],
       "keyboard": [
         "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
       ],
@@ -15154,9 +15177,11 @@
       "unit": [
         "assets/react-kit/tests/components/form-library-adapter.test.tsx",
         "assets/react-kit/tests/components/inputs-extra-contracts.test.tsx",
-        "assets/react-kit/tests/components/motion-inputs.test.tsx"
+        "assets/react-kit/tests/components/motion-inputs.test.tsx",
+        "assets/react-kit/tests/components/overlay-contracts.test.tsx"
       ],
       "browser": [
+        "assets/react-kit/tests/browser/component-detail.spec.ts",
         "assets/react-kit/tests/browser/composite-form-contracts.spec.ts",
         "assets/react-kit/tests/browser/legacy-regressions.spec.ts",
         "assets/react-kit/tests/browser/motion-enhancement.spec.ts"
@@ -16946,6 +16971,7 @@
         "assets/react-kit/tests/components/overlay-contracts.test.tsx"
       ],
       "browser": [
+        "assets/react-kit/tests/browser/component-detail.spec.ts",
         "assets/react-kit/tests/browser/detail-floating.spec.ts",
         "assets/react-kit/tests/browser/m4-overlay-extensions.spec.ts",
         "assets/react-kit/tests/browser/motion-enhancement.spec.ts"
@@ -19299,7 +19325,9 @@
         "assets/react-kit/src/explorer/cases/pattern/list-filter.case.tsx"
       ],
       "unit": [],
-      "browser": [],
+      "browser": [
+        "assets/react-kit/tests/browser/project-style-consistency.spec.ts"
+      ],
       "keyboard": [
         "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
       ],
@@ -19936,9 +19964,11 @@
       ],
       "unit": [
         "assets/react-kit/tests/components/form-control-contracts.test.tsx",
-        "assets/react-kit/tests/components/motion-inputs.test.tsx"
+        "assets/react-kit/tests/components/motion-inputs.test.tsx",
+        "assets/react-kit/tests/components/overlay-contracts.test.tsx"
       ],
       "browser": [
+        "assets/react-kit/tests/browser/component-detail.spec.ts",
         "assets/react-kit/tests/browser/composite-form-contracts.spec.ts",
         "assets/react-kit/tests/browser/detail-floating.spec.ts",
         "assets/react-kit/tests/browser/motion-enhancement.spec.ts"
@@ -21212,6 +21242,7 @@
         "assets/react-kit/tests/components/button-contracts.test.tsx"
       ],
       "browser": [
+        "assets/react-kit/tests/browser/dropdown-icon-trigger.spec.ts",
         "assets/react-kit/tests/browser/explorer-responsive-followup.spec.ts"
       ],
       "keyboard": [
@@ -22971,6 +23002,7 @@
         "assets/react-kit/tests/components/simple-fixed-controls.test.tsx"
       ],
       "browser": [
+        "assets/react-kit/tests/browser/component-detail.spec.ts",
         "assets/react-kit/tests/browser/country-tag.spec.ts",
         "assets/react-kit/tests/browser/dimension-controls.spec.ts",
         "assets/react-kit/tests/browser/explorer-responsive-followup.spec.ts"
@@ -23177,6 +23209,7 @@
         "assets/react-kit/tests/components/inputs-extra-contracts.test.tsx"
       ],
       "browser": [
+        "assets/react-kit/tests/browser/component-detail.spec.ts",
         "assets/react-kit/tests/browser/explorer-responsive-followup.spec.ts",
         "assets/react-kit/tests/browser/legacy-regressions.spec.ts"
       ],
@@ -23544,6 +23577,7 @@
         "assets/react-kit/tests/components/theme-provider-contracts.test.tsx"
       ],
       "browser": [
+        "assets/react-kit/tests/browser/component-detail.spec.ts",
         "assets/react-kit/tests/browser/motion-enhancement.spec.ts",
         "assets/react-kit/tests/browser/theme-contracts.spec.ts",
         "assets/react-kit/tests/browser/theme-presets.spec.ts"
@@ -24673,6 +24707,7 @@
         "assets/react-kit/tests/components/portal-theme-contracts.test.tsx"
       ],
       "browser": [
+        "assets/react-kit/tests/browser/dropdown-icon-trigger.spec.ts",
         "assets/react-kit/tests/browser/motion-enhancement.spec.ts",
         "assets/react-kit/tests/browser/table-actions.spec.ts"
       ],
@@ -25473,7 +25508,8 @@
       "browser": [
         "assets/react-kit/tests/browser/legacy-regressions.spec.ts",
         "assets/react-kit/tests/browser/m5-tree-keyboard.spec.ts",
-        "assets/react-kit/tests/browser/motion-enhancement.spec.ts"
+        "assets/react-kit/tests/browser/motion-enhancement.spec.ts",
+        "assets/react-kit/tests/browser/project-style-consistency.spec.ts"
       ],
       "keyboard": [
         "assets/react-kit/tests/browser/m6-keyboard-ownership.spec.ts"
@@ -25720,6 +25756,7 @@
       ],
       "browser": [
         "assets/react-kit/tests/browser/m5-tree-table.spec.ts",
+        "assets/react-kit/tests/browser/project-style-consistency.spec.ts",
         "assets/react-kit/tests/browser/table-typography.spec.ts",
         "assets/react-kit/tests/browser/tree-table-actions.spec.ts",
         "assets/react-kit/tests/browser/tree-table-project-members.spec.ts"

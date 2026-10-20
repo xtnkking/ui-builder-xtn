@@ -61,6 +61,8 @@ Dialog、ConfirmDialog、Drawer、Lightbox 与 GuidedTour 关闭后保留视觉�
 
 非模态菜单/Popover/Tooltip 的视觉退出不持有模态焦点锁；逻辑关闭后立即停止操作，必要时先移交焦点，再使退出内容 inert 且不再向辅助技术暴露。
 
+Popover 与 HoverCard 的外部点击、焦点离开和 Escape 判断包含通过 `aria-controls` 关联的子浮层 Portal。正文内组合官方 Select、MultiSelect 等控件时，选择选项仍属于父浮层；第一次 Escape 交给当前子层。HoverCard 的键盘焦点离开触发器、正文及所属子层后关闭，Escape 回到触发器时不会立即重开。GuidedTour 的长正文在受限卡片内滚动，页脚操作独立保留；调用方无需裁短说明或加应用滚动补丁。
+
 ## 3. 关闭策略
 
 ### 弹窗表单与操作区
@@ -102,6 +104,19 @@ import { Drawer } from "./ui";
 - 受控父级可以拒绝一次关闭请求。只要 `open` 仍为 true，该层必须继续保持顶层、焦点圈定、inert 和滚动锁。
 - 关闭并重新打开后重新读取当前策略，不沿用前一次监听器捕获的 Props。
 - Lightbox 的 ×、Escape 和空白遮罩均可关闭预览；空白包括图片与说明之外的 figure 区域。点击图片、说明、页码或控件本身不会触发遮罩关闭。遮罩只响应同一空白目标上的主指针按下并松开；右键、取消的手势或移动超过 8px 的拖动不关闭，拖回原点也不例外。关闭后按统一内核恢复触发器焦点；嵌套预览只关闭最上层图片查看器。
+
+### 下拉菜单触发入口
+
+`DropdownMenu` 默认 `triggerAppearance="button"`，保留文字与下箭头，适合普通页面命令。表格操作列与 `IconButton` 并排时，使用 `triggerAppearance="icon"`：入口复用官方 ghost 图标按钮，默认省略号，不显示文字胶囊或下箭头；`icon` 可显式替换图标。
+
+图标模式的 `label` 用于悬停／键盘聚焦提示，`ariaLabel` 提供含具体记录名称的可访问名称。菜单项继续显示完整文字，保持原有方向键、Enter、Escape、关闭和焦点恢复行为；只有禁用项或空列表时入口禁用。使用现成公共属性，不通过 `label` 塞入另一个按钮，不自建触发器或覆写样式。
+
+```tsx
+<DropdownMenu triggerAppearance="icon" label="更多操作"
+  ariaLabel={`更多操作：${record.name}`} align="end" items={secondaryActions} />
+```
+
+同一行的常用操作与更多菜单不重复命令，详见[操作列组合](data-workflows.md#table-operation-columns)。
 
 ## 4. 验收证据
 

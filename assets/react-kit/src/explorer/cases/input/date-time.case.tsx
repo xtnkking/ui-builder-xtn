@@ -31,7 +31,7 @@ function DisabledDateTimeExample() {
 function InvalidDateTimeExample() {
   return <div className="demo-number-case__grid">
     <Field label="截止日期" htmlFor="explorer-date-invalid" error="截止日期不能晚于 2026 年 10 月 1 日。"><DateField id="explorer-date-invalid" precision="day" defaultValue="2026-10-09" max="2026-10-01" aria-invalid /></Field>
-    <Field label="日期范围" group error="结束日期不能早于开始日期。"><DateRangeField defaultValue={{ start: "2026-10-09", end: "2026-10-01" }} invalid rangeError="结束日期不能早于开始日期。" /></Field>
+    <Field label="日期范围" group error="结束日期不能早于开始日期。"><DateRangeField defaultValue={{ start: "2026-10-09", end: "2026-10-01" }} invalid rangeError={null} /></Field>
     <Field label="必选时区" htmlFor="explorer-timezone-invalid" error="请选择工作区时区。"><TimezoneSelect id="explorer-timezone-invalid" defaultValue="" options={DEFAULT_TIMEZONE_OPTIONS} required /></Field>
   </div>;
 }

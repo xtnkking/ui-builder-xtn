@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
+import { Search } from "lucide-react";
 import {
   Button,
   DataTable,
@@ -161,8 +162,8 @@ function MemberSearch({ defaultSuccessFeedback = true }: { defaultSuccessFeedbac
       }}>模拟下次查询失败</Button>
     </Inline>
     <FilterBar ariaLabel="成员查询" onSubmit={submit} actions={<>
-      <Button type="submit" size="field" variant="primary" loading={querying} loadingLabel="查询">查询</Button>
-      <Button type="button" size="field" disabled={querying} onClick={reset}>重置</Button>
+      <Button type="submit" size="field" variant="primary" icon={<Search aria-hidden="true" />} loading={querying} loadingLabel="查询">查询</Button>
+      <Button type="button" size="field" variant="secondary" disabled={querying} onClick={reset}>重置</Button>
     </>}>
       <FilterField><SearchInput aria-label="成员关键词" placeholder="输入姓名或邮箱" value={draft} onChange={(event) => setDraft(event.currentTarget.value)} onClear={() => setDraft("")} /></FilterField>
     </FilterBar>
