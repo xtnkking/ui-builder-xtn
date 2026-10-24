@@ -267,6 +267,8 @@ export function StickyHeaderActionBar({
 
 type CollapseBaseProps = PublicControlProps<Omit<HTMLAttributes<HTMLDivElement>, "title">> & {
   title: ReactNode;
+  /** Show the bottom separator. Set false inside an already framed card. @default true */
+  bordered?: boolean;
   disabled?: boolean;
   headingLevel?: 2 | 3 | 4 | 5 | 6;
   unmountOnExit?: boolean;

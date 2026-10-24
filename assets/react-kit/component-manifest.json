@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "kitVersion": "0.3.17",
+  "kitVersion": "0.3.18",
   "entries": [
     {
       "id": "color",
@@ -2202,7 +2202,7 @@
     "feedback/feedback-extra.tsx": "356829eb2c518b8818fa50048fb8259d04390d5b1eed3d0f6817c5e097b2a552",
     "feedback/feedback.tsx": "25ab0ebaf73dd68ba6b500fbb8f2258fdbddebb4d8f3b6f7c4961c0679837b4e",
     "foundation/contracts.ts": "80756edff16bc33715d9e93aa3a2cf5619fbdaaf3dc94dd8ebd6a255e3cfe489",
-    "foundation/layout.tsx": "e0113c671da47263002dab79da12b793a94e13a5db367008b9e89b8abcab6dd4",
+    "foundation/layout.tsx": "e7b281c4fd32ccb849baf04ae1fddf3055b22c2b35b4691f19101d243eab3407",
     "foundation/locale.tsx": "4963002f5d615b4d690c33f4220f13fe0067b48e7bb522c90d07a45e9968013b",
     "foundation/primitives.tsx": "8961b981b7485a731853a485c76e30fb9f7320d2726d44f77262ee5a8517c02e",
     "index.ts": "93558e2a003459cea430ecf5878b5e5721efc4fcb3cf15fbfe776d47257bb4d8",
@@ -2211,7 +2211,7 @@
     "input/inputs-extra.tsx": "e01dfc3074d5a7a5e8534ff21539b451ab0cfdb2eb5a1c4251cd91fe3505fd18",
     "input/value-controls.tsx": "d94c2a75b8fe1763fbd18b1c4ae080741ed6e9ce144c6989ca33f76f1afdbd20",
     "internal/button-slots.tsx": "54f4db4ef5c2304f74ba94ba2640f5e98ab8bfe23e6363e06ed66f517e38a27f",
-    "internal/collapse.tsx": "10c7aea4c128414c48b0828611aec4f7a3528b69795265a3b994037116447de4",
+    "internal/collapse.tsx": "4b8a74a2930ec81a5ab7179771ff99557fdc38e2cb355b968a61f833e0e12228",
     "internal/composite-form-control.tsx": "3ce22958816573c8f795ebf0c9a28ae65196c673e74358a1f588973a4c51ab71",
     "internal/content-motion.ts": "ba8527dc09427ed31484aa20d5a4ac1dcdc25f842b0b0468941384af18b1c0ce",
     "internal/control-handles.ts": "76c9ddb192e8f847f650c6ecaa0a4beee881272d0dd1cf51297b230a454be367",
@@ -2241,7 +2241,7 @@
     "patterns/standard-pages.tsx": "74121e9c662c8d3d40eb8c95922caa123822c0dcb628c5c8bc0fe6bf55413400",
     "styles/extended.css": "6959650772d2dfcd9bade5e1a727423ab65fb237318905bf734947e291493572",
     "styles/inputs-extra.css": "beda7d2369a3dc46a5142d124d32abcaed49f8ab86cd15c9138572587299b70d",
-    "styles/layout-actions-display.css": "4754d34e37cb47961153bb23e5aa583cae73283df955ac5754e65c87fc5c3e2e",
+    "styles/layout-actions-display.css": "94e4a413a47d0bd9eb4ddb045658329c9aa624d6bd879f3622b7e61ba38eed2c",
     "styles/themes.css": "ca5e9233d631ad3f28fb4afdebf6268050f4f2a7b273df69eb702f6aeeec1462",
     "styles.css": "a3776e2daf3b41847b641867a3bd9eb61460efee51fcc01a432e7b14401d25fd"
   }

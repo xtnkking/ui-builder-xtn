@@ -6,7 +6,7 @@
 
 它不是一份只靠提示词约束的视觉规范。ui-builder-xtn 源码、公开导出、组件清单、安装器和来源校验器组成同一个闭环：使用者提出功能后，页面中的控件必须直接使用本仓库提供的组件代码。
 
-最新正式版本为 **v0.3.17**。可从 [main 下载最新源码](https://github.com/xtnkking/ui-builder-xtn/archive/refs/heads/main.zip)，或进入 [Latest Release](https://github.com/xtnkking/ui-builder-xtn/releases/latest) 下载完整 Skill ZIP 与校验文件；本次正式交付的两个入口包含相同代码。更新内容见 [CHANGELOG.md](CHANGELOG.md)。
+最新正式版本为 **v0.3.18**。可从 [main 下载最新源码](https://github.com/xtnkking/ui-builder-xtn/archive/refs/heads/main.zip)，或进入 [Latest Release](https://github.com/xtnkking/ui-builder-xtn/releases/latest) 下载完整 Skill ZIP 与校验文件；本次正式交付的两个入口包含相同代码。更新内容见 [CHANGELOG.md](CHANGELOG.md)。
 
 更新仓库或下载新版不会自动更新已安装的 Skill，也不会升级已生成项目中的组件。先替换本机 Skill，再按[已有项目升级步骤](references/integration.md#updating-an-installed-kit)更新项目。当前筛选栏桌面默认为 38px 紧凑高度，窄屏／触屏为 44px；抽屉动效默认内置，无需业务额外添加。
 
@@ -34,6 +34,7 @@ M1–M8 的当前交付范围、原目标差异和验收依据见 [目标收口�
 - 组件自带轻动效：浮层进入退出、轻提示补位、动态折叠、菜单、标签页与分段指示器，以及轮播和图片切换；支持中断与系统减少动效。用法见 [动效合同](references/motion-contract.md)，[在线动效预览](https://xtnkking.github.io/ui-builder-xtn/#/components/motion)。
 - 品牌家族登录页：共享登录结构，各产品通过图片、名称、文案和强调色表达差异
 - [青屿商城完整项目](references/business-examples.md)：首页、12 件商品与 4 个分类、详情、收藏、购物车、结算、订单、个人中心与登录注册；入口 `#/examples`，共享账户、地址与业务状态，页面底部可查看完整源码
+- [账号与角色管理案例](https://xtnkking.github.io/ui-builder-xtn/#/examples/accounts)：多账号搜索与分页、单条／多行文本批量新增、分组管理、模拟登录和角色横向浏览；数据为内存演示，刷新后重置
 - 服务端数据列表：草稿筛选、手动查询、排序、分页、加载、空状态、错误和重试
 - 项目统一表格高度：默认固定容量，可用 `DataTableProvider heightMode="fill"` 填满页面有界布局剩余空间，分页留在表格框内；详见[高度策略与布局示例](references/data-workflows.md#project-table-height-policy)。
 - 列表管理、创建编辑、详情、设置、向导、主从视图、导入导出和状态页模式

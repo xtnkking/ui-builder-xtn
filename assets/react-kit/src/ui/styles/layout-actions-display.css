@@ -146,6 +146,7 @@
   min-width: 0;
   border-bottom: 1px solid var(--ui-border);
 }
+.ui-collapse[data-bordered="false"] { border-bottom: 0; }
 .ui-collapse__heading { margin: 0; font: inherit; }
 .ui-collapse__trigger {
   display: grid;

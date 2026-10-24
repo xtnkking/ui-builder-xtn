@@ -213,6 +213,8 @@ export interface StickyHeaderActionBarProps extends HTMLAttributes<HTMLElement> 
 export declare function StickyHeaderActionBar({ heading, description, actions, position, className, children, ...props }: StickyHeaderActionBarProps): import("react").JSX.Element;
 type CollapseBaseProps = PublicControlProps<Omit<HTMLAttributes<HTMLDivElement>, "title">> & {
     title: ReactNode;
+    /** Show the bottom separator. Set false inside an already framed card. @default true */
+    bordered?: boolean;
     disabled?: boolean;
     headingLevel?: 2 | 3 | 4 | 5 | 6;
     unmountOnExit?: boolean;

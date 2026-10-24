@@ -22,6 +22,17 @@ afterEach(() => {
 });
 
 describe("Collapse owned motion", () => {
+  it("keeps the separator by default and lets framed content opt out", () => {
+    const { rerender, container } = render(<Collapse title="角色" defaultOpen>角色资料</Collapse>);
+    const root = container.querySelector('[data-ui-owner="Collapse"]');
+    expect(root).toHaveAttribute("data-bordered", "true");
+    rerender(<Collapse title="角色" defaultOpen bordered={false}>角色资料</Collapse>);
+    expect(root).toHaveAttribute("data-bordered", "false");
+    expect(root).not.toHaveAttribute("bordered");
+    expect(screen.getByRole("button", { name: "角色" })).toHaveAttribute("aria-expanded", "true");
+    expect(screen.getByRole("region", { name: "角色" })).not.toHaveAttribute("hidden");
+  });
+
   it("renders initially expanded content without a zero-height entry frame", () => {
     render(<Collapse title="详细信息" defaultOpen><p>初始内容</p></Collapse>);
     const panel = screen.getByRole("region", { name: "详细信息" });

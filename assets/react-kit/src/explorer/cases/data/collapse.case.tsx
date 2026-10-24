@@ -86,10 +86,13 @@ const explorerCase = {
       <Collapse title="部署说明" defaultOpen>
         生产环境在发布前会依次完成类型检查、可访问性检查与构建校验。
       </Collapse>
+      <Collapse title="无分隔线的折叠内容" bordered={false}>
+        适合已经带边框的卡片内部，展开与收起均不显示底部分隔线。
+      </Collapse>
       <Collapse title="暂不可用的归档记录" disabled>该内容不会被展开。</Collapse>
     </div>
   ),
-  code: `<Collapse title="部署说明" defaultOpen>发布前检查说明</Collapse>`,
+  code: `<Collapse title="部署说明" defaultOpen>发布前检查说明</Collapse>\n<Collapse title="卡片内角色" bordered={false}>角色卡片</Collapse>`,
 } satisfies ExplorerCase;
 
 export default explorerCase;

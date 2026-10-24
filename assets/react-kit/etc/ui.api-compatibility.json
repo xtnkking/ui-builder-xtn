@@ -14,21 +14,21 @@
   },
   "current": {
     "packageName": "ui",
-    "version": "0.3.17",
-    "apiDigest": "c7ee44b6dc6554508787e0c0753600d97fb742d0b50498a949212a2e07032f9a",
-    "compatibilityDigest": "480d582a7884834aa3416575654c9c5610aa2c6a940640e3e0a6db96c1805833",
+    "version": "0.3.18",
+    "apiDigest": "d715ffe1b533a0065f52ff75316d9ae2b61431001a0c7b01f527060a6b620a80",
+    "compatibilityDigest": "2a0dd659268731fe1934cb0974145ac7b4b5f50eac8a15a95473403e22f6480a",
     "runtimeExports": 145,
     "typeOnlyExports": 235,
     "publicSignatures": 380
   },
   "classification": "breaking",
   "versionPolicy": {
-    "releaseTarget": "0.3.17",
-    "packageVersion": "0.3.17",
+    "releaseTarget": "0.3.18",
+    "packageVersion": "0.3.18",
     "valid": true,
     "requiredBump": "minor",
     "minimumVersion": "0.3.0",
-    "message": "Breaking API changes are covered by version 0.3.17."
+    "message": "Breaking API changes are covered by version 0.3.18."
   },
   "changes": {
     "runtimeExports": {
@@ -478,14 +478,14 @@
           "baselineKind": "runtime",
           "currentKind": "runtime",
           "baselineHash": "6d29c4c9e264ca889188ea839d7081c9e8c4b461bfe4d85e390507f672c6e0c9",
-          "currentHash": "9c5b0ed2cb83b2bf7f03f21a0790ed219e1d7df1c9550582d71a791d4d4c4ab2"
+          "currentHash": "1d0e11f1d069ef97ac5cf8a36e3abc3652f717177453f5b5cc9d1fbd124508d6"
         },
         {
           "id": "CollapseProps",
           "baselineKind": "type",
           "currentKind": "type",
           "baselineHash": "e8a4e9831e4fe8020b713176984e9029a585f2a89cc4ecfee1c7f4aedceb0933",
-          "currentHash": "7a13ef3db68838e88793f181c57882b2079deca5f6c57490b96b586dd95f5e8d"
+          "currentHash": "09aeca056658e3c71b67c1677589c7a6becd2a9362db976b216cda3a68b076b0"
         },
         {
           "id": "ColorPicker",

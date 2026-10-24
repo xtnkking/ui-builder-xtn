@@ -7,6 +7,7 @@ import { ShopHomePage, ShopCatalogPage, ShopProductPage } from "./shop-catalog";
 import { ShopCartPage, ShopCheckoutPage } from "./shop-checkout";
 import { ShopOrdersPage } from "./shop-orders";
 import { useCommerce } from "./commerce-store";
+import { AccountsExample } from "./accounts/AccountsExample";
 import shellSource from "./BusinessExamples.tsx?raw";
 import authSource from "./authentication.tsx?raw";
 import accountSource from "./shop-account.tsx?raw";
@@ -41,6 +42,11 @@ const serviceCopy = {
 };
 
 export function BusinessExamples({ hash }: { hash: string }) {
+  return hash.split("?")[0].replace(/\/$/, "") === "#/examples/accounts"
+    ? <AccountsExample /> : <StorefrontExample hash={hash} />;
+}
+
+function StorefrontExample({ hash }: { hash: string }) {
   const { account, cart, reset } = useCommerce();
   const route = readRoute(hash);
   const [search, setSearch] = useState(route.query);
@@ -107,6 +113,7 @@ export function BusinessExamples({ hash }: { hash: string }) {
       </div>
       <div className="storefront-demo-tools"><p>本地商城示例，不产生真实交易；刷新页面后数据重置。</p><Inline gap="small">
         <Link href="#/components/button" icon={<ArrowLeft aria-hidden="true" />}>组件目录</Link>
+        <Link href="#/examples/accounts" icon={<UserRound aria-hidden="true" />}>账号角色案例</Link>
         <Button variant="ghost" size="small" icon={<Code2 aria-hidden="true" />} onClick={() => setSourceOpen(true)}>项目源码</Button>
         <Button variant="ghost" size="small" icon={<RotateCcw aria-hidden="true" />} onClick={() => setResetOpen(true)}>重置示例</Button>
       </Inline></div>

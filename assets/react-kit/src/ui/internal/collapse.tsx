@@ -16,6 +16,7 @@ export function InternalCollapse({
   open,
   defaultOpen,
   onOpenChange,
+  bordered = true,
   disabled = false,
   headingLevel = 3,
   unmountOnExit = false,
@@ -80,7 +81,7 @@ export function InternalCollapse({
   };
 
   return (
-    <div {...props} data-ui-owner="Collapse" className={cx("ui-collapse", internalClassName)} data-open={expanded || undefined}>
+    <div {...props} data-ui-owner="Collapse" className={cx("ui-collapse", internalClassName)} data-open={expanded || undefined} data-bordered={bordered}>
       <Heading className="ui-collapse__heading">
         <button
           ref={triggerRef}

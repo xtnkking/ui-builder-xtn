@@ -4052,11 +4052,6 @@
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 635
-        },
-        {
-          "file": "src/ui/styles/layout-actions-display.css",
-          "layer": "ui.components",
           "line": 636
         },
         {
@@ -4068,6 +4063,11 @@
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
           "line": 638
+        },
+        {
+          "file": "src/ui/styles/layout-actions-display.css",
+          "layer": "ui.components",
+          "line": 639
         }
       ]
     },
@@ -4078,11 +4078,6 @@
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 635
-        },
-        {
-          "file": "src/ui/styles/layout-actions-display.css",
-          "layer": "ui.components",
           "line": 636
         },
         {
@@ -4094,6 +4089,11 @@
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
           "line": 638
+        },
+        {
+          "file": "src/ui/styles/layout-actions-display.css",
+          "layer": "ui.components",
+          "line": 639
         }
       ]
     },
@@ -4227,22 +4227,22 @@
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 365
+          "line": 366
         },
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 379
+          "line": 380
         },
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 447
+          "line": 448
         },
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 458
+          "line": 459
         }
       ]
     },
@@ -4315,11 +4315,6 @@
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 539
-        },
-        {
-          "file": "src/ui/styles/layout-actions-display.css",
-          "layer": "ui.components",
           "line": 540
         },
         {
@@ -4330,12 +4325,17 @@
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 1075
+          "line": 542
         },
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 1097
+          "line": 1076
+        },
+        {
+          "file": "src/ui/styles/layout-actions-display.css",
+          "layer": "ui.components",
+          "line": 1098
         }
       ]
     },
@@ -4418,12 +4418,12 @@
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 1076
+          "line": 1077
         },
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 1109
+          "line": 1110
         }
       ]
     },
@@ -4444,12 +4444,7 @@
         {
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
-          "line": 943
-        },
-        {
-          "file": "src/ui/styles/layout-actions-display.css",
-          "layer": "ui.components",
-          "line": 948
+          "line": 944
         },
         {
           "file": "src/ui/styles/layout-actions-display.css",
@@ -4460,6 +4455,11 @@
           "file": "src/ui/styles/layout-actions-display.css",
           "layer": "ui.components",
           "line": 950
+        },
+        {
+          "file": "src/ui/styles/layout-actions-display.css",
+          "layer": "ui.components",
+          "line": 951
         }
       ]
     },
@@ -5226,5 +5226,5 @@
       ]
     }
   ],
-  "selectorCount": 1255
+  "selectorCount": 1256
 }

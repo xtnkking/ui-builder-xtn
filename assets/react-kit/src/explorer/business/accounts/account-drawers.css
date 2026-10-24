@@ -1,0 +1,92 @@
+.demo-accounts-account-import-explanation {
+  margin: 0;
+  color: var(--ui-muted);
+  font-size: 13px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.demo-accounts-account-import-row {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.demo-accounts-account-import-row-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.demo-accounts-account-import-line {
+  color: var(--ui-muted);
+  font-size: 12px;
+}
+
+.demo-accounts-account-import-copy {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.demo-accounts-account-import-row-meta {
+  min-width: 0;
+  color: var(--ui-muted);
+  font-size: 13px;
+}
+
+.demo-accounts-account-import-message {
+  margin: 0;
+  color: var(--ui-muted);
+  font-size: 13px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.demo-accounts-account-group-create-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.demo-accounts-account-group-create-input {
+  flex: 1;
+  min-width: 0;
+}
+
+.demo-accounts-account-group-create-action {
+  flex: 0 0 auto;
+}
+
+.demo-accounts-account-group-row,
+.demo-accounts-account-group-editor {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+}
+
+.demo-accounts-account-group-editor {
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.demo-accounts-account-group-copy {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.demo-accounts-account-group-field {
+  flex: 1 1 170px;
+  min-width: 0;
+}
+
+.demo-accounts-account-group-count {
+  color: var(--ui-muted);
+  font-size: 13px;
+}
